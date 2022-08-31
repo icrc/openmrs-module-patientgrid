@@ -6,7 +6,7 @@
 
 <hibernate-mapping>
 
-	<class name="${project.parent.groupId}.${project.parent.artifactId}.patientgrid.PatientGridColumn" table="patient_grid_column">
+	<class name="${project.parent.groupId}.${project.parent.artifactId}.PatientGridColumn" table="patient_grid_column">
 		
 		<id name="patientGridColumnId" type="int" column="patient_grid_column_id">
             <generator class="native">
@@ -19,11 +19,11 @@
         <property name="description" type="string" length="255" />
 
         <many-to-one name="patientGrid" column="patient_grid_id" not-null="true"
-                     class="${project.parent.groupId}.${project.parent.artifactId}.patientgrid.PatientGrid" />
+                     class="${project.parent.groupId}.${project.parent.artifactId}.PatientGrid" />
 
         <property name="datatype" length="50" not-null="true">
             <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">${project.parent.groupId}.${project.parent.artifactId}.patientgrid.PatientGridColumn$ColumnDatatype</param>
+                <param name="enumClass">${project.parent.groupId}.${project.parent.artifactId}.PatientGridColumn$ColumnDatatype</param>
                 <param name="type">12</param>
             </type>
         </property>
@@ -47,14 +47,14 @@
         <property name="uuid" type="string" length="38" unique="true" not-null="true" />
 
         <!-- ObsPatientGridColumn -->
-        <joined-subclass name="${project.parent.groupId}.${project.parent.artifactId}.patientgrid.ObsPatientGridColumn" table="obs_patient_grid_column">
+        <joined-subclass name="${project.parent.groupId}.${project.parent.artifactId}.ObsPatientGridColumn" table="obs_patient_grid_column">
             <key column="patient_grid_column_id" not-null="true" on-delete="cascade" />
             <many-to-one name="encounterType" column="encounter_type_id" class="org.openmrs.EncounterType" not-null="true" />
             <many-to-one name="concept" class="org.openmrs.Concept" column="concept_id" not-null="true" />
         </joined-subclass>
 
         <!-- AgeAtEncounterPatientGridColumn -->
-        <joined-subclass name="${project.parent.groupId}.${project.parent.artifactId}.patientgrid.AgeAtEncounterPatientGridColumn" table="enc_age_patient_grid_column">
+        <joined-subclass name="${project.parent.groupId}.${project.parent.artifactId}.AgeAtEncounterPatientGridColumn" table="enc_age_patient_grid_column">
             <key column="patient_grid_column_id" not-null="true" on-delete="cascade" />
             <many-to-one name="encounterType" column="encounter_type_id" class="org.openmrs.EncounterType" not-null="true" />
             <property name="convertToAgeRange" column="convert_to_age_range" type="boolean" not-null="true" length="1" />
