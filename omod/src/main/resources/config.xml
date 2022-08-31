@@ -23,6 +23,12 @@
         <require_module version="${datafilterVersion}">org.openmrs.module.datafilter</require_module>
         <require_module version="${webservicesRestVersion}">org.openmrs.module.webservices.rest</require_module>
     </require_modules>
+
+    <!-- Maps hibernate file's, if present -->
+    <mappingFiles>
+        PatientGrid.hbm.xml
+        PatientGridColumn.hbm.xml
+    </mappingFiles>
     
     <!-- Global properties -->
 
