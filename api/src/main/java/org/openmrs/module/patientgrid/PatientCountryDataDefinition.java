@@ -1,0 +1,13 @@
+package org.openmrs.module.patientgrid;
+
+import org.openmrs.module.reporting.data.BaseDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+
+public class PatientCountryDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
+	
+	@Override
+	public Class<?> getDataType() {
+		return String.class;
+	}
+	
+}

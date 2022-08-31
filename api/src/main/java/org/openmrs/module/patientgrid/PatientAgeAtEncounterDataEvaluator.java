@@ -1,0 +1,80 @@
+package org.openmrs.module.patientgrid;
+
+import static org.openmrs.module.patientgrid.PatientGridConstants.KEY_AGES_AT_ENCS;
+import static org.openmrs.module.patientgrid.PatientGridConstants.KEY_MOST_RECENT_ENCS;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.annotation.Handler;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.data.encounter.definition.AgeAtEncounterDataDefinition;
+import org.openmrs.module.reporting.data.encounter.service.EncounterDataService;
+import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
+import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.evaluator.PatientDataEvaluator;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
+import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Handler(supports = org.openmrs.module.patientgrid.PatientAgeAtEncounterDataDefinition.class, order = 50)
+public class PatientAgeAtEncounterDataEvaluator implements PatientDataEvaluator {
+	
+	private static final Logger log = LoggerFactory.getLogger(PatientAgeAtEncounterDataEvaluator.class);
+	
+	@Override
+	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
+	        throws EvaluationException {
+		
+		org.openmrs.module.patientgrid.PatientAgeAtEncounterDataDefinition def = (org.openmrs.module.patientgrid.PatientAgeAtEncounterDataDefinition) definition;
+		Map<EncounterType, Object> typeAndEncData = (Map) context.getFromCache(KEY_MOST_RECENT_ENCS);
+		if (typeAndEncData == null) {
+			typeAndEncData = new HashMap();
+			context.addToCache(KEY_MOST_RECENT_ENCS, typeAndEncData);
+		}
+		
+		Map<Integer, Object> patientIdAndEnc = (Map) typeAndEncData.get(def.getEncounterType());
+		if (patientIdAndEnc == null) {
+			patientIdAndEnc = PatientGridUtils.getMostRecentEncounters(def.getEncounterType(), context.getBaseCohort(),
+			    true);
+			typeAndEncData.put(def.getEncounterType(), patientIdAndEnc);
+		}
+		
+		Map<EncounterType, Object> typeAndAgesData = (Map) context.getFromCache(KEY_AGES_AT_ENCS);
+		if (typeAndAgesData == null) {
+			typeAndAgesData = new HashMap();
+			context.addToCache(KEY_AGES_AT_ENCS, typeAndAgesData);
+		}
+		
+		Map<Integer, Object> encIdAndAge = (Map) typeAndAgesData.get(def.getEncounterType());
+		if (encIdAndAge == null) {
+			List<Integer> encIds = patientIdAndEnc.values().stream().map(e -> ((Encounter) e).getId())
+			        .collect(Collectors.toList());
+			
+			EncounterIdSet encIdSet = new EncounterIdSet(encIds);
+			EncounterEvaluationContext encContext = new EncounterEvaluationContext(context, encIdSet);
+			encIdAndAge = Context.getService(EncounterDataService.class)
+			        .evaluate(new AgeAtEncounterDataDefinition(), encContext).getData();
+		}
+		
+		EncounterService es = Context.getEncounterService();
+		Map<Integer, Object> patientIdAndAge = new HashMap(encIdAndAge.size());
+		for (Map.Entry<Integer, Object> e : encIdAndAge.entrySet()) {
+			patientIdAndAge.put(es.getEncounter(e.getKey()).getPatient().getId(), e.getValue());
+		}
+		
+		EvaluatedPatientData result = new EvaluatedPatientData(definition, context);
+		result.setData(patientIdAndAge);
+		
+		return result;
+	}
+	
+}

@@ -22,7 +22,15 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
+            <artifactId>calculation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
             <artifactId>reporting-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>datafilter-api</artifactId>
         </dependency>
 
         <!-- Test dependencies -->

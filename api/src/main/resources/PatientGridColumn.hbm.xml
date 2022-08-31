@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.1//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="${project.parent.groupId}.${project.parent.artifactId}.patientgrid.PatientGridColumn" table="patient_grid_column">
+		
+		<id name="patientGridColumnId" type="int" column="patient_grid_column_id">
+            <generator class="native">
+                <param name="sequence">patient_grid_patient_grid_id_seq</param>
+            </generator>
+        </id>
+
+        <property name="name" type="string" not-null="true" length="255" />
+
+        <property name="description" type="string" length="255" />
+
+        <many-to-one name="patientGrid" column="patient_grid_id" not-null="true"
+                     class="${project.parent.groupId}.${project.parent.artifactId}.patientgrid.PatientGrid" />
+
+        <property name="datatype" length="50" not-null="true">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">${project.parent.groupId}.${project.parent.artifactId}.patientgrid.PatientGridColumn$ColumnDatatype</param>
+                <param name="type">12</param>
+            </type>
+        </property>
+
+        <many-to-one name="creator" class="org.openmrs.User" not-null="true" />
+
+        <property name="dateCreated" column="date_created" type="java.util.Date" length="19" not-null="true" />
+
+        <many-to-one name="changedBy" column="changed_by" class="org.openmrs.User" />
+
+        <property name="dateChanged" column="date_changed" type="java.util.Date" length="19" />
+
+        <property name="retired" type="boolean" length="1" not-null="true" />
+
+        <property name="dateRetired" column="date_retired" type="java.util.Date" length="19" />
+
+        <many-to-one name="retiredBy" column="retired_by" class="org.openmrs.User" />
+
+        <property name="retireReason" column="retire_reason" type="string" length="255" />
+
+        <property name="uuid" type="string" length="38" unique="true" not-null="true" />
+
+        <!-- ObsPatientGridColumn -->
+        <joined-subclass name="${project.parent.groupId}.${project.parent.artifactId}.patientgrid.ObsPatientGridColumn" table="obs_patient_grid_column">
+            <key column="patient_grid_column_id" not-null="true" on-delete="cascade" />
+            <many-to-one name="encounterType" column="encounter_type_id" class="org.openmrs.EncounterType" not-null="true" />
+            <many-to-one name="concept" class="org.openmrs.Concept" column="concept_id" not-null="true" />
+        </joined-subclass>
+
+        <!-- AgeAtEncounterPatientGridColumn -->
+        <joined-subclass name="${project.parent.groupId}.${project.parent.artifactId}.patientgrid.AgeAtEncounterPatientGridColumn" table="enc_age_patient_grid_column">
+            <key column="patient_grid_column_id" not-null="true" on-delete="cascade" />
+            <many-to-one name="encounterType" column="encounter_type_id" class="org.openmrs.EncounterType" not-null="true" />
+            <property name="convertToAgeRange" column="convert_to_age_range" type="boolean" not-null="true" length="1" />
+        </joined-subclass>
+		
+	</class>
+
+</hibernate-mapping>

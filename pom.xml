@@ -11,7 +11,7 @@
     <packaging>pom</packaging>
     <name>Patient Grid Module</name>
     <description>
-        Provides an API for managing and evaluating a grid of data for a list of patients
+        Provides an API for managing and evaluating a grid of data for a cohort of patients
     </description>
 
     <url>https://github.com/icrc/openmrs-module-patient-grid</url>
@@ -43,7 +43,9 @@
         <javaCompilerVersion>1.8</javaCompilerVersion>
         <openmrsPlatformVersion>2.3.0</openmrsPlatformVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <calculationVersion>1.2</calculationVersion>
         <reportingVersion>0.10.6</reportingVersion>
+        <datafilterVersion>1.2.0</datafilterVersion>
         <webservicesRestVersion>2.24.0</webservicesRestVersion>
     </properties>
 
@@ -65,6 +67,18 @@
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>reporting-api</artifactId>
                 <version>${reportingVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>datafilter-api</artifactId>
+                <version>${datafilterVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>calculation-api</artifactId>
+                <version>${calculationVersion}</version>
                 <scope>provided</scope>
             </dependency>
             

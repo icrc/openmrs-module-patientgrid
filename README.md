@@ -1,2 +1,2 @@
 # Patient Grid Module
-Provides an API for managing and evaluating a grid of data for a list of patients
+Provides an API for managing and evaluating a grid of data for a cohort of patients
