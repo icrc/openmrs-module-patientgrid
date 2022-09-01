@@ -47,6 +47,7 @@
         <reportingVersion>0.10.6</reportingVersion>
         <datafilterVersion>1.2.0</datafilterVersion>
         <webservicesRestVersion>2.24.0</webservicesRestVersion>
+        <serializationXstreamVersion>0.2.12</serializationXstreamVersion>
     </properties>
 
     <dependencyManagement>
