@@ -19,7 +19,7 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.Cohort;
 import org.openmrs.User;
 
-//@Entity@Table(name = "patient_grid")
+//@Entity@Table(name = "patientgrid_patient_grid")
 public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	
 	private static final long serialVersionUID = 1L;

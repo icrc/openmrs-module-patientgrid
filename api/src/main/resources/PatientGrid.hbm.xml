@@ -6,7 +6,7 @@
 
 <hibernate-mapping>
 
-	<class name="${project.parent.groupId}.${project.parent.artifactId}.PatientGrid" table="patient_grid">
+	<class name="${project.parent.groupId}.${project.parent.artifactId}.PatientGrid" table="patientgrid_patient_grid">
 		
 		<id name="patientGridId" type="int" column="patient_grid_id">
             <generator class="native">

@@ -8,7 +8,7 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 
 //@Entity
-@Table(name = "obs_patient_grid_column")
+@Table(name = "patientgrid_obs_patient_grid_column")
 public class ObsPatientGridColumn extends PatientGridColumn {
 	
 	@ManyToOne(optional = false)

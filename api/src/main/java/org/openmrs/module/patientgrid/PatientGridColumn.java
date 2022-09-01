@@ -16,7 +16,7 @@ import org.openmrs.BaseChangeableOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
 
 //@Entity
-@Table(name = "patient_grid_column")
+@Table(name = "patientgrid_patient_grid_column")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class PatientGridColumn extends BaseChangeableOpenmrsMetadata {
 	

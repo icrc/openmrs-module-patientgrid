@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import org.openmrs.EncounterType;
 
 //@Entity
-@Table(name = "enc_age_patient_grid_column")
+@Table(name = "patientgrid_enc_age_patient_grid_column")
 public class AgeAtEncounterPatientGridColumn extends PatientGridColumn {
 	
 	@ManyToOne(optional = false)

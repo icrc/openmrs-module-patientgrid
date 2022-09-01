@@ -13,11 +13,11 @@
     <changeSet id="wluyima" author="202207291100">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="patient_grid" />
+                <tableExists tableName="patientgrid_patient_grid" />
             </not>
         </preConditions>
-        <comment>Add patient_grid table</comment>
-        <createTable tableName="patient_grid">
+        <comment>Add patientgrid_patient_grid table</comment>
+        <createTable tableName="patientgrid_patient_grid">
             <column name="patient_grid_id" type="int" autoIncrement="true" >
                 <constraints primaryKey="true" nullable="false" unique="true" />
             </column>
@@ -45,31 +45,31 @@
         </createTable>
 
         <addForeignKeyConstraint constraintName="patient_grid_owner"
-                                 baseTableName="patient_grid"
+                                 baseTableName="patientgrid_patient_grid"
                                  baseColumnNames="user_id"
                                  referencedTableName="users"
                                  referencedColumnNames="user_id" />
 
         <addForeignKeyConstraint constraintName="patient_grid_cohort_fk"
-                                 baseTableName="patient_grid"
+                                 baseTableName="patientgrid_patient_grid"
                                  baseColumnNames="cohort_id"
                                  referencedTableName="cohort"
                                  referencedColumnNames="cohort_id" />
 
         <addForeignKeyConstraint constraintName="patient_grid_creator"
-                                 baseTableName="patient_grid"
+                                 baseTableName="patientgrid_patient_grid"
                                  baseColumnNames="creator"
                                  referencedTableName="users"
                                  referencedColumnNames="user_id" />
 
         <addForeignKeyConstraint constraintName="patient_grid_retired_by"
-                                 baseTableName="patient_grid"
+                                 baseTableName="patientgrid_patient_grid"
                                  baseColumnNames="retired_by"
                                  referencedTableName="users"
                                  referencedColumnNames="user_id" />
 
         <addForeignKeyConstraint constraintName="patient_grid_changed_by"
-                                 baseTableName="patient_grid"
+                                 baseTableName="patientgrid_patient_grid"
                                  baseColumnNames="changed_by"
                                  referencedTableName="users"
                                  referencedColumnNames="user_id" />
@@ -78,11 +78,11 @@
     <changeSet id="wluyima" author="202207291101">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="patient_grid_column" />
+                <tableExists tableName="patientgrid_patient_grid_column" />
             </not>
         </preConditions>
-        <comment>Add patient_grid_column table</comment>
-        <createTable tableName="patient_grid_column">
+        <comment>Add patientgrid_patient_grid_column table</comment>
+        <createTable tableName="patientgrid_patient_grid_column">
             <column name="patient_grid_column_id" type="int" autoIncrement="true" >
                 <constraints primaryKey="true" nullable="false" unique="true" />
             </column>
@@ -114,25 +114,25 @@
         </createTable>
 
         <addForeignKeyConstraint constraintName="parent_patient_grid"
-                                 baseTableName="patient_grid_column"
+                                 baseTableName="patientgrid_patient_grid_column"
                                  baseColumnNames="patient_grid_id"
-                                 referencedTableName="patient_grid"
+                                 referencedTableName="patientgrid_patient_grid"
                                  referencedColumnNames="patient_grid_id" />
 
         <addForeignKeyConstraint constraintName="patient_grid_column_creator"
-                                 baseTableName="patient_grid_column"
+                                 baseTableName="patientgrid_patient_grid_column"
                                  baseColumnNames="creator"
                                  referencedTableName="users"
                                  referencedColumnNames="user_id" />
 
         <addForeignKeyConstraint constraintName="patient_grid_column_retired_by"
-                                 baseTableName="patient_grid_column"
+                                 baseTableName="patientgrid_patient_grid_column"
                                  baseColumnNames="retired_by"
                                  referencedTableName="users"
                                  referencedColumnNames="user_id" />
 
         <addForeignKeyConstraint constraintName="patient_grid_column_changed_by"
-                                 baseTableName="patient_grid_column"
+                                 baseTableName="patientgrid_patient_grid_column"
                                  baseColumnNames="changed_by"
                                  referencedTableName="users"
                                  referencedColumnNames="user_id" />
@@ -141,11 +141,11 @@
     <changeSet id="wluyima" author="202207291102">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="obs_patient_grid_column" />
+                <tableExists tableName="patientgrid_obs_patient_grid_column" />
             </not>
         </preConditions>
-        <comment>Add obs_patient_grid_column table</comment>
-        <createTable tableName="obs_patient_grid_column">
+        <comment>Add patientgrid_obs_patient_grid_column table</comment>
+        <createTable tableName="patientgrid_obs_patient_grid_column">
             <column name="patient_grid_column_id" type="int" autoIncrement="true" >
                 <constraints primaryKey="true" nullable="false" unique="true" />
             </column>
@@ -158,19 +158,19 @@
         </createTable>
 
         <addForeignKeyConstraint constraintName="obs_column_parent_column_fk"
-                                 baseTableName="obs_patient_grid_column"
+                                 baseTableName="patientgrid_obs_patient_grid_column"
                                  baseColumnNames="patient_grid_column_id"
-                                 referencedTableName="patient_grid_column"
+                                 referencedTableName="patientgrid_patient_grid_column"
                                  referencedColumnNames="patient_grid_column_id" />
 
         <addForeignKeyConstraint constraintName="obs_patient_grid_column_concept_fk"
-                                 baseTableName="obs_patient_grid_column"
+                                 baseTableName="patientgrid_obs_patient_grid_column"
                                  baseColumnNames="concept_id"
                                  referencedTableName="concept"
                                  referencedColumnNames="concept_id" />
 
         <addForeignKeyConstraint constraintName="obs_column_encounter_type_fk"
-                                 baseTableName="obs_patient_grid_column"
+                                 baseTableName="patientgrid_obs_patient_grid_column"
                                  baseColumnNames="encounter_type_id"
                                  referencedTableName="encounter_type"
                                  referencedColumnNames="encounter_type_id" />
@@ -179,11 +179,11 @@
     <changeSet id="wluyima" author="202208190900">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="enc_age_patient_grid_column" />
+                <tableExists tableName="patientgrid_enc_age_patient_grid_column" />
             </not>
         </preConditions>
-        <comment>Add enc_age_patient_grid_column table</comment>
-        <createTable tableName="enc_age_patient_grid_column">
+        <comment>Add patientgrid_enc_age_patient_grid_column table</comment>
+        <createTable tableName="patientgrid_enc_age_patient_grid_column">
             <column name="patient_grid_column_id" type="int" autoIncrement="true" >
                 <constraints primaryKey="true" nullable="false" unique="true" />
             </column>
@@ -196,13 +196,13 @@
         </createTable>
 
         <addForeignKeyConstraint constraintName="age_column_parent_column_fk"
-                                 baseTableName="enc_age_patient_grid_column"
+                                 baseTableName="patientgrid_enc_age_patient_grid_column"
                                  baseColumnNames="patient_grid_column_id"
-                                 referencedTableName="patient_grid_column"
+                                 referencedTableName="patientgrid_patient_grid_column"
                                  referencedColumnNames="patient_grid_column_id" />
 
         <addForeignKeyConstraint constraintName="age_column_encounter_type_fk"
-                                 baseTableName="enc_age_patient_grid_column"
+                                 baseTableName="patientgrid_enc_age_patient_grid_column"
                                  baseColumnNames="encounter_type_id"
                                  referencedTableName="encounter_type"
                                  referencedColumnNames="encounter_type_id" />

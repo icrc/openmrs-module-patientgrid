@@ -18,7 +18,7 @@
 
     <!-- Required Modules -->
     <require_modules>
-        <require_module version="${calculationVersion}">org.openmrs.module.calculation</require_module>
+        <require_module version="${calculationVersion}">org.openmrs.calculation</require_module>
         <require_module version="${reportingVersion}">org.openmrs.module.reporting</require_module>
         <require_module version="${datafilterVersion}">org.openmrs.module.datafilter</require_module>
         <require_module version="${webservicesRestVersion}">org.openmrs.module.webservices.rest</require_module>
