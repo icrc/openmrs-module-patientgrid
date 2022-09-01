@@ -28,6 +28,7 @@
     <mappingFiles>
         PatientGrid.hbm.xml
         PatientGridColumn.hbm.xml
+        PatientGridColumnFilter.hbm.xml
     </mappingFiles>
     
     <!-- Global properties -->

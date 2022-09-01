@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.1//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="${project.parent.groupId}.${project.parent.artifactId}.PatientGridColumnFilter" table="patientgrid_patient_grid_column_filter">
+
+        <id name="patientGridColumnFilterId" type="int" column="patient_grid_column_filter_id">
+            <generator class="native" />
+        </id>
+
+        <property name="name" type="string" not-null="true" length="255" />
+
+        <many-to-one name="patientGridColumn" column="patient_grid_column_id" not-null="true"
+                     class="${project.parent.groupId}.${project.parent.artifactId}.PatientGridColumn" />
+
+        <property name="operator" length="50" not-null="true">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">${project.parent.groupId}.${project.parent.artifactId}.PatientGridColumnFilter$FilterOperator</param>
+                <param name="type">12</param>
+            </type>
+        </property>
+
+        <property name="operand" type="string" not-null="true" length="255" />
+
+        <many-to-one name="creator" class="org.openmrs.User" not-null="true" />
+
+        <property name="dateCreated" column="date_created" type="java.util.Date" length="19" not-null="true" />
+
+        <many-to-one name="changedBy" column="changed_by" class="org.openmrs.User" />
+
+        <property name="dateChanged" column="date_changed" type="java.util.Date" length="19" />
+
+        <property name="uuid" type="string" length="38" unique="true" not-null="true" />
+
+    </class>
+
+</hibernate-mapping>

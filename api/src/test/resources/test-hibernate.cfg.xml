@@ -8,5 +8,6 @@
     <session-factory>
         <mapping resource="PatientGrid.hbm.xml" />
         <mapping resource="PatientGridColumn.hbm.xml" />
+        <mapping resource="PatientGridColumnFilter.hbm.xml" />
     </session-factory>
 </hibernate-configuration>
