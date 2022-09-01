@@ -208,4 +208,55 @@
                                  referencedColumnNames="encounter_type_id" />
     </changeSet>
 
+    <changeSet id="wluyima" author="202209011620">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="patientgrid_patient_grid_column_filter" />
+            </not>
+        </preConditions>
+        <comment>Add patientgrid_patient_grid_column_filter table</comment>
+        <createTable tableName="patientgrid_patient_grid_column_filter">
+            <column name="patient_grid_column_filter_id" type="int" autoIncrement="true" >
+                <constraints primaryKey="true" nullable="false" unique="true" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="patient_grid_column_id" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="operator" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="operand" type="varchar(255)" />
+            <column name="creator" type="int" />
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="parent_patient_grid_column"
+                                 baseTableName="patientgrid_patient_grid_column_filter"
+                                 baseColumnNames="patient_grid_column_id"
+                                 referencedTableName="patientgrid_patient_grid_column"
+                                 referencedColumnNames="patient_grid_column_id" />
+
+        <addForeignKeyConstraint constraintName="patient_grid_column_filter_creator"
+                                 baseTableName="patientgrid_patient_grid_column_filter"
+                                 baseColumnNames="creator"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id" />
+
+        <addForeignKeyConstraint constraintName="patient_grid_column_filter_changed_by"
+                                 baseTableName="patientgrid_patient_grid_column_filter"
+                                 baseColumnNames="changed_by"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id" />
+    </changeSet>
+
 </databaseChangeLog>
