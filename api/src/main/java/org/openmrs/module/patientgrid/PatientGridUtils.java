@@ -21,6 +21,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
+import org.openmrs.module.reporting.data.converter.ObjectFormatter;
+import org.openmrs.module.reporting.data.converter.PropertyConverter;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
@@ -36,34 +38,42 @@ public class PatientGridUtils {
 	
 	private static final Logger log = LoggerFactory.getLogger(PatientGridUtils.class);
 	
+	private static final PatientGridObsConverter OBS_CONVERTER = new PatientGridObsConverter();
+	
+	private static final PropertyConverter COUNTRY_CONVERTER = new PropertyConverter(String.class, "country");
+	
+	private static final PatientLocationDataDefinition LOCATION_DATA_DEF = new PatientLocationDataDefinition();
+	
+	private static final PreferredNameDataDefinition NAME_DATA_DEF = new PreferredNameDataDefinition();
+	
+	private static final GenderDataDefinition GENDER_DATA_DEF = new GenderDataDefinition();
+	
+	private static final PersonUuidDataDefinition UUID_DATA_DEF = new PersonUuidDataDefinition();
+	
+	private static final ObjectFormatter OBJECT_CONVERTER = new ObjectFormatter();
+	
 	public static ReportDefinition convertToReportDefinition(PatientGrid patientGrid) {
 		ReportDefinition reportDef = new ReportDefinition();
 		reportDef.setName(patientGrid.getName());
 		reportDef.setDescription(patientGrid.getDescription());
 		PatientDataSetDefinition patientData = new PatientDataSetDefinition();
-		patientData.addColumn(PatientGridConstants.COLUMN_UUID, new PersonUuidDataDefinition(), (String) null);
+		patientData.addColumn(PatientGridConstants.COLUMN_UUID, UUID_DATA_DEF, (String) null);
 		
 		for (PatientGridColumn columnDef : patientGrid.getColumns()) {
 			switch (columnDef.getDatatype()) {
 				case NAME:
-					patientData.addColumn(columnDef.getName(), new PreferredNameDataDefinition(), (String) null);
+					patientData.addColumn(columnDef.getName(), NAME_DATA_DEF, (String) null, OBJECT_CONVERTER);
 					break;
 				case GENDER:
-					patientData.addColumn(columnDef.getName(), new GenderDataDefinition(), (String) null);
+					patientData.addColumn(columnDef.getName(), GENDER_DATA_DEF, (String) null);
 					break;
 				case ENC_AGE:
 					AgeAtEncounterPatientGridColumn ageColumn = (AgeAtEncounterPatientGridColumn) columnDef;
 					PatientAgeAtEncounterDataDefinition def = new PatientAgeAtEncounterDataDefinition();
 					def.setEncounterType(ageColumn.getEncounterType());
 					if (ageColumn.getConvertToAgeRange()) {
-						String ageRange = Context.getAdministrationService().getGlobalProperty(GP_AGE_RANGES);
-						if (StringUtils.isBlank(ageRange)) {
-							throw new APIException("No ranges defined, please set the value for the global property named: "
-							        + GP_AGE_RANGES);
-						}
-						
 						AgeRangeConverter converter = new AgeRangeConverter();
-						parseAgeRangeString(ageRange).forEach(r -> converter.addAgeRange(r));
+						getAgeRanges().forEach(r -> converter.addAgeRange(r));
 						AgeAtEncounterPatientGridColumn ageRangeColumn = (AgeAtEncounterPatientGridColumn) columnDef;
 						PatientAgeAtEncounterDataDefinition ageRangeDef = new PatientAgeAtEncounterDataDefinition();
 						ageRangeDef.setEncounterType(ageRangeColumn.getEncounterType());
@@ -78,13 +88,13 @@ public class PatientGridUtils {
 					ObsForMostRecentEncounterDataDefinition obsDataDef = new ObsForMostRecentEncounterDataDefinition();
 					obsDataDef.setConcept(obsColumn.getConcept());
 					obsDataDef.setEncounterType(obsColumn.getEncounterType());
-					patientData.addColumn(columnDef.getName(), obsDataDef, (String) null);
+					patientData.addColumn(columnDef.getName(), obsDataDef, (String) null, OBS_CONVERTER);
 					break;
 				case DATAFILTER_LOCATION:
-					patientData.addColumn(columnDef.getName(), new PatientLocationDataDefinition(), (String) null);
+					patientData.addColumn(columnDef.getName(), LOCATION_DATA_DEF, (String) null);
 					break;
 				case DATAFILTER_COUNTRY:
-					patientData.addColumn(columnDef.getName(), new PatientCountryDataDefinition(), (String) null);
+					patientData.addColumn(columnDef.getName(), LOCATION_DATA_DEF, (String) null, COUNTRY_CONVERTER);
 					break;
 				default:
 					throw new APIException("Don't know how to handle column type: " + columnDef.getDatatype());
@@ -191,6 +201,16 @@ public class PatientGridUtils {
 		}
 		
 		return ageRanges;
+	}
+	
+	private static List<AgeRange> getAgeRanges() {
+		String ageRange = Context.getAdministrationService().getGlobalProperty(GP_AGE_RANGES);
+		if (StringUtils.isBlank(ageRange)) {
+			throw new APIException(
+			        "No ranges defined, please set the value for the global property named: " + GP_AGE_RANGES);
+		}
+		
+		return parseAgeRangeString(ageRange);
 	}
 	
 }

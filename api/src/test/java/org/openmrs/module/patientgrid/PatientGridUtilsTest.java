@@ -27,6 +27,7 @@ import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.JoinDataDefinition;
 import org.openmrs.module.reporting.data.MappedData;
 import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
+import org.openmrs.module.reporting.data.converter.PropertyConverter;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
@@ -91,9 +92,11 @@ public class PatientGridUtilsTest {
 		Parameterizable locationDef = ((Mapped) patientData.getColumnDefinition(structure).getDataDefinition())
 		        .getParameterizable();
 		assertEquals(PatientLocationDataDefinition.class, locationDef.getClass());
-		Parameterizable countryDef = ((Mapped) patientData.getColumnDefinition(country).getDataDefinition())
-		        .getParameterizable();
-		assertEquals(PatientCountryDataDefinition.class, countryDef.getClass());
+		MappedData countryDef = patientData.getColumnDefinition(country).getDataDefinition();
+		assertEquals(PatientLocationDataDefinition.class, countryDef.getParameterizable().getClass());
+		assertEquals(1, countryDef.getConverters().size());
+		PropertyConverter converter = (PropertyConverter) countryDef.getConverters().get(0);
+		assertEquals("country", converter.getPropertyName());
 		MappedData ageCategoryDef = patientData.getColumnDefinition(ageCategory).getDataDefinition();
 		assertEquals(PatientAgeAtEncounterDataDefinition.class, ageCategoryDef.getParameterizable().getClass());
 		assertEquals(1, ageCategoryDef.getConverters().size());
