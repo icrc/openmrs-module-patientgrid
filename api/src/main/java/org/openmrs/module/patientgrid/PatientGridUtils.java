@@ -5,6 +5,7 @@ import static org.openmrs.module.reporting.common.Age.Unit.YEARS;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,7 +19,11 @@ import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.AgeRange;
+import org.openmrs.module.reporting.common.BooleanOperator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
@@ -30,6 +35,7 @@ import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefi
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,7 +123,7 @@ public class PatientGridUtils {
 	 * @return a map of patient ids to encounters
 	 */
 	public static Map<Integer, Object> getMostRecentEncounters(EncounterType type, Cohort cohort, boolean mostRecentOnly)
-	        throws EvaluationException {
+	    throws EvaluationException {
 		
 		if (cohort.size() > 1) {
 			log.info("Fetching most recent encounters for encounter type: " + type);
@@ -201,6 +207,69 @@ public class PatientGridUtils {
 		}
 		
 		return ageRanges;
+	}
+	
+	/**
+	 * Utility method that evaluates the column filters on the specified {@link PatientGrid} and returns
+	 * the evaluated cohort
+	 * 
+	 * @param patientGrid the grid with the column filters to evaluate
+	 * @return the evaluate cohort
+	 * @throws EvaluationException
+	 */
+	protected static Cohort filterPatients(PatientGrid patientGrid) throws EvaluationException {
+		Map<String, CohortDefinition> columnCohortDefMap = new HashMap(patientGrid.getColumns().size());
+		for (PatientGridColumn column : patientGrid.getColumns()) {
+			switch (column.getDatatype()) {
+				case NAME:
+					//TODO
+					break;
+				case GENDER:
+					
+					break;
+				case ENC_AGE:
+					//TODO
+					break;
+				case OBS:
+					//TODO
+					break;
+				case DATAFILTER_LOCATION:
+					//TODO
+					break;
+				case DATAFILTER_COUNTRY:
+					//TODO
+					break;
+				default:
+					throw new APIException("Don't know how to filter data for column type: " + column.getDatatype());
+			}
+		}
+		
+		if (columnCohortDefMap.isEmpty()) {
+			return null;
+		}
+		
+		CohortDefinition rootCohortDef = createCohortDef(columnCohortDefMap, BooleanOperator.AND);
+		
+		return Context.getService(CohortDefinitionService.class).evaluate(rootCohortDef, null);
+	}
+	
+	private static CohortDefinition createCohortDef(Map<String, CohortDefinition> cohortDefs, BooleanOperator operator) {
+		//If there is one filter, just return its cohort definition otherwise create a composition cohort 
+		//definition using OR operator
+		if (cohortDefs.size() == 1) {
+			return cohortDefs.entrySet().iterator().next().getValue();
+		}
+		
+		CompositionCohortDefinition columnCohortDef = new CompositionCohortDefinition();
+		List<String> disjunctions = new ArrayList(cohortDefs.size());
+		for (Map.Entry<String, CohortDefinition> entry : cohortDefs.entrySet()) {
+			columnCohortDef.addSearch(entry.getKey(), Mapped.noMappings(entry.getValue()));
+			disjunctions.add(entry.getKey());
+		}
+		
+		columnCohortDef.setCompositionString(StringUtils.join(disjunctions, operator.name()));
+		
+		return columnCohortDef;
 	}
 	
 	private static List<AgeRange> getAgeRanges() {
