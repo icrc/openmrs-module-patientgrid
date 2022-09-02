@@ -15,6 +15,9 @@ import javax.persistence.Table;
 import org.openmrs.BaseChangeableOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 //@Entity
 @Table(name = "patientgrid_patient_grid_column")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -33,8 +36,7 @@ public class PatientGridColumn extends BaseChangeableOpenmrsMetadata {
 	@Column(name = "datatype", nullable = false, length = 50)
 	private ColumnDatatype datatype;
 	
-	//@Transient
-	//private List<FilterDef> filters;
+	private Set<PatientGridColumnFilter> filters;
 	
 	public PatientGridColumn() {
 	}
@@ -127,17 +129,23 @@ public class PatientGridColumn extends BaseChangeableOpenmrsMetadata {
 	 * Gets the filters
 	 *
 	 * @return the filters
-	 * @Transient public List<FilterDef> getFilters() { if (filters == null) { filters = new
-	 *            ArrayList(); } return filters; }
 	 */
+	public Set<PatientGridColumnFilter> getFilters() {
+		if (filters == null) {
+			filters = new LinkedHashSet();
+		}
+		
+		return filters;
+	}
 	
 	/**
 	 * Adds a filter to the list of filter definitions for this column
 	 *
 	 * @param filter the filter to add
 	 */
-	public void addFilter(org.openmrs.module.patientgrid.FilterDef filter) {
-		//getFilters().add(filter);
+	public void addFilter(PatientGridColumnFilter filter) {
+		filter.setPatientGridColumn(this);
+		getFilters().add(filter);
 	}
 	
 }
