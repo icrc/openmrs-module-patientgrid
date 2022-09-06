@@ -1,5 +1,7 @@
 package org.openmrs.module.patientgrid;
 
+import static org.openmrs.module.reporting.common.BooleanOperator.OR;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +37,7 @@ public class PatientGridFilterUtils {
 	 * @throws EvaluationException
 	 */
 	protected static Cohort filterPatients(PatientGrid patientGrid) throws EvaluationException {
-		Map<String, CohortDefinition> columnCohortDefMap = new HashMap(patientGrid.getColumns().size());
+		Map<String, CohortDefinition> columnAndCohortDefMap = new HashMap(patientGrid.getColumns().size());
 		for (PatientGridColumn column : patientGrid.getColumns()) {
 			switch (column.getDatatype()) {
 				case NAME:
@@ -43,22 +45,22 @@ public class PatientGridFilterUtils {
 					break;
 				case GENDER:
 					if (!column.getFilters().isEmpty()) {
-						Map<String, CohortDefinition> cohortDefs = new HashMap(column.getFilters().size());
+						Map<String, CohortDefinition> filterAndCohortDefs = new HashMap(column.getFilters().size());
 						for (PatientGridColumnFilter filter : column.getFilters()) {
 							GenderCohortDefinition cohortDef = new GenderCohortDefinition();
-							if ("M".equals(filter.getOperand())) {
+							if ("M".equalsIgnoreCase(filter.getOperand().toString())) {
 								cohortDef.setMaleIncluded(true);
-							} else if ("F".equals(filter.getOperand())) {
+							} else if ("F".equalsIgnoreCase(filter.getOperand().toString())) {
 								cohortDef.setFemaleIncluded(true);
 							} else {
 								//TODO Support other values e.g O for other
 								throw new APIException("Gender filter only supports M or F values as operands");
 							}
 							
-							cohortDefs.put(filter.getName(), cohortDef);
+							filterAndCohortDefs.put(filter.getName(), cohortDef);
 						}
 						
-						columnCohortDefMap.put(column.getName(), createCohortDef(cohortDefs, BooleanOperator.OR));
+						columnAndCohortDefMap.put(column.getName(), createCohortDef(filterAndCohortDefs, OR));
 					}
 					break;
 				case ENC_AGE:
@@ -78,32 +80,34 @@ public class PatientGridFilterUtils {
 			}
 		}
 		
-		if (columnCohortDefMap.isEmpty()) {
+		if (columnAndCohortDefMap.isEmpty()) {
 			return null;
 		}
 		
-		CohortDefinition rootCohortDef = createCohortDef(columnCohortDefMap, BooleanOperator.AND);
+		CohortDefinition rootCohortDef = createCohortDef(columnAndCohortDefMap, BooleanOperator.AND);
 		
 		return Context.getService(CohortDefinitionService.class).evaluate(rootCohortDef, null);
 	}
 	
-	private static CohortDefinition createCohortDef(Map<String, CohortDefinition> cohortDefs, BooleanOperator operator) {
+	private static CohortDefinition createCohortDef(Map<String, CohortDefinition> nameAndCohortDefs,
+	                                                BooleanOperator operator) {
+		
 		//If there is one filter, just return its cohort definition otherwise create a composition cohort 
 		//definition using OR operator
-		if (cohortDefs.size() == 1) {
-			return cohortDefs.entrySet().iterator().next().getValue();
+		if (nameAndCohortDefs.size() == 1) {
+			return nameAndCohortDefs.entrySet().iterator().next().getValue();
 		}
 		
-		CompositionCohortDefinition columnCohortDef = new CompositionCohortDefinition();
-		List<String> disjunctions = new ArrayList(cohortDefs.size());
-		for (Map.Entry<String, CohortDefinition> entry : cohortDefs.entrySet()) {
-			columnCohortDef.addSearch(entry.getKey(), Mapped.noMappings(entry.getValue()));
+		CompositionCohortDefinition cohortDef = new CompositionCohortDefinition();
+		List<String> disjunctions = new ArrayList(nameAndCohortDefs.size());
+		for (Map.Entry<String, CohortDefinition> entry : nameAndCohortDefs.entrySet()) {
+			cohortDef.addSearch(entry.getKey(), Mapped.noMappings(entry.getValue()));
 			disjunctions.add(entry.getKey());
 		}
 		
-		columnCohortDef.setCompositionString(StringUtils.join(disjunctions, operator.name()));
+		cohortDef.setCompositionString(StringUtils.join(disjunctions, " " + operator + " "));
 		
-		return columnCohortDef;
+		return cohortDef;
 	}
 	
 }

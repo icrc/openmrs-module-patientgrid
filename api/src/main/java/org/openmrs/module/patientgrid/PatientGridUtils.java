@@ -117,7 +117,7 @@ public class PatientGridUtils {
 	 * @return a map of patient ids to encounters
 	 */
 	public static Map<Integer, Object> getMostRecentEncounters(EncounterType type, Cohort cohort, boolean mostRecentOnly)
-	    throws EvaluationException {
+	        throws EvaluationException {
 		
 		if (cohort.size() > 1) {
 			log.info("Fetching most recent encounters for encounter type: " + type);
