@@ -14,7 +14,7 @@
         Provides an API for managing and evaluating a grid of data for a cohort of patients
     </description>
 
-    <url>https://github.com/icrc/openmrs-module-patient-grid</url>
+    <url>https://github.com/icrc/openmrs-module-patientgrid</url>
 
     <developers>
         <developer>
@@ -28,9 +28,9 @@
     </organization>
 
     <scm>
-        <connection>scm:git:git@github.com:icrc/openmrs-module-patient-grid.git</connection>
-        <developerConnection>scm:git:git@github.com:icrc/openmrs-module-patient-grid.git</developerConnection>
-        <url>https://github.com/icrc/openmrs-module-patient-grid.git</url>
+        <connection>scm:git:git@github.com:icrc/openmrs-module-patientgrid.git</connection>
+        <developerConnection>scm:git:git@github.com:icrc/openmrs-module-patientgrid.git</developerConnection>
+        <url>https://github.com/icrc/openmrs-module-patientgrid.git</url>
         <tag>HEAD</tag>
     </scm>
 
