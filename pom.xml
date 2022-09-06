@@ -170,6 +170,7 @@
                             --add-opens java.base/jdk.internal.reflect=ALL-UNNAMED
                             --add-opens java.base/jdk.internal.module=ALL-UNNAMED
                             --add-opens java.base/jdk.internal.platform=ALL-UNNAMED
+                            --add-opens java.base/jdk.internal.platform.cgroupv1=ALL-UNNAMED
                             --add-opens java.base/jdk.internal.util.jar=ALL-UNNAMED
                             --add-opens java.base/jdk.internal.math=ALL-UNNAMED
                             --add-opens java.base/jdk.management.jfr=ALL-UNNAMED
