@@ -6,15 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.BooleanOperator;
-import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,18 +78,6 @@ public class PatientGridFilterUtils {
 		return createCohortDef(columnAndCohortDefMap, BooleanOperator.AND);
 	}
 	
-	/**
-	 * Utility method that evaluates the column filters on the specified {@link PatientGrid} and returns
-	 * the evaluated cohort
-	 *
-	 * @param patientGrid the grid with the column filters to evaluate
-	 * @return the evaluate cohort
-	 * @throws EvaluationException
-	 */
-	protected static Cohort filterPatients(PatientGrid patientGrid) throws EvaluationException {
-		return Context.getService(CohortDefinitionService.class).evaluate(generateCohortDefinition(patientGrid), null);
-	}
-	
 	private static CohortDefinition createCohortDef(Map<String, CohortDefinition> nameAndCohortDefs,
 	                                                BooleanOperator operator) {
 		
@@ -110,7 +94,12 @@ public class PatientGridFilterUtils {
 			disjunctions.add(entry.getKey());
 		}
 		
-		cohortDef.setCompositionString(StringUtils.join(disjunctions, " " + operator + " "));
+		final String compositionString = StringUtils.join(disjunctions, " " + operator + " ");
+		if (log.isDebugEnabled()) {
+			log.debug("CohortDefinition compositionString after all filters -> " + compositionString);
+		}
+		
+		cohortDef.setCompositionString(compositionString);
 		
 		return cohortDef;
 	}
