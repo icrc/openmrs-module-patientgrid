@@ -1,108 +1,74 @@
 package org.openmrs.module.patientgrid;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
-import org.openmrs.api.PatientService;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
-import org.openmrs.module.patientgrid.api.PatientGridService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.common.BooleanOperator;
 
-public class PatientGridFilterUtilsTest extends BaseModuleContextSensitiveTest {
-	
-	@Autowired
-	private PatientGridService service;
-	
-	@Autowired
-	@Qualifier("patientService")
-	private PatientService patientService;
+public class PatientGridFilterUtilsTest {
 	
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 	
-	@Before
-	public void setup() {
-		executeDataSet("patientGrids.xml");
-		executeDataSet("patientGridsTestData.xml");
-		executeDataSet("entityBasisMaps.xml");
-	}
-	
 	@Test
-	public void filterPatients_shouldFilterByGenderAndReturnOnlyTheMalePatients() throws Exception {
+	public void generateCohortDefinition_shouldAddAGenderCohortDefinitionForMalePatients() {
 		final String gender = "M";
-		final int expectedPatientId2 = 2;
-		final int expectedPatientId6 = 6;
-		assertEquals(gender, patientService.getPatient(expectedPatientId2).getGender());
-		assertEquals(gender, patientService.getPatient(expectedPatientId6).getGender());
 		PatientGridColumn column = new PatientGridColumn("gender", ColumnDatatype.GENDER);
 		column.addFilter(new PatientGridColumnFilter("male", gender));
 		PatientGrid grid = new PatientGrid();
 		grid.addColumn(column);
 		
-		Cohort cohort = PatientGridFilterUtils.filterPatients(grid);
+		GenderCohortDefinition def = (GenderCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid);
 		
-		assertEquals(2, cohort.activeMembershipSize());
-		assertTrue(cohort.contains(expectedPatientId2));
-		assertTrue(cohort.contains(expectedPatientId6));
+		assertTrue(def.isMaleIncluded());
+		assertFalse(def.isFemaleIncluded());
+		assertFalse(def.isUnknownGenderIncluded());
 	}
 	
 	@Test
-	public void filterPatients_shouldFilterByGenderAndReturnOnlyTheFemalePatients() throws Exception {
+	public void generateCohortDefinition_shouldAddAGenderCohortDefinitionForFemalePatients() {
 		final String gender = "F";
-		final int expectedPatientId7 = 7;
-		final int expectedPatientId8 = 8;
-		assertEquals(gender, patientService.getPatient(expectedPatientId7).getGender());
-		assertEquals(gender, patientService.getPatient(expectedPatientId8).getGender());
 		PatientGridColumn column = new PatientGridColumn("gender", ColumnDatatype.GENDER);
 		column.addFilter(new PatientGridColumnFilter("female", gender));
 		PatientGrid grid = new PatientGrid();
 		grid.addColumn(column);
 		
-		Cohort cohort = PatientGridFilterUtils.filterPatients(grid);
+		GenderCohortDefinition def = (GenderCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid);
 		
-		assertEquals(2, cohort.activeMembershipSize());
-		assertTrue(cohort.contains(expectedPatientId7));
-		assertTrue(cohort.contains(expectedPatientId8));
+		assertTrue(def.isFemaleIncluded());
+		assertFalse(def.isMaleIncluded());
+		assertFalse(def.isUnknownGenderIncluded());
 	}
 	
 	@Test
-	public void filterPatients_shouldFilterByGenderAndReturnBothMaleAndFemalePatients() throws Exception {
+	public void generateCohortDefinition_shouldAddAGenderCohortDefinitionForBothMaleAndFemalePatients() {
 		final String genderMale = "M";
 		final String genderFemale = "F";
-		final int expectedPatientId2 = 2;
-		final int expectedPatientId6 = 6;
-		final int expectedPatientId7 = 7;
-		final int expectedPatientId8 = 8;
-		assertEquals(genderMale, patientService.getPatient(expectedPatientId2).getGender());
-		assertEquals(genderMale, patientService.getPatient(expectedPatientId6).getGender());
-		assertEquals(genderFemale, patientService.getPatient(expectedPatientId7).getGender());
-		assertEquals(genderFemale, patientService.getPatient(expectedPatientId8).getGender());
 		PatientGridColumn column = new PatientGridColumn("gender", ColumnDatatype.GENDER);
 		column.addFilter(new PatientGridColumnFilter("male", genderMale));
 		column.addFilter(new PatientGridColumnFilter("female", genderFemale));
 		PatientGrid grid = new PatientGrid();
 		grid.addColumn(column);
 		
-		Cohort cohort = PatientGridFilterUtils.filterPatients(grid);
+		GenderCohortDefinition def = (GenderCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid);
 		
-		assertEquals(4, cohort.activeMembershipSize());
-		assertTrue(cohort.contains(expectedPatientId2));
-		assertTrue(cohort.contains(expectedPatientId6));
-		assertTrue(cohort.contains(expectedPatientId7));
-		assertTrue(cohort.contains(expectedPatientId8));
+		assertTrue(def.isFemaleIncluded());
+		assertTrue(def.isMaleIncluded());
+		assertFalse(def.isUnknownGenderIncluded());
 	}
 	
 	@Test
-	public void filterPatients_shouldFilterByGenderAndFailForNoneSupportGenderValues() throws Exception {
+	public void generateCohortDefinition_shouldFilterByGenderAndFailForNoneSupportGenderValues() {
 		PatientGridColumn column = new PatientGridColumn("gender", ColumnDatatype.GENDER);
 		column.addFilter(new PatientGridColumnFilter("Other", "O"));
 		PatientGrid grid = new PatientGrid();
@@ -110,7 +76,36 @@ public class PatientGridFilterUtilsTest extends BaseModuleContextSensitiveTest {
 		expectedException.expect(APIException.class);
 		expectedException.expectMessage(Matchers.equalTo("Gender filter only supports M or F values as operands"));
 		
-		PatientGridFilterUtils.filterPatients(grid);
+		PatientGridFilterUtils.generateCohortDefinition(grid);
+	}
+	
+	@Test
+	public void generateCohortDefinition_shouldReturnNullIfTheGridHasNoFilters() {
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(new PatientGridColumn("gender", ColumnDatatype.GENDER));
+		Assert.assertNull(PatientGridFilterUtils.generateCohortDefinition(grid));
+	}
+	
+	@Test
+	public void generateCohortDefinition_shouldGenerateACompositionCohortDefinitionForMultipleColumnFilters() {
+		final String gender = "M";
+		final String genderAtBirth = "genderAtBirth";
+		final String identifiesAs = "identifiesAs";
+		PatientGridColumn column1 = new PatientGridColumn(genderAtBirth, ColumnDatatype.GENDER);
+		column1.addFilter(new PatientGridColumnFilter("male", gender));
+		PatientGridColumn column2 = new PatientGridColumn(identifiesAs, ColumnDatatype.GENDER);
+		column2.addFilter(new PatientGridColumnFilter("male", gender));
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(column1);
+		grid.addColumn(column2);
+		
+		CompositionCohortDefinition def = (CompositionCohortDefinition) PatientGridFilterUtils
+		        .generateCohortDefinition(grid);
+		
+		assertEquals(2, def.getSearches().size());
+		assertEquals(genderAtBirth + " " + BooleanOperator.AND + " " + identifiesAs, def.getCompositionString());
+		assertEquals(GenderCohortDefinition.class, def.getSearches().get(genderAtBirth).getParameterizable().getClass());
+		assertEquals(GenderCohortDefinition.class, def.getSearches().get(identifiesAs).getParameterizable().getClass());
 	}
 	
 }

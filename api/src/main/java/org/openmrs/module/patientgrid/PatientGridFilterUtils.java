@@ -1,7 +1,5 @@
 package org.openmrs.module.patientgrid;
 
-import static org.openmrs.module.reporting.common.BooleanOperator.OR;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,14 +27,13 @@ public class PatientGridFilterUtils {
 	private static final Logger log = LoggerFactory.getLogger(PatientGridFilterUtils.class);
 	
 	/**
-	 * Utility method that evaluates the column filters on the specified {@link PatientGrid} and returns
-	 * the evaluated cohort
+	 * Utility method that generates a {@link CohortDefinition} based on the column filters of the
+	 * specified {@link PatientGrid}
 	 *
-	 * @param patientGrid the grid with the column filters to evaluate
-	 * @return the evaluate cohort
-	 * @throws EvaluationException
+	 * @param patientGrid the {@link PatientGrid} object
+	 * @return the {@link CohortDefinition} object
 	 */
-	protected static Cohort filterPatients(PatientGrid patientGrid) throws EvaluationException {
+	protected static CohortDefinition generateCohortDefinition(PatientGrid patientGrid) {
 		Map<String, CohortDefinition> columnAndCohortDefMap = new HashMap(patientGrid.getColumns().size());
 		for (PatientGridColumn column : patientGrid.getColumns()) {
 			switch (column.getDatatype()) {
@@ -45,9 +42,8 @@ public class PatientGridFilterUtils {
 					break;
 				case GENDER:
 					if (!column.getFilters().isEmpty()) {
-						Map<String, CohortDefinition> filterAndCohortDefs = new HashMap(column.getFilters().size());
+						GenderCohortDefinition cohortDef = new GenderCohortDefinition();
 						for (PatientGridColumnFilter filter : column.getFilters()) {
-							GenderCohortDefinition cohortDef = new GenderCohortDefinition();
 							if ("M".equalsIgnoreCase(filter.getOperand().toString())) {
 								cohortDef.setMaleIncluded(true);
 							} else if ("F".equalsIgnoreCase(filter.getOperand().toString())) {
@@ -57,10 +53,9 @@ public class PatientGridFilterUtils {
 								throw new APIException("Gender filter only supports M or F values as operands");
 							}
 							
-							filterAndCohortDefs.put(filter.getName(), cohortDef);
 						}
 						
-						columnAndCohortDefMap.put(column.getName(), createCohortDef(filterAndCohortDefs, OR));
+						columnAndCohortDefMap.put(column.getName(), cohortDef);
 					}
 					break;
 				case ENC_AGE:
@@ -84,9 +79,19 @@ public class PatientGridFilterUtils {
 			return null;
 		}
 		
-		CohortDefinition rootCohortDef = createCohortDef(columnAndCohortDefMap, BooleanOperator.AND);
-		
-		return Context.getService(CohortDefinitionService.class).evaluate(rootCohortDef, null);
+		return createCohortDef(columnAndCohortDefMap, BooleanOperator.AND);
+	}
+	
+	/**
+	 * Utility method that evaluates the column filters on the specified {@link PatientGrid} and returns
+	 * the evaluated cohort
+	 *
+	 * @param patientGrid the grid with the column filters to evaluate
+	 * @return the evaluate cohort
+	 * @throws EvaluationException
+	 */
+	protected static Cohort filterPatients(PatientGrid patientGrid) throws EvaluationException {
+		return Context.getService(CohortDefinitionService.class).evaluate(generateCohortDefinition(patientGrid), null);
 	}
 	
 	private static CohortDefinition createCohortDef(Map<String, CohortDefinition> nameAndCohortDefs,
