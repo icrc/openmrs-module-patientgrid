@@ -82,7 +82,7 @@
                 <version>${calculationVersion}</version>
                 <scope>provided</scope>
             </dependency>
-            
+
             <!-- Test dependencies -->
             <dependency>
                 <groupId>org.openmrs.api</groupId>
@@ -100,6 +100,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
 
     <build>
         <pluginManagement>
@@ -142,41 +143,6 @@
                     <configuration>
                         <tagNameFormat>@{project.version}</tagNameFormat>
                         <arguments>-Dmaven.javadoc.skip=true</arguments>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.22.2</version>
-                    <executions>
-                        <execution>
-                            <id>default-test</id>
-                            <phase>test</phase>
-                            <goals>
-                                <goal>test</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <!--                        To be compatible with java 11-->
-                        <argLine>
-                            --illegal-access=permit
-                            --add-opens java.base/java.lang=ALL-UNNAMED
-                            --add-opens java.base/java.lang.module=ALL-UNNAMED
-                            --add-opens java.base/java.io=ALL-UNNAMED
-                            --add-opens java.base/java.util=ALL-UNNAMED
-                            --add-opens java.base/java.base=ALL-UNNAMED
-                            --add-opens java.base/jdk.internal.ref=ALL-UNNAMED
-                            --add-opens java.base/jdk.internal.loader=ALL-UNNAMED
-                            --add-opens java.base/jdk.internal.reflect=ALL-UNNAMED
-                            --add-opens java.base/jdk.internal.module=ALL-UNNAMED
-                            --add-opens java.base/jdk.internal.platform=ALL-UNNAMED
-                            --add-opens java.base/jdk.internal.platform.cgroupv1=ALL-UNNAMED
-                            --add-opens java.base/jdk.internal.util.jar=ALL-UNNAMED
-                            --add-opens java.base/jdk.internal.math=ALL-UNNAMED
-                            --add-opens java.base/jdk.management.jfr=ALL-UNNAMED
-                            --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED
-                            --add-opens jdk.management.jfr/jdk.management.jfr=ALL-UNNAMED
-                        </argLine>
                     </configuration>
                 </plugin>
             </plugins>
@@ -227,5 +193,54 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+    <profiles>
+        <profile>
+            <id>jdk1.9</id>
+            <activation>
+                <jdk>[1.9,</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <version>2.22.2</version>
+                            <executions>
+                                <execution>
+                                    <id>default-test</id>
+                                    <phase>test</phase>
+                                    <goals>
+                                        <goal>test</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                            <configuration>
+                                <!--                        To be compatible with java 11-->
+                                <argLine>
+                                    --illegal-access=permit
+                                    --add-opens java.base/java.lang=ALL-UNNAMED
+                                    --add-opens java.base/java.lang.module=ALL-UNNAMED
+                                    --add-opens java.base/java.io=ALL-UNNAMED
+                                    --add-opens java.base/java.util=ALL-UNNAMED
+                                    --add-opens java.base/java.base=ALL-UNNAMED
+                                    --add-opens java.base/jdk.internal.ref=ALL-UNNAMED
+                                    --add-opens java.base/jdk.internal.loader=ALL-UNNAMED
+                                    --add-opens java.base/jdk.internal.reflect=ALL-UNNAMED
+                                    --add-opens java.base/jdk.internal.module=ALL-UNNAMED
+                                    --add-opens java.base/jdk.internal.platform=ALL-UNNAMED
+                                    --add-opens java.base/jdk.internal.platform.cgroupv1=ALL-UNNAMED
+                                    --add-opens java.base/jdk.internal.util.jar=ALL-UNNAMED
+                                    --add-opens java.base/jdk.internal.math=ALL-UNNAMED
+                                    --add-opens java.base/jdk.management.jfr=ALL-UNNAMED
+                                    --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED
+                                    --add-opens jdk.management.jfr/jdk.management.jfr=ALL-UNNAMED
+                                </argLine>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
