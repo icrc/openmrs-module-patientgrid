@@ -7,10 +7,13 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.APIException;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.common.BooleanOperator;
+import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,42 +35,63 @@ public class PatientGridFilterUtils {
 	protected static CohortDefinition generateCohortDefinition(PatientGrid patientGrid) {
 		Map<String, CohortDefinition> columnAndCohortDefMap = new HashMap(patientGrid.getColumns().size());
 		for (PatientGridColumn column : patientGrid.getColumns()) {
-			switch (column.getDatatype()) {
-				case NAME:
-					//TODO
-					break;
-				case GENDER:
-					if (!column.getFilters().isEmpty()) {
-						GenderCohortDefinition cohortDef = new GenderCohortDefinition();
+			if (!column.getFilters().isEmpty()) {
+				CohortDefinition cohortDef;
+				switch (column.getDatatype()) {
+					case GENDER:
+						GenderCohortDefinition genderCohortDef = new GenderCohortDefinition();
 						for (PatientGridColumnFilter filter : column.getFilters()) {
 							if ("M".equalsIgnoreCase(filter.getOperand().toString())) {
-								cohortDef.setMaleIncluded(true);
+								genderCohortDef.setMaleIncluded(true);
 							} else if ("F".equalsIgnoreCase(filter.getOperand().toString())) {
-								cohortDef.setFemaleIncluded(true);
+								genderCohortDef.setFemaleIncluded(true);
 							} else {
 								//TODO Support other values e.g O for other
 								throw new APIException("Gender filter only supports M or F values as operands");
 							}
-							
 						}
 						
-						columnAndCohortDefMap.put(column.getName(), cohortDef);
-					}
-					break;
-				case ENC_AGE:
-					//TODO
-					break;
-				case OBS:
-					//TODO
-					break;
-				case DATAFILTER_LOCATION:
-					//TODO
-					break;
-				case DATAFILTER_COUNTRY:
-					//TODO
-					break;
-				default:
-					throw new APIException("Don't know how to filter data for column type: " + column.getDatatype());
+						cohortDef = genderCohortDef;
+						break;
+					case ENC_AGE:
+						cohortDef = null;
+						//TODO
+						break;
+					case OBS:
+						ObsPatientGridColumn obsColumn = (ObsPatientGridColumn) column;
+						BaseObsCohortDefinition obsCohortDef;
+						if (obsColumn.getConcept().getDatatype().isNumeric()) {
+							NumericObsCohortDefinition numericCohortDef = new NumericObsCohortDefinition();
+							for (PatientGridColumnFilter filter : column.getFilters()) {
+								numericCohortDef.setOperator1(RangeComparator.EQUAL);
+								numericCohortDef.setValue1((Double) filter.getOperand());
+							}
+							
+							obsCohortDef = numericCohortDef;
+						} else {
+							throw new APIException("Don't know how to filter obs data of datatype: "
+							        + obsColumn.getConcept().getDatatype());
+						}
+						
+						obsCohortDef.setQuestion(obsColumn.getConcept());
+						obsCohortDef.addEncounterType(obsColumn.getEncounterType());
+						obsCohortDef.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+						
+						cohortDef = obsCohortDef;
+						break;
+					case DATAFILTER_LOCATION:
+						cohortDef = null;
+						//TODO
+						break;
+					case DATAFILTER_COUNTRY:
+						cohortDef = null;
+						//TODO
+						break;
+					default:
+						throw new APIException("Don't know how to filter data for column type: " + column.getDatatype());
+				}
+				
+				columnAndCohortDefMap.put(column.getName(), cohortDef);
 			}
 		}
 		

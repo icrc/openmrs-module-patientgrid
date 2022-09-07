@@ -1,7 +1,9 @@
 package org.openmrs.module.patientgrid;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.hamcrest.Matchers;
@@ -68,7 +70,7 @@ public class PatientGridFilterUtilsTest {
 	}
 	
 	@Test
-	public void generateCohortDefinition_shouldFilterByGenderAndFailForNoneSupportGenderValues() {
+	public void generateCohortDefinition_shouldFailForNoneSupportedGenderValues() {
 		PatientGridColumn column = new PatientGridColumn("gender", ColumnDatatype.GENDER);
 		column.addFilter(new PatientGridColumnFilter("Other", "O"));
 		PatientGrid grid = new PatientGrid();
@@ -106,6 +108,26 @@ public class PatientGridFilterUtilsTest {
 		assertEquals(genderAtBirth + " " + BooleanOperator.AND + " " + identifiesAs, def.getCompositionString());
 		assertEquals(GenderCohortDefinition.class, def.getSearches().get(genderAtBirth).getParameterizable().getClass());
 		assertEquals(GenderCohortDefinition.class, def.getSearches().get(identifiesAs).getParameterizable().getClass());
+	}
+	
+	@Test
+	public void filterPatients_shouldFailIfAFilterIsFoundOnAColumnThatDoesNotSupportFiltering() {
+		PatientGridColumn column = new PatientGridColumn("name", PatientGridColumn.ColumnDatatype.NAME);
+		column.addFilter(new PatientGridColumnFilter("matches", "John"));
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(column);
+		expectedException.expect(APIException.class);
+		expectedException.expectMessage(equalTo("Don't know how to filter data for column type: " + column.getDatatype()));
+		
+		PatientGridFilterUtils.generateCohortDefinition(grid);
+	}
+	
+	@Test
+	public void filterPatients_shouldPassIfNoFiltersAreFoundOnAColumnThatDoesNotSupportFiltering() {
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(new PatientGridColumn("name", PatientGridColumn.ColumnDatatype.NAME));
+		
+		assertNull(PatientGridFilterUtils.generateCohortDefinition(grid));
 	}
 	
 }
