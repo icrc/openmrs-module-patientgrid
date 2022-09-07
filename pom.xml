@@ -44,7 +44,7 @@
         <openmrsPlatformVersion>2.3.0</openmrsPlatformVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <calculationVersion>1.2</calculationVersion>
-        <reportingVersion>0.10.6</reportingVersion>
+        <reportingVersion>1.14.0</reportingVersion>
         <datafilterVersion>1.2.0</datafilterVersion>
         <webservicesRestVersion>2.24.0</webservicesRestVersion>
         <serializationXstreamVersion>0.2.12</serializationXstreamVersion>
