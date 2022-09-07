@@ -1,4 +1,4 @@
-package org.openmrs.module.patientgrid;
+package org.openmrs.module.patientgrid.filter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +8,10 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.api.APIException;
+import org.openmrs.module.patientgrid.ObsPatientGridColumn;
+import org.openmrs.module.patientgrid.PatientGrid;
+import org.openmrs.module.patientgrid.PatientGridColumn;
+import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;

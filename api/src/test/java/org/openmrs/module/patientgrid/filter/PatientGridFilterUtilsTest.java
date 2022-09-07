@@ -1,4 +1,4 @@
-package org.openmrs.module.patientgrid;
+package org.openmrs.module.patientgrid.filter;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
@@ -12,7 +12,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openmrs.api.APIException;
+import org.openmrs.module.patientgrid.PatientGrid;
+import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
+import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.common.BooleanOperator;
