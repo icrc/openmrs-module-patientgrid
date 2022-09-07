@@ -14,6 +14,7 @@
 
     <obs obs_id="1001" person_id="2" concept_id="5089" encounter_id="2001" obs_datetime="2022-08-08 00:00:00" value_numeric="81" status="FINAL" creator="1" date_created="2022-08-08 00:00:00" voided="1" voided_by="1" date_voided="2022-08-08 00:03:00" void_reason="test reason" uuid="14fb7f47-b80a-4056-9285-bd798be13c63" />
     <obs obs_id="1002" person_id="2" concept_id="5089" encounter_id="2001" obs_datetime="2022-08-08 00:00:00" value_numeric="82" status="FINAL" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="24fb7f47-b80a-4056-9285-bd798be13c63" />
+    <!-- Different encounter type -->
     <obs obs_id="1003" person_id="2" concept_id="5089" encounter_id="2002" obs_datetime="2022-08-08 00:04:00" value_numeric="83" status="FINAL" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="34fb7f47-b80a-4056-9285-bd798be13c63" />
     <obs obs_id="1004" person_id="2" concept_id="5089" encounter_id="2004" obs_datetime="2022-08-08 00:02:00" value_numeric="84" status="FINAL" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="44fb7f47-b80a-4056-9285-bd798be13c63" />
     <obs obs_id="1005" person_id="2" concept_id="5089" encounter_id="2005" obs_datetime="2022-08-08 00:01:00" value_numeric="85" status="FINAL" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="54fb7f47-b80a-4056-9285-bd798be13c63" />

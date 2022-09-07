@@ -44,7 +44,6 @@ public class PatientAgeAtEncounterDataEvaluatorTest extends BaseModuleContextSen
 		def.setEncounterType(new EncounterType(101));
 		EvaluatedPatientData data = patientDataService.evaluate(def, context);
 		
-		System.out.println(data.getData());
 		assertEquals(4, data.getData().size());
 		assertEquals(47, ((Age) data.getData().get(patientId2)).getFullYears().intValue());
 		assertEquals(46, ((Age) data.getData().get(patientId6)).getFullYears().intValue());
