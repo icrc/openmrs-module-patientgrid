@@ -1,5 +1,8 @@
 package org.openmrs.module.patientgrid;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,9 +18,6 @@ import javax.persistence.Table;
 import org.openmrs.BaseChangeableOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 //@Entity
 @Table(name = "patientgrid_patient_grid_column")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -30,7 +30,7 @@ public class PatientGridColumn extends BaseChangeableOpenmrsMetadata {
 	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "patient_grid_id", nullable = false)
-	private org.openmrs.module.patientgrid.PatientGrid patientGrid;
+	private PatientGrid patientGrid;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "datatype", nullable = false, length = 50)
@@ -47,12 +47,7 @@ public class PatientGridColumn extends BaseChangeableOpenmrsMetadata {
 	}
 	
 	public enum ColumnDatatype {
-		NAME,
-		GENDER,
-		ENC_AGE,
-		OBS,
-		DATAFILTER_LOCATION,
-		DATAFILTER_COUNTRY
+		NAME, GENDER, ENC_AGE, OBS, DATAFILTER_LOCATION, DATAFILTER_COUNTRY
 	}
 	
 	/**
@@ -94,7 +89,7 @@ public class PatientGridColumn extends BaseChangeableOpenmrsMetadata {
 	 *
 	 * @return the patientGrid
 	 */
-	public org.openmrs.module.patientgrid.PatientGrid getPatientGrid() {
+	public PatientGrid getPatientGrid() {
 		return patientGrid;
 	}
 	
@@ -103,7 +98,7 @@ public class PatientGridColumn extends BaseChangeableOpenmrsMetadata {
 	 *
 	 * @param patientGrid the patientGrid to set
 	 */
-	public void setPatientGrid(org.openmrs.module.patientgrid.PatientGrid patientGrid) {
+	public void setPatientGrid(PatientGrid patientGrid) {
 		this.patientGrid = patientGrid;
 	}
 	

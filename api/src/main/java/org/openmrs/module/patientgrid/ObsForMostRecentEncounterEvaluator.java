@@ -24,7 +24,7 @@ public class ObsForMostRecentEncounterEvaluator implements PatientDataEvaluator 
 	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
-	        throws EvaluationException {
+	    throws EvaluationException {
 		
 		ObsForMostRecentEncounterDataDefinition def = (ObsForMostRecentEncounterDataDefinition) definition;
 		Map<EncounterType, Object> typeAndEncData = (Map) context.getFromCache(KEY_MOST_RECENT_ENCS);
@@ -35,6 +35,10 @@ public class ObsForMostRecentEncounterEvaluator implements PatientDataEvaluator 
 		
 		Map<Integer, Object> patientIdAndEnc = (Map) typeAndEncData.get(def.getEncounterType());
 		if (patientIdAndEnc == null) {
+			if (log.isDebugEnabled()) {
+				log.debug("Loading patient most recent patient encounters of type: " + def.getEncounterType());
+			}
+			
 			patientIdAndEnc = PatientGridUtils.getMostRecentEncounters(def.getEncounterType(), context.getBaseCohort(),
 			    true);
 			typeAndEncData.put(def.getEncounterType(), patientIdAndEnc);

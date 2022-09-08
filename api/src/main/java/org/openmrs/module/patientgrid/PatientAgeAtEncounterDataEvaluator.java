@@ -25,16 +25,16 @@ import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Handler(supports = org.openmrs.module.patientgrid.PatientAgeAtEncounterDataDefinition.class, order = 50)
+@Handler(supports = PatientAgeAtEncounterDataDefinition.class, order = 50)
 public class PatientAgeAtEncounterDataEvaluator implements PatientDataEvaluator {
 	
 	private static final Logger log = LoggerFactory.getLogger(PatientAgeAtEncounterDataEvaluator.class);
 	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
-	        throws EvaluationException {
+	    throws EvaluationException {
 		
-		org.openmrs.module.patientgrid.PatientAgeAtEncounterDataDefinition def = (org.openmrs.module.patientgrid.PatientAgeAtEncounterDataDefinition) definition;
+		PatientAgeAtEncounterDataDefinition def = (org.openmrs.module.patientgrid.PatientAgeAtEncounterDataDefinition) definition;
 		Map<EncounterType, Object> typeAndEncData = (Map) context.getFromCache(KEY_MOST_RECENT_ENCS);
 		if (typeAndEncData == null) {
 			typeAndEncData = new HashMap();
@@ -43,6 +43,10 @@ public class PatientAgeAtEncounterDataEvaluator implements PatientDataEvaluator 
 		
 		Map<Integer, Object> patientIdAndEnc = (Map) typeAndEncData.get(def.getEncounterType());
 		if (patientIdAndEnc == null) {
+			if (log.isDebugEnabled()) {
+				log.debug("Loading patient most recent patient encounters of type: " + def.getEncounterType());
+			}
+			
 			patientIdAndEnc = PatientGridUtils.getMostRecentEncounters(def.getEncounterType(), context.getBaseCohort(),
 			    true);
 			typeAndEncData.put(def.getEncounterType(), patientIdAndEnc);
@@ -56,6 +60,10 @@ public class PatientAgeAtEncounterDataEvaluator implements PatientDataEvaluator 
 		
 		Map<Integer, Object> encIdAndAge = (Map) typeAndAgesData.get(def.getEncounterType());
 		if (encIdAndAge == null) {
+			if (log.isDebugEnabled()) {
+				log.debug("Loading patient ages at most recent encounters of type: " + def.getEncounterType());
+			}
+			
 			List<Integer> encIds = patientIdAndEnc.values().stream().map(e -> ((Encounter) e).getId())
 			        .collect(Collectors.toList());
 			
@@ -63,6 +71,7 @@ public class PatientAgeAtEncounterDataEvaluator implements PatientDataEvaluator 
 			EncounterEvaluationContext encContext = new EncounterEvaluationContext(context, encIdSet);
 			encIdAndAge = Context.getService(EncounterDataService.class)
 			        .evaluate(new AgeAtEncounterDataDefinition(), encContext).getData();
+			typeAndEncData.put(def.getEncounterType(), encIdAndAge);
 		}
 		
 		EncounterService es = Context.getEncounterService();

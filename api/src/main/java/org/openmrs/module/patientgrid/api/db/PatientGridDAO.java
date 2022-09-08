@@ -5,8 +5,7 @@ import java.util.List;
 import org.openmrs.module.patientgrid.PatientGrid;
 
 /**
- * Provides database access methods to manage {@link org.openmrs.module.patientgrid.PatientGrid}
- * objects
+ * Provides database access methods to manage {@link PatientGrid} objects
  */
 public interface PatientGridDAO {
 	
