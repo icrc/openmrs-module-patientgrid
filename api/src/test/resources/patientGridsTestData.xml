@@ -6,8 +6,8 @@
     <encounter encounter_id="2002" encounter_type="102" patient_id="2" encounter_datetime="2022-08-08 00:04:00" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="2619d653-393b-4118-9e83-a3715b82d4ac" />
     <!-- Voided -->
     <encounter encounter_id="2003" encounter_type="101" patient_id="2" encounter_datetime="2022-08-08 00:03:00" creator="1" date_created="2022-08-08 00:00:00" voided="1" uuid="3619d653-393b-4118-9e83-a3715b82d4ac" />
-    <encounter encounter_id="2004" encounter_type="101" patient_id="2" encounter_datetime="2022-08-08 00:02:30" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="4619d653-393b-4118-9e83-a3715b82d4ac" />
-    <encounter encounter_id="2005" encounter_type="101" patient_id="2" encounter_datetime="2022-08-08 00:01:20" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="5619d653-393b-4118-9e83-a3715b82d4ac" />
+    <encounter encounter_id="2004" encounter_type="101" patient_id="2" encounter_datetime="2022-08-08 00:02:00" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="4619d653-393b-4118-9e83-a3715b82d4ac" />
+    <encounter encounter_id="2005" encounter_type="101" patient_id="2" encounter_datetime="2022-08-08 00:01:00" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="5619d653-393b-4118-9e83-a3715b82d4ac" />
     <encounter encounter_id="2006" encounter_type="101" patient_id="6" encounter_datetime="2022-05-26 00:00:00" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="6619d653-393b-4118-9e83-a3715b82d4ac" />
     <encounter encounter_id="2007" encounter_type="101" patient_id="7" encounter_datetime="2022-08-08 00:00:00" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="7619d653-393b-4118-9e83-a3715b82d4ac" />
     <encounter encounter_id="2008" encounter_type="101" patient_id="8" encounter_datetime="2022-08-08 00:00:00" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="8619d653-393b-4118-9e83-a3715b82d4ac" />

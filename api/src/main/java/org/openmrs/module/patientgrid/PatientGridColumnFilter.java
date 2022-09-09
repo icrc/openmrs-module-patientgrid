@@ -20,7 +20,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	
 	private FilterOperator operator = FilterOperator.EQUALS;;
 	
-	private Object operand;
+	private String operand;
 	
 	private User creator;
 	
@@ -37,7 +37,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public PatientGridColumnFilter() {
 	}
 	
-	public PatientGridColumnFilter(String name, Object operand) {
+	public PatientGridColumnFilter(String name, String operand) {
 		this.name = name;
 		this.operand = operand;
 	}
@@ -119,7 +119,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	 *
 	 * @return the operand
 	 */
-	public Object getOperand() {
+	public String getOperand() {
 		return operand;
 	}
 	
@@ -128,7 +128,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	 *
 	 * @param operand the operand to set
 	 */
-	public void setOperand(Object operand) {
+	public void setOperand(String operand) {
 		this.operand = operand;
 	}
 	
