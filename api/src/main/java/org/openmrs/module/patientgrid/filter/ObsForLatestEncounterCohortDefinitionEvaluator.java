@@ -23,10 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Handler(supports = LatestObsCohortDefinition.class, order = 50)
-public class LatestObsCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = ObsForLatestEncounterCohortDefinition.class, order = 50)
+public class ObsForLatestEncounterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	
-	private static final Logger log = LoggerFactory.getLogger(LatestObsCohortDefinitionEvaluator.class);
+	private static final Logger log = LoggerFactory.getLogger(ObsForLatestEncounterCohortDefinitionEvaluator.class);
 	
 	//Unfortunately hibernate's criteria API and HQL don't support joins to a derived table with multiple columns
 	private final static String MOST_RECENT_DATES = "SELECT e.patient_id, max(e.encounter_datetime) AS maxDate FROM encounter e, "
@@ -41,7 +41,7 @@ public class LatestObsCohortDefinitionEvaluator implements CohortDefinitionEvalu
 	private SessionFactory sf;
 	
 	@Autowired
-	public LatestObsCohortDefinitionEvaluator(SessionFactory sf) {
+	public ObsForLatestEncounterCohortDefinitionEvaluator(SessionFactory sf) {
 		this.sf = sf;
 	}
 	
@@ -49,7 +49,7 @@ public class LatestObsCohortDefinitionEvaluator implements CohortDefinitionEvalu
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext evaluationContext)
 	    throws EvaluationException {
 		
-		LatestObsCohortDefinition cohortDef = (LatestObsCohortDefinition) cohortDefinition;
+		ObsForLatestEncounterCohortDefinition cohortDef = (ObsForLatestEncounterCohortDefinition) cohortDefinition;
 		Map<EncounterType, List<Integer>> typeAndEncIds = (Map) evaluationContext.getFromCache(KEY_MOST_RECENT_ENC_IDS);
 		if (typeAndEncIds == null) {
 			typeAndEncIds = new HashMap();

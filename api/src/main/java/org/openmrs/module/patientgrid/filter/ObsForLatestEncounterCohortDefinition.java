@@ -8,9 +8,10 @@ import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 /**
- * Base class for custom CohortDefinitions
+ * Custom CohortDefinition for getting a cohort of patients having observations matching a specific
+ * question concept and values in their most recent encounter of a specific type.
  */
-public class LatestObsCohortDefinition extends BaseCohortDefinition {
+public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition {
 	
 	@ConfigurationProperty
 	private String propertyName;
@@ -20,9 +21,9 @@ public class LatestObsCohortDefinition extends BaseCohortDefinition {
 	
 	@ConfigurationProperty
 	private EncounterType encounterType;
-
-    @ConfigurationProperty
-    private List<Object> values;
+	
+	@ConfigurationProperty
+	private List<Object> values;
 	
 	/**
 	 * Gets the propertyName

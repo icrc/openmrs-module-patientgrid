@@ -15,7 +15,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class LatestObsCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
+public class ObsForLatestEncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	@Autowired
 	private CohortDefinitionService cohortDefService;
@@ -27,9 +27,10 @@ public class LatestObsCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	}
 	
 	@Test
-	public void evaluate_shouldReturnACohortOfPatientsWithLatestObsMatchingTheSpecifiedValues() throws Exception {
+	public void evaluate_shouldReturnACohortOfPatientsWithObsMatchingTheSpecifiedValuesFromTheLatestEncounter()
+	    throws Exception {
 		executeDataSet("moduleTestData.xml");
-		LatestObsCohortDefinition def = new LatestObsCohortDefinition();
+		ObsForLatestEncounterCohortDefinition def = new ObsForLatestEncounterCohortDefinition();
 		def.setPropertyName("valueNumeric");
 		def.setConcept(new Concept(5089));
 		def.setEncounterType(new EncounterType(101));
