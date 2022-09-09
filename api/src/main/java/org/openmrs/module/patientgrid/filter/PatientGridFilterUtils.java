@@ -1,6 +1,11 @@
 package org.openmrs.module.patientgrid.filter;
 
+import static org.openmrs.module.patientgrid.PatientGridConstants.DATETIME_FORMAT;
+import static org.openmrs.module.patientgrid.PatientGridConstants.DATE_FORMAT;
+
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +13,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.ObsPatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
@@ -83,6 +89,22 @@ public class PatientGridFilterUtils {
 	protected static Object convert(String value, Class<?> clazz) {
 		if (Double.class.isAssignableFrom(clazz)) {
 			return Double.valueOf(value);
+		} else if (Boolean.class.isAssignableFrom(clazz)) {
+			return Boolean.valueOf(value);
+		} else if (Date.class.isAssignableFrom(clazz)) {
+			try {
+				return DATETIME_FORMAT.parse(value);
+			}
+			catch (ParseException e) {
+				try {
+					return DATE_FORMAT.parse(value);
+				}
+				catch (ParseException parseException) {
+					throw new APIException("Failed to convert " + value + " to a date", parseException);
+				}
+			}
+		} else if (Concept.class.isAssignableFrom(clazz)) {
+			return Context.getConceptService().getConceptByUuid(value);
 		}
 		
 		throw new APIException("Don't know how to convert operand value to type: " + clazz.getName());
@@ -102,16 +124,33 @@ public class PatientGridFilterUtils {
 		obsCohortDef.setConcept(concept);
 		obsCohortDef.setEncounterType(obsColumn.getEncounterType());
 		Class<?> valueType;
-		if (obsColumn.getConcept().getDatatype().isNumeric()) {
+		if (concept.getDatatype().isNumeric()) {
 			obsCohortDef.setPropertyName("valueNumeric");
 			valueType = Double.class;
+		} else if (concept.getDatatype().isBoolean()) {
+			obsCohortDef.setPropertyName("valueBoolean");
+			valueType = Boolean.class;
+		} else if (concept.getDatatype().isCoded()) {
+			obsCohortDef.setPropertyName("valueCoded");
+			valueType = Concept.class;
+		} else if (concept.getDatatype().isDate() || concept.getDatatype().isDateTime()) {
+			obsCohortDef.setPropertyName("valueDatetime");
+			valueType = Date.class;
+		} else if (concept.getDatatype().isText()) {
+			obsCohortDef.setPropertyName("valueText");
+			valueType = String.class;
 		} else {
 			throw new APIException("Don't know how to filter obs data of datatype: " + concept.getDatatype());
 		}
 		
 		obsCohortDef.setValues(new ArrayList(column.getFilters().size()));
 		for (PatientGridColumnFilter filter : column.getFilters()) {
-			obsCohortDef.getValues().add(convert(filter.getOperand(), valueType));
+			Object value = filter.getOperand();
+			if (!String.class.isAssignableFrom(valueType)) {
+				value = convert(filter.getOperand(), valueType);
+			}
+
+			obsCohortDef.getValues().add(value);
 		}
 		
 		return obsCohortDef;

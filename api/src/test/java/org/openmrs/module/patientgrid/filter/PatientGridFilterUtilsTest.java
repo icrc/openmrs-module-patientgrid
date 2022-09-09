@@ -5,19 +5,26 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.openmrs.module.patientgrid.PatientGridConstants.DATETIME_FORMAT;
+import static org.openmrs.module.patientgrid.PatientGridConstants.DATE_FORMAT;
 import static org.openmrs.module.reporting.common.BooleanOperator.AND;
 
 import java.util.Arrays;
+import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.EncounterType;
 import org.openmrs.Visit;
 import org.openmrs.api.APIException;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.ObsPatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
@@ -25,7 +32,12 @@ import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(Context.class)
 public class PatientGridFilterUtilsTest {
 	
 	@Rule
@@ -145,6 +157,36 @@ public class PatientGridFilterUtilsTest {
 	}
 	
 	@Test
+	public void convert_shouldConvertAStringToABoolean() {
+		assertEquals(true, PatientGridFilterUtils.convert("true", Boolean.class));
+		assertEquals(false, PatientGridFilterUtils.convert("false", Boolean.class));
+	}
+
+	@Test
+	public void convert_shouldConvertAStringToAConcept() {
+		final String CONCEPT_UUID = "concept-uuid";
+		PowerMockito.mockStatic(Context.class);
+		Concept mockConcept = Mockito.mock(Concept.class);
+		ConceptService mockConceptService = Mockito.mock(ConceptService.class);
+		Mockito.when(Context.getConceptService()).thenReturn(mockConceptService);
+		Mockito.when(mockConceptService.getConceptByUuid(CONCEPT_UUID)).thenReturn(mockConcept);
+
+		assertEquals(mockConcept, PatientGridFilterUtils.convert(CONCEPT_UUID, Concept.class));
+	}
+
+	@Test
+	public void convert_shouldConvertAStringToADate() throws Exception {
+		final String date = "2022-09-09";
+		assertEquals(DATE_FORMAT.parse(date), PatientGridFilterUtils.convert(date, Date.class));
+	}
+
+	@Test
+	public void convert_shouldConvertAStringToADatetime() throws Exception {
+		final String date = "2022-09-09 14:00:05+00:00";
+		assertEquals(DATETIME_FORMAT.parse(date), PatientGridFilterUtils.convert(date, Date.class));
+	}
+
+	@Test
 	public void convert_shouldFailForANonSupportedValueType() {
 		final Class clazz = Visit.class;
 		expectedException.expect(APIException.class);
@@ -154,7 +196,7 @@ public class PatientGridFilterUtilsTest {
 	}
 	
 	@Test
-	public void generateCohortDefinition_shouldCohortDefinitionForANumericObs() {
+	public void generateCohortDefinition_shouldCohortDefinitionForANumericObsValue() {
 		final Double weight1 = 165.0;
 		ObsPatientGridColumn column = new ObsPatientGridColumn("weight", null, null);
 		Concept concept = new Concept();
@@ -177,6 +219,131 @@ public class PatientGridFilterUtilsTest {
 		assertEquals(Arrays.asList(weight1), def.getValues());
 	}
 	
+	@Test
+	public void generateCohortDefinition_shouldCohortDefinitionForABooleanObsValue() {
+		final Boolean married = true;
+		ObsPatientGridColumn column = new ObsPatientGridColumn("married", null, null);
+		Concept concept = new Concept();
+		ConceptDatatype datatype = new ConceptDatatype();
+		datatype.setUuid(ConceptDatatype.BOOLEAN_UUID);
+		concept.setDatatype(datatype);
+		column.setConcept(concept);
+		EncounterType encounterType = new EncounterType();
+		column.setEncounterType(encounterType);
+		column.addFilter(new PatientGridColumnFilter("is married", married.toString()));
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(column);
+
+		ObsForLatestEncounterCohortDefinition def = (ObsForLatestEncounterCohortDefinition) PatientGridFilterUtils
+		        .generateCohortDefinition(grid);
+
+		assertEquals(encounterType, def.getEncounterType());
+		assertEquals(concept, def.getConcept());
+		assertEquals("valueBoolean", def.getPropertyName());
+		assertEquals(Arrays.asList(married), def.getValues());
+	}
+
+	@Test
+	public void generateCohortDefinition_shouldCohortDefinitionForACodedObsValue() {
+		final String conceptUuid = "concept-uuid";
+		ObsPatientGridColumn column = new ObsPatientGridColumn("maritalStatus", null, null);
+		Concept concept = new Concept();
+		ConceptDatatype datatype = new ConceptDatatype();
+		datatype.setUuid(ConceptDatatype.CODED_UUID);
+		concept.setDatatype(datatype);
+		column.setConcept(concept);
+		EncounterType encounterType = new EncounterType();
+		column.setEncounterType(encounterType);
+		column.addFilter(new PatientGridColumnFilter("maritalStatus", conceptUuid));
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(column);
+		PowerMockito.mockStatic(Context.class);
+		Concept mockConcept = Mockito.mock(Concept.class);
+		ConceptService mockConceptService = Mockito.mock(ConceptService.class);
+		Mockito.when(Context.getConceptService()).thenReturn(mockConceptService);
+		Mockito.when(mockConceptService.getConceptByUuid(conceptUuid)).thenReturn(mockConcept);
+
+		ObsForLatestEncounterCohortDefinition def = (ObsForLatestEncounterCohortDefinition) PatientGridFilterUtils
+		        .generateCohortDefinition(grid);
+
+		assertEquals(encounterType, def.getEncounterType());
+		assertEquals(concept, def.getConcept());
+		assertEquals("valueCoded", def.getPropertyName());
+		assertEquals(Arrays.asList(mockConcept), def.getValues());
+	}
+
+	@Test
+	public void generateCohortDefinition_shouldCohortDefinitionForADateObsValue() throws Exception {
+		final String date = "2022-09-09";
+		ObsPatientGridColumn column = new ObsPatientGridColumn("lastVisitDate", null, null);
+		Concept concept = new Concept();
+		ConceptDatatype datatype = new ConceptDatatype();
+		datatype.setUuid(ConceptDatatype.DATE_UUID);
+		concept.setDatatype(datatype);
+		column.setConcept(concept);
+		EncounterType encounterType = new EncounterType();
+		column.setEncounterType(encounterType);
+		column.addFilter(new PatientGridColumnFilter("lastVisitDate", date));
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(column);
+
+		ObsForLatestEncounterCohortDefinition def = (ObsForLatestEncounterCohortDefinition) PatientGridFilterUtils
+		        .generateCohortDefinition(grid);
+
+		assertEquals(encounterType, def.getEncounterType());
+		assertEquals(concept, def.getConcept());
+		assertEquals("valueDatetime", def.getPropertyName());
+		assertEquals(Arrays.asList(DATE_FORMAT.parse(date)), def.getValues());
+	}
+
+	@Test
+	public void generateCohortDefinition_shouldCohortDefinitionForADatetimeObsValue() throws Exception {
+		final String date = "2022-09-09 14:00:05+00:00";
+		ObsPatientGridColumn column = new ObsPatientGridColumn("lastEncDatetime", null, null);
+		Concept concept = new Concept();
+		ConceptDatatype datatype = new ConceptDatatype();
+		datatype.setUuid(ConceptDatatype.DATETIME_UUID);
+		concept.setDatatype(datatype);
+		column.setConcept(concept);
+		EncounterType encounterType = new EncounterType();
+		column.setEncounterType(encounterType);
+		column.addFilter(new PatientGridColumnFilter("lastEncDatetime", date));
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(column);
+
+		ObsForLatestEncounterCohortDefinition def = (ObsForLatestEncounterCohortDefinition) PatientGridFilterUtils
+		        .generateCohortDefinition(grid);
+
+		assertEquals(encounterType, def.getEncounterType());
+		assertEquals(concept, def.getConcept());
+		assertEquals("valueDatetime", def.getPropertyName());
+		assertEquals(Arrays.asList(DATETIME_FORMAT.parse(date)), def.getValues());
+	}
+
+	@Test
+	public void generateCohortDefinition_shouldCohortDefinitionForATextObsValue() {
+		final String nickName = "dev";
+		ObsPatientGridColumn column = new ObsPatientGridColumn("nickName", null, null);
+		Concept concept = new Concept();
+		ConceptDatatype datatype = new ConceptDatatype();
+		datatype.setUuid(ConceptDatatype.TEXT_UUID);
+		concept.setDatatype(datatype);
+		column.setConcept(concept);
+		EncounterType encounterType = new EncounterType();
+		column.setEncounterType(encounterType);
+		column.addFilter(new PatientGridColumnFilter("nickName", nickName));
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(column);
+
+		ObsForLatestEncounterCohortDefinition def = (ObsForLatestEncounterCohortDefinition) PatientGridFilterUtils
+		        .generateCohortDefinition(grid);
+
+		assertEquals(encounterType, def.getEncounterType());
+		assertEquals(concept, def.getConcept());
+		assertEquals("valueText", def.getPropertyName());
+		assertEquals(Arrays.asList(nickName), def.getValues());
+	}
+
 	@Test
 	public void generateCohortDefinition_shouldAddCohortDefinitionForAnObsColumnWithMultipleFilters() {
 		final Double weight1 = 165.0;
