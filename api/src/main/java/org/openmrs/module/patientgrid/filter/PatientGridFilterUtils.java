@@ -12,13 +12,10 @@ import org.openmrs.module.patientgrid.ObsPatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumnFilter;
-import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.common.BooleanOperator;
-import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,31 +74,45 @@ public class PatientGridFilterUtils {
 	}
 	
 	/**
-	 * Creates a {@link BaseObsCohortDefinition} based on the filters for the specified
+	 * Converts the specified string to the specified type
+	 *
+	 * @param value the value to convert
+	 * @param clazz the type to convert to
+	 * @return the converted value
+	 */
+	protected static Object convert(String value, Class<?> clazz) {
+		if (Double.class.isAssignableFrom(clazz)) {
+			return Double.valueOf(value);
+		}
+		
+		throw new APIException("Don't know how to convert operand value to type: " + clazz.getName());
+	}
+	
+	/**
+	 * Creates a {@link ObsForLatestEncounterCohortDefinition} based on the filters for the specified
 	 * {@link PatientGridColumn}
 	 * 
 	 * @param column {@link PatientGridColumn} object
-	 * @return CohortDefinition
+	 * @return ObsForLatestEncounterCohortDefinition
 	 */
-	private static BaseObsCohortDefinition createObsCohortDefinition(PatientGridColumn column) {
+	private static ObsForLatestEncounterCohortDefinition createObsCohortDefinition(PatientGridColumn column) {
 		ObsPatientGridColumn obsColumn = (ObsPatientGridColumn) column;
-		BaseObsCohortDefinition obsCohortDef;
+		ObsForLatestEncounterCohortDefinition obsCohortDef = new ObsForLatestEncounterCohortDefinition();
 		Concept concept = obsColumn.getConcept();
+		obsCohortDef.setConcept(concept);
+		obsCohortDef.setEncounterType(obsColumn.getEncounterType());
+		Class<?> valueType;
 		if (obsColumn.getConcept().getDatatype().isNumeric()) {
-			NumericObsCohortDefinition numericCohortDef = new NumericObsCohortDefinition();
-			for (PatientGridColumnFilter filter : column.getFilters()) {
-				numericCohortDef.setOperator1(RangeComparator.EQUAL);
-				numericCohortDef.setValue1((Double) filter.getOperand());
-			}
-			
-			obsCohortDef = numericCohortDef;
+			obsCohortDef.setPropertyName("valueNumeric");
+			valueType = Double.class;
 		} else {
 			throw new APIException("Don't know how to filter obs data of datatype: " + concept.getDatatype());
 		}
 		
-		obsCohortDef.setQuestion(concept);
-		obsCohortDef.addEncounterType(obsColumn.getEncounterType());
-		obsCohortDef.setTimeModifier(BaseObsCohortDefinition.TimeModifier.LAST);
+		obsCohortDef.setValues(new ArrayList(column.getFilters().size()));
+		for (PatientGridColumnFilter filter : column.getFilters()) {
+			obsCohortDef.getValues().add(convert(filter.getOperand(), valueType));
+		}
 		
 		return obsCohortDef;
 	}
@@ -146,8 +157,10 @@ public class PatientGridFilterUtils {
 		}
 		
 		final String compositionString = StringUtils.join(disjunctions, " " + operator + " ");
-		if (log.isDebugEnabled()) {
-			log.debug("CohortDefinition compositionString after all filters -> " + compositionString);
+		if (operator == BooleanOperator.AND) {
+			if (log.isDebugEnabled()) {
+				log.debug("CohortDefinition compositionString for all filters -> " + compositionString);
+			}
 		}
 		
 		cohortDef.setCompositionString(compositionString);
