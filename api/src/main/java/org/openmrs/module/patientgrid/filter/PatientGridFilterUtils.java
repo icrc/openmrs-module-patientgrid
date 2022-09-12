@@ -59,9 +59,6 @@ public class PatientGridFilterUtils {
 						cohortDef = createObsCohortDefinition(column);
 						break;
 					case DATAFILTER_LOCATION:
-						cohortDef = createLocationCohortDefinition(column);
-						//TODO
-						break;
 					case DATAFILTER_COUNTRY:
 						cohortDef = createLocationCohortDefinition(column, column.getDatatype() == DATAFILTER_COUNTRY);
 						break;
@@ -121,10 +118,13 @@ public class PatientGridFilterUtils {
 	 * {@link PatientGridColumn}
 	 *
 	 * @param column {@link PatientGridColumn} object
+	 * @param matchOnCountry specifies if the definition is for country or location
 	 * @return LocationCohortDefinition
 	 */
-	private static LocationCohortDefinition createLocationCohortDefinition(PatientGridColumn column) {
+	private static LocationCohortDefinition createLocationCohortDefinition(PatientGridColumn column,
+	        boolean matchOnCountry) {
 		LocationCohortDefinition def = new LocationCohortDefinition();
+		def.setCountry(matchOnCountry);
 		def.setLocations(new ArrayList(column.getFilters().size()));
 		for (PatientGridColumnFilter filter : column.getFilters()) {
 			def.getLocations().add(convert(filter.getOperand(), Location.class));
