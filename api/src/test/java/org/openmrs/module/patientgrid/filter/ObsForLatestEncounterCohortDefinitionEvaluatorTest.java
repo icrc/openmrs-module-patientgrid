@@ -28,7 +28,7 @@ public class ObsForLatestEncounterCohortDefinitionEvaluatorTest extends BaseModu
 	
 	@Test
 	public void evaluate_shouldReturnACohortOfPatientsWithObsMatchingTheSpecifiedValuesFromTheLatestEncounter()
-	    throws Exception {
+	        throws Exception {
 		ObsForLatestEncounterCohortDefinition def = new ObsForLatestEncounterCohortDefinition();
 		def.setPropertyName("valueNumeric");
 		def.setConcept(new Concept(5089));

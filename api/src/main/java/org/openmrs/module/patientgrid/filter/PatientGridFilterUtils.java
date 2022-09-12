@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
+import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.ObsPatientGridColumn;
@@ -57,7 +58,7 @@ public class PatientGridFilterUtils {
 						cohortDef = createObsCohortDefinition(column);
 						break;
 					case DATAFILTER_LOCATION:
-						cohortDef = null;
+						cohortDef = createLocationCohortDefinition(column);
 						//TODO
 						break;
 					case DATAFILTER_COUNTRY:
@@ -86,28 +87,50 @@ public class PatientGridFilterUtils {
 	 * @param clazz the type to convert to
 	 * @return the converted value
 	 */
-	protected static Object convert(String value, Class<?> clazz) {
+	protected static <T> T convert(String value, Class<T> clazz) {
+		Object ret;
 		if (Double.class.isAssignableFrom(clazz)) {
-			return Double.valueOf(value);
+			ret = Double.valueOf(value);
 		} else if (Boolean.class.isAssignableFrom(clazz)) {
-			return Boolean.valueOf(value);
+			ret = Boolean.valueOf(value);
 		} else if (Date.class.isAssignableFrom(clazz)) {
 			try {
-				return DATETIME_FORMAT.parse(value);
+				ret = DATETIME_FORMAT.parse(value);
 			}
 			catch (ParseException e) {
 				try {
-					return DATE_FORMAT.parse(value);
+					ret = DATE_FORMAT.parse(value);
 				}
-				catch (ParseException parseException) {
-					throw new APIException("Failed to convert " + value + " to a date", parseException);
+				catch (ParseException pe) {
+					throw new APIException("Failed to convert " + value + " to a date", pe);
 				}
 			}
 		} else if (Concept.class.isAssignableFrom(clazz)) {
-			return Context.getConceptService().getConceptByUuid(value);
+			ret = Context.getConceptService().getConceptByUuid(value);
+		} else if (Location.class.isAssignableFrom(clazz)) {
+			ret = Context.getLocationService().getLocationByUuid(value);
+		} else {
+			throw new APIException("Don't know how to convert operand value to type: " + clazz.getName());
 		}
 		
-		throw new APIException("Don't know how to convert operand value to type: " + clazz.getName());
+		return (T) ret;
+	}
+	
+	/**
+	 * Creates a {@link LocationCohortDefinition} based on the filters for the specified
+	 * {@link PatientGridColumn}
+	 *
+	 * @param column {@link PatientGridColumn} object
+	 * @return LocationCohortDefinition
+	 */
+	private static LocationCohortDefinition createLocationCohortDefinition(PatientGridColumn column) {
+		LocationCohortDefinition def = new LocationCohortDefinition();
+		def.setLocations(new ArrayList(column.getFilters().size()));
+		for (PatientGridColumnFilter filter : column.getFilters()) {
+			def.getLocations().add(convert(filter.getOperand(), Location.class));
+		}
+		
+		return def;
 	}
 	
 	/**
@@ -149,7 +172,7 @@ public class PatientGridFilterUtils {
 			if (!String.class.isAssignableFrom(valueType)) {
 				value = convert(filter.getOperand(), valueType);
 			}
-
+			
 			obsCohortDef.getValues().add(value);
 		}
 		
@@ -180,7 +203,7 @@ public class PatientGridFilterUtils {
 	}
 	
 	private static CohortDefinition createCohortDef(Map<String, CohortDefinition> nameAndCohortDefs,
-	                                                BooleanOperator operator) {
+	        BooleanOperator operator) {
 		
 		//If there is one filter, just return its cohort definition otherwise create a composition cohort 
 		//definition using OR operator

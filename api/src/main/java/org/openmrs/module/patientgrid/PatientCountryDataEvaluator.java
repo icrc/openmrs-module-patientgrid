@@ -16,7 +16,7 @@ public class PatientCountryDataEvaluator implements PatientDataEvaluator {
 	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
-	    throws EvaluationException {
+	        throws EvaluationException {
 		
 		EvaluatedPatientData data = new EvaluatedPatientData(definition, context);
 		data.setData(PatientLocationEvaluatorUtils.evaluate(definition, context).entrySet().stream()

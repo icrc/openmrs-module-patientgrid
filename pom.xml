@@ -108,6 +108,7 @@
                 <plugin>
                     <groupId>net.revelc.code.formatter</groupId>
                     <artifactId>formatter-maven-plugin</artifactId>
+                    <version>2.16.0</version>
                     <dependencies>
                         <dependency>
                             <groupId>org.openmrs.tools</groupId>
@@ -152,7 +153,6 @@
             <plugin>
                 <groupId>net.revelc.code.formatter</groupId>
                 <artifactId>formatter-maven-plugin</artifactId>
-                <version>2.16.0</version>
                 <executions>
                     <execution>
                         <phase>compile</phase>

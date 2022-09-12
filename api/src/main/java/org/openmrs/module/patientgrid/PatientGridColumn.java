@@ -47,7 +47,12 @@ public class PatientGridColumn extends BaseChangeableOpenmrsMetadata {
 	}
 	
 	public enum ColumnDatatype {
-		NAME, GENDER, ENC_AGE, OBS, DATAFILTER_LOCATION, DATAFILTER_COUNTRY
+		NAME,
+		GENDER,
+		ENC_AGE,
+		OBS,
+		DATAFILTER_LOCATION,
+		DATAFILTER_COUNTRY
 	}
 	
 	/**

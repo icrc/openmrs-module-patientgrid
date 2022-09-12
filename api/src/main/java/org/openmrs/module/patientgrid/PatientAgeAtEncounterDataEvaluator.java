@@ -32,7 +32,7 @@ public class PatientAgeAtEncounterDataEvaluator implements PatientDataEvaluator 
 	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
-	    throws EvaluationException {
+	        throws EvaluationException {
 		
 		PatientAgeAtEncounterDataDefinition def = (org.openmrs.module.patientgrid.PatientAgeAtEncounterDataDefinition) definition;
 		Map<EncounterType, Object> typeAndEncData = (Map) context.getFromCache(KEY_MOST_RECENT_ENCS);

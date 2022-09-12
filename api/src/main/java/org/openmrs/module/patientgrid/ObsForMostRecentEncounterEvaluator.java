@@ -24,7 +24,7 @@ public class ObsForMostRecentEncounterEvaluator implements PatientDataEvaluator 
 	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
-	    throws EvaluationException {
+	        throws EvaluationException {
 		
 		ObsForMostRecentEncounterDataDefinition def = (ObsForMostRecentEncounterDataDefinition) definition;
 		Map<EncounterType, Object> typeAndEncData = (Map) context.getFromCache(KEY_MOST_RECENT_ENCS);

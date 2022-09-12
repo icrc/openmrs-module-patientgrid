@@ -46,6 +46,7 @@ public class PatientLocationEvaluatorUtils {
 			patientIdAndMapDateCreated.put(patientId, mapDateCreated);
 		}
 		
+		//TODO Cache the location info on the context to be reused for both country and structure
 		return patientIdAndLocationMap;
 	}
 	
