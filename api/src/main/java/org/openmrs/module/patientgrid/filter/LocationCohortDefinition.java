@@ -14,6 +14,9 @@ public class LocationCohortDefinition extends BaseCohortDefinition {
 	@ConfigurationProperty
 	private List<Location> locations;
 	
+	@ConfigurationProperty
+	private boolean country = false;
+	
 	/**
 	 * Gets the locations
 	 *
@@ -30,6 +33,24 @@ public class LocationCohortDefinition extends BaseCohortDefinition {
 	 */
 	public void setLocations(List<Location> locations) {
 		this.locations = locations;
+	}
+	
+	/**
+	 * Gets the country
+	 *
+	 * @return the country
+	 */
+	public boolean getCountry() {
+		return country;
+	}
+	
+	/**
+	 * Sets the country
+	 *
+	 * @param country the country to set
+	 */
+	public void setCountry(boolean country) {
+		this.country = country;
 	}
 	
 }

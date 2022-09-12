@@ -417,6 +417,7 @@ public class PatientGridFilterUtilsTest {
 		LocationCohortDefinition def = (LocationCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid);
 		
 		assertTrue(def.getLocations().contains(mockLocation));
+		assertFalse(def.getCountry());
 	}
 	
 	@Test
@@ -440,6 +441,49 @@ public class PatientGridFilterUtilsTest {
 		
 		assertTrue(def.getLocations().contains(mockLocation1));
 		assertTrue(def.getLocations().contains(mockLocation2));
+	}
+	
+	@Test
+	public void generateCohortDefinition_shouldCreateALocationCohortDefinitionForCountry() {
+		final String countryLocationUuid = "country-location-uuid";
+		PatientGridColumn column = new PatientGridColumn("country", ColumnDatatype.DATAFILTER_COUNTRY);
+		column.addFilter(new PatientGridColumnFilter("equal country", countryLocationUuid));
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(column);
+		PowerMockito.mockStatic(Context.class);
+		Location mockLocation = Mockito.mock(Location.class);
+		LocationService mockLocationService = Mockito.mock(LocationService.class);
+		Mockito.when(Context.getLocationService()).thenReturn(mockLocationService);
+		Mockito.when(mockLocationService.getLocationByUuid(countryLocationUuid)).thenReturn(mockLocation);
+		
+		LocationCohortDefinition def = (LocationCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid);
+		
+		assertTrue(def.getLocations().contains(mockLocation));
+		assertTrue(def.getCountry());
+	}
+	
+	@Test
+	public void generateCohortDefinition_shouldCreateALocationCohortDefinitionForCountryForColumnWithMultipleFilters() {
+		final String countryLocationUuid1 = "country-location-uuid1";
+		final String countryLocationUuid2 = "country-location-uuid2";
+		PatientGridColumn column = new PatientGridColumn("location", ColumnDatatype.DATAFILTER_COUNTRY);
+		column.addFilter(new PatientGridColumnFilter("equal country1", countryLocationUuid1));
+		column.addFilter(new PatientGridColumnFilter("equal country2", countryLocationUuid2));
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(column);
+		PowerMockito.mockStatic(Context.class);
+		Location mockLocation1 = Mockito.mock(Location.class);
+		Location mockLocation2 = Mockito.mock(Location.class);
+		LocationService mockLocationService = Mockito.mock(LocationService.class);
+		Mockito.when(Context.getLocationService()).thenReturn(mockLocationService);
+		Mockito.when(mockLocationService.getLocationByUuid(countryLocationUuid1)).thenReturn(mockLocation1);
+		Mockito.when(mockLocationService.getLocationByUuid(countryLocationUuid2)).thenReturn(mockLocation2);
+		
+		LocationCohortDefinition def = (LocationCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid);
+		
+		assertTrue(def.getLocations().contains(mockLocation1));
+		assertTrue(def.getLocations().contains(mockLocation2));
+		assertTrue(def.getCountry());
 	}
 	
 }

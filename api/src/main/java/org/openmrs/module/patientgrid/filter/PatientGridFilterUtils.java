@@ -1,5 +1,6 @@
 package org.openmrs.module.patientgrid.filter;
 
+import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.DATAFILTER_COUNTRY;
 import static org.openmrs.module.patientgrid.PatientGridConstants.DATETIME_FORMAT;
 import static org.openmrs.module.patientgrid.PatientGridConstants.DATE_FORMAT;
 
@@ -62,8 +63,7 @@ public class PatientGridFilterUtils {
 						//TODO
 						break;
 					case DATAFILTER_COUNTRY:
-						cohortDef = null;
-						//TODO
+						cohortDef = createLocationCohortDefinition(column, column.getDatatype() == DATAFILTER_COUNTRY);
 						break;
 					default:
 						throw new APIException("Don't know how to filter data for column type: " + column.getDatatype());
