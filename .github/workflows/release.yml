@@ -1,11 +1,7 @@
 name: Release with Maven
 
-#on:
-#  workflow_dispatch:
 on:
-  push:
-    branches:
-      - 'test'
+  workflow_dispatch:
 
 jobs:
   deploy:
