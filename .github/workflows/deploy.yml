@@ -1,10 +1,10 @@
 # this build is designed to replicate the Travis CI workflow
-name: Build with Maven
+name: Deploy with Maven
 
 on:
   push:
     branches:
-      - 'workflow'
+      - 'worklow'
 
 jobs:
   deploy:
