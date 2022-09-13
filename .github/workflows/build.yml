@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - '*'
+      - '!workflow'
   pull_request:
     branches:
       - 'main'
