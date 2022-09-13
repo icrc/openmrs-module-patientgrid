@@ -1,8 +1,12 @@
 # this build is designed to replicate the Travis CI workflow
 name: Release with Maven
 
+#on:
+#  workflow_dispatch:
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - 'test'
 
 jobs:
   release:
