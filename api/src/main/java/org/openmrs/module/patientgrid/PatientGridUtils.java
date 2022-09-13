@@ -69,13 +69,13 @@ public class PatientGridUtils {
 					break;
 				case ENC_AGE:
 					AgeAtEncounterPatientGridColumn ageColumn = (AgeAtEncounterPatientGridColumn) columnDef;
-					PatientAgeAtEncounterDataDefinition def = new PatientAgeAtEncounterDataDefinition();
+					PatientAgeAtLatestEncounterDataDefinition def = new PatientAgeAtLatestEncounterDataDefinition();
 					def.setEncounterType(ageColumn.getEncounterType());
 					if (ageColumn.getConvertToAgeRange()) {
 						AgeRangeConverter converter = new AgeRangeConverter();
 						getAgeRanges().forEach(r -> converter.addAgeRange(r));
 						AgeAtEncounterPatientGridColumn ageRangeColumn = (AgeAtEncounterPatientGridColumn) columnDef;
-						PatientAgeAtEncounterDataDefinition ageRangeDef = new PatientAgeAtEncounterDataDefinition();
+						PatientAgeAtLatestEncounterDataDefinition ageRangeDef = new PatientAgeAtLatestEncounterDataDefinition();
 						ageRangeDef.setEncounterType(ageRangeColumn.getEncounterType());
 						patientData.addColumn(columnDef.getName(), def, (String) null, converter);
 					} else {
