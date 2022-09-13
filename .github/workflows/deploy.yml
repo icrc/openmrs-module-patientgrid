@@ -1,10 +1,10 @@
 # this build is designed to replicate the Travis CI workflow
-name: Deploy with Maven
+name: Deploy SNAPSHOT with Maven
 
 on:
   push:
     branches:
-      - 'worklow'
+      - 'main'
 
 jobs:
   deploy:
@@ -17,7 +17,7 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
           cache: 'maven'
-      - name: Deploy with Maven
+      - name: Deploy SNAPSHOT with Maven
         run: mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
