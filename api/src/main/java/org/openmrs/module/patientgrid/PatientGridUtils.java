@@ -85,7 +85,7 @@ public class PatientGridUtils {
 					break;
 				case OBS:
 					ObsPatientGridColumn obsColumn = (ObsPatientGridColumn) columnDef;
-					ObsForMostRecentEncounterDataDefinition obsDataDef = new ObsForMostRecentEncounterDataDefinition();
+					ObsForLatestEncounterDataDefinition obsDataDef = new ObsForLatestEncounterDataDefinition();
 					obsDataDef.setConcept(obsColumn.getConcept());
 					obsDataDef.setEncounterType(obsColumn.getEncounterType());
 					patientData.addColumn(columnDef.getName(), obsDataDef, (String) null, OBS_CONVERTER);

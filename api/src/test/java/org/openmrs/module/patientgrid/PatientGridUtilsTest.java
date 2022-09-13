@@ -115,7 +115,7 @@ public class PatientGridUtilsTest {
 		assertNull(ageRange.getMaxAge());
 		assertNull(ageRange.getMaxAgeUnit());
 		assertEquals("18+", ageRange.getLabel());
-		ObsForMostRecentEncounterDataDefinition obsDef = (ObsForMostRecentEncounterDataDefinition) ((Mapped) patientData
+		ObsForLatestEncounterDataDefinition obsDef = (ObsForLatestEncounterDataDefinition) ((Mapped) patientData
 		        .getColumnDefinition(admissionType).getDataDefinition()).getParameterizable();
 		assertEquals(admissionConcept, obsDef.getConcept());
 		assertEquals(admission, obsDef.getEncounterType());
