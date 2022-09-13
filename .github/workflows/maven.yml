@@ -3,9 +3,11 @@ name: Build with Maven
 
 on:
   push:
-    branches: [ * ]
+    branches:
+      - *
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
