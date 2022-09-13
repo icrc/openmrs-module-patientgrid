@@ -16,6 +16,7 @@ import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.AgeAtEncounterPatientGridColumn;
 import org.openmrs.module.patientgrid.ObsPatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
@@ -23,6 +24,7 @@ import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.BooleanOperator;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.slf4j.Logger;
@@ -52,8 +54,7 @@ public class PatientGridFilterUtils {
 						cohortDef = createGenderCohortDefinition(column);
 						break;
 					case ENC_AGE:
-						cohortDef = null;
-						//TODO
+						cohortDef = createAgeRangeCohortDefinition(column);
 						break;
 					case OBS:
 						cohortDef = createObsCohortDefinition(column);
@@ -88,6 +89,8 @@ public class PatientGridFilterUtils {
 		Object ret;
 		if (Double.class.isAssignableFrom(clazz)) {
 			ret = Double.valueOf(value);
+		} else if (Integer.class.isAssignableFrom(clazz)) {
+			ret = Integer.valueOf(value);
 		} else if (Boolean.class.isAssignableFrom(clazz)) {
 			ret = Boolean.valueOf(value);
 		} else if (Date.class.isAssignableFrom(clazz)) {
@@ -111,6 +114,34 @@ public class PatientGridFilterUtils {
 		}
 		
 		return (T) ret;
+	}
+	
+	/**
+	 * Creates a {@link AgeRangeAtLatestEncounterCohortDefinition} based on the filters for the
+	 * specified {@link PatientGridColumn}
+	 *
+	 * @param column {@link PatientGridColumn} object
+	 * @return AgeRangeAtLatestEncounterCohortDefinition
+	 */
+	private static AgeRangeAtLatestEncounterCohortDefinition createAgeRangeCohortDefinition(PatientGridColumn column) {
+		AgeAtEncounterPatientGridColumn ageColumn = (AgeAtEncounterPatientGridColumn) column;
+		AgeRangeAtLatestEncounterCohortDefinition def = new AgeRangeAtLatestEncounterCohortDefinition();
+		def.setEncounterType(ageColumn.getEncounterType());
+		def.setAgeRanges(new ArrayList(column.getFilters().size()));
+		for (PatientGridColumnFilter filter : column.getFilters()) {
+			AgeRange ageRange;
+			if (!ageColumn.getConvertToAgeRange()) {
+				//TODO support less than 1yr
+				Integer age = convert(filter.getOperand(), Integer.class);
+				ageRange = new AgeRange(age, age);
+			} else {
+				ageRange = null;
+			}
+			
+			def.getAgeRanges().add(ageRange);
+		}
+		
+		return def;
 	}
 	
 	/**

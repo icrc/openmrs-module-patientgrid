@@ -14,7 +14,6 @@ import org.openmrs.api.LocationService;
 import org.openmrs.module.datafilter.impl.api.DataFilterService;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -47,21 +46,21 @@ public class LocationCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 		LocationCohortDefinition def = new LocationCohortDefinition();
 		def.setLocations(asList(ls.getLocation(4001)));
 		
-		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContext());
+		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, null);
 		
 		assertEquals(2, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
 		
 		def.setLocations(asList(ls.getLocation(4002)));
-		evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContext());
+		evaluatedCohort = cohortDefService.evaluate(def, null);
 		
 		assertEquals(2, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(432)));
 		
 		def.setLocations(asList(ls.getLocation(4001), ls.getLocation(4002)));
-		evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContext());
+		evaluatedCohort = cohortDefService.evaluate(def, null);
 		
 		assertEquals(3, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
@@ -75,12 +74,12 @@ public class LocationCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 		def.setCountry(true);
 		def.setLocations(asList(createLocation("Republic Of Uganda")));
 		
-		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContext());
+		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, null);
 		assertTrue(evaluatedCohort.isEmpty());
 		
 		Location usa = createLocation("United States");
 		def.setLocations(asList(usa));
-		evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContext());
+		evaluatedCohort = cohortDefService.evaluate(def, null);
 		
 		assertEquals(2, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
@@ -88,14 +87,14 @@ public class LocationCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 		
 		Location kenya = createLocation("Kenya");//should be case insensitive
 		def.setLocations(asList(kenya));
-		evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContext());
+		evaluatedCohort = cohortDefService.evaluate(def, null);
 		
 		assertEquals(2, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(432)));
 		
 		def.setLocations(asList(usa, kenya));
-		evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContext());
+		evaluatedCohort = cohortDefService.evaluate(def, null);
 		
 		assertEquals(3, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
@@ -109,7 +108,7 @@ public class LocationCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 		def.setCountry(true);
 		def.setLocations(asList(createLocation("KENYA")));
 		
-		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContext());
+		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, null);
 		
 		assertEquals(2, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
@@ -124,7 +123,7 @@ public class LocationCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 		def.setCountry(true);
 		def.setLocations(asList(createLocation("Kenya")));
 		
-		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContext());
+		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, null);
 		
 		assertEquals(2, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
@@ -140,7 +139,7 @@ public class LocationCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 		def.setCountry(true);
 		def.setLocations(asList(createLocation("Kenya")));
 		
-		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContext());
+		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, null);
 		
 		assertEquals(2, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));

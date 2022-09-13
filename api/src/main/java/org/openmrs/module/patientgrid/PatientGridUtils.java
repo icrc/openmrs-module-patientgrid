@@ -72,11 +72,9 @@ public class PatientGridUtils {
 					PatientAgeAtLatestEncounterDataDefinition def = new PatientAgeAtLatestEncounterDataDefinition();
 					def.setEncounterType(ageColumn.getEncounterType());
 					if (ageColumn.getConvertToAgeRange()) {
+						//TODO Define at class level so we construct once
 						AgeRangeConverter converter = new AgeRangeConverter();
 						getAgeRanges().forEach(r -> converter.addAgeRange(r));
-						AgeAtEncounterPatientGridColumn ageRangeColumn = (AgeAtEncounterPatientGridColumn) columnDef;
-						PatientAgeAtLatestEncounterDataDefinition ageRangeDef = new PatientAgeAtLatestEncounterDataDefinition();
-						ageRangeDef.setEncounterType(ageRangeColumn.getEncounterType());
 						patientData.addColumn(columnDef.getName(), def, (String) null, converter);
 					} else {
 						patientData.addColumn(columnDef.getName(), def, (String) null);
@@ -119,7 +117,7 @@ public class PatientGridUtils {
 	public static Map<Integer, Object> getMostRecentEncounters(EncounterType type, Cohort cohort, boolean mostRecentOnly)
 	        throws EvaluationException {
 		
-		if (cohort.size() > 1) {
+		if (cohort == null || cohort.size() > 1) {
 			log.info("Fetching most recent encounters for encounter type: " + type);
 		}
 		
@@ -138,7 +136,7 @@ public class PatientGridUtils {
 		
 		stopWatch.stop();
 		
-		if (cohort.size() > 1) {
+		if (cohort == null || cohort.size() > 1) {
 			log.info(
 			    "Fetching most recent encounters for encounter type: " + type + " completed in " + stopWatch.toString());
 		}
@@ -204,6 +202,7 @@ public class PatientGridUtils {
 	}
 	
 	private static List<AgeRange> getAgeRanges() {
+		//TODO cache the age ranges and update with a GlobalPropertyListener
 		String ageRange = Context.getAdministrationService().getGlobalProperty(GP_AGE_RANGES);
 		if (StringUtils.isBlank(ageRange)) {
 			throw new APIException(

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.openmrs.module.patientgrid.PatientGridConstants.DATETIME_FORMAT;
 import static org.openmrs.module.patientgrid.PatientGridConstants.DATE_FORMAT;
+import static org.openmrs.module.reporting.common.Age.Unit.YEARS;
 import static org.openmrs.module.reporting.common.BooleanOperator.AND;
 
 import java.util.Arrays;
@@ -27,6 +28,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.AgeAtEncounterPatientGridColumn;
 import org.openmrs.module.patientgrid.ObsPatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
@@ -34,6 +36,7 @@ import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.common.AgeRange;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -155,7 +158,12 @@ public class PatientGridFilterUtilsTest {
 	
 	@Test
 	public void convert_shouldConvertAStringToADouble() {
-		assertEquals(new Double(45.0), PatientGridFilterUtils.convert("45.0", Double.class));
+		assertEquals(Double.valueOf(45.0), PatientGridFilterUtils.convert("45.0", Double.class));
+	}
+	
+	@Test
+	public void convert_shouldConvertAStringToAnInteger() {
+		assertEquals(Integer.valueOf(45), PatientGridFilterUtils.convert("45", Integer.class));
 	}
 	
 	@Test
@@ -484,6 +492,56 @@ public class PatientGridFilterUtilsTest {
 		assertTrue(def.getLocations().contains(mockLocation1));
 		assertTrue(def.getLocations().contains(mockLocation2));
 		assertTrue(def.getCountry());
+	}
+	
+	@Test
+	public void generateCohortDefinition_shouldCreateAnAgeAtLatestEncounterCohortDefinitionForAge() {
+		final Integer age = 45;
+		final EncounterType encounterType = new EncounterType();
+		AgeAtEncounterPatientGridColumn column = new AgeAtEncounterPatientGridColumn("age", encounterType);
+		column.addFilter(new PatientGridColumnFilter("equal age", age.toString()));
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(column);
+		
+		AgeRangeAtLatestEncounterCohortDefinition def = (AgeRangeAtLatestEncounterCohortDefinition) PatientGridFilterUtils
+		        .generateCohortDefinition(grid);
+		
+		assertEquals(encounterType, def.getEncounterType());
+		assertEquals(1, def.getAgeRanges().size());
+		AgeRange ageRange = def.getAgeRanges().get(0);
+		assertEquals(age, ageRange.getMinAge());
+		assertEquals(YEARS, ageRange.getMinAgeUnit());
+		assertEquals(age, ageRange.getMaxAge());
+		assertEquals(YEARS, ageRange.getMaxAgeUnit());
+	}
+	
+	@Test
+	public void generateCohortDefinition_shouldCreateAnAgeAtLatestEncounterCohortDefinitionForMultipleAgeFilters() {
+		final Integer age1 = 45;
+		final Integer age2 = 47;
+		final EncounterType encounterType = new EncounterType();
+		AgeAtEncounterPatientGridColumn column = new AgeAtEncounterPatientGridColumn("age", encounterType);
+		column.addFilter(new PatientGridColumnFilter("equal age1", age1.toString()));
+		column.addFilter(new PatientGridColumnFilter("equal age2", age2.toString()));
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(column);
+		
+		AgeRangeAtLatestEncounterCohortDefinition def = (AgeRangeAtLatestEncounterCohortDefinition) PatientGridFilterUtils
+		        .generateCohortDefinition(grid);
+		
+		assertEquals(encounterType, def.getEncounterType());
+		assertEquals(2, def.getAgeRanges().size());
+		AgeRange ageRange = def.getAgeRanges().get(0);
+		assertEquals(age1, ageRange.getMinAge());
+		assertEquals(YEARS, ageRange.getMinAgeUnit());
+		assertEquals(age1, ageRange.getMaxAge());
+		assertEquals(YEARS, ageRange.getMaxAgeUnit());
+		
+		ageRange = def.getAgeRanges().get(1);
+		assertEquals(age2, ageRange.getMinAge());
+		assertEquals(YEARS, ageRange.getMinAgeUnit());
+		assertEquals(age2, ageRange.getMaxAge());
+		assertEquals(YEARS, ageRange.getMaxAgeUnit());
 	}
 	
 }
