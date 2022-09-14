@@ -13,6 +13,7 @@ import static org.openmrs.module.patientgrid.PatientGridConstants.CACHE_NAME_GRI
 import static org.openmrs.module.patientgrid.PatientGridConstants.COLUMN_UUID;
 import static org.openmrs.module.patientgrid.PatientGridConstants.PRIV_MANAGE_PATIENT_GRIDS;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -289,6 +290,8 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void evaluate_shouldNotCacheEmptyReportData() {
 		PatientGrid patientGrid = service.getPatientGrid(2);
+		//Remove any filters so that our cohort remains empty
+		patientGrid.getColumns().forEach(c -> c.getFilters().clear());
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		assertNull(getCache().get(cacheKey));
 		
@@ -354,6 +357,47 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		
 		assertEquals(expectedReport, reportData);
 		assertNull(getCache().get(cacheKey));
+	}
+	
+	@Test
+	public void evaluate_shouldFiltersPatientsWhenEvaluatingAGridWithFilteredColumns() {
+		final Integer patientId2 = 2;
+		final Integer patientId6 = 6;
+		final Integer patientId7 = 7;//Female
+		//The filters are for male and (married or single) patients
+		PatientGrid patientGrid = service.getPatientGrid(2);
+		boolean hasFilteredColumns = false;
+		for (PatientGridColumn column : patientGrid.getColumns()) {
+			if (!column.getName().isEmpty()) {
+				hasFilteredColumns = true;
+				break;
+			}
+		}
+		assertTrue(hasFilteredColumns);
+		assertTrue(patientGrid.getCohort().getActiveMemberships().isEmpty());
+		Cohort cohort = new Cohort(Arrays.asList(patientId2, patientId6, patientId7));
+		cohort.setName("test");
+		cohort.setDescription("test");
+		Context.getCohortService().saveCohort(cohort);
+		patientGrid.setCohort(cohort);
+		ReportData reportData = service.evaluate(patientGrid);
+		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
+		assertEquals(reportData, getCache().get(cacheKey).get());
+		SimpleDataSet dataset = (SimpleDataSet) reportData.getDataSets().get("patientData");
+		assertEquals(2, dataset.getRows().size());
+		Patient patient = ps.getPatient(2);
+		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
+		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
+		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
+		Map<String, Object> obs = (Map) dataset.getColumnValue(patient.getId(), "civilStatus");
+		assertEquals("SINGLE", obs.get("value"));
+		
+		patient = ps.getPatient(6);
+		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
+		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
+		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
+		obs = (Map) dataset.getColumnValue(patient.getId(), "civilStatus");
+		assertEquals("SINGLE", obs.get("value"));
 	}
 	
 }

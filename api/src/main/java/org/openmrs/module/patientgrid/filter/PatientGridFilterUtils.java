@@ -49,7 +49,7 @@ public class PatientGridFilterUtils {
 	 * @param patientGrid the {@link PatientGrid} object
 	 * @return the {@link CohortDefinition} object
 	 */
-	protected static CohortDefinition generateCohortDefinition(PatientGrid patientGrid) {
+	public static CohortDefinition generateCohortDefinition(PatientGrid patientGrid) {
 		Map<String, CohortDefinition> columnAndCohortDefMap = new HashMap(patientGrid.getColumns().size());
 		for (PatientGridColumn column : patientGrid.getColumns()) {
 			if (!column.getFilters().isEmpty()) {
@@ -77,6 +77,10 @@ public class PatientGridFilterUtils {
 		}
 		
 		if (columnAndCohortDefMap.isEmpty()) {
+			if (log.isDebugEnabled()) {
+				log.debug("No filters to apply to patient grid " + patientGrid);
+			}
+			
 			return null;
 		}
 		

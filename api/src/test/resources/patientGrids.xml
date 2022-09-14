@@ -41,6 +41,6 @@
     <patientgrid_obs_patient_grid_column patient_grid_column_id="12" concept_id="4" encounter_type_id="101" />
 
     <patientgrid_patient_grid_column_filter patient_grid_column_filter_id="1" patient_grid_column_id="11" name="is male" operator="EQUALS" operand="M" creator="1" date_created="2022-08-02 00:00:00" uuid="1f6c993e-c2cc-11de-8d13-0010c6dffd0c" />
-    <patientgrid_patient_grid_column_filter patient_grid_column_filter_id="2" patient_grid_column_id="12" name="is single" operator="EQUALS" operand="SINGLE" creator="1" date_created="2022-08-02 00:00:00" uuid="2f6c993e-c2cc-11de-8d13-0010c6dffd0c" />
-    <patientgrid_patient_grid_column_filter patient_grid_column_filter_id="3" patient_grid_column_id="12" name="is divorced" operator="EQUALS" operand="DIVORCED" creator="1" date_created="2022-08-02 00:00:00" uuid="3f6c993e-c2cc-11de-8d13-0010c6dffd0c" />
+    <patientgrid_patient_grid_column_filter patient_grid_column_filter_id="2" patient_grid_column_id="12" name="is single" operator="EQUALS" operand="32d3611a-6699-4d52-823f-b4b788bac3e3" creator="1" date_created="2022-08-02 00:00:00" uuid="2f6c993e-c2cc-11de-8d13-0010c6dffd0c" />
+    <patientgrid_patient_grid_column_filter patient_grid_column_filter_id="3" patient_grid_column_id="12" name="is divorced" operator="EQUALS" operand="92afda7c-78c9-47bd-a841-0de0817027d4" creator="1" date_created="2022-08-02 00:00:00" uuid="3f6c993e-c2cc-11de-8d13-0010c6dffd0c" />
 </dataset>

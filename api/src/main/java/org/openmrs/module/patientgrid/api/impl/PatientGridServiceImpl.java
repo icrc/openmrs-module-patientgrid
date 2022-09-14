@@ -3,6 +3,7 @@ package org.openmrs.module.patientgrid.api.impl;
 import java.util.List;
 
 import org.apache.commons.lang3.time.StopWatch;
+import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -10,6 +11,9 @@ import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.patientgrid.api.db.PatientGridDAO;
+import org.openmrs.module.patientgrid.filter.PatientGridFilterUtils;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.report.ReportData;
@@ -90,20 +94,31 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 	 * @see PatientGridService#evaluate(PatientGrid)
 	 */
 	public ReportData evaluate(PatientGrid patientGrid) {
-		log.info("Generating report for patient grid: " + patientGrid);
+		if (log.isDebugEnabled()) {
+			log.debug("Generating report for patient grid: " + patientGrid);
+		}
 		
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		
-		ReportDefinition reportDef = PatientGridUtils.convertToReportDefinition(patientGrid);
-		ReportDefinitionService rds = Context.getService(ReportDefinitionService.class);
-		EvaluationContext context = new EvaluationContext();
-		context.setBaseCohort(patientGrid.getCohort());
-		
 		try {
-			ReportData reportData = rds.evaluate(reportDef, context);
+			ReportDefinition reportDef = PatientGridUtils.convertToReportDefinition(patientGrid);
+			EvaluationContext context = new EvaluationContext();
+			Cohort cohort = filterPatients(patientGrid, context);
+			if (cohort == null) {
+				cohort = patientGrid.getCohort();
+			}
 			
-			log.info("Report for patient grid " + patientGrid + " completed in " + stopWatch.toString());
+			//TODO If cohort is not null but empty, return immediately
+			
+			context.setBaseCohort(cohort);
+			ReportData reportData = Context.getService(ReportDefinitionService.class).evaluate(reportDef, context);
+			
+			stopWatch.stop();
+			
+			if (log.isDebugEnabled()) {
+				log.debug("Report for patient grid " + patientGrid + " completed in " + stopWatch.toString());
+			}
 			
 			return reportData;
 		}
@@ -111,7 +126,40 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 			throw new APIException("Failed to evaluate patient grid: " + patientGrid, e);
 		}
 		finally {
+			if (!stopWatch.isStopped()) {
+				stopWatch.stop();
+			}
+		}
+	}
+	
+	private Cohort filterPatients(PatientGrid patientGrid, EvaluationContext context) throws EvaluationException {
+		CohortDefinition cohortDef = PatientGridFilterUtils.generateCohortDefinition(patientGrid);
+		if (cohortDef == null) {
+			return null;
+		}
+		
+		if (log.isDebugEnabled()) {
+			log.debug("Filtering patients for patient grid " + patientGrid);
+		}
+		
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		
+		try {
+			Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDef, context);
+			
 			stopWatch.stop();
+			
+			if (log.isDebugEnabled()) {
+				log.debug("Running filters for patient grid " + patientGrid + " completed in " + stopWatch.toString());
+			}
+			
+			return cohort;
+		}
+		finally {
+			if (!stopWatch.isStopped()) {
+				stopWatch.stop();
+			}
 		}
 	}
 	
