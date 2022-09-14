@@ -4,6 +4,7 @@ import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.DA
 import static org.openmrs.module.patientgrid.PatientGridConstants.DATETIME_FORMAT;
 import static org.openmrs.module.patientgrid.PatientGridConstants.DATE_FORMAT;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,12 +31,16 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Contains patient grid filter utility methods
  */
 public class PatientGridFilterUtils {
 	
 	private static final Logger log = LoggerFactory.getLogger(PatientGridFilterUtils.class);
+	
+	protected static final ObjectMapper MAPPER = new ObjectMapper();
 	
 	/**
 	 * Utility method that generates a {@link CohortDefinition} based on the column filters of the
@@ -85,7 +90,7 @@ public class PatientGridFilterUtils {
 	 * @param clazz the type to convert to
 	 * @return the converted value
 	 */
-	protected static <T> T convert(String value, Class<T> clazz) {
+	protected static <T> T convert(String value, Class<T> clazz) throws APIException {
 		Object ret;
 		if (Double.class.isAssignableFrom(clazz)) {
 			ret = Double.valueOf(value);
@@ -109,6 +114,14 @@ public class PatientGridFilterUtils {
 			ret = Context.getConceptService().getConceptByUuid(value);
 		} else if (Location.class.isAssignableFrom(clazz)) {
 			ret = Context.getLocationService().getLocationByUuid(value);
+		} else if (AgeRange.class.isAssignableFrom(clazz)) {
+			try {
+				Map map = MAPPER.readValue(value, Map.class);
+				ret = new AgeRange((Integer) map.get("minAge"), (Integer) map.get("maxAge"));
+			}
+			catch (IOException e) {
+				throw new APIException("Failed to convert: " + value + " to an AgeRange", e);
+			}
 		} else {
 			throw new APIException("Don't know how to convert operand value to type: " + clazz.getName());
 		}
@@ -135,7 +148,7 @@ public class PatientGridFilterUtils {
 				Integer age = convert(filter.getOperand(), Integer.class);
 				ageRange = new AgeRange(age, age);
 			} else {
-				ageRange = null;
+				ageRange = convert(filter.getOperand(), AgeRange.class);
 			}
 			
 			def.getAgeRanges().add(ageRange);
