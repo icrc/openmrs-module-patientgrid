@@ -1,11 +1,8 @@
 name: Do Release
 
-#on:
-#  workflow_dispatch:
 on:
-  push:
-    branches:
-      - 'release'
+  workflow_dispatch:
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
