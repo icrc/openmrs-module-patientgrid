@@ -7,7 +7,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
     steps:
       - uses: actions/checkout@v3
@@ -17,6 +17,7 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
           cache: 'maven'
+          server-id: github
       - name: Git Config
         run: |
           git config user.email "actions@github.com"
