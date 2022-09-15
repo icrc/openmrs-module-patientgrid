@@ -35,6 +35,7 @@ jobs:
           git commit -a -m "[skip ci] release $CURRENT_PROJECT_VERSION"
           git tag "$CURRENT_PROJECT_VERSION"
           git push origin "$CURRENT_PROJECT_VERSION"
+          gh release create $CURRENT_PROJECT_VERSION
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Move to next snapshot
