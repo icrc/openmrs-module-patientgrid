@@ -8,11 +8,12 @@ import org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
+import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
-import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
@@ -31,9 +32,12 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 			return null;
 		}
 		
-		description.addRequiredProperty("columns");
 		description.addProperty("owner", Representation.REF);
-		description.addProperty("cohort");
+		if (rep instanceof FullRepresentation) {
+			description.addRequiredProperty("columns", Representation.DEFAULT);
+			description.addProperty("auditInfo");
+		}
+		
 		return description;
 	}
 	
@@ -45,7 +49,6 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 		DelegatingResourceDescription description = super.getCreatableProperties();
 		description.addRequiredProperty("columns");
 		description.addProperty("owner");
-		description.addProperty("cohort");
 		return description;
 	}
 	
@@ -84,8 +87,8 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 	 * @see MetadataDelegatingCrudResource#doGetAll(RequestContext)
 	 */
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
-		return new AlreadyPaged(context,
-		        Context.getService(PatientGridService.class).getPatientGrids(context.getIncludeAll()), false);
+		return new NeedsPaging(Context.getService(PatientGridService.class).getPatientGrids(context.getIncludeAll()),
+		        context);
 	}
 	
 	/**

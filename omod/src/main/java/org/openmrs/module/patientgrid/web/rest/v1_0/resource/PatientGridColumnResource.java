@@ -3,10 +3,9 @@ package org.openmrs.module.patientgrid.web.rest.v1_0.resource;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.webservices.rest.web.RequestContext;
-import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
-import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -29,10 +28,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		description.addRequiredProperty("name");
 		description.addProperty("description");
 		description.addRequiredProperty("datatype");
-		description.addSelfLink();
-		if (representation instanceof DefaultRepresentation) {
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
-		} else {
+		if (representation instanceof FullRepresentation) {
 			description.addProperty("auditInfo");
 		}
 		

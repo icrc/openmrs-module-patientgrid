@@ -17,7 +17,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
-import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.stereotype.Component;
@@ -66,7 +66,7 @@ public class EncounterHistorySearchHandler implements SearchHandler {
 		
 		try {
 			List<Encounter> encs = (List) PatientGridUtils.getMostRecentEncounters(type, cohort, false).get(patientId);
-			return new AlreadyPaged(requestContext, encs, false);
+			return new NeedsPaging(encs, requestContext);
 		}
 		catch (Exception e) {
 			throw new GenericRestException(e);
