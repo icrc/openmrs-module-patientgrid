@@ -228,7 +228,7 @@
             <column name="operator" type="varchar(50)">
                 <constraints nullable="false" />
             </column>
-            <column name="operand" type="varchar(65535)" />
+            <column name="operand" type="varchar(255)" />
             <column name="creator" type="int" />
             <column name="date_created" type="datetime">
                 <constraints nullable="false" />

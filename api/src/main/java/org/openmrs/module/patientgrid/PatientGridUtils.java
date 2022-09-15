@@ -173,7 +173,7 @@ public class PatientGridUtils {
 	 * @param ageRangesAsString the age range string to parse
 	 * @return a list of {@link AgeRange} objects
 	 */
-	public static List<AgeRange> parseAgeRangeString(String ageRangesAsString) {
+	protected static List<AgeRange> parseAgeRangeString(String ageRangesAsString) {
 		String[] ranges = ageRangesAsString.split(",");
 		List<AgeRange> ageRanges = new ArrayList(ranges.length);
 		for (int i = 0; i < ranges.length; i++) {
@@ -201,12 +201,17 @@ public class PatientGridUtils {
 		return ageRanges;
 	}
 	
-	private static List<AgeRange> getAgeRanges() {
+	/**
+	 * Gets the list of age ranges
+	 * 
+	 * @return list of AgeRange objects
+	 */
+	public static List<AgeRange> getAgeRanges() {
 		//TODO cache the age ranges and update with a GlobalPropertyListener
 		String ageRange = Context.getAdministrationService().getGlobalProperty(GP_AGE_RANGES);
 		if (StringUtils.isBlank(ageRange)) {
 			throw new APIException(
-			        "No ranges defined, please set the value for the global property named: " + GP_AGE_RANGES);
+			        "No age ranges defined, please set the value for the global property named: " + GP_AGE_RANGES);
 		}
 		
 		return parseAgeRangeString(ageRange);

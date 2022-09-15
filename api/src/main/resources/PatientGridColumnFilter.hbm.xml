@@ -24,7 +24,7 @@
             </type>
         </property>
 
-        <property name="operand" type="string" not-null="true" length="65535" />
+        <property name="operand" type="string" not-null="true" length="255" />
 
         <many-to-one name="creator" class="org.openmrs.User" not-null="true" />
 

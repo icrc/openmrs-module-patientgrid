@@ -264,7 +264,7 @@ public class PatientGridUtilsTest {
 		patientGrid.addColumn(new AgeAtEncounterPatientGridColumn("ageCategory", null, true));
 		expectedException.expect(APIException.class);
 		expectedException.expectMessage(
-		    equalTo("No ranges defined, please set the value for the global property named: " + GP_AGE_RANGES));
+		    equalTo("No age ranges defined, please set the value for the global property named: " + GP_AGE_RANGES));
 		PowerMockito.mockStatic(Context.class);
 		when(Context.getAdministrationService()).thenReturn(mockAdminService);
 		PatientGridUtils.convertToReportDefinition(patientGrid);
@@ -276,7 +276,7 @@ public class PatientGridUtilsTest {
 		patientGrid.addColumn(new AgeAtEncounterPatientGridColumn("ageCategory", null, true));
 		expectedException.expect(APIException.class);
 		expectedException.expectMessage(
-		    equalTo("No ranges defined, please set the value for the global property named: " + GP_AGE_RANGES));
+		    equalTo("No age ranges defined, please set the value for the global property named: " + GP_AGE_RANGES));
 		PowerMockito.mockStatic(Context.class);
 		when(Context.getAdministrationService()).thenReturn(mockAdminService);
 		when(mockAdminService.getGlobalProperty(PatientGridConstants.GP_AGE_RANGES)).thenReturn("");
@@ -289,7 +289,7 @@ public class PatientGridUtilsTest {
 		patientGrid.addColumn(new AgeAtEncounterPatientGridColumn("ageCategory", null, true));
 		expectedException.expect(APIException.class);
 		expectedException.expectMessage(
-		    equalTo("No ranges defined, please set the value for the global property named: " + GP_AGE_RANGES));
+		    equalTo("No age ranges defined, please set the value for the global property named: " + GP_AGE_RANGES));
 		PowerMockito.mockStatic(Context.class);
 		when(Context.getAdministrationService()).thenReturn(mockAdminService);
 		when(mockAdminService.getGlobalProperty(PatientGridConstants.GP_AGE_RANGES)).thenReturn(" ");
