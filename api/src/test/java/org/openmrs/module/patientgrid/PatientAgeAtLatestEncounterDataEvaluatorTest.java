@@ -16,7 +16,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class PatientAgeAtEncounterDataEvaluatorTest extends BaseModuleContextSensitiveTest {
+public class PatientAgeAtLatestEncounterDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	@Autowired
 	private PatientDataService patientDataService;
@@ -40,7 +40,7 @@ public class PatientAgeAtEncounterDataEvaluatorTest extends BaseModuleContextSen
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6, patientId7, patientId8, patientId999)));
 		
-		PatientAgeAtEncounterDataDefinition def = new PatientAgeAtEncounterDataDefinition();
+		PatientAgeAtLatestEncounterDataDefinition def = new PatientAgeAtLatestEncounterDataDefinition();
 		def.setEncounterType(new EncounterType(101));
 		EvaluatedPatientData data = patientDataService.evaluate(def, context);
 		

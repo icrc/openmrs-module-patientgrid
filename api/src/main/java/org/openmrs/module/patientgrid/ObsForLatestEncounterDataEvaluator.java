@@ -17,16 +17,16 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Handler(supports = ObsForMostRecentEncounterDataDefinition.class, order = 50)
-public class ObsForMostRecentEncounterEvaluator implements PatientDataEvaluator {
+@Handler(supports = ObsForLatestEncounterDataDefinition.class, order = 50)
+public class ObsForLatestEncounterDataEvaluator implements PatientDataEvaluator {
 	
-	private static final Logger log = LoggerFactory.getLogger(ObsForMostRecentEncounterEvaluator.class);
+	private static final Logger log = LoggerFactory.getLogger(ObsForLatestEncounterDataEvaluator.class);
 	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
-	    throws EvaluationException {
+	        throws EvaluationException {
 		
-		ObsForMostRecentEncounterDataDefinition def = (ObsForMostRecentEncounterDataDefinition) definition;
+		ObsForLatestEncounterDataDefinition def = (ObsForLatestEncounterDataDefinition) definition;
 		Map<EncounterType, Object> typeAndEncData = (Map) context.getFromCache(KEY_MOST_RECENT_ENCS);
 		if (typeAndEncData == null) {
 			typeAndEncData = new HashMap();

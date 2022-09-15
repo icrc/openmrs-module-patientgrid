@@ -11,7 +11,6 @@ import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,13 +27,13 @@ public class ObsForLatestEncounterCohortDefinitionEvaluatorTest extends BaseModu
 	
 	@Test
 	public void evaluate_shouldReturnACohortOfPatientsWithObsMatchingTheSpecifiedValuesFromTheLatestEncounter()
-	    throws Exception {
+	        throws Exception {
 		ObsForLatestEncounterCohortDefinition def = new ObsForLatestEncounterCohortDefinition();
 		def.setPropertyName("valueNumeric");
 		def.setConcept(new Concept(5089));
 		def.setEncounterType(new EncounterType(101));
 		def.setValues(asList(72.0, 84.0, 88.0));
-		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContext());
+		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, null);
 		Assert.assertEquals(3, evaluatedCohort.activeMembershipSize());
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(2)));
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
@@ -42,7 +41,7 @@ public class ObsForLatestEncounterCohortDefinitionEvaluatorTest extends BaseModu
 		
 		//Try with a narrowed down value list
 		def.setValues(asList(72.0, 84.0));
-		evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContext());
+		evaluatedCohort = cohortDefService.evaluate(def, null);
 		Assert.assertEquals(2, evaluatedCohort.activeMembershipSize());
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(2)));
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
@@ -51,7 +50,7 @@ public class ObsForLatestEncounterCohortDefinitionEvaluatorTest extends BaseModu
 		def.setPropertyName("valueCoded");
 		def.setConcept(new Concept(4));
 		def.setValues(asList(Context.getConceptService().getConcept(5)));
-		evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContext());
+		evaluatedCohort = cohortDefService.evaluate(def, null);
 		Assert.assertEquals(2, evaluatedCohort.activeMembershipSize());
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(2)));
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));

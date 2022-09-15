@@ -47,7 +47,7 @@ public class ObsForLatestEncounterCohortDefinitionEvaluator implements CohortDef
 	
 	@Override
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext evaluationContext)
-	    throws EvaluationException {
+	        throws EvaluationException {
 		
 		ObsForLatestEncounterCohortDefinition cohortDef = (ObsForLatestEncounterCohortDefinition) cohortDefinition;
 		Map<EncounterType, List<Integer>> typeAndEncIds = (Map) evaluationContext.getFromCache(KEY_MOST_RECENT_ENC_IDS);

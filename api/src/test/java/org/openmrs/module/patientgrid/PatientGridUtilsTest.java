@@ -87,7 +87,7 @@ public class PatientGridUtilsTest {
 		assertEquals(PreferredNameDataDefinition.class, getDefinition(name, patientData).getClass());
 		assertEquals(GenderDataDefinition.class, getDefinition(gender, patientData).getClass());
 		MappedData ageDef = patientData.getColumnDefinition(ageAtEnc).getDataDefinition();
-		assertEquals(PatientAgeAtEncounterDataDefinition.class, ageDef.getParameterizable().getClass());
+		assertEquals(PatientAgeAtLatestEncounterDataDefinition.class, ageDef.getParameterizable().getClass());
 		assertNull(ageDef.getConverters());
 		Parameterizable locationDef = ((Mapped) patientData.getColumnDefinition(structure).getDataDefinition())
 		        .getParameterizable();
@@ -98,7 +98,7 @@ public class PatientGridUtilsTest {
 		PropertyConverter converter = (PropertyConverter) countryDef.getConverters().get(0);
 		assertEquals("country", converter.getPropertyName());
 		MappedData ageCategoryDef = patientData.getColumnDefinition(ageCategory).getDataDefinition();
-		assertEquals(PatientAgeAtEncounterDataDefinition.class, ageCategoryDef.getParameterizable().getClass());
+		assertEquals(PatientAgeAtLatestEncounterDataDefinition.class, ageCategoryDef.getParameterizable().getClass());
 		assertEquals(1, ageCategoryDef.getConverters().size());
 		List<AgeRange> ageRanges = ((AgeRangeConverter) ageCategoryDef.getConverters().get(0)).getAgeRanges();
 		assertEquals(2, ageRanges.size());
@@ -115,7 +115,7 @@ public class PatientGridUtilsTest {
 		assertNull(ageRange.getMaxAge());
 		assertNull(ageRange.getMaxAgeUnit());
 		assertEquals("18+", ageRange.getLabel());
-		ObsForMostRecentEncounterDataDefinition obsDef = (ObsForMostRecentEncounterDataDefinition) ((Mapped) patientData
+		ObsForLatestEncounterDataDefinition obsDef = (ObsForLatestEncounterDataDefinition) ((Mapped) patientData
 		        .getColumnDefinition(admissionType).getDataDefinition()).getParameterizable();
 		assertEquals(admissionConcept, obsDef.getConcept());
 		assertEquals(admission, obsDef.getEncounterType());

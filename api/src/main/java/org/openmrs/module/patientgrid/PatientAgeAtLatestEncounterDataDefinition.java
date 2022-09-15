@@ -6,7 +6,7 @@ import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
-public class PatientAgeAtEncounterDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
+public class PatientAgeAtLatestEncounterDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
 	@ConfigurationProperty
 	private EncounterType encounterType;
