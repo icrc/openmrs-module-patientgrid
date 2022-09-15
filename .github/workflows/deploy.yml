@@ -1,5 +1,5 @@
 # this build is designed to replicate the Travis CI workflow
-name: Deploy SNAPSHOT with Maven
+name: Deploy SNAPSHOT Version on Main branch
 
 on:
   push:
