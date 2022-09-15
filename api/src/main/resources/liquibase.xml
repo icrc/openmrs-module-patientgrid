@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <!--
+        See http://www.liquibase.org/manual/home#available_database_refactorings
+        for a list of supported elements and attributes
+    -->
+
+    <changeSet id="wluyima" author="202207291100">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="patientgrid_patient_grid" />
+            </not>
+        </preConditions>
+        <comment>Add patientgrid_patient_grid table</comment>
+        <createTable tableName="patientgrid_patient_grid">
+            <column name="patient_grid_id" type="int" autoIncrement="true" >
+                <constraints primaryKey="true" nullable="false" unique="true" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="varchar(255)" />
+            <column name="user_id" type="int" />
+            <column name="cohort_id" type="int" />
+            <column name="creator" type="int" />
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="retired" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="retired_by" type="int" />
+            <column name="retire_reason" type="varchar(255)" />
+            <column name="date_retired" type="datetime" />
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="patient_grid_owner"
+                                 baseTableName="patientgrid_patient_grid"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id" />
+
+        <addForeignKeyConstraint constraintName="patient_grid_cohort_fk"
+                                 baseTableName="patientgrid_patient_grid"
+                                 baseColumnNames="cohort_id"
+                                 referencedTableName="cohort"
+                                 referencedColumnNames="cohort_id" />
+
+        <addForeignKeyConstraint constraintName="patient_grid_creator"
+                                 baseTableName="patientgrid_patient_grid"
+                                 baseColumnNames="creator"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id" />
+
+        <addForeignKeyConstraint constraintName="patient_grid_retired_by"
+                                 baseTableName="patientgrid_patient_grid"
+                                 baseColumnNames="retired_by"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id" />
+
+        <addForeignKeyConstraint constraintName="patient_grid_changed_by"
+                                 baseTableName="patientgrid_patient_grid"
+                                 baseColumnNames="changed_by"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id" />
+    </changeSet>
+
+    <changeSet id="wluyima" author="202207291101">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="patientgrid_patient_grid_column" />
+            </not>
+        </preConditions>
+        <comment>Add patientgrid_patient_grid_column table</comment>
+        <createTable tableName="patientgrid_patient_grid_column">
+            <column name="patient_grid_column_id" type="int" autoIncrement="true" >
+                <constraints primaryKey="true" nullable="false" unique="true" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="varchar(255)" />
+            <column name="patient_grid_id" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="datatype" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="creator" type="int" />
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="retired" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="retired_by" type="int" />
+            <column name="retire_reason" type="varchar(255)" />
+            <column name="date_retired" type="datetime" />
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="parent_patient_grid"
+                                 baseTableName="patientgrid_patient_grid_column"
+                                 baseColumnNames="patient_grid_id"
+                                 referencedTableName="patientgrid_patient_grid"
+                                 referencedColumnNames="patient_grid_id" />
+
+        <addForeignKeyConstraint constraintName="patient_grid_column_creator"
+                                 baseTableName="patientgrid_patient_grid_column"
+                                 baseColumnNames="creator"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id" />
+
+        <addForeignKeyConstraint constraintName="patient_grid_column_retired_by"
+                                 baseTableName="patientgrid_patient_grid_column"
+                                 baseColumnNames="retired_by"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id" />
+
+        <addForeignKeyConstraint constraintName="patient_grid_column_changed_by"
+                                 baseTableName="patientgrid_patient_grid_column"
+                                 baseColumnNames="changed_by"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id" />
+    </changeSet>
+
+    <changeSet id="wluyima" author="202207291102">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="patientgrid_obs_patient_grid_column" />
+            </not>
+        </preConditions>
+        <comment>Add patientgrid_obs_patient_grid_column table</comment>
+        <createTable tableName="patientgrid_obs_patient_grid_column">
+            <column name="patient_grid_column_id" type="int" autoIncrement="true" >
+                <constraints primaryKey="true" nullable="false" unique="true" />
+            </column>
+            <column name="concept_id" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="encounter_type_id" type="int">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="obs_column_parent_column_fk"
+                                 baseTableName="patientgrid_obs_patient_grid_column"
+                                 baseColumnNames="patient_grid_column_id"
+                                 referencedTableName="patientgrid_patient_grid_column"
+                                 referencedColumnNames="patient_grid_column_id" />
+
+        <addForeignKeyConstraint constraintName="obs_patient_grid_column_concept_fk"
+                                 baseTableName="patientgrid_obs_patient_grid_column"
+                                 baseColumnNames="concept_id"
+                                 referencedTableName="concept"
+                                 referencedColumnNames="concept_id" />
+
+        <addForeignKeyConstraint constraintName="obs_column_encounter_type_fk"
+                                 baseTableName="patientgrid_obs_patient_grid_column"
+                                 baseColumnNames="encounter_type_id"
+                                 referencedTableName="encounter_type"
+                                 referencedColumnNames="encounter_type_id" />
+    </changeSet>
+
+    <changeSet id="wluyima" author="202208190900">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="patientgrid_enc_age_patient_grid_column" />
+            </not>
+        </preConditions>
+        <comment>Add patientgrid_enc_age_patient_grid_column table</comment>
+        <createTable tableName="patientgrid_enc_age_patient_grid_column">
+            <column name="patient_grid_column_id" type="int" autoIncrement="true" >
+                <constraints primaryKey="true" nullable="false" unique="true" />
+            </column>
+            <column name="encounter_type_id" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="convert_to_age_range" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="age_column_parent_column_fk"
+                                 baseTableName="patientgrid_enc_age_patient_grid_column"
+                                 baseColumnNames="patient_grid_column_id"
+                                 referencedTableName="patientgrid_patient_grid_column"
+                                 referencedColumnNames="patient_grid_column_id" />
+
+        <addForeignKeyConstraint constraintName="age_column_encounter_type_fk"
+                                 baseTableName="patientgrid_enc_age_patient_grid_column"
+                                 baseColumnNames="encounter_type_id"
+                                 referencedTableName="encounter_type"
+                                 referencedColumnNames="encounter_type_id" />
+    </changeSet>
+
+    <changeSet id="wluyima" author="202209011620">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="patientgrid_patient_grid_column_filter" />
+            </not>
+        </preConditions>
+        <comment>Add patientgrid_patient_grid_column_filter table</comment>
+        <createTable tableName="patientgrid_patient_grid_column_filter">
+            <column name="patient_grid_column_filter_id" type="int" autoIncrement="true" >
+                <constraints primaryKey="true" nullable="false" unique="true" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="patient_grid_column_id" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="operator" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="operand" type="varchar(65535)" />
+            <column name="creator" type="int" />
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="uuid" type="varchar(38)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="parent_patient_grid_column"
+                                 baseTableName="patientgrid_patient_grid_column_filter"
+                                 baseColumnNames="patient_grid_column_id"
+                                 referencedTableName="patientgrid_patient_grid_column"
+                                 referencedColumnNames="patient_grid_column_id" />
+
+        <addForeignKeyConstraint constraintName="patient_grid_column_filter_creator"
+                                 baseTableName="patientgrid_patient_grid_column_filter"
+                                 baseColumnNames="creator"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id" />
+
+        <addForeignKeyConstraint constraintName="patient_grid_column_filter_changed_by"
+                                 baseTableName="patientgrid_patient_grid_column_filter"
+                                 baseColumnNames="changed_by"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id" />
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,21 @@
+<ehcache name="patientGridReportsCache" maxBytesLocalHeap="20m"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="ehcache.xsd">
+
+    <diskStore path="java.io.tmpdir"/>
+
+    <!--
+        Remove item if not accessed for 1 week or if it is 2 weeks old
+
+        Disk Expiry thread runs every hour
+    -->
+
+    <cache name="patientGridReports"
+           overflowToDisk="true"
+           diskPersistent="true"
+           timeToIdleSeconds="1209600"
+           timeToLiveSeconds="2419200"
+           diskExpiryThreadIntervalSeconds="14400">
+    </cache>
+
+</ehcache>
