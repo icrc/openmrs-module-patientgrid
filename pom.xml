@@ -47,6 +47,7 @@
     </modules>
 
     <properties>
+        <formatter.lineEnding>AUTO</formatter.lineEnding>
         <javaCompilerVersion>1.8</javaCompilerVersion>
         <openmrsPlatformVersion>2.3.0</openmrsPlatformVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -170,6 +171,7 @@
                             <directories>
                                 <directory>.</directory>
                             </directories>
+                            <lineEnding>${formatter.lineEnding}</lineEnding>
                             <configFile>eclipse/OpenMRSFormatter.xml</configFile>
                             <includes>
                                 <include>**/*.java</include>
@@ -201,6 +203,12 @@
         </pluginRepository>
     </pluginRepositories>
     <profiles>
+        <profile>
+            <id>keepLineEndingFormatter</id>
+            <properties>
+                <formatter.lineEnding>KEEP</formatter.lineEnding>
+            </properties>
+        </profile>
         <profile>
             <id>jdk1.9</id>
             <activation>
