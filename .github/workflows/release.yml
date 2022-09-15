@@ -9,10 +9,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
-      pull-requests: write
+    permissions: write-all
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
@@ -51,5 +48,6 @@ jobs:
           git commit -a -m "[skip ci] change version to new snapshot $CURRENT_PROJECT_VERSION"
           git push origin "$BRANCH_NAME"
           gh pr create -B main -H $BRANCH_NAME --title 'Update Version to $CURRENT_PROJECT_VERSION' --body 'Created by "Do Release" workflow'
+          echo "Please, accept the PR: Update Version to $CURRENT_PROJECT_VERSION"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
