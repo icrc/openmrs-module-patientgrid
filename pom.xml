@@ -36,8 +36,7 @@
     </organization>
 
     <scm>
-        <connection>scm:git:git@github.com:icrc/openmrs-module-patientgrid.git</connection>
-        <developerConnection>scm:git:git@github.com:icrc/openmrs-module-patientgrid.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/icrc/openmrs-module-patientgrid.git</developerConnection>
         <url>https://github.com/icrc/openmrs-module-patientgrid</url>
         <tag>HEAD</tag>
     </scm>
