@@ -22,10 +22,10 @@ jobs:
           git config user.name "GitHub Actions"
       - name: Remove snapshot
         run: mvn versions:set -DremoveSnapshot=true -DgenerateBackupPoms=false
-#      - name: Release with Maven
-#        run: mvn --batch-mode deploy
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release with Maven
+        run: mvn --batch-mode deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Git tag
         run: |
           CURRENT_PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
