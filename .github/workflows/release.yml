@@ -1,4 +1,4 @@
-name: Release with Maven
+name: Do Release
 
 #on:
 #  workflow_dispatch:
@@ -42,11 +42,17 @@ jobs:
       - name: Move to next snapshot
         run: mvn versions:set -DnextSnapshot=true -DgenerateBackupPoms=false
 
-      - name: Create Branch for next snapshot
+      - name: Create Branch for next Snapshot Version
         run: |
           CURRENT_PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
-          git checkout -b "$CURRENT_PROJECT_VERSION"
+          BRANCH_NAME="move-to-$CURRENT_PROJECT_VERSION"
+          git checkout -b "$BRANCH_NAME"
           git commit -a -m "[skip ci] change version to new snapshot $CURRENT_PROJECT_VERSION"
-          git push origin "$CURRENT_PROJECT_VERSION"
+          git push origin "$BRANCH_NAME"
+          gh pr create -B main -H $BRANCH_NAME --title 'Update Version to $CURRENT_PROJECT_VERSION' --body 'Created by "Do Release" workflow'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: create pull request
+        run:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
