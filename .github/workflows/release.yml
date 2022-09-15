@@ -2,16 +2,13 @@ name: Release with Maven
 
 on:
   workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
-      tags:
-        description: 'Test scenario tags'
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
@@ -20,7 +17,6 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
           cache: 'maven'
-          server-id: 'github'
       - name: Git Config
         run: |
           git config user.email "actions@github.com"
