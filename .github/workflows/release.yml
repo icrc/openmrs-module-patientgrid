@@ -52,7 +52,3 @@ jobs:
           gh pr create -B main -H $BRANCH_NAME --title 'Update Version to $CURRENT_PROJECT_VERSION' --body 'Created by "Do Release" workflow'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: create pull request
-        run:
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
