@@ -4,7 +4,7 @@ name: Deploy SNAPSHOT with Maven
 on:
   push:
     branches:
-      - 'worklow'
+      - 'main'
 
 jobs:
   deploy:
