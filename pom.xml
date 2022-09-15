@@ -55,6 +55,7 @@
         <datafilterVersion>1.2.0</datafilterVersion>
         <webservicesRestVersion>2.24.0</webservicesRestVersion>
         <serializationXstreamVersion>0.2.12</serializationXstreamVersion>
+        <project.scm.id>github</project.scm.id>
     </properties>
 
     <dependencyManagement>
