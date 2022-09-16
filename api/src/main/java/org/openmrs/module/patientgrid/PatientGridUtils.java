@@ -18,6 +18,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
@@ -52,20 +53,28 @@ public class PatientGridUtils {
 	
 	private static final ObjectFormatter OBJECT_CONVERTER = new ObjectFormatter();
 	
-	public static ReportDefinition convertToReportDefinition(PatientGrid patientGrid) {
-		ReportDefinition reportDef = new ReportDefinition();
-		reportDef.setName(patientGrid.getName());
-		reportDef.setDescription(patientGrid.getDescription());
-		PatientDataSetDefinition patientData = new PatientDataSetDefinition();
-		patientData.addColumn(PatientGridConstants.COLUMN_UUID, UUID_DATA_DEF, (String) null);
+	/**
+	 * Create a {@link PatientDataSetDefinition} instance from the specified {@link PatientGrid} object
+	 * 
+	 * @param patientGrid {@link PatientGrid} object
+	 * @param includeObs specifies if obs data should include or not
+	 * @return PatientDataSetDefinition
+	 */
+	public static PatientDataSetDefinition createPatientDataSetDefinition(PatientGrid patientGrid, boolean includeObs) {
+		PatientDataSetDefinition dataSetDef = new PatientDataSetDefinition();
+		dataSetDef.addColumn(PatientGridConstants.COLUMN_UUID, UUID_DATA_DEF, (String) null);
 		
 		for (PatientGridColumn columnDef : patientGrid.getColumns()) {
+			if (!includeObs && columnDef.getDatatype() == ColumnDatatype.OBS) {
+				continue;
+			}
+			
 			switch (columnDef.getDatatype()) {
 				case NAME:
-					patientData.addColumn(columnDef.getName(), NAME_DATA_DEF, (String) null, OBJECT_CONVERTER);
+					dataSetDef.addColumn(columnDef.getName(), NAME_DATA_DEF, (String) null, OBJECT_CONVERTER);
 					break;
 				case GENDER:
-					patientData.addColumn(columnDef.getName(), GENDER_DATA_DEF, (String) null);
+					dataSetDef.addColumn(columnDef.getName(), GENDER_DATA_DEF, (String) null);
 					break;
 				case ENC_AGE:
 					AgeAtEncounterPatientGridColumn ageColumn = (AgeAtEncounterPatientGridColumn) columnDef;
@@ -75,9 +84,9 @@ public class PatientGridUtils {
 						//TODO Define at class level so we construct once
 						AgeRangeConverter converter = new AgeRangeConverter();
 						getAgeRanges().forEach(r -> converter.addAgeRange(r));
-						patientData.addColumn(columnDef.getName(), def, (String) null, converter);
+						dataSetDef.addColumn(columnDef.getName(), def, (String) null, converter);
 					} else {
-						patientData.addColumn(columnDef.getName(), def, (String) null);
+						dataSetDef.addColumn(columnDef.getName(), def, (String) null);
 					}
 					
 					break;
@@ -86,20 +95,27 @@ public class PatientGridUtils {
 					ObsForLatestEncounterDataDefinition obsDataDef = new ObsForLatestEncounterDataDefinition();
 					obsDataDef.setConcept(obsColumn.getConcept());
 					obsDataDef.setEncounterType(obsColumn.getEncounterType());
-					patientData.addColumn(columnDef.getName(), obsDataDef, (String) null, OBS_CONVERTER);
+					dataSetDef.addColumn(columnDef.getName(), obsDataDef, (String) null, OBS_CONVERTER);
 					break;
 				case DATAFILTER_LOCATION:
-					patientData.addColumn(columnDef.getName(), LOCATION_DATA_DEF, (String) null);
+					dataSetDef.addColumn(columnDef.getName(), LOCATION_DATA_DEF, (String) null);
 					break;
 				case DATAFILTER_COUNTRY:
-					patientData.addColumn(columnDef.getName(), LOCATION_DATA_DEF, (String) null, COUNTRY_CONVERTER);
+					dataSetDef.addColumn(columnDef.getName(), LOCATION_DATA_DEF, (String) null, COUNTRY_CONVERTER);
 					break;
 				default:
 					throw new APIException("Don't know how to handle column type: " + columnDef.getDatatype());
 			}
 		}
 		
-		reportDef.addDataSetDefinition("patientData", patientData, null);
+		return dataSetDef;
+	}
+	
+	public static ReportDefinition convertToReportDefinition(PatientGrid patientGrid) {
+		ReportDefinition reportDef = new ReportDefinition();
+		reportDef.setName(patientGrid.getName());
+		reportDef.setDescription(patientGrid.getDescription());
+		reportDef.addDataSetDefinition("patientData", createPatientDataSetDefinition(patientGrid, true), null);
 		
 		return reportDef;
 	}
