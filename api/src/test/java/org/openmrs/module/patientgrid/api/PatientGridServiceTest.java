@@ -380,9 +380,9 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		cohort.setDescription("test");
 		Context.getCohortService().saveCohort(cohort);
 		patientGrid.setCohort(cohort);
+		
 		ReportData reportData = service.evaluate(patientGrid);
-		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
-		assertEquals(reportData, getCache().get(cacheKey).get());
+		
 		SimpleDataSet dataset = (SimpleDataSet) reportData.getDataSets().get("patientData");
 		assertEquals(2, dataset.getRows().size());
 		Patient patient = ps.getPatient(patientId2);
