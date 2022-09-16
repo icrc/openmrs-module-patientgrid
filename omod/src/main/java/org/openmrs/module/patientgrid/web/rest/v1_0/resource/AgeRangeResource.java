@@ -1,7 +1,9 @@
 package org.openmrs.module.patientgrid.web.rest.v1_0.resource;
 
+import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.NAMESPACE;
+import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.SUPPORTED_VERSIONS;
+
 import org.openmrs.module.patientgrid.PatientGridUtils;
-import org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -14,9 +16,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-@Resource(name = PatientGridRestConstants.NAMESPACE
-        + "/agerange", supportedClass = AgeRange.class, supportedOpenmrsVersions = { "1.10.*", "1.11.*", "1.12.*", "2.0.*",
-                "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*" })
+@Resource(name = NAMESPACE + "/agerange", supportedClass = AgeRange.class, supportedOpenmrsVersions = { SUPPORTED_VERSIONS })
 public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 	
 	/**

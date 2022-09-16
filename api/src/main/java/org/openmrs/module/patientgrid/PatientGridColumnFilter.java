@@ -12,6 +12,8 @@ import org.openmrs.User;
  */
 public class PatientGridColumnFilter extends BaseOpenmrsObject implements Auditable, Serializable {
 	
+	private static final long serialVersionUID = 1L;
+	
 	private Integer patientGridColumnFilterId;
 	
 	private String name;

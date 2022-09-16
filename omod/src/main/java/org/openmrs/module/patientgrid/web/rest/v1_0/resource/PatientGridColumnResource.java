@@ -1,5 +1,8 @@
 package org.openmrs.module.patientgrid.web.rest.v1_0.resource;
 
+import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.NAMESPACE;
+import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.SUPPORTED_VERSIONS;
+
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -14,8 +17,24 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 @SubResource(parent = PatientGridResource.class, path = "column", supportedClass = PatientGridColumn.class, supportedOpenmrsVersions = {
-        "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*" })
+        SUPPORTED_VERSIONS })
 public class PatientGridColumnResource extends DelegatingSubResource<PatientGridColumn, PatientGrid, PatientGridResource> {
+	
+	/**
+	 * @see DelegatingSubResource#hasTypesDefined()
+	 */
+	@Override
+	public boolean hasTypesDefined() {
+		return true;
+	}
+	
+	/**
+	 * @see DelegatingSubResource#getResourceName() ()
+	 */
+	@Override
+	protected String getResourceName() {
+		return NAMESPACE + "/patientgrid/column";
+	}
 	
 	/**
 	 * @see DelegatingSubResource#getRepresentationDescription(Representation)

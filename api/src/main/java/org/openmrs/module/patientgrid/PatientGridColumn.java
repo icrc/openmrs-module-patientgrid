@@ -23,6 +23,8 @@ import org.openmrs.BaseOpenmrsObject;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class PatientGridColumn extends BaseChangeableOpenmrsMetadata {
 	
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "patient_grid_column_id")

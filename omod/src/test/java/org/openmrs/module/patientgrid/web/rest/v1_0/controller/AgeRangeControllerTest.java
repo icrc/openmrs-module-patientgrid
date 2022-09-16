@@ -1,16 +1,10 @@
 package org.openmrs.module.patientgrid.web.rest.v1_0.controller;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 
 public class AgeRangeControllerTest extends BasePatientGridRestControllerTest {
-	
-	@Before
-	public void setup() {
-		executeDataSet("patientGrids.xml");
-	}
 	
 	@Override
 	public String getURI() {
@@ -44,4 +38,5 @@ public class AgeRangeControllerTest extends BasePatientGridRestControllerTest {
 	public void shouldGetFullByUuid() throws Exception {
 		super.shouldGetFullByUuid();
 	}
+	
 }
