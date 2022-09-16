@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.StopWatch;
+import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.api.APIException;
@@ -25,8 +27,11 @@ import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.BooleanOperator;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -276,6 +281,46 @@ public class PatientGridFilterUtils {
 		cohortDef.setCompositionString(compositionString);
 		
 		return cohortDef;
+	}
+	
+	/**
+	 * Evaluates any filters found on the columns on the specified {@link PatientGrid} and returns the
+	 * matching patients
+	 * 
+	 * @param patientGrid the {@link PatientGrid} object
+	 * @param context the {@link EvaluationContext} object
+	 * @return a Cohort of matching patients or null if no filters are found
+	 * @throws EvaluationException
+	 */
+	public static Cohort filterPatients(PatientGrid patientGrid, EvaluationContext context) throws EvaluationException {
+		CohortDefinition cohortDef = PatientGridFilterUtils.generateCohortDefinition(patientGrid);
+		if (cohortDef == null) {
+			return null;
+		}
+		
+		if (log.isDebugEnabled()) {
+			log.debug("Filtering patients for patient grid " + patientGrid);
+		}
+		
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		
+		try {
+			Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDef, context);
+			
+			stopWatch.stop();
+			
+			if (log.isDebugEnabled()) {
+				log.debug("Running filters for patient grid " + patientGrid + " completed in " + stopWatch.toString());
+			}
+			
+			return cohort;
+		}
+		finally {
+			if (!stopWatch.isStopped()) {
+				stopWatch.stop();
+			}
+		}
 	}
 	
 }

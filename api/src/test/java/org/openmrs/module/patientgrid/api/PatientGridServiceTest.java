@@ -368,7 +368,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		PatientGrid patientGrid = service.getPatientGrid(2);
 		boolean hasFilteredColumns = false;
 		for (PatientGridColumn column : patientGrid.getColumns()) {
-			if (!column.getName().isEmpty()) {
+			if (!column.getFilters().isEmpty()) {
 				hasFilteredColumns = true;
 				break;
 			}
@@ -385,14 +385,14 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(reportData, getCache().get(cacheKey).get());
 		SimpleDataSet dataset = (SimpleDataSet) reportData.getDataSets().get("patientData");
 		assertEquals(2, dataset.getRows().size());
-		Patient patient = ps.getPatient(2);
+		Patient patient = ps.getPatient(patientId2);
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
 		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
 		Map<String, Object> obs = (Map) dataset.getColumnValue(patient.getId(), "civilStatus");
 		assertEquals("SINGLE", obs.get("value"));
 		
-		patient = ps.getPatient(6);
+		patient = ps.getPatient(patientId6);
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
 		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));

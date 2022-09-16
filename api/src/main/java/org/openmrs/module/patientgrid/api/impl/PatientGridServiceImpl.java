@@ -12,8 +12,6 @@ import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.patientgrid.api.db.PatientGridDAO;
 import org.openmrs.module.patientgrid.filter.PatientGridFilterUtils;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.report.ReportData;
@@ -104,7 +102,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		try {
 			ReportDefinition reportDef = PatientGridUtils.convertToReportDefinition(patientGrid);
 			EvaluationContext context = new EvaluationContext();
-			Cohort cohort = filterPatients(patientGrid, context);
+			Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, context);
 			if (cohort == null) {
 				cohort = patientGrid.getCohort();
 			}
@@ -124,37 +122,6 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		}
 		catch (EvaluationException e) {
 			throw new APIException("Failed to evaluate patient grid: " + patientGrid, e);
-		}
-		finally {
-			if (!stopWatch.isStopped()) {
-				stopWatch.stop();
-			}
-		}
-	}
-	
-	private Cohort filterPatients(PatientGrid patientGrid, EvaluationContext context) throws EvaluationException {
-		CohortDefinition cohortDef = PatientGridFilterUtils.generateCohortDefinition(patientGrid);
-		if (cohortDef == null) {
-			return null;
-		}
-		
-		if (log.isDebugEnabled()) {
-			log.debug("Filtering patients for patient grid " + patientGrid);
-		}
-		
-		StopWatch stopWatch = new StopWatch();
-		stopWatch.start();
-		
-		try {
-			Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDef, context);
-			
-			stopWatch.stop();
-			
-			if (log.isDebugEnabled()) {
-				log.debug("Running filters for patient grid " + patientGrid + " completed in " + stopWatch.toString());
-			}
-			
-			return cohort;
 		}
 		finally {
 			if (!stopWatch.isStopped()) {
