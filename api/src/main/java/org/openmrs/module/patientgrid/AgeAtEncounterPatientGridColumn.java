@@ -1,11 +1,12 @@
 package org.openmrs.module.patientgrid;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import org.openmrs.EncounterType;
 
-//@Entity
+@Entity
 @Table(name = "patientgrid_enc_age_patient_grid_column")
 public class AgeAtEncounterPatientGridColumn extends BaseEncounterTypePatientGridColumn {
 	

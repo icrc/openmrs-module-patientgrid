@@ -7,19 +7,22 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.openmrs.BaseChangeableOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.Cohort;
 import org.openmrs.User;
 
-//@Entity@Table(name = "patientgrid_patient_grid")
+@Entity
+@Table(name = "patientgrid_patient_grid")
 public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	
 	private static final long serialVersionUID = 1L;

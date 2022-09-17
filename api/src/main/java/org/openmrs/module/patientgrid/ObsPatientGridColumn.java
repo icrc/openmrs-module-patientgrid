@@ -1,5 +1,6 @@
 package org.openmrs.module.patientgrid;
 
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -7,7 +8,7 @@ import javax.persistence.Table;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 
-//@Entity
+@Entity
 @Table(name = "patientgrid_obs_patient_grid_column")
 public class ObsPatientGridColumn extends BaseEncounterTypePatientGridColumn {
 	
@@ -16,7 +17,7 @@ public class ObsPatientGridColumn extends BaseEncounterTypePatientGridColumn {
 	private Concept concept;
 	
 	public ObsPatientGridColumn() {
-		super(null, null, null);
+		this(null, null, null);
 	}
 	
 	public ObsPatientGridColumn(String name, Concept concept, EncounterType encounterType) {

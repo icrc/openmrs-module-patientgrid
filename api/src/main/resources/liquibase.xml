@@ -10,7 +10,7 @@
         for a list of supported elements and attributes
     -->
 
-    <changeSet id="wluyima" author="202207291100">
+    <changeSet id="${project.parent.artifactId}-202207291100" author="wluyima">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="patientgrid_patient_grid" />
@@ -75,7 +75,7 @@
                                  referencedColumnNames="user_id" />
     </changeSet>
 
-    <changeSet id="wluyima" author="202207291101">
+    <changeSet id="${project.parent.artifactId}-202207291101" author="wluyima">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="patientgrid_patient_grid_column" />
@@ -138,7 +138,7 @@
                                  referencedColumnNames="user_id" />
     </changeSet>
 
-    <changeSet id="wluyima" author="202207291102">
+    <changeSet id="${project.parent.artifactId}-202207291102" author="wluyima">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="patientgrid_obs_patient_grid_column" />
@@ -176,7 +176,7 @@
                                  referencedColumnNames="encounter_type_id" />
     </changeSet>
 
-    <changeSet id="wluyima" author="202208190900">
+    <changeSet id="${project.parent.artifactId}-202208190900" author="wluyima">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="patientgrid_enc_age_patient_grid_column" />
@@ -208,7 +208,7 @@
                                  referencedColumnNames="encounter_type_id" />
     </changeSet>
 
-    <changeSet id="wluyima" author="202209011620">
+    <changeSet id="${project.parent.artifactId}-202209011620" author="wluyima">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="patientgrid_patient_grid_column_filter" />
@@ -228,7 +228,9 @@
             <column name="operator" type="varchar(50)">
                 <constraints nullable="false" />
             </column>
-            <column name="operand" type="varchar(255)" />
+            <column name="operand" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
             <column name="creator" type="int" />
             <column name="date_created" type="datetime">
                 <constraints nullable="false" />

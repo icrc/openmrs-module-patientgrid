@@ -3,7 +3,11 @@ package org.openmrs.module.patientgrid;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -13,12 +17,13 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.openmrs.BaseChangeableOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
 
-//@Entity
+@Entity
 @Table(name = "patientgrid_patient_grid_column")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class PatientGridColumn extends BaseChangeableOpenmrsMetadata {
@@ -38,6 +43,8 @@ public class PatientGridColumn extends BaseChangeableOpenmrsMetadata {
 	@Column(name = "datatype", nullable = false, length = 50)
 	private ColumnDatatype datatype;
 	
+	@Access(AccessType.FIELD)
+	@OneToMany(mappedBy = "patientGridColumn", orphanRemoval = true, cascade = CascadeType.ALL)
 	private Set<PatientGridColumnFilter> filters;
 	
 	public PatientGridColumn() {
