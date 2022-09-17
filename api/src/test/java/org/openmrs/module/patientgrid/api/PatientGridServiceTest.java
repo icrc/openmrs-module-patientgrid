@@ -144,12 +144,6 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(grid.getRetireReason());
 		assertNull(grid.getRetiredBy());
 		assertNull(grid.getDateRetired());
-		for (PatientGridColumn column : grid.getColumns()) {
-			assertFalse(column.getRetired());
-			assertNull(column.getRetireReason());
-			assertNull(column.getRetiredBy());
-			assertNull(column.getDateRetired());
-		}
 		
 		final ReportData cachedData = new ReportData();
 		final String cacheKey = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
@@ -163,12 +157,6 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(reason, grid.getRetireReason());
 		assertNotNull(grid.getRetiredBy());
 		assertNotNull(grid.getDateRetired());
-		for (PatientGridColumn column : grid.getColumns()) {
-			assertTrue(column.getRetired());
-			assertEquals(reason, column.getRetireReason());
-			assertNotNull(column.getRetiredBy());
-			assertNotNull(column.getDateRetired());
-		}
 		
 		assertNull(getCache().get(cacheKey));
 		assertNotNull(getCache().get(cacheKeyOther));
@@ -181,12 +169,6 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(grid.getRetireReason());
 		assertNotNull(grid.getRetiredBy());
 		assertNotNull(grid.getDateRetired());
-		for (PatientGridColumn column : grid.getColumns()) {
-			assertTrue(column.getRetired());
-			assertNotNull(column.getRetireReason());
-			assertNotNull(column.getRetiredBy());
-			assertNotNull(column.getDateRetired());
-		}
 		
 		final ReportData cachedData = new ReportData();
 		final String cacheKey = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
@@ -200,12 +182,6 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(grid.getRetireReason());
 		assertNull(grid.getRetiredBy());
 		assertNull(grid.getDateRetired());
-		for (PatientGridColumn column : grid.getColumns()) {
-			assertFalse(column.getRetired());
-			assertNull(column.getRetireReason());
-			assertNull(column.getRetiredBy());
-			assertNull(column.getDateRetired());
-		}
 		
 		assertNull(getCache().get(cacheKey));
 		assertNotNull(getCache().get(cacheKeyOther));
