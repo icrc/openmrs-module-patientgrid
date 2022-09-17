@@ -35,13 +35,17 @@ A release, will:
   "results": [
     {
       "minAge": 0,
+      "minAgeUnit": "YEARS",
       "maxAge": 17,
+      "maxAgeUnit": "YEARS",
       "label": "<18yrs",
       "display": "<18yrs"
     },
     {
       "minAge": 18,
+      "minAgeUnit": "YEARS",
       "maxAge": null,
+      "maxAgeUnit": "YEARS",
       "label": "18+",
       "display": "18+"
     }

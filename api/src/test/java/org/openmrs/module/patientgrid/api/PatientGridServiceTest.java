@@ -376,4 +376,14 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals("SINGLE", obs.get("value"));
 	}
 	
+	@Test
+	public void getPatientGridColumnByUuid_shouldReturnThePatientGridColumnMatchingTheSpecifiedUuid() {
+		assertEquals(1, service.getPatientGridColumnByUuid("1e6c993e-c2cc-11de-8d13-0010c6dffd0b").getId().intValue());
+	}
+	
+	@Test
+	public void getPatientGridColumnByUuid_shouldReturnNullIfNoPatientGridColumnMatchesTheSpecifiedUuid() {
+		assertNull(service.getPatientGridColumnByUuid("bad-uuid"));
+	}
+	
 }

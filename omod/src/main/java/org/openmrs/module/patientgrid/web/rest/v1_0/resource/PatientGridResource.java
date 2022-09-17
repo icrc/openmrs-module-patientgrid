@@ -10,6 +10,7 @@ import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
+import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
@@ -18,6 +19,11 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.RefProperty;
 
 @Resource(name = NAMESPACE + "/patientgrid", supportedClass = PatientGrid.class, supportedOpenmrsVersions = {
         SUPPORTED_VERSIONS })
@@ -33,10 +39,12 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 			return null;
 		}
 		
-		description.addProperty("owner", Representation.REF);
-		if (rep instanceof FullRepresentation) {
-			description.addRequiredProperty("columns", Representation.DEFAULT);
-			description.addProperty("auditInfo");
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			description.addProperty("owner", Representation.REF);
+			if (rep instanceof FullRepresentation) {
+				description.addRequiredProperty("columns", Representation.DEFAULT);
+				description.addProperty("auditInfo");
+			}
 		}
 		
 		return description;
@@ -90,6 +98,36 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
 		return new NeedsPaging(Context.getService(PatientGridService.class).getPatientGrids(context.getIncludeAll()),
 		        context);
+	}
+	
+	/**
+	 * @see MetadataDelegatingCrudResource#getGETModel(Representation)
+	 */
+	@Override
+	public Model getGETModel(Representation rep) {
+		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			model.property("owner", new RefProperty("#/definitions/UserGetRef"));
+			if (rep instanceof FullRepresentation) {
+				model.property("columns",
+				    new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridColumnGet")));
+			}
+		}
+		
+		return model;
+	}
+	
+	/**
+	 * @see MetadataDelegatingCrudResource#getCREATEModel(Representation)
+	 */
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+		model.required("name");
+		model.property("columns", new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridColumnCreate")));
+		model.required("columns");
+		model.property("owner", new RefProperty("#/definitions/UserGetRef"));
+		return model;
 	}
 	
 	/**

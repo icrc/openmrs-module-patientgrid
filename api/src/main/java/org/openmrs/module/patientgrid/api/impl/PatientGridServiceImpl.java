@@ -8,6 +8,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.patientgrid.PatientGrid;
+import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.patientgrid.api.db.PatientGridDAO;
@@ -86,6 +87,14 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 	@Override
 	public PatientGrid unretirePatientGrid(PatientGrid patientGrid) {
 		return Context.getService(PatientGridService.class).savePatientGrid(patientGrid);
+	}
+	
+	/**
+	 * @see PatientGridService#getPatientGridColumnByUuid(String)
+	 */
+	@Override
+	public PatientGridColumn getPatientGridColumnByUuid(String uuid) {
+		return dao.getPatientGridColumnByUuid(uuid);
 	}
 	
 	/**

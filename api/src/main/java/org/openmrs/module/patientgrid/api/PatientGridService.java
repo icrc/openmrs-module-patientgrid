@@ -12,6 +12,7 @@ import java.util.List;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.patientgrid.PatientGrid;
+import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.reporting.report.ReportData;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -78,6 +79,15 @@ public interface PatientGridService extends OpenmrsService {
 	 */
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
 	PatientGrid unretirePatientGrid(PatientGrid patientGrid);
+	
+	/**
+	 * Gets a patient grid column that matches the specified uuid
+	 *
+	 * @param uuid the uuid to match against
+	 * @return the patient grid column that matches the specified uuid
+	 */
+	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
+	PatientGridColumn getPatientGridColumnByUuid(String uuid);
 	
 	/**
 	 * Evaluates the specified {@link PatientGrid}
