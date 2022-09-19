@@ -1,12 +1,14 @@
 package org.openmrs.module.patientgrid;
 
 import static org.openmrs.module.patientgrid.PatientGridConstants.GP_AGE_RANGES;
+import static org.openmrs.module.patientgrid.PatientGridConstants.OBS_CONVERTER;
 import static org.openmrs.module.reporting.common.Age.Unit.YEARS;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,8 +40,6 @@ import org.slf4j.LoggerFactory;
 public class PatientGridUtils {
 	
 	private static final Logger log = LoggerFactory.getLogger(PatientGridUtils.class);
-	
-	private static final PatientGridObsConverter OBS_CONVERTER = new PatientGridObsConverter();
 	
 	private static final PropertyConverter COUNTRY_CONVERTER = new PropertyConverter(String.class, "country");
 	
@@ -231,6 +231,17 @@ public class PatientGridUtils {
 		}
 		
 		return parseAgeRangeString(ageRange);
+	}
+	
+	/**
+	 * Gets all encounter types defined on all ObsPatientGridColumns in the specified
+	 * {@link PatientGrid}
+	 * 
+	 * @param patientGrid {@link PatientGrid} object
+	 * @return set of {@link EncounterType} objects
+	 */
+	public static Set<EncounterType> getEncounterTypes(PatientGrid patientGrid) {
+		return patientGrid.getObsColumns().stream().map(c -> c.getEncounterType()).collect(Collectors.toSet());
 	}
 	
 }

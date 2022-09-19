@@ -4,10 +4,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
+import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.NAME;
 import static org.openmrs.module.patientgrid.PatientGridConstants.GP_AGE_RANGES;
 
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,6 +57,25 @@ public class PatientGridUtilsTest {
 		JoinDataDefinition nameDef = (JoinDataDefinition) ((Mapped) def.getColumnDefinition(columnName).getDataDefinition())
 		        .getParameterizable();
 		return nameDef.getJoinedDefinition();
+	}
+	
+	@Test
+	public void getEncounterTypes_shouldReturnTheSetOfEncounterTypesForTheObsColumnsInThePatientGrid() {
+		final PatientGrid patientGrid = new PatientGrid();
+		final EncounterType adultInitial = new EncounterType();
+		final EncounterType adultReturn = new EncounterType();
+		final PatientGridColumn weightColumn = new ObsPatientGridColumn(null, null, adultInitial);
+		final PatientGridColumn maritalStatusColumn = new ObsPatientGridColumn(null, null, adultReturn);
+		final PatientGridColumn heightColumn = new ObsPatientGridColumn(null, null, adultInitial);
+		patientGrid.addColumn(new PatientGridColumn(null, NAME));
+		patientGrid.addColumn(weightColumn);
+		patientGrid.addColumn(maritalStatusColumn);
+		patientGrid.addColumn(heightColumn);
+		
+		Set<EncounterType> types = PatientGridUtils.getEncounterTypes(patientGrid);
+		assertEquals(2, types.size());
+		assertTrue(types.contains(adultInitial));
+		assertTrue(types.contains(adultReturn));
 	}
 	
 	@Test
