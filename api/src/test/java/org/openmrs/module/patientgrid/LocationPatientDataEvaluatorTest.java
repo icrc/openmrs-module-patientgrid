@@ -21,7 +21,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class PatientLocationDataEvaluatorTest extends BaseModuleContextSensitiveTest {
+public class LocationPatientDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	@Autowired
 	private PatientDataService patientDataService;
@@ -43,7 +43,7 @@ public class PatientLocationDataEvaluatorTest extends BaseModuleContextSensitive
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6)));
 		
-		EvaluatedPatientData data = patientDataService.evaluate(new PatientLocationDataDefinition(), context);
+		EvaluatedPatientData data = patientDataService.evaluate(new LocationPatientDataDefinition(), context);
 		
 		assertEquals(2, data.getData().size());
 		assertEquals(locationService.getLocation(4000), data.getData().get(patientId2));
@@ -59,7 +59,7 @@ public class PatientLocationDataEvaluatorTest extends BaseModuleContextSensitive
 		assertTrue(dataFilterService.getEntityBasisMaps(patient, Location.class.getName()).isEmpty());
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort(asList(patientId)));
-		assertTrue(patientDataService.evaluate(new PatientLocationDataDefinition(), context).getData().isEmpty());
+		assertTrue(patientDataService.evaluate(new LocationPatientDataDefinition(), context).getData().isEmpty());
 	}
 	
 	@Test
@@ -72,7 +72,7 @@ public class PatientLocationDataEvaluatorTest extends BaseModuleContextSensitive
 		assertTrue(maps.get(0).getDateCreated().before(maps.get(1).getDateCreated()));
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort(asList(patientId)));
-		PatientLocationDataDefinition d = new PatientLocationDataDefinition();
+		LocationPatientDataDefinition d = new LocationPatientDataDefinition();
 		
 		EvaluatedPatientData data = patientDataService.evaluate(d, context);
 		
@@ -92,7 +92,7 @@ public class PatientLocationDataEvaluatorTest extends BaseModuleContextSensitive
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort(asList(patientId)));
 		
-		EvaluatedPatientData data = patientDataService.evaluate(new PatientLocationDataDefinition(), context);
+		EvaluatedPatientData data = patientDataService.evaluate(new LocationPatientDataDefinition(), context);
 		
 		assertEquals(1, data.getData().size());
 		assertEquals(locationService.getLocation(4002), data.getData().get(patientId));

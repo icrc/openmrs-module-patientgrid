@@ -107,18 +107,18 @@ public class PatientGridUtilsTest {
 		assertEquals(PreferredNameDataDefinition.class, getDefinition(name, datasetDef).getClass());
 		assertEquals(GenderDataDefinition.class, getDefinition(gender, datasetDef).getClass());
 		MappedData ageDef = datasetDef.getColumnDefinition(ageAtEnc).getDataDefinition();
-		assertEquals(PatientAgeAtLatestEncounterDataDefinition.class, ageDef.getParameterizable().getClass());
+		assertEquals(AgeAtLatestEncounterPatientDataDefinition.class, ageDef.getParameterizable().getClass());
 		assertNull(ageDef.getConverters());
 		Parameterizable locationDef = ((Mapped) datasetDef.getColumnDefinition(structure).getDataDefinition())
 		        .getParameterizable();
-		assertEquals(PatientLocationDataDefinition.class, locationDef.getClass());
+		assertEquals(LocationPatientDataDefinition.class, locationDef.getClass());
 		MappedData countryDef = datasetDef.getColumnDefinition(country).getDataDefinition();
-		assertEquals(PatientLocationDataDefinition.class, countryDef.getParameterizable().getClass());
+		assertEquals(LocationPatientDataDefinition.class, countryDef.getParameterizable().getClass());
 		assertEquals(1, countryDef.getConverters().size());
 		PropertyConverter converter = (PropertyConverter) countryDef.getConverters().get(0);
 		assertEquals("country", converter.getPropertyName());
 		MappedData ageCategoryDef = datasetDef.getColumnDefinition(ageCategory).getDataDefinition();
-		assertEquals(PatientAgeAtLatestEncounterDataDefinition.class, ageCategoryDef.getParameterizable().getClass());
+		assertEquals(AgeAtLatestEncounterPatientDataDefinition.class, ageCategoryDef.getParameterizable().getClass());
 		assertEquals(1, ageCategoryDef.getConverters().size());
 		List<AgeRange> ageRanges = ((AgeRangeConverter) ageCategoryDef.getConverters().get(0)).getAgeRanges();
 		assertEquals(2, ageRanges.size());
@@ -135,7 +135,7 @@ public class PatientGridUtilsTest {
 		assertNull(ageRange.getMaxAge());
 		assertNull(ageRange.getMaxAgeUnit());
 		assertEquals("18+", ageRange.getLabel());
-		ObsForLatestEncounterDataDefinition obsDef = (ObsForLatestEncounterDataDefinition) ((Mapped) datasetDef
+		ObsForLatestEncounterPatientDataDefinition obsDef = (ObsForLatestEncounterPatientDataDefinition) ((Mapped) datasetDef
 		        .getColumnDefinition(admissionType).getDataDefinition()).getParameterizable();
 		assertEquals(admissionConcept, obsDef.getConcept());
 		assertEquals(admission, obsDef.getEncounterType());

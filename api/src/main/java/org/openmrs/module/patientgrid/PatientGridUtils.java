@@ -43,7 +43,7 @@ public class PatientGridUtils {
 	
 	private static final PropertyConverter COUNTRY_CONVERTER = new PropertyConverter(String.class, "country");
 	
-	private static final PatientLocationDataDefinition LOCATION_DATA_DEF = new PatientLocationDataDefinition();
+	private static final LocationPatientDataDefinition LOCATION_DATA_DEF = new LocationPatientDataDefinition();
 	
 	private static final PreferredNameDataDefinition NAME_DATA_DEF = new PreferredNameDataDefinition();
 	
@@ -78,7 +78,7 @@ public class PatientGridUtils {
 					break;
 				case ENC_AGE:
 					AgeAtEncounterPatientGridColumn ageColumn = (AgeAtEncounterPatientGridColumn) columnDef;
-					PatientAgeAtLatestEncounterDataDefinition def = new PatientAgeAtLatestEncounterDataDefinition();
+					AgeAtLatestEncounterPatientDataDefinition def = new AgeAtLatestEncounterPatientDataDefinition();
 					def.setEncounterType(ageColumn.getEncounterType());
 					if (ageColumn.getConvertToAgeRange()) {
 						//TODO Define at class level so we construct once
@@ -92,7 +92,7 @@ public class PatientGridUtils {
 					break;
 				case OBS:
 					ObsPatientGridColumn obsColumn = (ObsPatientGridColumn) columnDef;
-					ObsForLatestEncounterDataDefinition obsDataDef = new ObsForLatestEncounterDataDefinition();
+					ObsForLatestEncounterPatientDataDefinition obsDataDef = new ObsForLatestEncounterPatientDataDefinition();
 					obsDataDef.setConcept(obsColumn.getConcept());
 					obsDataDef.setEncounterType(obsColumn.getEncounterType());
 					dataSetDef.addColumn(columnDef.getName(), obsDataDef, (String) null, OBS_CONVERTER);

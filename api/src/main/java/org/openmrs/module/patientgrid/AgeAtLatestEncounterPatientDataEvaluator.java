@@ -25,16 +25,16 @@ import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Handler(supports = PatientAgeAtLatestEncounterDataDefinition.class, order = 50)
-public class PatientAgeAtLatestEncounterDataEvaluator implements PatientDataEvaluator {
+@Handler(supports = AgeAtLatestEncounterPatientDataDefinition.class, order = 50)
+public class AgeAtLatestEncounterPatientDataEvaluator implements PatientDataEvaluator {
 	
-	private static final Logger log = LoggerFactory.getLogger(PatientAgeAtLatestEncounterDataEvaluator.class);
+	private static final Logger log = LoggerFactory.getLogger(AgeAtLatestEncounterPatientDataEvaluator.class);
 	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
 	        throws EvaluationException {
 		
-		PatientAgeAtLatestEncounterDataDefinition def = (PatientAgeAtLatestEncounterDataDefinition) definition;
+		AgeAtLatestEncounterPatientDataDefinition def = (AgeAtLatestEncounterPatientDataDefinition) definition;
 		Map<EncounterType, Map> typeAndEncData = (Map) context.getFromCache(KEY_MOST_RECENT_ENCS);
 		if (typeAndEncData == null) {
 			typeAndEncData = new HashMap();

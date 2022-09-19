@@ -19,7 +19,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-public class ObsForLatestEncounterDataEvaluatorTest extends BaseModuleContextSensitiveTest {
+public class ObsForLatestEncounterPatientDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	@Autowired
 	private PatientDataService patientDataService;
@@ -49,7 +49,7 @@ public class ObsForLatestEncounterDataEvaluatorTest extends BaseModuleContextSen
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6)));
 		Concept concept = cs.getConcept(5089);
-		ObsForLatestEncounterDataDefinition obsDef = new ObsForLatestEncounterDataDefinition();
+		ObsForLatestEncounterPatientDataDefinition obsDef = new ObsForLatestEncounterPatientDataDefinition();
 		obsDef.setEncounterType(encounterType);
 		obsDef.setConcept(concept);
 		
