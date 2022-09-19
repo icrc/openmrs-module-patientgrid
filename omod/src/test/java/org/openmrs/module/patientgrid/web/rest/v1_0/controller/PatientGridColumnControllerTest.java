@@ -6,8 +6,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
+import org.openmrs.module.patientgrid.AgeAtEncounterPatientGridColumn;
+import org.openmrs.module.patientgrid.ObsPatientGridColumn;
+import org.openmrs.module.patientgrid.PatientGridColumn;
+import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class PatientGridColumnControllerTest extends BasePatientGridRestControllerTest {
@@ -40,11 +45,47 @@ public class PatientGridColumnControllerTest extends BasePatientGridRestControll
 		SimpleObject column = new SimpleObject();
 		column.add("type", "column");
 		column.add("name", "nick name");
-		column.add("datatype", "NAME");
+		column.add("datatype", ColumnDatatype.NAME);
 		
-		handle(newPostRequest(getURI(), column));
+		SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
 		
 		assertEquals(++initialCount, getAllCount());
+		PatientGridColumn saveColumn = service.getPatientGridColumnByUuid(Util.getByPath(result, "uuid").toString());
+		assertEquals(PatientGridColumn.class, saveColumn.getClass());
+	}
+	
+	//@Test
+	public void shouldAddANewObsColumnToThePatientGrid() throws Exception {
+		long initialCount = getAllCount();
+		SimpleObject column = new SimpleObject();
+		column.add("type", "obscolumn");
+		column.add("name", "height");
+		column.add("datatype", ColumnDatatype.OBS);
+		column.add("encounterType", "19218f76-6c39-45f4-8efa-4c5c6c199f50");
+		column.add("concept", "95312123-e0c2-466d-b6b1-cb6e990d0d65");
+		
+		SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
+		
+		assertEquals(++initialCount, getAllCount());
+		PatientGridColumn savedColumn = service.getPatientGridColumnByUuid(Util.getByPath(result, "uuid").toString());
+		assertEquals(ObsPatientGridColumn.class, savedColumn.getClass());
+	}
+	
+	//@Test
+	public void shouldAddANewAgeColumnToThePatientGrid() throws Exception {
+		long initialCount = getAllCount();
+		SimpleObject column = new SimpleObject();
+		column.add("type", "agecolumn");
+		column.add("name", "height");
+		column.add("datatype", ColumnDatatype.OBS);
+		column.add("encounterType", "19218f76-6c39-45f4-8efa-4c5c6c199f50");
+		column.add("convertToAgeRange", true);
+		
+		SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
+		
+		assertEquals(++initialCount, getAllCount());
+		PatientGridColumn savedColumn = service.getPatientGridColumnByUuid(Util.getByPath(result, "uuid").toString());
+		assertEquals(AgeAtEncounterPatientGridColumn.class, savedColumn.getClass());
 	}
 	
 	@Test
@@ -61,7 +102,22 @@ public class PatientGridColumnControllerTest extends BasePatientGridRestControll
 	}
 	
 	@Test
-	public void shouldRemoveAnExistingPatientGridForADeleteRequest() throws Exception {
+	public void shouldUpdateAnExistingObsColumn() throws Exception {
+		long initialCount = getAllCount();
+		final String newName = "New Name";
+		final String uuid = "4e6c993e-c2cc-11de-8d13-0010c6dffd0b";
+		ObsPatientGridColumn column = (ObsPatientGridColumn) service.getPatientGridColumnByUuid(uuid);
+		assertNotEquals(newName, column.getName());
+		final String json = "{ \"name\":\"" + newName + "\" }";
+		
+		handle(newPostRequest(getURI() + "/" + uuid, json));
+		
+		assertEquals(newName, service.getPatientGridColumnByUuid(uuid).getName());
+		assertEquals(initialCount, getAllCount());
+	}
+	
+	@Test
+	public void shouldRemoveAnExistingColumnFromTheGridForADeleteRequest() throws Exception {
 		long initialCount = getAllCount();
 		assertNotNull(service.getPatientGridColumnByUuid(COLUMN_UUID));
 		
@@ -72,7 +128,7 @@ public class PatientGridColumnControllerTest extends BasePatientGridRestControll
 	}
 	
 	@Test
-	public void shouldDeleteAnExistingPatientGridForAPurgeRequest() throws Exception {
+	public void shouldRemoveAnExistingColumnFromTheGridForAPurgeRequest() throws Exception {
 		long initialCount = getAllCount();
 		assertNotNull(service.getPatientGridColumnByUuid(COLUMN_UUID));
 		

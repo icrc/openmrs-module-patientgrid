@@ -102,7 +102,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	 */
 	@Override
 	public void setParent(PatientGridColumn instance, PatientGrid parent) {
-		parent.addColumn(instance);
+		instance.setPatientGrid(parent);
 	}
 	
 	/**
@@ -151,7 +151,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	 */
 	@Override
 	public void purge(PatientGridColumn delegate, RequestContext context) throws ResponseException {
-		delegate.getPatientGrid().getColumns().remove(delegate);
+		delegate.getPatientGrid().removeColumn(delegate);
 		Context.getService(PatientGridService.class).savePatientGrid(delegate.getPatientGrid());
 	}
 	
