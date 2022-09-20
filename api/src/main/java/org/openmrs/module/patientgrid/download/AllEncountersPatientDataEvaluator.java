@@ -21,14 +21,14 @@ import org.openmrs.module.reporting.data.patient.evaluator.PatientDataEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
-@Handler(supports = ObsForAllEncountersPatientDataDefinition.class, order = 50)
-public class ObsForAllEncountersPatientDataEvaluator implements PatientDataEvaluator {
+@Handler(supports = AllEncountersPatientDataDefinition.class, order = 50)
+public class AllEncountersPatientDataEvaluator implements PatientDataEvaluator {
 	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
 	        throws EvaluationException {
 		
-		ObsForAllEncountersPatientDataDefinition def = (ObsForAllEncountersPatientDataDefinition) definition;
+		AllEncountersPatientDataDefinition def = (AllEncountersPatientDataDefinition) definition;
 		Map<Integer, Object> patientIdAndEncs = PatientGridUtils.getMostRecentEncounters(def.getEncounterType(),
 		    context.getBaseCohort(), false);
 		Set<ObsPatientGridColumn> obsColumns = def.getPatientGrid().getObsColumns();

@@ -20,7 +20,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class ObsForAllEncountersPatientDataEvaluatorTest extends BaseModuleContextSensitiveTest {
+public class AllEncountersPatientDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	@Autowired
 	private PatientDataService patientDataService;
@@ -46,7 +46,7 @@ public class ObsForAllEncountersPatientDataEvaluatorTest extends BaseModuleConte
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6, patientId7, patientId8)));
 		
-		ObsForAllEncountersPatientDataDefinition def = new ObsForAllEncountersPatientDataDefinition();
+		AllEncountersPatientDataDefinition def = new AllEncountersPatientDataDefinition();
 		def.setEncounterType(new EncounterType(101));
 		PatientGrid patientGrid = patientGridService.getPatientGrid(1);
 		def.setPatientGrid(patientGrid);

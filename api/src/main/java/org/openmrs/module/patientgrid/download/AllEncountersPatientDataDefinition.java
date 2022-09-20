@@ -8,7 +8,7 @@ import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
-public class ObsForAllEncountersPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
+public class AllEncountersPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
 	@ConfigurationProperty
 	private PatientGrid patientGrid;
