@@ -44,7 +44,7 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 	}
 	
 	@Test
-	public void getMostRecentEncounters_shouldReturnAllEncounterOfTheSpecifiedTypeForAPatient() throws Exception {
+	public void getMostRecentEncounters_shouldReturnAllEncountersOfTheSpecifiedTypeForAPatient() throws Exception {
 		Cohort cohort = new Cohort();
 		final Integer patientId = 2;
 		cohort.addMember(patientId);

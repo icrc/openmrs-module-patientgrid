@@ -1,6 +1,9 @@
 package org.openmrs.module.patientgrid.download;
 
+import static org.openmrs.module.patientgrid.PatientGridConstants.OBS_CONVERTER;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,8 +13,6 @@ import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.patientgrid.ObsPatientGridColumn;
-import org.openmrs.module.patientgrid.PatientGrid;
-import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.reporting.data.DataUtil;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
@@ -30,20 +31,22 @@ public class ObsForAllEncountersPatientDataEvaluator implements PatientDataEvalu
 		ObsForAllEncountersPatientDataDefinition def = (ObsForAllEncountersPatientDataDefinition) definition;
 		Map<Integer, Object> patientIdAndEncs = PatientGridUtils.getMostRecentEncounters(def.getEncounterType(),
 		    context.getBaseCohort(), false);
-		PatientGrid patientGrid = def.getPatientGrid();
-		Set<ObsPatientGridColumn> obsColumns = patientGrid.getObsColumns();
-		Map<Integer, Object> patientIdAndEncList = patientIdAndEncs.entrySet().parallelStream()
+		Set<ObsPatientGridColumn> obsColumns = def.getPatientGrid().getObsColumns();
+		
+		Map<Integer, Object> patientIdAndEncList = patientIdAndEncs.entrySet().stream()
 		        .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-			        List<List<Object>> encounters = new ArrayList(patientIdAndEncs.size());
+			        List<Map<String, Object>> encounters = new ArrayList(patientIdAndEncs.size());
 			        List<Encounter> patientEncs = (List) entry.getValue();
 			        patientEncs.stream().forEach(encounter -> {
-				        List<Object> observations = new ArrayList(obsColumns.size());
+				        Map<String, Object> columnUuidAndObsMap = new HashMap(obsColumns.size());
 				        obsColumns.stream().forEach(column -> {
 					        Obs obs = PatientGridUtils.getObsByConcept(encounter, column.getConcept());
-					        observations.add(DataUtil.convertData(obs, PatientGridConstants.OBS_CONVERTER));
+					        if (obs != null) {
+						        columnUuidAndObsMap.put(column.getUuid(), DataUtil.convertData(obs, OBS_CONVERTER));
+					        }
 				        });
 				        
-				        encounters.add(observations);
+				        encounters.add(columnUuidAndObsMap);
 			        });
 			        
 			        return encounters;
