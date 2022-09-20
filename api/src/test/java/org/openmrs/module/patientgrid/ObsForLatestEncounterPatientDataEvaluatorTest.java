@@ -45,7 +45,7 @@ public class ObsForLatestEncounterPatientDataEvaluatorTest extends BaseModuleCon
 		final Integer patientId6 = 6;
 		final Integer patientId8 = 8;
 		EncounterType encounterType = new EncounterType(101);
-		assertFalse(PatientGridUtils.getMostRecentEncounters(encounterType, new Cohort(asList(patientId8)), true).isEmpty());
+		assertFalse(PatientGridUtils.getEncounters(encounterType, new Cohort(asList(patientId8)), true).isEmpty());
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6)));
 		Concept concept = cs.getConcept(5089);

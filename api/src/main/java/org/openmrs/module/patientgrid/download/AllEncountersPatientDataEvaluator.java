@@ -29,7 +29,7 @@ public class AllEncountersPatientDataEvaluator implements PatientDataEvaluator {
 	        throws EvaluationException {
 		
 		AllEncountersPatientDataDefinition def = (AllEncountersPatientDataDefinition) definition;
-		Map<Integer, Object> patientIdAndEncs = PatientGridUtils.getMostRecentEncounters(def.getEncounterType(),
+		Map<Integer, Object> patientIdAndEncs = PatientGridUtils.getEncounters(def.getEncounterType(),
 		    context.getBaseCohort(), false);
 		Set<ObsPatientGridColumn> obsColumns = def.getPatientGrid().getObsColumns();
 		

@@ -65,7 +65,7 @@ public class EncounterHistorySearchHandler implements SearchHandler {
 		cohort.addMember(patientId);
 		
 		try {
-			List<Encounter> encs = (List) PatientGridUtils.getMostRecentEncounters(type, cohort, false).get(patientId);
+			List<Encounter> encs = (List) PatientGridUtils.getEncounters(type, cohort, false).get(patientId);
 			return new NeedsPaging(encs, requestContext);
 		}
 		catch (Exception e) {

@@ -121,8 +121,7 @@ public class PatientGridUtils {
 	}
 	
 	/**
-	 * Fetches the most recent encounter data for the specified cohort of patients matching the given
-	 * encounter type.
+	 * Fetches the encounters for the specified cohort of patients matching the given encounter type.
 	 *
 	 * @param type the encounter type to match
 	 * @param cohort the base cohort whose encounters to return
@@ -130,11 +129,15 @@ public class PatientGridUtils {
 	 *            or their encounter history
 	 * @return a map of patient ids to encounters
 	 */
-	public static Map<Integer, Object> getMostRecentEncounters(EncounterType type, Cohort cohort, boolean mostRecentOnly)
+	public static Map<Integer, Object> getEncounters(EncounterType type, Cohort cohort, boolean mostRecentOnly)
 	        throws EvaluationException {
 		
 		if (cohort == null || cohort.size() > 1) {
-			log.info("Fetching most recent encounters for encounter type: " + type);
+			if (mostRecentOnly) {
+				log.info("Fetching most recent encounters of type: " + type);
+			} else {
+				log.info("Fetching encounters of type: " + type);
+			}
 		}
 		
 		StopWatch stopWatch = new StopWatch();
@@ -153,8 +156,11 @@ public class PatientGridUtils {
 		stopWatch.stop();
 		
 		if (cohort == null || cohort.size() > 1) {
-			log.info(
-			    "Fetching most recent encounters for encounter type: " + type + " completed in " + stopWatch.toString());
+			if (mostRecentOnly) {
+				log.info("Fetching most recent encounters of type: " + type + " completed in " + stopWatch.toString());
+			} else {
+				log.info("Fetching encounters of type: " + type + " completed in " + stopWatch.toString());
+			}
 		}
 		
 		return results;

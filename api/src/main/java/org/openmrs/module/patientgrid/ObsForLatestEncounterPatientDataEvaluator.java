@@ -39,8 +39,7 @@ public class ObsForLatestEncounterPatientDataEvaluator implements PatientDataEva
 				log.debug("Loading patient most recent patient encounters of type: " + def.getEncounterType());
 			}
 			
-			patientIdAndEnc = PatientGridUtils.getMostRecentEncounters(def.getEncounterType(), context.getBaseCohort(),
-			    true);
+			patientIdAndEnc = PatientGridUtils.getEncounters(def.getEncounterType(), context.getBaseCohort(), true);
 			typeAndEncData.put(def.getEncounterType(), patientIdAndEnc);
 		}
 		

@@ -34,21 +34,21 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 	}
 	
 	@Test
-	public void getMostRecentEncounters_shouldReturnTheMostRecentEncounterOfTheSpecifiedTypeForAPatient() throws Exception {
+	public void getEncounters_shouldReturnTheMostRecentEncounterOfTheSpecifiedTypeForAPatient() throws Exception {
 		Cohort cohort = new Cohort();
 		final Integer patientId = 2;
 		cohort.addMember(patientId);
-		Map<Integer, Object> idsAndEncs = PatientGridUtils.getMostRecentEncounters(new EncounterType(101), cohort, true);
+		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), cohort, true);
 		assertEquals(1, idsAndEncs.size());
 		assertEquals(2004, ((Encounter) idsAndEncs.get(patientId)).getEncounterId().intValue());
 	}
 	
 	@Test
-	public void getMostRecentEncounters_shouldReturnAllEncountersOfTheSpecifiedTypeForAPatient() throws Exception {
+	public void getEncounters_shouldReturnAllEncountersOfTheSpecifiedTypeForAPatient() throws Exception {
 		Cohort cohort = new Cohort();
 		final Integer patientId = 2;
 		cohort.addMember(patientId);
-		Map<Integer, Object> idsAndEncs = PatientGridUtils.getMostRecentEncounters(new EncounterType(101), cohort, false);
+		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), cohort, false);
 		assertEquals(1, idsAndEncs.size());
 		List<Encounter> encounters = (List) idsAndEncs.get(patientId);
 		assertEquals(3, encounters.size());
@@ -58,11 +58,11 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 	}
 	
 	@Test
-	public void getMostRecentEncounters_shouldReturnNullIfThePatientHasNoMatchingEncounters() throws Exception {
+	public void getEncounters_shouldReturnNullIfThePatientHasNoMatchingEncounters() throws Exception {
 		Cohort cohort = new Cohort();
 		final Integer patientId = 8;
 		cohort.addMember(patientId);
-		assertTrue(PatientGridUtils.getMostRecentEncounters(new EncounterType(102), cohort, true).isEmpty());
+		assertTrue(PatientGridUtils.getEncounters(new EncounterType(102), cohort, true).isEmpty());
 	}
 	
 }
