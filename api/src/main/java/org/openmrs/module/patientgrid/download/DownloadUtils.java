@@ -22,7 +22,7 @@ public class DownloadUtils {
 	
 	private static final Logger log = LoggerFactory.getLogger(DownloadUtils.class);
 	
-	private static DataSetDefinitionService datasetService;
+	private static DataSetDefinitionService dataSetService;
 	
 	public static SimpleDataSet evaluate(PatientGrid patientGrid) {
 		if (log.isDebugEnabled()) {
@@ -34,6 +34,13 @@ public class DownloadUtils {
 		
 		try {
 			PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, false);
+			PatientGridUtils.getEncounterTypes(patientGrid).forEach(type -> {
+				AllEncountersPatientDataDefinition encDef = new AllEncountersPatientDataDefinition();
+				encDef.setEncounterType(type);
+				encDef.setPatientGrid(patientGrid);
+				dataSetDef.addColumn(type.getUuid(), encDef, (String) null);
+			});
+			
 			EvaluationContext context = new EvaluationContext();
 			Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, context);
 			if (cohort == null) {
@@ -46,11 +53,11 @@ public class DownloadUtils {
 			}
 			
 			context.setBaseCohort(cohort);
-			if (datasetService == null) {
-				datasetService = Context.getService(DataSetDefinitionService.class);
+			if (dataSetService == null) {
+				dataSetService = Context.getService(DataSetDefinitionService.class);
 			}
 			
-			SimpleDataSet dataSet = (SimpleDataSet) datasetService.evaluate(dataSetDef, context);
+			SimpleDataSet dataSet = (SimpleDataSet) dataSetService.evaluate(dataSetDef, context);
 			
 			stopWatch.stop();
 			
