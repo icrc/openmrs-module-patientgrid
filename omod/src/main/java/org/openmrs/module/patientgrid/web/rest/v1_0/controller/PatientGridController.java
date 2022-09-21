@@ -26,7 +26,7 @@ public class PatientGridController extends BaseRestController {
 	@RequestMapping(value = "/{uuid}/report")
 	@ResponseBody
 	public Object getPatientGridReport(@PathVariable("uuid") String uuid,
-	        @RequestParam(value = "refresh", required = false, defaultValue = "false") boolean refresh) throws Exception {
+	        @RequestParam(value = "refresh", required = false, defaultValue = "false") boolean refresh) {
 		
 		PatientGridService service = Context.getService(PatientGridService.class);
 		PatientGrid patientGrid = service.getPatientGridByUuid(uuid);

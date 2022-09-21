@@ -60,6 +60,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		description.addRequiredProperty("name");
 		description.addProperty("description");
 		description.addRequiredProperty("datatype");
+		description.addSelfLink();
 		if (representation instanceof FullRepresentation) {
 			description.addProperty("auditInfo");
 		}
