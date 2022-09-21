@@ -19,8 +19,6 @@ public class PatientGridDownloadResourceTest extends BaseDelegatingResourceTest<
 	@Before
 	public void setup() {
 		executeDataSet("patientGrids.xml");
-		executeDataSet("patientGridsTestData.xml");
-		executeDataSet("entityBasisMaps.xml");
 	}
 	
 	@Override

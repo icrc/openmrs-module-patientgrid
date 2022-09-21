@@ -9,6 +9,8 @@ public abstract class BasePatientGridRestControllerTest extends MainResourceCont
 	@Before
 	public void setupBasePatientGridRestControllerTest() {
 		executeDataSet("patientGrids.xml");
+		executeDataSet("patientGridsTestData.xml");
+		executeDataSet("entityBasisMaps.xml");
 	}
 	
 	/**

@@ -10,13 +10,13 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 
-public class PatientGridDownloadControllerTest extends BasePatientGridRestControllerTest {
+public class PatientGridReportControllerTest extends BasePatientGridRestControllerTest {
 	
 	private static String GRID_UUID = "1d6c993e-c2cc-11de-8d13-0010c6dffd0a";
 	
 	@Override
 	public String getURI() {
-		return "patientgrid/" + GRID_UUID + "/download";
+		return "patientgrid/" + GRID_UUID + "/report";
 	}
 	
 	@Override
@@ -33,9 +33,9 @@ public class PatientGridDownloadControllerTest extends BasePatientGridRestContro
 	public void shouldGetAll() throws Exception {
 		SimpleObject result = deserialize(handle(newGetRequest(getURI())));
 		assertEquals(getAllCount(), Util.getResultsSize(result));
-		Map downloadReport = (Map) ((List) Util.getByPath(result, "results")).get(0);
-		assertEquals(GRID_UUID, Util.getByPath(downloadReport, new String[] { "patientGrid", "uuid" }));
-		assertEquals(3, ((List) Util.getByPath(downloadReport, "report")).size());
+		Map report = (Map) ((List) Util.getByPath(result, "results")).get(0);
+		assertEquals(GRID_UUID, Util.getByPath(report, new String[] { "patientGrid", "uuid" }));
+		assertEquals(3, ((List) Util.getByPath(report, "report")).size());
 	}
 	
 	@Override
