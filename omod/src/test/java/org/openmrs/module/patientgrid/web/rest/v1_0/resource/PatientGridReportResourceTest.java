@@ -53,7 +53,7 @@ public class PatientGridReportResourceTest extends BaseDelegatingResourceTest<Pa
 	}
 	
 	@Override
-	public void validateFullRepresentation() throws Exception {
+	public void validateFullRepresentation() {
 		validateRepresentation();
 	}
 	

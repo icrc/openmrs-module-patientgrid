@@ -1,21 +1,26 @@
 package org.openmrs.module.patientgrid.download;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.openmrs.module.patientgrid.PatientGridConstants.COLUMN_UUID;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Cohort;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGrid;
+import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.api.PatientGridService;
-import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +56,10 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
 		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
-		assertEquals(47, ((Age) dataset.getColumnValue(patient.getId(), "ageAtInitial")).getFullYears().intValue());
+		assertEquals(47, dataset.getColumnValue(patient.getId(), "ageAtInitial"));
 		assertEquals("18+", dataset.getColumnValue(patient.getId(), "ageCategory"));
 		Location location = locationService.getLocation(4000);
-		assertEquals(location, dataset.getColumnValue(patient.getId(), "structure"));
+		assertEquals(location.getName(), dataset.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataset.getColumnValue(patient.getId(), "country"));
 		final String initialEncTypeUuid = "19218f76-6c39-45f4-8efa-4c5c6c199f50";
 		final String followUpEncTypeUuid = "29218f76-6c39-45f4-8efa-4c5c6c199f50";
@@ -84,10 +89,10 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
 		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
-		assertEquals(46, ((Age) dataset.getColumnValue(patient.getId(), "ageAtInitial")).getFullYears().intValue());
+		assertEquals(46, dataset.getColumnValue(patient.getId(), "ageAtInitial"));
 		assertEquals("18+", dataset.getColumnValue(patient.getId(), "ageCategory"));
 		location = locationService.getLocation(4001);
-		assertEquals(location, dataset.getColumnValue(patient.getId(), "structure"));
+		assertEquals(location.getName(), dataset.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataset.getColumnValue(patient.getId(), "country"));
 		encounters = (List) dataset.getColumnValue(patient.getId(), initialEncTypeUuid);
 		assertEquals(1, encounters.size());
@@ -105,9 +110,9 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
 		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
-		assertEquals(45, ((Age) dataset.getColumnValue(patient.getId(), "ageAtInitial")).getFullYears().intValue());
+		assertEquals(45, dataset.getColumnValue(patient.getId(), "ageAtInitial"));
 		assertEquals("18+", dataset.getColumnValue(patient.getId(), "ageCategory"));
-		assertEquals(location, dataset.getColumnValue(patient.getId(), "structure"));
+		assertEquals(location.getName(), dataset.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataset.getColumnValue(patient.getId(), "country"));
 		encounters = (List) dataset.getColumnValue(patient.getId(), initialEncTypeUuid);
 		assertEquals(1, encounters.size());
@@ -118,6 +123,39 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		encounters = (List) dataset.getColumnValue(patient.getId(), followUpEncTypeUuid);
 		assertEquals(1, encounters.size());
 		assertTrue(encounters.get(0).isEmpty());
+	}
+	
+	@Test
+	public void evaluate_shouldFiltersPatientsWhenGeneratingDownloadReport() {
+		final Integer patientId2 = 2;
+		final Integer patientId6 = 6;
+		final Integer patientId7 = 7;//Female
+		//The filters are for male and (married or single) patients
+		PatientGrid patientGrid = service.getPatientGrid(2);
+		boolean hasFilteredColumns = false;
+		for (PatientGridColumn column : patientGrid.getColumns()) {
+			if (!column.getFilters().isEmpty()) {
+				hasFilteredColumns = true;
+				break;
+			}
+		}
+		assertTrue(hasFilteredColumns);
+		assertTrue(patientGrid.getCohort().getActiveMemberships().isEmpty());
+		Cohort cohort = new Cohort(Arrays.asList(patientId2, patientId6, patientId7));
+		cohort.setName("test");
+		cohort.setDescription("test");
+		Context.getCohortService().saveCohort(cohort);
+		patientGrid.setCohort(cohort);
+		
+		SimpleDataSet dataset = DownloadUtils.evaluate(patientGrid);
+		
+		assertEquals(2, dataset.getRows().size());
+		Patient patient = ps.getPatient(2);
+		assertNotNull(dataset.getColumnValue(patient.getPatientId(), COLUMN_UUID));
+		patient = ps.getPatient(6);
+		assertNotNull(dataset.getColumnValue(patient.getPatientId(), COLUMN_UUID));
+		patient = ps.getPatient(7);
+		assertNull(dataset.getColumnValue(patient.getPatientId(), COLUMN_UUID));
 	}
 	
 }

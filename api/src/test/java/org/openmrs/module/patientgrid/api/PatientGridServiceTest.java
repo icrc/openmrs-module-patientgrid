@@ -30,7 +30,6 @@ import org.openmrs.api.context.ServiceContext;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
-import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -199,7 +198,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
 		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
-		assertEquals(47, ((Age) dataset.getColumnValue(patient.getId(), "ageAtInitial")).getFullYears().intValue());
+		assertEquals(47, dataset.getColumnValue(patient.getId(), "ageAtInitial"));
 		assertEquals("18+", dataset.getColumnValue(patient.getId(), "ageCategory"));
 		Map<String, Object> obs = (Map) dataset.getColumnValue(patient.getId(), "weight");
 		assertEquals(84.0, obs.get("value"));
@@ -208,14 +207,14 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		obs = (Map) dataset.getColumnValue(patient.getId(), "cd4");
 		assertEquals(1060.0, obs.get("value"));
 		Location location = locationService.getLocation(4000);
-		assertEquals(location, dataset.getColumnValue(patient.getId(), "structure"));
+		assertEquals(location.getName(), dataset.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataset.getColumnValue(patient.getId(), "country"));
 		
 		patient = ps.getPatient(6);
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
 		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
-		assertEquals(46, ((Age) dataset.getColumnValue(patient.getId(), "ageAtInitial")).getFullYears().intValue());
+		assertEquals(46, dataset.getColumnValue(patient.getId(), "ageAtInitial"));
 		assertEquals("18+", dataset.getColumnValue(patient.getId(), "ageCategory"));
 		obs = (Map) dataset.getColumnValue(patient.getId(), "weight");
 		assertEquals(72.0, obs.get("value"));
@@ -224,21 +223,21 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		obs = (Map) dataset.getColumnValue(patient.getId(), "cd4");
 		assertEquals(1080.0, obs.get("value"));
 		location = locationService.getLocation(4001);
-		assertEquals(location, dataset.getColumnValue(patient.getId(), "structure"));
+		assertEquals(location.getName(), dataset.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataset.getColumnValue(patient.getId(), "country"));
 		
 		patient = ps.getPatient(7);
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
 		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
-		assertEquals(45, ((Age) dataset.getColumnValue(patient.getId(), "ageAtInitial")).getFullYears().intValue());
+		assertEquals(45, dataset.getColumnValue(patient.getId(), "ageAtInitial"));
 		assertEquals("18+", dataset.getColumnValue(patient.getId(), "ageCategory"));
 		obs = (Map) dataset.getColumnValue(patient.getId(), "weight");
 		assertEquals(88.0, obs.get("value"));
 		assertNull(dataset.getColumnValue(patient.getId(), "cd4"));
 		obs = (Map) dataset.getColumnValue(patient.getId(), "civilStatus");
 		assertEquals("MARRIED", obs.get("value"));
-		assertEquals(location, dataset.getColumnValue(patient.getId(), "structure"));
+		assertEquals(location.getName(), dataset.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataset.getColumnValue(patient.getId(), "country"));
 	}
 	

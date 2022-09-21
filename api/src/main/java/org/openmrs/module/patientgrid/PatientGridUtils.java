@@ -24,6 +24,7 @@ import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
+import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.converter.PropertyConverter;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
@@ -41,7 +42,7 @@ public class PatientGridUtils {
 	
 	private static final Logger log = LoggerFactory.getLogger(PatientGridUtils.class);
 	
-	private static final PropertyConverter COUNTRY_CONVERTER = new PropertyConverter(String.class, "country");
+	private static final DataConverter COUNTRY_CONVERTER = new PropertyConverter(String.class, "country");
 	
 	private static final LocationPatientDataDefinition LOCATION_DATA_DEF = new LocationPatientDataDefinition();
 	
@@ -51,7 +52,9 @@ public class PatientGridUtils {
 	
 	private static final PersonUuidDataDefinition UUID_DATA_DEF = new PersonUuidDataDefinition();
 	
-	private static final ObjectFormatter OBJECT_CONVERTER = new ObjectFormatter();
+	private static final DataConverter OBJECT_CONVERTER = new ObjectFormatter();
+	
+	private static final DataConverter AGE_CONVERTER = new PatientGridAgeConverter();
 	
 	/**
 	 * Create a {@link PatientDataSetDefinition} instance from the specified {@link PatientGrid} object
@@ -86,7 +89,7 @@ public class PatientGridUtils {
 						getAgeRanges().forEach(r -> converter.addAgeRange(r));
 						dataSetDef.addColumn(columnDef.getName(), def, (String) null, converter);
 					} else {
-						dataSetDef.addColumn(columnDef.getName(), def, (String) null);
+						dataSetDef.addColumn(columnDef.getName(), def, (String) null, AGE_CONVERTER);
 					}
 					
 					break;
@@ -98,7 +101,7 @@ public class PatientGridUtils {
 					dataSetDef.addColumn(columnDef.getName(), obsDataDef, (String) null, OBS_CONVERTER);
 					break;
 				case DATAFILTER_LOCATION:
-					dataSetDef.addColumn(columnDef.getName(), LOCATION_DATA_DEF, (String) null);
+					dataSetDef.addColumn(columnDef.getName(), LOCATION_DATA_DEF, (String) null, OBJECT_CONVERTER);
 					break;
 				case DATAFILTER_COUNTRY:
 					dataSetDef.addColumn(columnDef.getName(), LOCATION_DATA_DEF, (String) null, COUNTRY_CONVERTER);
