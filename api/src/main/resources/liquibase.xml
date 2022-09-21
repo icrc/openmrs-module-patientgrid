@@ -102,12 +102,6 @@
             </column>
             <column name="changed_by" type="int" />
             <column name="date_changed" type="datetime" />
-            <column name="retired" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false" />
-            </column>
-            <column name="retired_by" type="int" />
-            <column name="retire_reason" type="varchar(255)" />
-            <column name="date_retired" type="datetime" />
             <column name="uuid" type="varchar(38)">
                 <constraints nullable="false" unique="true" />
             </column>
