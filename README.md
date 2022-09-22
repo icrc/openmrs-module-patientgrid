@@ -5,19 +5,37 @@ Provides an API for managing and evaluating a grid of patient data
 
 packages can be found on [GitHub Packages](https://github.com/orgs/icrc/packages?repo_name=openmrs-module-patientgrid).
 
-# SNAPSHOT Deployment
-A Snaphsot is deployed for each push on the `main` branch.
+# SNAPSHOT and Release Deployments
+Deployments are done for ICRC intern CI/CD Tasks.
 
-# Release
-Releases are generated via the Worklow [`Do Release`](https://github.com/icrc/openmrs-module-patientgrid/actions/workflows/release.yml) defined 
-in [Actions](https://github.com/icrc/openmrs-module-patientgrid/actions) Tab. 
+# How to integration the module in your project.
 
-A release, will:
-1. Remove the SNAPSHOT in the artifact version
-2. deploy the artifacts
-3. Tag the sources and create a release
-4. Move to the next SNAPSHOT version in a separate branch named `move-to-X.Y.Z-SNAPSHOT`
-5. Create a PR
+## Add the repository to your main `pom.xml` file
+
+```xml
+    <repository>
+        <id>openmrs-module-patientgrid</id>
+        <name>openmrs-module-patientgrid</name>
+        <url>https://maven.pkg.github.com/icrc/openmrs-module-patientgrid</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+```
+## Modify the `settings.xml` file
+Packages are public but a Token is nevertheless required ( Github packages limitation).
+You will have to generate a token from a Github package (with read access to packages) and add these lines to the `settings.xml` file:
+
+```xml
+<server>
+    <id>openmrs-module-patientgrid</id>
+    <username>#{GITHUB_USERNAME}#</username>
+    <password>#{GITHUB_TOKEN}#</password>
+</server>
+```
 
 # Rest API Documentation
 For more details about the REST Web Services API, please refer to the links below,
