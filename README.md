@@ -81,12 +81,13 @@ The properties below only apply to a grid column where the _type_ property value
 **Note** This resource inherits all other standard resource properties
 
 ### Patient Grid Report
-A read-only resource encapsulating report data for a specific patient grid
+A read-only resource encapsulating report data for a specific patient grid.
 
 #### Properties
-`patientGrid` The patient grid that was evaluated as a ref [representation](https://wiki.openmrs.org/x/P4IaAQ))
+`patientGrid` The patient grid that was evaluated as a ref [representation](https://wiki.openmrs.org/x/P4IaAQ)
 
-`report` The actual grid report data
+`report` The actual grid report data, it is a list of all patient data where each element in the list us data for a 
+single patient, the element is a map of column names and their respective data values.
 
 
 **Note** Obs values in the report are trimmed down to a custom representation specific to this module with the 
@@ -102,7 +103,7 @@ properties below,
 
 `formNamespace` The field namespace on the form the observation was captured
 
-`encounter` a map with 2 entries, one entry has the key named `uuid` while its value is the uuid of the encounter the 
+`encounter` A map with 2 entries, one entry has the key named `uuid` while its value is the uuid of the encounter the 
 observation belongs to, the other entry has key named `encounterType` while its value is the uuid of the encounter type 
 the observation belongs to.
 
@@ -110,21 +111,21 @@ the observation belongs to.
 A read-only resource encapsulating metadata for an age range.
 
 #### Properties
-`minAge`
+`minAge` minimum age value
 
-`minAgeUnit`
+`minAgeUnit` minimum age unit, only YEARS is currently supported
 
-`maxAge`
+`maxAge` maximum age value
 
-`maxAgeUnit`
+`maxAgeUnit` maximum age unit, only YEARS is currently supported
 
-`label`
+`label` name for the age range
 
-`display`
+`display` usually same as label
 
 ## Patient Grid Operations
 ### Fetch All Patient Grids
-**Endpoint:** `SERVER_URL/ws/rest/v1/patientgrid/patientgrid` **(Replace SERVER_URL with correct value)**
+**Endpoint:** `SERVER_URL/ws/rest/v1/patientgrid/patientgrid` **(Replace SERVER_URL)**
 
 **HTTP Method** `GET`
 
@@ -158,7 +159,7 @@ A read-only resource encapsulating metadata for an age range.
 ```
 
 ### Create Patient Grid
-**Endpoint:** `SERVER_URL/ws/rest/v1/patientgrid/patientgrid` **(Replace SERVER_URL with server URL)**
+**Endpoint:** `SERVER_URL/ws/rest/v1/patientgrid/patientgrid` **(Replace SERVER_URL)**
 
 **HTTP Method** `POST`
 
@@ -210,7 +211,7 @@ A read-only resource encapsulating metadata for an age range.
 ```
 
 ### Run Patient Grid Report
-**Endpoint:** `SERVER_URL/ws/rest/v1/patientgrid/patientgrid/GRID_UUID/report` **(Replace GRID_UUID with grid uuid)**
+**Endpoint:** `SERVER_URL/ws/rest/v1/patientgrid/patientgrid/PATIENT_GRID_UUID/report` **(Replace PATIENT_GRID_UUID)**
 
 **HTTP Method** `GET`
 
