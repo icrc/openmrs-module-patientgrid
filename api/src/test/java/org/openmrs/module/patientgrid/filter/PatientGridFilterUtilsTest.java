@@ -7,11 +7,15 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.openmrs.module.patientgrid.PatientGridConstants.DATETIME_FORMAT;
 import static org.openmrs.module.patientgrid.PatientGridConstants.DATE_FORMAT;
+import static org.openmrs.module.patientgrid.filter.PatientGridFilterUtils.MAPPER;
 import static org.openmrs.module.reporting.common.Age.Unit.YEARS;
 import static org.openmrs.module.reporting.common.BooleanOperator.AND;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -196,6 +200,40 @@ public class PatientGridFilterUtilsTest {
 	public void convert_shouldConvertAStringToADatetime() throws Exception {
 		final String date = "2022-09-09 14:00:05+00:00";
 		assertEquals(DATETIME_FORMAT.parse(date), PatientGridFilterUtils.convert(date, Date.class));
+	}
+	
+	@Test
+	public void convert_shouldConvertAStringToAnAgeRange() throws Exception {
+		final Integer minAge = 18;
+		Map ageRange = Collections.singletonMap("minAge", minAge);
+		
+		AgeRange value = PatientGridFilterUtils.convert(MAPPER.writeValueAsString(ageRange), AgeRange.class);
+		
+		assertEquals(minAge, value.getMinAge());
+		assertEquals(YEARS, value.getMinAgeUnit());
+		assertNull(value.getMaxAge());
+		assertEquals(YEARS, value.getMaxAgeUnit());
+		
+		final Integer maxAge = 45;
+		ageRange = Collections.singletonMap("maxAge", maxAge);
+		
+		value = PatientGridFilterUtils.convert(MAPPER.writeValueAsString(ageRange), AgeRange.class);
+		
+		assertEquals(maxAge, value.getMaxAge());
+		assertEquals(YEARS, value.getMaxAgeUnit());
+		assertNull(value.getMinAge());
+		assertEquals(YEARS, value.getMinAgeUnit());
+		
+		ageRange = new HashMap();
+		ageRange.put("minAge", minAge);
+		ageRange.put("maxAge", maxAge);
+		
+		value = PatientGridFilterUtils.convert(MAPPER.writeValueAsString(ageRange), AgeRange.class);
+		
+		assertEquals(minAge, value.getMinAge());
+		assertEquals(YEARS, value.getMinAgeUnit());
+		assertEquals(maxAge, value.getMaxAge());
+		assertEquals(YEARS, value.getMaxAgeUnit());
 	}
 	
 	@Test
@@ -543,6 +581,31 @@ public class PatientGridFilterUtilsTest {
 		assertEquals(age2, ageRange.getMinAge());
 		assertEquals(YEARS, ageRange.getMinAgeUnit());
 		assertEquals(age2, ageRange.getMaxAge());
+		assertEquals(YEARS, ageRange.getMaxAgeUnit());
+	}
+	
+	@Test
+	public void generateCohortDefinition_shouldCreateAnAgeAtLatestEncounterCohortDefinitionForAgeRange() throws Exception {
+		final Integer minAge = 45;
+		final Integer maxAge = 50;
+		Map ageRangeMap = new HashMap();
+		ageRangeMap.put("minAge", minAge);
+		ageRangeMap.put("maxAge", maxAge);
+		final EncounterType encounterType = new EncounterType();
+		AgeAtEncounterPatientGridColumn column = new AgeAtEncounterPatientGridColumn("age", encounterType, true);
+		column.addFilter(new PatientGridColumnFilter("equal age", MAPPER.writeValueAsString(ageRangeMap)));
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(column);
+		
+		AgeRangeAtLatestEncounterCohortDefinition def = (AgeRangeAtLatestEncounterCohortDefinition) PatientGridFilterUtils
+		        .generateCohortDefinition(grid);
+		
+		assertEquals(encounterType, def.getEncounterType());
+		assertEquals(1, def.getAgeRanges().size());
+		AgeRange ageRange = def.getAgeRanges().get(0);
+		assertEquals(minAge, ageRange.getMinAge());
+		assertEquals(YEARS, ageRange.getMinAgeUnit());
+		assertEquals(maxAge, ageRange.getMaxAge());
 		assertEquals(YEARS, ageRange.getMaxAgeUnit());
 	}
 	

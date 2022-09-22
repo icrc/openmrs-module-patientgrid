@@ -13,6 +13,7 @@ import static org.openmrs.module.patientgrid.PatientGridConstants.CACHE_NAME_GRI
 import static org.openmrs.module.patientgrid.PatientGridConstants.COLUMN_UUID;
 import static org.openmrs.module.patientgrid.PatientGridConstants.PRIV_MANAGE_PATIENT_GRIDS;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +30,6 @@ import org.openmrs.api.context.ServiceContext;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
-import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -143,12 +143,6 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(grid.getRetireReason());
 		assertNull(grid.getRetiredBy());
 		assertNull(grid.getDateRetired());
-		for (PatientGridColumn column : grid.getColumns()) {
-			assertFalse(column.getRetired());
-			assertNull(column.getRetireReason());
-			assertNull(column.getRetiredBy());
-			assertNull(column.getDateRetired());
-		}
 		
 		final ReportData cachedData = new ReportData();
 		final String cacheKey = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
@@ -162,12 +156,6 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(reason, grid.getRetireReason());
 		assertNotNull(grid.getRetiredBy());
 		assertNotNull(grid.getDateRetired());
-		for (PatientGridColumn column : grid.getColumns()) {
-			assertTrue(column.getRetired());
-			assertEquals(reason, column.getRetireReason());
-			assertNotNull(column.getRetiredBy());
-			assertNotNull(column.getDateRetired());
-		}
 		
 		assertNull(getCache().get(cacheKey));
 		assertNotNull(getCache().get(cacheKeyOther));
@@ -180,12 +168,6 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(grid.getRetireReason());
 		assertNotNull(grid.getRetiredBy());
 		assertNotNull(grid.getDateRetired());
-		for (PatientGridColumn column : grid.getColumns()) {
-			assertTrue(column.getRetired());
-			assertNotNull(column.getRetireReason());
-			assertNotNull(column.getRetiredBy());
-			assertNotNull(column.getDateRetired());
-		}
 		
 		final ReportData cachedData = new ReportData();
 		final String cacheKey = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
@@ -199,12 +181,6 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(grid.getRetireReason());
 		assertNull(grid.getRetiredBy());
 		assertNull(grid.getDateRetired());
-		for (PatientGridColumn column : grid.getColumns()) {
-			assertFalse(column.getRetired());
-			assertNull(column.getRetireReason());
-			assertNull(column.getRetiredBy());
-			assertNull(column.getDateRetired());
-		}
 		
 		assertNull(getCache().get(cacheKey));
 		assertNotNull(getCache().get(cacheKeyOther));
@@ -222,7 +198,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
 		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
-		assertEquals(47, ((Age) dataset.getColumnValue(patient.getId(), "ageAtInitial")).getFullYears().intValue());
+		assertEquals(47, dataset.getColumnValue(patient.getId(), "ageAtInitial"));
 		assertEquals("18+", dataset.getColumnValue(patient.getId(), "ageCategory"));
 		Map<String, Object> obs = (Map) dataset.getColumnValue(patient.getId(), "weight");
 		assertEquals(84.0, obs.get("value"));
@@ -231,14 +207,14 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		obs = (Map) dataset.getColumnValue(patient.getId(), "cd4");
 		assertEquals(1060.0, obs.get("value"));
 		Location location = locationService.getLocation(4000);
-		assertEquals(location, dataset.getColumnValue(patient.getId(), "structure"));
+		assertEquals(location.getName(), dataset.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataset.getColumnValue(patient.getId(), "country"));
 		
 		patient = ps.getPatient(6);
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
 		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
-		assertEquals(46, ((Age) dataset.getColumnValue(patient.getId(), "ageAtInitial")).getFullYears().intValue());
+		assertEquals(46, dataset.getColumnValue(patient.getId(), "ageAtInitial"));
 		assertEquals("18+", dataset.getColumnValue(patient.getId(), "ageCategory"));
 		obs = (Map) dataset.getColumnValue(patient.getId(), "weight");
 		assertEquals(72.0, obs.get("value"));
@@ -247,21 +223,21 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		obs = (Map) dataset.getColumnValue(patient.getId(), "cd4");
 		assertEquals(1080.0, obs.get("value"));
 		location = locationService.getLocation(4001);
-		assertEquals(location, dataset.getColumnValue(patient.getId(), "structure"));
+		assertEquals(location.getName(), dataset.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataset.getColumnValue(patient.getId(), "country"));
 		
 		patient = ps.getPatient(7);
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
 		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
-		assertEquals(45, ((Age) dataset.getColumnValue(patient.getId(), "ageAtInitial")).getFullYears().intValue());
+		assertEquals(45, dataset.getColumnValue(patient.getId(), "ageAtInitial"));
 		assertEquals("18+", dataset.getColumnValue(patient.getId(), "ageCategory"));
 		obs = (Map) dataset.getColumnValue(patient.getId(), "weight");
 		assertEquals(88.0, obs.get("value"));
 		assertNull(dataset.getColumnValue(patient.getId(), "cd4"));
 		obs = (Map) dataset.getColumnValue(patient.getId(), "civilStatus");
 		assertEquals("MARRIED", obs.get("value"));
-		assertEquals(location, dataset.getColumnValue(patient.getId(), "structure"));
+		assertEquals(location.getName(), dataset.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataset.getColumnValue(patient.getId(), "country"));
 	}
 	
@@ -289,6 +265,8 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void evaluate_shouldNotCacheEmptyReportData() {
 		PatientGrid patientGrid = service.getPatientGrid(2);
+		//Remove any filters so that our cohort remains empty
+		patientGrid.getColumns().forEach(c -> c.getFilters().clear());
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		assertNull(getCache().get(cacheKey));
 		
@@ -354,6 +332,57 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		
 		assertEquals(expectedReport, reportData);
 		assertNull(getCache().get(cacheKey));
+	}
+	
+	@Test
+	public void evaluate_shouldFiltersPatientsWhenEvaluatingAGridWithFilteredColumns() {
+		final Integer patientId2 = 2;
+		final Integer patientId6 = 6;
+		final Integer patientId7 = 7;//Female
+		//The filters are for male and (married or single) patients
+		PatientGrid patientGrid = service.getPatientGrid(2);
+		boolean hasFilteredColumns = false;
+		for (PatientGridColumn column : patientGrid.getColumns()) {
+			if (!column.getFilters().isEmpty()) {
+				hasFilteredColumns = true;
+				break;
+			}
+		}
+		assertTrue(hasFilteredColumns);
+		assertTrue(patientGrid.getCohort().getActiveMemberships().isEmpty());
+		Cohort cohort = new Cohort(Arrays.asList(patientId2, patientId6, patientId7));
+		cohort.setName("test");
+		cohort.setDescription("test");
+		Context.getCohortService().saveCohort(cohort);
+		patientGrid.setCohort(cohort);
+		
+		ReportData reportData = service.evaluate(patientGrid);
+		
+		SimpleDataSet dataset = (SimpleDataSet) reportData.getDataSets().get("patientData");
+		assertEquals(2, dataset.getRows().size());
+		Patient patient = ps.getPatient(patientId2);
+		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
+		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
+		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
+		Map<String, Object> obs = (Map) dataset.getColumnValue(patient.getId(), "civilStatus");
+		assertEquals("SINGLE", obs.get("value"));
+		
+		patient = ps.getPatient(patientId6);
+		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
+		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
+		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
+		obs = (Map) dataset.getColumnValue(patient.getId(), "civilStatus");
+		assertEquals("SINGLE", obs.get("value"));
+	}
+	
+	@Test
+	public void getPatientGridColumnByUuid_shouldReturnThePatientGridColumnMatchingTheSpecifiedUuid() {
+		assertEquals(1, service.getPatientGridColumnByUuid("1e6c993e-c2cc-11de-8d13-0010c6dffd0b").getId().intValue());
+	}
+	
+	@Test
+	public void getPatientGridColumnByUuid_shouldReturnNullIfNoPatientGridColumnMatchesTheSpecifiedUuid() {
+		assertNull(service.getPatientGridColumnByUuid("bad-uuid"));
 	}
 	
 }

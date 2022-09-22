@@ -31,9 +31,25 @@
             <artifactId>reporting-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>datafilter-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.openmrs.web</groupId>
             <artifactId>openmrs-web</artifactId>
             <version>${openmrsPlatformVersion}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -41,6 +57,13 @@
             <artifactId>webservices.rest-omod-common</artifactId>
             <version>${webservicesRestVersion}</version>
             <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>webservices.rest-omod-2.2</artifactId>
+            <version>${webservicesRestVersion}</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- Test dependencies -->

@@ -1,9 +1,15 @@
 package org.openmrs.module.patientgrid;
 
+import java.io.Serializable;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -13,20 +19,30 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.openmrs.BaseChangeableOpenmrsMetadata;
+import org.openmrs.Auditable;
 import org.openmrs.BaseOpenmrsObject;
+import org.openmrs.User;
 
-//@Entity
+@Entity
 @Table(name = "patientgrid_patient_grid_column")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class PatientGridColumn extends BaseChangeableOpenmrsMetadata {
+public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "patient_grid_column_id")
 	private Integer patientGridColumnId;
+	
+	@Column(nullable = false)
+	private String name;
+	
+	@Column
+	private String description;
 	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "patient_grid_id", nullable = false)
@@ -36,13 +52,29 @@ public class PatientGridColumn extends BaseChangeableOpenmrsMetadata {
 	@Column(name = "datatype", nullable = false, length = 50)
 	private ColumnDatatype datatype;
 	
+	@Access(AccessType.FIELD)
+	@OneToMany(mappedBy = "patientGridColumn", orphanRemoval = true, cascade = CascadeType.ALL)
 	private Set<PatientGridColumnFilter> filters;
+	
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "creator", nullable = false, updatable = false)
+	private User creator;
+	
+	@Column(name = "date_created", nullable = false, updatable = false)
+	private Date dateCreated;
+	
+	@ManyToOne
+	@JoinColumn(name = "changed_by")
+	private User changedBy;
+	
+	@Column(name = "date_changed")
+	private Date dateChanged;
 	
 	public PatientGridColumn() {
 	}
 	
 	public PatientGridColumn(String name, ColumnDatatype datatype) {
-		setName(name);
+		this.name = name;
 		this.datatype = datatype;
 	}
 	
@@ -69,6 +101,42 @@ public class PatientGridColumn extends BaseChangeableOpenmrsMetadata {
 	@Override
 	public void setId(Integer id) {
 		setPatientGridColumnId(id);
+	}
+	
+	/**
+	 * Gets the name
+	 *
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+	
+	/**
+	 * Sets the name
+	 *
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	/**
+	 * Gets the description
+	 *
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+	
+	/**
+	 * Sets the description
+	 *
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 	/**
@@ -146,6 +214,70 @@ public class PatientGridColumn extends BaseChangeableOpenmrsMetadata {
 	public void addFilter(PatientGridColumnFilter filter) {
 		filter.setPatientGridColumn(this);
 		getFilters().add(filter);
+	}
+	
+	/**
+	 * @see Auditable#getCreator()
+	 */
+	@Override
+	public User getCreator() {
+		return creator;
+	}
+	
+	/**
+	 * @see Auditable#setCreator(User)
+	 */
+	@Override
+	public void setCreator(User creator) {
+		this.creator = creator;
+	}
+	
+	/**
+	 * @see Auditable#getDateCreated()
+	 */
+	@Override
+	public Date getDateCreated() {
+		return dateCreated;
+	}
+	
+	/**
+	 * @see Auditable#setDateCreated(Date)
+	 */
+	@Override
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
+	}
+	
+	/**
+	 * @see Auditable#getChangedBy()
+	 */
+	@Override
+	public User getChangedBy() {
+		return changedBy;
+	}
+	
+	/**
+	 * @see Auditable#setChangedBy(User)
+	 */
+	@Override
+	public void setChangedBy(User changedBy) {
+		this.changedBy = changedBy;
+	}
+	
+	/**
+	 * @see Auditable#getDateChanged()
+	 */
+	@Override
+	public Date getDateChanged() {
+		return dateChanged;
+	}
+	
+	/**
+	 * @see Auditable#setDateChanged(Date)
+	 */
+	@Override
+	public void setDateChanged(Date dateChanged) {
+		this.dateChanged = dateChanged;
 	}
 	
 }

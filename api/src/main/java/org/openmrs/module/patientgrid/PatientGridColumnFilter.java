@@ -3,6 +3,17 @@ package org.openmrs.module.patientgrid;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import org.openmrs.Auditable;
 import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.User;
@@ -10,24 +21,43 @@ import org.openmrs.User;
 /**
  * Encapsulates information about a filter to be applied to a patient grid column
  */
+@Entity
+@Table(name = "patientgrid_patient_grid_column_filter")
 public class PatientGridColumnFilter extends BaseOpenmrsObject implements Auditable, Serializable {
 	
+	private static final long serialVersionUID = 1L;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "patient_grid_column_filter_id")
 	private Integer patientGridColumnFilterId;
 	
+	@Column(nullable = false)
 	private String name;
 	
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "patient_grid_column_id", nullable = false)
 	private PatientGridColumn patientGridColumn;
 	
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, length = 50)
 	private FilterOperator operator = FilterOperator.EQUALS;;
 	
+	@Column(nullable = false)
 	private String operand;
 	
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "creator", nullable = false, updatable = false)
 	private User creator;
 	
+	@Column(name = "date_created", nullable = false, updatable = false)
 	private Date dateCreated;
 	
+	@ManyToOne
+	@JoinColumn(name = "changed_by")
 	private User changedBy;
 	
+	@Column(name = "date_changed")
 	private Date dateChanged;
 	
 	public enum FilterOperator {

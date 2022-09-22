@@ -1,12 +1,14 @@
 package org.openmrs.module.patientgrid;
 
 import static org.openmrs.module.patientgrid.PatientGridConstants.GP_AGE_RANGES;
+import static org.openmrs.module.patientgrid.PatientGridConstants.OBS_CONVERTER;
 import static org.openmrs.module.reporting.common.Age.Unit.YEARS;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,9 +20,11 @@ import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
+import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.converter.PropertyConverter;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
@@ -38,11 +42,9 @@ public class PatientGridUtils {
 	
 	private static final Logger log = LoggerFactory.getLogger(PatientGridUtils.class);
 	
-	private static final PatientGridObsConverter OBS_CONVERTER = new PatientGridObsConverter();
+	private static final DataConverter COUNTRY_CONVERTER = new PropertyConverter(String.class, "country");
 	
-	private static final PropertyConverter COUNTRY_CONVERTER = new PropertyConverter(String.class, "country");
-	
-	private static final PatientLocationDataDefinition LOCATION_DATA_DEF = new PatientLocationDataDefinition();
+	private static final LocationPatientDataDefinition LOCATION_DATA_DEF = new LocationPatientDataDefinition();
 	
 	private static final PreferredNameDataDefinition NAME_DATA_DEF = new PreferredNameDataDefinition();
 	
@@ -50,63 +52,79 @@ public class PatientGridUtils {
 	
 	private static final PersonUuidDataDefinition UUID_DATA_DEF = new PersonUuidDataDefinition();
 	
-	private static final ObjectFormatter OBJECT_CONVERTER = new ObjectFormatter();
+	private static final DataConverter OBJECT_CONVERTER = new ObjectFormatter();
 	
-	public static ReportDefinition convertToReportDefinition(PatientGrid patientGrid) {
-		ReportDefinition reportDef = new ReportDefinition();
-		reportDef.setName(patientGrid.getName());
-		reportDef.setDescription(patientGrid.getDescription());
-		PatientDataSetDefinition patientData = new PatientDataSetDefinition();
-		patientData.addColumn(PatientGridConstants.COLUMN_UUID, UUID_DATA_DEF, (String) null);
+	private static final DataConverter AGE_CONVERTER = new PatientGridAgeConverter();
+	
+	/**
+	 * Create a {@link PatientDataSetDefinition} instance from the specified {@link PatientGrid} object
+	 * 
+	 * @param patientGrid {@link PatientGrid} object
+	 * @param includeObs specifies if obs data should include or not
+	 * @return PatientDataSetDefinition
+	 */
+	public static PatientDataSetDefinition createPatientDataSetDefinition(PatientGrid patientGrid, boolean includeObs) {
+		PatientDataSetDefinition dataSetDef = new PatientDataSetDefinition();
+		dataSetDef.addColumn(PatientGridConstants.COLUMN_UUID, UUID_DATA_DEF, (String) null);
 		
 		for (PatientGridColumn columnDef : patientGrid.getColumns()) {
+			if (!includeObs && columnDef.getDatatype() == ColumnDatatype.OBS) {
+				continue;
+			}
+			
 			switch (columnDef.getDatatype()) {
 				case NAME:
-					patientData.addColumn(columnDef.getName(), NAME_DATA_DEF, (String) null, OBJECT_CONVERTER);
+					dataSetDef.addColumn(columnDef.getName(), NAME_DATA_DEF, (String) null, OBJECT_CONVERTER);
 					break;
 				case GENDER:
-					patientData.addColumn(columnDef.getName(), GENDER_DATA_DEF, (String) null);
+					dataSetDef.addColumn(columnDef.getName(), GENDER_DATA_DEF, (String) null);
 					break;
 				case ENC_AGE:
 					AgeAtEncounterPatientGridColumn ageColumn = (AgeAtEncounterPatientGridColumn) columnDef;
-					PatientAgeAtLatestEncounterDataDefinition def = new PatientAgeAtLatestEncounterDataDefinition();
+					AgeAtLatestEncounterPatientDataDefinition def = new AgeAtLatestEncounterPatientDataDefinition();
 					def.setEncounterType(ageColumn.getEncounterType());
 					if (ageColumn.getConvertToAgeRange()) {
 						//TODO Define at class level so we construct once
 						AgeRangeConverter converter = new AgeRangeConverter();
 						getAgeRanges().forEach(r -> converter.addAgeRange(r));
-						patientData.addColumn(columnDef.getName(), def, (String) null, converter);
+						dataSetDef.addColumn(columnDef.getName(), def, (String) null, converter);
 					} else {
-						patientData.addColumn(columnDef.getName(), def, (String) null);
+						dataSetDef.addColumn(columnDef.getName(), def, (String) null, AGE_CONVERTER);
 					}
 					
 					break;
 				case OBS:
 					ObsPatientGridColumn obsColumn = (ObsPatientGridColumn) columnDef;
-					ObsForLatestEncounterDataDefinition obsDataDef = new ObsForLatestEncounterDataDefinition();
+					ObsForLatestEncounterPatientDataDefinition obsDataDef = new ObsForLatestEncounterPatientDataDefinition();
 					obsDataDef.setConcept(obsColumn.getConcept());
 					obsDataDef.setEncounterType(obsColumn.getEncounterType());
-					patientData.addColumn(columnDef.getName(), obsDataDef, (String) null, OBS_CONVERTER);
+					dataSetDef.addColumn(columnDef.getName(), obsDataDef, (String) null, OBS_CONVERTER);
 					break;
 				case DATAFILTER_LOCATION:
-					patientData.addColumn(columnDef.getName(), LOCATION_DATA_DEF, (String) null);
+					dataSetDef.addColumn(columnDef.getName(), LOCATION_DATA_DEF, (String) null, OBJECT_CONVERTER);
 					break;
 				case DATAFILTER_COUNTRY:
-					patientData.addColumn(columnDef.getName(), LOCATION_DATA_DEF, (String) null, COUNTRY_CONVERTER);
+					dataSetDef.addColumn(columnDef.getName(), LOCATION_DATA_DEF, (String) null, COUNTRY_CONVERTER);
 					break;
 				default:
 					throw new APIException("Don't know how to handle column type: " + columnDef.getDatatype());
 			}
 		}
 		
-		reportDef.addDataSetDefinition("patientData", patientData, null);
+		return dataSetDef;
+	}
+	
+	public static ReportDefinition convertToReportDefinition(PatientGrid patientGrid) {
+		ReportDefinition reportDef = new ReportDefinition();
+		reportDef.setName(patientGrid.getName());
+		reportDef.setDescription(patientGrid.getDescription());
+		reportDef.addDataSetDefinition("patientData", createPatientDataSetDefinition(patientGrid, true), null);
 		
 		return reportDef;
 	}
 	
 	/**
-	 * Fetches the most recent encounter data for the specified cohort of patients matching the given
-	 * encounter type.
+	 * Fetches the encounters for the specified cohort of patients matching the given encounter type.
 	 *
 	 * @param type the encounter type to match
 	 * @param cohort the base cohort whose encounters to return
@@ -114,11 +132,15 @@ public class PatientGridUtils {
 	 *            or their encounter history
 	 * @return a map of patient ids to encounters
 	 */
-	public static Map<Integer, Object> getMostRecentEncounters(EncounterType type, Cohort cohort, boolean mostRecentOnly)
+	public static Map<Integer, Object> getEncounters(EncounterType type, Cohort cohort, boolean mostRecentOnly)
 	        throws EvaluationException {
 		
 		if (cohort == null || cohort.size() > 1) {
-			log.info("Fetching most recent encounters for encounter type: " + type);
+			if (mostRecentOnly) {
+				log.info("Fetching most recent encounters of type: " + type);
+			} else {
+				log.info("Fetching encounters of type: " + type);
+			}
 		}
 		
 		StopWatch stopWatch = new StopWatch();
@@ -137,8 +159,11 @@ public class PatientGridUtils {
 		stopWatch.stop();
 		
 		if (cohort == null || cohort.size() > 1) {
-			log.info(
-			    "Fetching most recent encounters for encounter type: " + type + " completed in " + stopWatch.toString());
+			if (mostRecentOnly) {
+				log.info("Fetching most recent encounters of type: " + type + " completed in " + stopWatch.toString());
+			} else {
+				log.info("Fetching encounters of type: " + type + " completed in " + stopWatch.toString());
+			}
 		}
 		
 		return results;
@@ -173,7 +198,7 @@ public class PatientGridUtils {
 	 * @param ageRangesAsString the age range string to parse
 	 * @return a list of {@link AgeRange} objects
 	 */
-	public static List<AgeRange> parseAgeRangeString(String ageRangesAsString) {
+	protected static List<AgeRange> parseAgeRangeString(String ageRangesAsString) {
 		String[] ranges = ageRangesAsString.split(",");
 		List<AgeRange> ageRanges = new ArrayList(ranges.length);
 		for (int i = 0; i < ranges.length; i++) {
@@ -201,15 +226,31 @@ public class PatientGridUtils {
 		return ageRanges;
 	}
 	
-	private static List<AgeRange> getAgeRanges() {
+	/**
+	 * Gets the list of age ranges
+	 * 
+	 * @return list of AgeRange objects
+	 */
+	public static List<AgeRange> getAgeRanges() {
 		//TODO cache the age ranges and update with a GlobalPropertyListener
 		String ageRange = Context.getAdministrationService().getGlobalProperty(GP_AGE_RANGES);
 		if (StringUtils.isBlank(ageRange)) {
 			throw new APIException(
-			        "No ranges defined, please set the value for the global property named: " + GP_AGE_RANGES);
+			        "No age ranges defined, please set the value for the global property named: " + GP_AGE_RANGES);
 		}
 		
 		return parseAgeRangeString(ageRange);
+	}
+	
+	/**
+	 * Gets all encounter types defined on all ObsPatientGridColumns in the specified
+	 * {@link PatientGrid}
+	 * 
+	 * @param patientGrid {@link PatientGrid} object
+	 * @return set of {@link EncounterType} objects
+	 */
+	public static Set<EncounterType> getEncounterTypes(PatientGrid patientGrid) {
+		return patientGrid.getObsColumns().stream().map(c -> c.getEncounterType()).collect(Collectors.toSet());
 	}
 	
 }

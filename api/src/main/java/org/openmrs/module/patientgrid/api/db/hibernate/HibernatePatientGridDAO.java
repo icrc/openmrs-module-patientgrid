@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.module.patientgrid.PatientGrid;
+import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.api.db.PatientGridDAO;
 
 public class HibernatePatientGridDAO implements PatientGridDAO {
@@ -63,6 +64,15 @@ public class HibernatePatientGridDAO implements PatientGridDAO {
 	public PatientGrid savePatientGrid(PatientGrid patientGrid) {
 		getCurrentSession().save(patientGrid);
 		return patientGrid;
+	}
+	
+	/**
+	 * @see PatientGridDAO#getPatientGridColumnByUuid(String)
+	 */
+	@Override
+	public PatientGridColumn getPatientGridColumnByUuid(String uuid) {
+		return (PatientGridColumn) getCurrentSession().createCriteria(PatientGridColumn.class)
+		        .add(Restrictions.eq("uuid", uuid)).uniqueResult();
 	}
 	
 }

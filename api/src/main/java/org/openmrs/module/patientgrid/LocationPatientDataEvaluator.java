@@ -19,8 +19,8 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 
-@Handler(supports = PatientLocationDataDefinition.class, order = 50)
-public class PatientLocationDataEvaluator implements PatientDataEvaluator {
+@Handler(supports = LocationPatientDataDefinition.class, order = 50)
+public class LocationPatientDataEvaluator implements PatientDataEvaluator {
 	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)

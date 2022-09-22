@@ -73,6 +73,7 @@ public class ObsForLatestEncounterCohortDefinitionEvaluator implements CohortDef
 		criteria.setProjection(Projections.property("p.personId"));
 		criteria.add(Restrictions.eq("o.concept", cohortDef.getConcept()));
 		criteria.add(Restrictions.eq("o.voided", false));
+		//TODO value text should be case insensitive
 		criteria.add(Restrictions.in("o." + cohortDef.getPropertyName(), cohortDef.getValues()));
 		
 		criteria.createCriteria("encounter", "e");

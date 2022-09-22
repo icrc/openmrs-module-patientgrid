@@ -4,6 +4,7 @@ import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.DA
 import static org.openmrs.module.patientgrid.PatientGridConstants.DATETIME_FORMAT;
 import static org.openmrs.module.patientgrid.PatientGridConstants.DATE_FORMAT;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.StopWatch;
+import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.api.APIException;
@@ -24,11 +27,16 @@ import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.BooleanOperator;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Contains patient grid filter utility methods
@@ -37,6 +45,8 @@ public class PatientGridFilterUtils {
 	
 	private static final Logger log = LoggerFactory.getLogger(PatientGridFilterUtils.class);
 	
+	protected static final ObjectMapper MAPPER = new ObjectMapper();
+	
 	/**
 	 * Utility method that generates a {@link CohortDefinition} based on the column filters of the
 	 * specified {@link PatientGrid}
@@ -44,7 +54,7 @@ public class PatientGridFilterUtils {
 	 * @param patientGrid the {@link PatientGrid} object
 	 * @return the {@link CohortDefinition} object
 	 */
-	protected static CohortDefinition generateCohortDefinition(PatientGrid patientGrid) {
+	public static CohortDefinition generateCohortDefinition(PatientGrid patientGrid) {
 		Map<String, CohortDefinition> columnAndCohortDefMap = new HashMap(patientGrid.getColumns().size());
 		for (PatientGridColumn column : patientGrid.getColumns()) {
 			if (!column.getFilters().isEmpty()) {
@@ -72,6 +82,10 @@ public class PatientGridFilterUtils {
 		}
 		
 		if (columnAndCohortDefMap.isEmpty()) {
+			if (log.isDebugEnabled()) {
+				log.debug("No filters to apply to patient grid " + patientGrid);
+			}
+			
 			return null;
 		}
 		
@@ -85,7 +99,7 @@ public class PatientGridFilterUtils {
 	 * @param clazz the type to convert to
 	 * @return the converted value
 	 */
-	protected static <T> T convert(String value, Class<T> clazz) {
+	protected static <T> T convert(String value, Class<T> clazz) throws APIException {
 		Object ret;
 		if (Double.class.isAssignableFrom(clazz)) {
 			ret = Double.valueOf(value);
@@ -109,6 +123,14 @@ public class PatientGridFilterUtils {
 			ret = Context.getConceptService().getConceptByUuid(value);
 		} else if (Location.class.isAssignableFrom(clazz)) {
 			ret = Context.getLocationService().getLocationByUuid(value);
+		} else if (AgeRange.class.isAssignableFrom(clazz)) {
+			try {
+				Map map = MAPPER.readValue(value, Map.class);
+				ret = new AgeRange((Integer) map.get("minAge"), (Integer) map.get("maxAge"));
+			}
+			catch (IOException e) {
+				throw new APIException("Failed to convert: " + value + " to an AgeRange", e);
+			}
 		} else {
 			throw new APIException("Don't know how to convert operand value to type: " + clazz.getName());
 		}
@@ -135,7 +157,7 @@ public class PatientGridFilterUtils {
 				Integer age = convert(filter.getOperand(), Integer.class);
 				ageRange = new AgeRange(age, age);
 			} else {
-				ageRange = null;
+				ageRange = convert(filter.getOperand(), AgeRange.class);
 			}
 			
 			def.getAgeRanges().add(ageRange);
@@ -259,6 +281,46 @@ public class PatientGridFilterUtils {
 		cohortDef.setCompositionString(compositionString);
 		
 		return cohortDef;
+	}
+	
+	/**
+	 * Evaluates any filters found on the columns on the specified {@link PatientGrid} and returns the
+	 * matching patients
+	 * 
+	 * @param patientGrid the {@link PatientGrid} object
+	 * @param context the {@link EvaluationContext} object
+	 * @return a Cohort of matching patients or null if no filters are found
+	 * @throws EvaluationException
+	 */
+	public static Cohort filterPatients(PatientGrid patientGrid, EvaluationContext context) throws EvaluationException {
+		CohortDefinition cohortDef = PatientGridFilterUtils.generateCohortDefinition(patientGrid);
+		if (cohortDef == null) {
+			return null;
+		}
+		
+		if (log.isDebugEnabled()) {
+			log.debug("Filtering patients for patient grid " + patientGrid);
+		}
+		
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		
+		try {
+			Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDef, context);
+			
+			stopWatch.stop();
+			
+			if (log.isDebugEnabled()) {
+				log.debug("Running filters for patient grid " + patientGrid + " completed in " + stopWatch.toString());
+			}
+			
+			return cohort;
+		}
+		finally {
+			if (!stopWatch.isStopped()) {
+				stopWatch.stop();
+			}
+		}
 	}
 	
 }

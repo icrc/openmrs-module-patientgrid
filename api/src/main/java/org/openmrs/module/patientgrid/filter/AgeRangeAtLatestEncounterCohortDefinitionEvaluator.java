@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.patientgrid.PatientAgeAtLatestEncounterDataDefinition;
+import org.openmrs.module.patientgrid.AgeAtLatestEncounterPatientDataDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
@@ -26,7 +26,7 @@ public class AgeRangeAtLatestEncounterCohortDefinitionEvaluator implements Cohor
 	        throws EvaluationException {
 		
 		AgeRangeAtLatestEncounterCohortDefinition def = (AgeRangeAtLatestEncounterCohortDefinition) cohortDefinition;
-		PatientAgeAtLatestEncounterDataDefinition ageDef = new PatientAgeAtLatestEncounterDataDefinition();
+		AgeAtLatestEncounterPatientDataDefinition ageDef = new AgeAtLatestEncounterPatientDataDefinition();
 		ageDef.setEncounterType(def.getEncounterType());
 		EvaluatedPatientData data = Context.getService(PatientDataService.class).evaluate(ageDef, evaluationContext);
 		Map<Integer, Age> patientAndAge = (Map) data.getData();

@@ -17,16 +17,16 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Handler(supports = ObsForLatestEncounterDataDefinition.class, order = 50)
-public class ObsForLatestEncounterDataEvaluator implements PatientDataEvaluator {
+@Handler(supports = ObsForLatestEncounterPatientDataDefinition.class, order = 50)
+public class ObsForLatestEncounterPatientDataEvaluator implements PatientDataEvaluator {
 	
-	private static final Logger log = LoggerFactory.getLogger(ObsForLatestEncounterDataEvaluator.class);
+	private static final Logger log = LoggerFactory.getLogger(ObsForLatestEncounterPatientDataEvaluator.class);
 	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
 	        throws EvaluationException {
 		
-		ObsForLatestEncounterDataDefinition def = (ObsForLatestEncounterDataDefinition) definition;
+		ObsForLatestEncounterPatientDataDefinition def = (ObsForLatestEncounterPatientDataDefinition) definition;
 		Map<EncounterType, Object> typeAndEncData = (Map) context.getFromCache(KEY_MOST_RECENT_ENCS);
 		if (typeAndEncData == null) {
 			typeAndEncData = new HashMap();
@@ -39,8 +39,7 @@ public class ObsForLatestEncounterDataEvaluator implements PatientDataEvaluator 
 				log.debug("Loading patient most recent patient encounters of type: " + def.getEncounterType());
 			}
 			
-			patientIdAndEnc = PatientGridUtils.getMostRecentEncounters(def.getEncounterType(), context.getBaseCohort(),
-			    true);
+			patientIdAndEnc = PatientGridUtils.getEncounters(def.getEncounterType(), context.getBaseCohort(), true);
 			typeAndEncData.put(def.getEncounterType(), patientIdAndEnc);
 		}
 		

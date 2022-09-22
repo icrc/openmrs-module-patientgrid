@@ -40,4 +40,6 @@ public class PatientGridConstants {
 	
 	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	
+	public static final PatientGridObsConverter OBS_CONVERTER = new PatientGridObsConverter();
+	
 }
