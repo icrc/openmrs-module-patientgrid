@@ -30,10 +30,10 @@ refer to the resources above.
 
 ## Exposed Web Service Resources
 
-###Patient Grid
+### Patient Grid
 Encapsulates metadata about a single patient grid
 
-####Properties
+#### Properties
 *(Indicates a required property)
 
 `name*` A unique grid name
@@ -45,10 +45,10 @@ A list or an array of column metadata where each element is metadata for a singl
 
 `owner` The user the grid belongs to, a null value is interpreted as a system grid visible to everyone
 
-###Patient Grid Column
+### Patient Grid Column
 Encapsulates metadata about a single patient grid column
 
-####Properties
+#### Properties
 `name*` A unique column name
 
 `description` precise column description
@@ -60,7 +60,7 @@ other columns.
 
 `datatype*` A value from the following possible values NAME, GENDER, ENC_AGE, OBS, DATAFILTER_LOCATION, DATAFILTER_COUNTRY
 
-####Extra Obs Column Properties
+#### Extra Obs Column Properties
 The properties below only apply to a grid column where the _type_ property value is set to `obscolumn`
 
 `encounterType*`
@@ -68,17 +68,17 @@ The properties below only apply to a grid column where the _type_ property value
 `concept*`
 
 
-####Extra Age Column Properties
+#### Extra Age Column Properties
 The properties below only apply to a grid column where the _type_ property value is set to `agecolumn`
 
 `encounterType*`
 
 `convertToAgeRange`
 
-###Patient Grid Report
+### Patient Grid Report
 A read-only resource encapsulating report data for a specific patient grid
 
-####Properties
+#### Properties
 `patientGrid` The patient grid that was evaluated as a ref [representation](https://wiki.openmrs.org/x/P4IaAQ))
 
 `report` The actual grid report data
@@ -99,7 +99,7 @@ A read-only resource encapsulating report data for a specific patient grid
 observation belongs to, the other entry has key named `encounterType` while its value is the uuid of the encounter type 
 the observation belongs to.
 
-###Age Range
+### Age Range
 
 ## Patient Grid Operations
 ### Fetch All Patient Grids
