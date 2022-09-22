@@ -9,6 +9,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
+import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.patientgrid.api.db.PatientGridDAO;
@@ -95,6 +96,14 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 	@Override
 	public PatientGridColumn getPatientGridColumnByUuid(String uuid) {
 		return dao.getPatientGridColumnByUuid(uuid);
+	}
+	
+	/**
+	 * @see PatientGridService#getPatientGridColumnFilterByUuid(String)
+	 */
+	@Override
+	public PatientGridColumnFilter getPatientGridColumnFilterByUuid(String uuid) {
+		return dao.getPatientGridColumnFilterByUuid(uuid);
 	}
 	
 	/**

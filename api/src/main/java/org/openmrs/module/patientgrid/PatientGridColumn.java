@@ -217,6 +217,20 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	}
 	
 	/**
+	 * Removes a filter from the list of filters for this column
+	 *
+	 * @param filter the filter to remove
+	 * @return true if the filter was found and removed otherwise false
+	 */
+	public boolean removeFilter(PatientGridColumnFilter filter) {
+		if (filter != null) {
+			return getFilters().remove(filter);
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * @see Auditable#getCreator()
 	 */
 	@Override

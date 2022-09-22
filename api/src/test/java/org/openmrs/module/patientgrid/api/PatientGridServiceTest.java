@@ -385,4 +385,14 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(service.getPatientGridColumnByUuid("bad-uuid"));
 	}
 	
+	@Test
+	public void getPatientGridColumnFilterByUuid_shouldReturnTheFilterMatchingTheSpecifiedUuid() {
+		assertEquals(1, service.getPatientGridColumnFilterByUuid("1f6c993e-c2cc-11de-8d13-0010c6dffd0c").getId().intValue());
+	}
+	
+	@Test
+	public void getPatientGridColumnFilterByUuid_shouldReturnNullIfNoFilterMatchesTheSpecifiedUuid() {
+		assertNull(service.getPatientGridColumnFilterByUuid("bad-uuid"));
+	}
+	
 }

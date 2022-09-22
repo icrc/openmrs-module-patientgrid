@@ -22,17 +22,17 @@ refer to the resources above.
 
 ## API Resources
 
-### Patient Grid Operations
+### Patient Grid
 Encapsulates metadata about a single patient grid
 
 #### Properties
-*(Indicates a required property)
+<i style='color:red'>*</i> (Indicates a required property)
 
-`name*` A unique grid name, uniqueness technically applies only among non-retired grids
+<i style='color:red'>*</i>`name` A unique grid name, uniqueness technically applies only among non-retired grids
 
 `description` precise grid description
 
-`columns*`
+<i style='color:red'>*</i>`columns`
 A list or an array of column metadata where each element is metadata for a single column, see [Patient Grid Column Resource](#patient-grid-column) for properties
 
 `owner` The user the grid belongs to, a null value is interpreted as a system grid visible to everyone
@@ -43,30 +43,32 @@ A list or an array of column metadata where each element is metadata for a singl
 Encapsulates metadata about a single patient grid column
 
 #### Properties
-`name*` A <>unique column name, only needs to be unique in the context of a single grid
+<i style='color:red'>*</i>`name` A unique column name, only needs to be unique in the context of a single grid
 
 `description` precise column description
 
-`type*` A global discriminator field used by the web service API to determine what subclass to instantiate for a resource that
-has a class hierarchy, the supported values are `obscolumn` for a column that holds an observation value e.g. form field
-value that hold an obs value, `agecolumn` for a column that holds an age or age range value and finally `column` for all
-other columns.
+<i style='color:red'>*</i>`type` A global discriminator field used by the web service API to determine what subclass to 
+instantiate for a resource that has a class hierarchy, the supported values are `obscolumn` for a column that holds an 
+observation value e.g. form field value that hold an obs value, `agecolumn` for a column that holds an age or age range 
+value and finally `column` for all other columns.
 
-`datatype*` A value from the following possible values NAME, GENDER, ENC_AGE, OBS, DATAFILTER_LOCATION, DATAFILTER_COUNTRY
+<i style='color:red'>*</i>`datatype` A value from the following possible values NAME, GENDER, ENC_AGE, OBS, 
+DATAFILTER_LOCATION, DATAFILTER_COUNTRY
 
 #### Other Obs Column Properties
 The properties below only apply to a grid column where the _type_ property value is set to `obscolumn`
 
-`encounterType*` The type of the encounters where to match when evaluating the column obs values
+<i style='color:red'>*</i>`encounterType` The type of the encounters where to match when evaluating the column obs values
 
-`concept*` The question concept to match when evaluating the column obs values, MUST be a concept UUID for create or
-update [patient grid](#patient-grid-operations) and [column](#patient-grid-column-operations) operations
+<i style='color:red'>*</i>`concept` The question concept to match when evaluating the column obs values, MUST be a 
+concept UUID for create or update [patient grid](#patient-grid-operations) and [column](#patient-grid-column-operations) 
+operations
 
 
 #### Other Obs Column Properties
 The properties below only apply to a grid column where the _type_ property value is set to `agecolumn`
 
-`encounterType*`
+<i style='color:red'>*</i>`encounterType` The type of the encounters where to match when evaluating the column obs values
 
 `convertToAgeRange` If set to true ages get converted to age range based on the age ranges defined in the system, see
 [Age Range Resource](#age-range) for how ranges work.
