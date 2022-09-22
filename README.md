@@ -45,6 +45,8 @@ A list or an array of column metadata where each element is metadata for a singl
 
 `owner` The user the grid belongs to, a null value is interpreted as a system grid visible to everyone
 
+**Note** This resource inherits all other standard metadata properties 
+
 ### Patient Grid Column
 Encapsulates metadata about a single patient grid column
 
@@ -60,7 +62,7 @@ other columns.
 
 `datatype*` A value from the following possible values NAME, GENDER, ENC_AGE, OBS, DATAFILTER_LOCATION, DATAFILTER_COUNTRY
 
-#### Extra Obs Column Properties
+#### Other Obs Column Properties
 The properties below only apply to a grid column where the _type_ property value is set to `obscolumn`
 
 `encounterType*`
@@ -68,12 +70,15 @@ The properties below only apply to a grid column where the _type_ property value
 `concept*`
 
 
-#### Extra Age Column Properties
+#### Other Obs Column Properties
 The properties below only apply to a grid column where the _type_ property value is set to `agecolumn`
 
 `encounterType*`
 
-`convertToAgeRange`
+`convertToAgeRange` If set to true ages get converted to age range based on the age ranges defined in the system, see 
+[Age Range Resource](#age-range) for how ranges work.
+
+**Note** This resource inherits all other standard resource properties
 
 ### Patient Grid Report
 A read-only resource encapsulating report data for a specific patient grid
@@ -83,7 +88,9 @@ A read-only resource encapsulating report data for a specific patient grid
 
 `report` The actual grid report data
 
-*Note* Obs values are trimmed down to a custom representation specific to this module with the properties below,
+
+**Note** Obs values in the report are trimmed down to a custom representation specific to this module with the 
+properties below,
 
 `uuid` The uuid of the observation
 
@@ -100,6 +107,20 @@ observation belongs to, the other entry has key named `encounterType` while its 
 the observation belongs to.
 
 ### Age Range
+A read-only resource encapsulating metadata for an age range.
+
+#### Properties
+`minAge`
+
+`minAgeUnit`
+
+`maxAge`
+
+`maxAgeUnit`
+
+`label`
+
+`display`
 
 ## Patient Grid Operations
 ### Fetch All Patient Grids
