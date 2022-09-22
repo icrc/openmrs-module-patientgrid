@@ -249,6 +249,8 @@
                                     --add-opens java.base/jdk.management.jfr=ALL-UNNAMED
                                     --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED
                                     --add-opens jdk.management.jfr/jdk.management.jfr=ALL-UNNAMED
+                                    --add-opens java.xml/javax.xml.catalog=ALL-UNNAMED
+                                    --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED
                                 </argLine>
                             </configuration>
                         </plugin>
