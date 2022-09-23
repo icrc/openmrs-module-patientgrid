@@ -41,12 +41,6 @@ public class PatientGridColumnFilterResourceTest extends BaseDelegatingResourceT
 	}
 	
 	@Override
-	public void validateRefRepresentation() throws Exception {
-		super.validateRefRepresentation();
-		validateRepresentation();
-	}
-	
-	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
 		validateRepresentation();

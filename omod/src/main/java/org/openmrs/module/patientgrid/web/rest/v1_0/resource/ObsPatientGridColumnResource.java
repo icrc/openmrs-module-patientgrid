@@ -5,13 +5,16 @@ import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConsta
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.ObsPatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumn;
+import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.SubClassHandler;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingConverter;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
@@ -26,7 +29,7 @@ import io.swagger.models.properties.StringProperty;
 public class ObsPatientGridColumnResource extends BaseDelegatingSubclassHandler<PatientGridColumn, ObsPatientGridColumn> implements DelegatingSubclassHandler<PatientGridColumn, ObsPatientGridColumn> {
 	
 	/**
-	 * @see BaseDelegatingSubclassHandler#getTypeName
+	 * @see BaseDelegatingSubclassHandler#getTypeName()
 	 */
 	@Override
 	public String getTypeName() {
@@ -34,7 +37,7 @@ public class ObsPatientGridColumnResource extends BaseDelegatingSubclassHandler<
 	}
 	
 	/**
-	 * @see BaseDelegatingSubclassHandler#newDelegate
+	 * @see BaseDelegatingSubclassHandler#newDelegate()
 	 */
 	@Override
 	public ObsPatientGridColumn newDelegate() {
@@ -42,25 +45,31 @@ public class ObsPatientGridColumnResource extends BaseDelegatingSubclassHandler<
 	}
 	
 	/**
-	 * @see BaseDelegatingSubclassHandler#getRepresentationDescription
+	 * @see BaseDelegatingSubclassHandler#getRepresentationDescription(Representation)
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation representation) {
-		BaseDelegatingConverter columnResource = (BaseDelegatingConverter) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(PatientGridColumn.class);
-		DelegatingResourceDescription description = columnResource.getRepresentationDescription(representation);
-		description.addRequiredProperty("concept", Representation.REF);
-		description.addRequiredProperty("encounterType", Representation.REF);
+		DelegatingResourceDescription description = getSuperclassResource().getRepresentationDescription(representation);
+		if (representation instanceof DefaultRepresentation || representation instanceof FullRepresentation) {
+			description.addRequiredProperty("concept", Representation.REF);
+			description.addRequiredProperty("encounterType", Representation.REF);
+		}
+		
 		return description;
 	}
 	
 	@PropertyGetter("display")
 	public String getDisplayString(PatientGridColumn delegate) {
-		return delegate.getName();
+		return getSuperclassResource().getDisplayString(delegate);
+	}
+	
+	@PropertySetter("filters")
+	public void setFilters(PatientGridColumn column, PatientGridColumnFilter... filters) {
+		getSuperclassResource().setFilters(column, filters);
 	}
 	
 	/**
-	 * @see BaseDelegatingSubclassHandler#getCreatableProperties
+	 * @see BaseDelegatingSubclassHandler#getCreatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
@@ -71,7 +80,7 @@ public class ObsPatientGridColumnResource extends BaseDelegatingSubclassHandler<
 	}
 	
 	/**
-	 * @see BaseDelegatingSubclassHandler#getGETModel
+	 * @see BaseDelegatingSubclassHandler#getGETModel(Representation)
 	 */
 	@Override
 	public Model getGETModel(Representation representation) {
@@ -82,7 +91,7 @@ public class ObsPatientGridColumnResource extends BaseDelegatingSubclassHandler<
 	}
 	
 	/**
-	 * @see BaseDelegatingSubclassHandler#getCREATEModel
+	 * @see BaseDelegatingSubclassHandler#getCREATEModel(Representation)
 	 */
 	@Override
 	public Model getCREATEModel(Representation representation) {
@@ -93,11 +102,16 @@ public class ObsPatientGridColumnResource extends BaseDelegatingSubclassHandler<
 	}
 	
 	/**
-	 * @see BaseDelegatingSubclassHandler#getAllByType
+	 * @see BaseDelegatingSubclassHandler#getAllByType(RequestContext)
 	 */
 	@Override
 	public PageableResult getAllByType(RequestContext requestContext) throws ResourceDoesNotSupportOperationException {
 		throw new ResourceDoesNotSupportOperationException();
+	}
+	
+	private PatientGridColumnResource getSuperclassResource() {
+		return (PatientGridColumnResource) Context.getService(RestService.class)
+		        .getResourceBySupportedClass(PatientGridColumn.class);
 	}
 	
 }

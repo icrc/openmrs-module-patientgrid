@@ -12,16 +12,17 @@ import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
-import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ObjectMismatchException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
@@ -43,18 +44,24 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation representation) {
-		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		description.addProperty("uuid");
-		description.addProperty("display");
-		description.addRequiredProperty("name");
-		description.addRequiredProperty("column");
-		description.addRequiredProperty("operand");
-		description.addSelfLink();
-		if (representation instanceof FullRepresentation) {
-			description.addProperty("auditInfo");
+		if (representation instanceof DefaultRepresentation || representation instanceof FullRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("display");
+			description.addRequiredProperty("name");
+			description.addRequiredProperty("column", Representation.REF);
+			description.addRequiredProperty("operand");
+			description.addSelfLink();
+			if (representation instanceof DefaultRepresentation) {
+				description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			} else {
+				description.addProperty("auditInfo");
+			}
+			
+			return description;
 		}
 		
-		return description;
+		return null;
 	}
 	
 	/**

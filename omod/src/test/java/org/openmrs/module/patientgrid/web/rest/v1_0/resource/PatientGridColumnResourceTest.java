@@ -38,12 +38,7 @@ public class PatientGridColumnResourceTest extends BaseDelegatingResourceTest<Pa
 		assertPropEquals("name", column.getName());
 		assertPropEquals("description", column.getDescription());
 		assertPropEquals("datatype", column.getDatatype());
-	}
-	
-	@Override
-	public void validateRefRepresentation() throws Exception {
-		super.validateRefRepresentation();
-		validateRepresentation();
+		assertPropPresent("filters");
 	}
 	
 	@Override

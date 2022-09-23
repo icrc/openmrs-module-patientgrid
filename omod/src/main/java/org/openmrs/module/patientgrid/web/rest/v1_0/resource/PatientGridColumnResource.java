@@ -10,23 +10,28 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
+import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
+import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
-import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 
 @SubResource(parent = PatientGridResource.class, path = "column", supportedClass = PatientGridColumn.class, supportedOpenmrsVersions = {
@@ -54,18 +59,39 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation representation) {
-		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		description.addProperty("uuid");
-		description.addProperty("display");
-		description.addRequiredProperty("name");
-		description.addProperty("description");
-		description.addRequiredProperty("datatype");
-		description.addSelfLink();
-		if (representation instanceof FullRepresentation) {
-			description.addProperty("auditInfo");
+		if (representation instanceof DefaultRepresentation || representation instanceof FullRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("display");
+			description.addRequiredProperty("name");
+			description.addProperty("description");
+			description.addRequiredProperty("datatype");
+			description.addProperty("filters");
+			description.addSelfLink();
+			if (representation instanceof DefaultRepresentation) {
+				description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			} else {
+				description.addProperty("auditInfo");
+			}
+			
+			return description;
 		}
 		
-		return description;
+		// TODO remove this code when we add support to add columns to existing grids
+		// Ref Rep, we don't delete to superclass because the call to getResource() fails
+		DelegatingResourceDescription rep = new DelegatingResourceDescription();
+		rep.addProperty("uuid");
+		rep.addProperty("display");
+		rep.addSelfLink();
+		
+		return rep;
+	}
+	
+	@PropertySetter("filters")
+	public void setFilters(PatientGridColumn column, PatientGridColumnFilter... filters) {
+		for (PatientGridColumnFilter filter : filters) {
+			column.addFilter(filter);
+		}
 	}
 	
 	/**
@@ -82,6 +108,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		description.addRequiredProperty("name");
 		description.addRequiredProperty("datatype");
 		description.addProperty("description");
+		description.addProperty("filters");
 		return description;
 	}
 	
@@ -157,7 +184,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	}
 	
 	/**
-	 * @see MetadataDelegatingCrudResource#getGETModel(Representation)
+	 * @see DelegatingSubResource#getGETModel(Representation)
 	 */
 	@Override
 	public Model getGETModel(Representation rep) {
@@ -166,11 +193,12 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		model.property("uuid", new StringProperty());
 		model.property("datatype", new EnumProperty(ColumnDatatype.class));
 		model.property("description", new StringProperty());
+		model.property("filters", new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridFilterGet")));
 		return model;
 	}
 	
 	/**
-	 * @see MetadataDelegatingCrudResource#getCREATEModel(Representation)
+	 * @see DelegatingSubResource#getCREATEModel(Representation)
 	 */
 	@Override
 	public Model getCREATEModel(Representation rep) {
@@ -178,6 +206,8 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		model.property("name", new StringProperty().required(true));
 		model.property("datatype", new EnumProperty(ColumnDatatype.class).required(true));
 		model.property("description", new StringProperty());
+		model.property("filters", new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridFilterCreate")));
+		model.required("filters");
 		return model;
 	}
 	
