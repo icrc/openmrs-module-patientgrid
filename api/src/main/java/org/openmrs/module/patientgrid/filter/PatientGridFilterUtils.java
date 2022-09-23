@@ -305,22 +305,15 @@ public class PatientGridFilterUtils {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		
-		try {
-			Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDef, context);
-			
-			stopWatch.stop();
-			
-			if (log.isDebugEnabled()) {
-				log.debug("Running filters for patient grid " + patientGrid + " completed in " + stopWatch.toString());
-			}
-			
-			return cohort;
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDef, context);
+		
+		stopWatch.stop();
+		
+		if (log.isDebugEnabled()) {
+			log.debug("Running filters for patient grid " + patientGrid + " completed in " + stopWatch.toString());
 		}
-		finally {
-			if (!stopWatch.isStopped()) {
-				stopWatch.stop();
-			}
-		}
+		
+		return cohort;
 	}
 	
 }

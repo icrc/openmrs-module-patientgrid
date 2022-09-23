@@ -119,12 +119,6 @@
                                  referencedTableName="users"
                                  referencedColumnNames="user_id" />
 
-        <addForeignKeyConstraint constraintName="patient_grid_column_retired_by"
-                                 baseTableName="patientgrid_patient_grid_column"
-                                 baseColumnNames="retired_by"
-                                 referencedTableName="users"
-                                 referencedColumnNames="user_id" />
-
         <addForeignKeyConstraint constraintName="patient_grid_column_changed_by"
                                  baseTableName="patientgrid_patient_grid_column"
                                  baseColumnNames="changed_by"

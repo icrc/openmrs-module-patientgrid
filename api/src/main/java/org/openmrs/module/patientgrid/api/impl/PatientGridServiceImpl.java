@@ -141,11 +141,6 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		catch (EvaluationException e) {
 			throw new APIException("Failed to evaluate patient grid: " + patientGrid, e);
 		}
-		finally {
-			if (!stopWatch.isStopped()) {
-				stopWatch.stop();
-			}
-		}
 	}
 	
 }
