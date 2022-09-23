@@ -36,7 +36,7 @@ public class PatientGridColumnFilterResourceTest extends BaseDelegatingResourceT
 	private void validateRepresentation() {
 		PatientGridColumnFilter column = newObject();
 		assertPropEquals("name", column.getName());
-		assertPropPresent("patientGridColumn");
+		assertPropPresent("column");
 		assertPropEquals("operand", column.getOperand());
 	}
 	

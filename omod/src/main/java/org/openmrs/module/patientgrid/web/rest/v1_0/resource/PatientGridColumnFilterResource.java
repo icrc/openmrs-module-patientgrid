@@ -2,23 +2,32 @@ package org.openmrs.module.patientgrid.web.rest.v1_0.resource;
 
 import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.SUPPORTED_VERSIONS;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.patientgrid.api.PatientGridService;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
-import org.openmrs.module.webservices.rest.web.response.GenericRestException;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.ObjectMismatchException;
+import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.OpenmrsUtil;
 
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
@@ -38,7 +47,7 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 		description.addProperty("uuid");
 		description.addProperty("display");
 		description.addRequiredProperty("name");
-		description.addRequiredProperty("patientGridColumn");
+		description.addRequiredProperty("column");
 		description.addRequiredProperty("operand");
 		description.addSelfLink();
 		if (representation instanceof FullRepresentation) {
@@ -56,13 +65,36 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 		return new PatientGridColumnFilter();
 	}
 	
+	/**
+	 * @see DelegatingSubResource#getCreatableProperties()
+	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("name");
-		description.addRequiredProperty("patientGridColumn");
+		description.addRequiredProperty("column");
 		description.addRequiredProperty("operand");
 		return description;
+	}
+	
+	/**
+	 * @see DelegatingSubResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
+		DelegatingResourceDescription description = super.getUpdatableProperties();
+		description.removeProperty("column");
+		return description;
+	}
+	
+	@PropertyGetter("column")
+	public PatientGridColumn getColumn(PatientGridColumnFilter delegate) {
+		return delegate.getPatientGridColumn();
+	}
+	
+	@PropertySetter("column")
+	public void setColumn(PatientGridColumnFilter delegate, PatientGridColumn column) {
+		delegate.setPatientGridColumn(column);
 	}
 	
 	@PropertyGetter("display")
@@ -79,10 +111,12 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 	}
 	
 	/**
+	 * @see #setColumn(PatientGridColumnFilter, PatientGridColumn)
 	 * @see DelegatingSubResource#setParent(Object, Object)
 	 */
 	@Override
 	public void setParent(PatientGridColumnFilter instance, PatientGrid parent) {
+		//The parent is the column which is already set on the filter by the framework via the column resource property
 	}
 	
 	/**
@@ -94,11 +128,25 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 	}
 	
 	/**
-	 * @see DelegatingSubResource#delete(Object, String, RequestContext)
+	 * @see DelegatingSubResource#retrieve(String, String, RequestContext)
 	 */
 	@Override
-	protected void delete(PatientGridColumnFilter delegate, String reason, RequestContext context) throws ResponseException {
-		purge(delegate, context);
+	public Object retrieve(String parentUniqueId, String uuid, RequestContext context) throws ResponseException {
+		ensurePatientGridsMatch(parentUniqueId, uuid);
+		return super.retrieve(parentUniqueId, uuid, context);
+	}
+	
+	/**
+	 * @see DelegatingSubResource#doGetAll(Object, RequestContext)
+	 */
+	@Override
+	public PageableResult doGetAll(PatientGrid parent, RequestContext context) throws ResponseException {
+		List<PatientGridColumnFilter> filters = new ArrayList();
+		if (parent != null) {
+			parent.getColumns().stream().forEach(c -> c.getFilters().forEach(f -> filters.add(f)));
+		}
+		
+		return new NeedsPaging(filters, context);
 	}
 	
 	/**
@@ -113,6 +161,53 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 	}
 	
 	/**
+	 * @see DelegatingSubResource#create(String, SimpleObject, RequestContext)
+	 */
+	@Override
+	public Object create(String parentUniqueId, SimpleObject post, RequestContext context) throws ResponseException {
+		String columnUuid = post.get("column");
+		PatientGridColumnResource columnResource = (PatientGridColumnResource) Context.getService(RestService.class)
+		        .getResourceBySupportedClass(PatientGridColumn.class);
+		PatientGridColumn column = columnResource.getByUniqueId(columnUuid);
+		if (column == null) {
+			throw new ObjectNotFoundException();
+		}
+		
+		if (!OpenmrsUtil.nullSafeEquals(column.getPatientGrid().getUuid(), parentUniqueId)) {
+			throw new ObjectMismatchException(parentUniqueId + " does not match that of the column", null);
+		}
+		
+		return super.create(parentUniqueId, post, context);
+	}
+	
+	/**
+	 * @see DelegatingSubResource#update(String, String, SimpleObject, RequestContext)
+	 */
+	@Override
+	public Object update(String parentUniqueId, String uuid, SimpleObject propertiesToUpdate, RequestContext context)
+	        throws ResponseException {
+		ensurePatientGridsMatch(parentUniqueId, uuid);
+		return super.update(parentUniqueId, uuid, propertiesToUpdate, context);
+	}
+	
+	/**
+	 * @see DelegatingSubResource#delete(Object, String, RequestContext)
+	 */
+	@Override
+	protected void delete(PatientGridColumnFilter delegate, String reason, RequestContext context) throws ResponseException {
+		purge(delegate, context);
+	}
+	
+	/**
+	 * @see DelegatingSubResource#delete(Object, String, RequestContext)
+	 */
+	@Override
+	public void delete(String parentUniqueId, String uuid, String reason, RequestContext context) throws ResponseException {
+		ensurePatientGridsMatch(parentUniqueId, uuid);
+		super.delete(parentUniqueId, uuid, reason, context);
+	}
+	
+	/**
 	 * @see DelegatingSubResource#purge(Object, RequestContext)
 	 */
 	@Override
@@ -122,42 +217,65 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 	}
 	
 	/**
-	 * @see MetadataDelegatingCrudResource#getGETModel(Representation)
+	 * @see DelegatingSubResource#purge(String, String, RequestContext)
+	 */
+	@Override
+	public void purge(String parentUniqueId, String uuid, RequestContext context) throws ResponseException {
+		ensurePatientGridsMatch(parentUniqueId, uuid);
+		super.purge(parentUniqueId, uuid, context);
+	}
+	
+	/**
+	 * @see DelegatingSubResource#getGETModel(Representation)
 	 */
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		model.property("name", new StringProperty());
 		model.property("uuid", new StringProperty());
-		model.property("patientGridColumn", new RefProperty("#/definitions/PatientgridPatientgridColumnGetRef"));
+		model.property("column", new RefProperty("#/definitions/PatientgridPatientgridColumnGetRef"));
 		model.property("operand", new StringProperty());
 		return model;
 	}
 	
 	/**
-	 * @see MetadataDelegatingCrudResource#getCREATEModel(Representation)
+	 * @see DelegatingSubResource#getCREATEModel(Representation)
 	 */
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl();
 		model.property("name", new StringProperty().required(true));
-		model.property("patientGridColumn", new StringProperty().required(true).example("uuid"));
+		model.property("column", new StringProperty().required(true).example("uuid"));
 		model.property("operand", new StringProperty());
 		return model;
 	}
 	
-	private void ensurePatientGridMatch(PatientGridColumnFilter filter) {
-		if (filter.getPatientGridColumn().equals(getParent(filter))) {
-			throw new GenericRestException("The parent patient grid must match that of the column");
-		}
+	/**
+	 * @see DelegatingSubResource#getUPDATEModel(Representation)
+	 */
+	@Override
+	public Model getUPDATEModel(Representation rep) {
+		ModelImpl model = new ModelImpl();
+		model.property("name", new StringProperty().required(true));
+		model.property("operand", new StringProperty());
+		return model;
 	}
 	
 	/**
-	 * @see DelegatingSubResource#doGetAll(Object, RequestContext)
+	 * Sanity check to ensure the parent grid and that of the filter column match
+	 * 
+	 * @param parentUniqueId the patient grid uuid
+	 * @param uuid filter uuid
 	 */
-	@Override
-	public PageableResult doGetAll(PatientGrid parent, RequestContext context) throws ResponseException {
-		throw new ResourceDoesNotSupportOperationException("To view filters on a column, fetch the column itself");
+	private void ensurePatientGridsMatch(String parentUniqueId, String uuid) {
+		PatientGridColumnFilter filter = getByUniqueId(uuid);
+		if (filter == null) {
+			throw new ObjectNotFoundException();
+		}
+		
+		if (!OpenmrsUtil.nullSafeEquals(filter.getPatientGridColumn().getPatientGrid().getUuid(), parentUniqueId)) {
+			throw new ObjectMismatchException(parentUniqueId + " does not match that of the column", null);
+		}
 	}
 	
 }
