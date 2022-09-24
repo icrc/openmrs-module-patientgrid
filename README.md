@@ -113,4 +113,4 @@ refer to the resources above.
 1. [Run Grid Report](docs/rest/endpoints/README.md#run-grid-report)
 
 ### Grid Download
-1. [Run Grid Download Report](docs/rest/endpoints/README.md#run-grid-download)
+1. [Run Grid Download](docs/rest/endpoints/README.md#run-grid-download)

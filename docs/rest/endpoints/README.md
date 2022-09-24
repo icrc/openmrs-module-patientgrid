@@ -6,7 +6,7 @@
 
 **HTTP Method** `GET`
 
-**Example Response** See [Patient Grid Resource](../resources/README.md#patient-grid) (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response** See [Patient Grid Resource](../resources/README.md#patient-grid) (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
 
 ```
 {
@@ -43,7 +43,7 @@ exclude it the request parameter.
 
 **HTTP Method** `GET`
 
-**Example Response** See [Patient Grid Resource](../resources/README.md#patient-grid) (Full [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response** See [Patient Grid Resource](../resources/README.md#patient-grid) (Full [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
 ```
 {
   "uuid": "2d6c993e-c2cc-11de-8d13-0010c6dffd0a",
@@ -217,7 +217,7 @@ exclude it the request parameter.
 }
 ```
 
-**Example Response:** (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response:** (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
 ```
 {
   "uuid": "7e6add6c-ca68-443a-92fa-9395845bc383",
@@ -254,7 +254,7 @@ exclude it the request parameter.
 
 **HTTP Method** `GET`
 
-**Example Response** See [Grid Column Resource](../resources/README.md#grid-column), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response** See [Grid Column Resource](../resources/README.md#grid-column), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
 ```
 {
   "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0b",
@@ -312,7 +312,7 @@ exclude it the request parameter.
 
 **HTTP Method** `GET`
 
-**Example Response** See [Grid Column Resource](../resources/README.md#grid-column), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response** See [Grid Column Resource](../resources/README.md#grid-column), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
 ```
 {
   "results": [
@@ -491,7 +491,7 @@ Currently, not supported, there is a ticket to to add support for this.
 
 **HTTP Method** `GET`
 
-**Example Response** See [Grid Filter Resource](../resources/README.md#grid-filter), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response** See [Grid Filter Resource](../resources/README.md#grid-filter), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
 ```
 {
   "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0c",
@@ -528,7 +528,7 @@ Currently, not supported, there is a ticket to to add support for this.
 
 **HTTP Method** `GET`
 
-**Example Response:** See [Grid Filter Resource](../resources/README.md#grid-filter), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response:** See [Grid Filter Resource](../resources/README.md#grid-filter), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
 ```
 {
   "results": [
@@ -730,7 +730,7 @@ Currently, not supported, there is a ticket to to add support for this.
 `refresh` If set to true, any caches from previous runs are discarded, i.e. the patient grid is re-evaluate to produce
 fresh data
 
-**Example Response** See [Grid Report Resource](../resources/README.md#grid-report), (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response** See [Grid Report Resource](../resources/README.md#grid-report), (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
 
 Please pay extra attention to obs column values, for more see the note on obs value properties under [Grid Report Resource](../resources/README.md#grid-report)
 ```
@@ -872,4 +872,5 @@ Please pay extra attention to obs column values, for more see the note on obs va
 ```
 
 ## Grid Download
+
 ### Run Grid Download
