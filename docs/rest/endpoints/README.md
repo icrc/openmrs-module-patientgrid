@@ -1,144 +1,12 @@
-# Rest API Documentation
-For more details about the OpenMRS REST Web Services API, please refer to the links below,
-- [REST Web Services API For Clients](https://wiki.openmrs.org/x/P4IaAQ)
-- [REST Web Services Resource Representation](https://wiki.openmrs.org/x/P4IaAQ)
-- [OpenMRS REST API](https://rest.openmrs.org/#openmrs-rest-api)
+# REST API Endpoints
 
-**NOTE** Authentication, resource representation, searching, paging, limiting results etc are not covered here, please
-refer to the resources above.
-
-## Table of Contents
-
-1. API Resources
-   1. [Patient Grid](#patient-grid) 
-   2. [Grid Column](#grid-column)
-   3. [Grid Filter](#grid-filter)
-   4. [Age Range](#age-range)
-   5. [Grid Report](#grid-report)
-   6. [Grid Download](#)
-2. Operations
-   1. [Patient Grid Operations](#patient-grid-operations)
-   2. [Grid Report Operations](#grid-report-operations)
-   3. [Grid Column Operations](#grid-column-operations)
-   4. [Grid Filter Operations](#grid-filter-operations)
-   5. [Age Range Operations](#age-ranges-operations)
-
-### Patient Grid
-Encapsulates metadata about a single patient grid
-
-#### Properties
-<i style='color:red'>*</i> (Indicates a required property)
-
-<i style='color:red'>*</i>`name` A unique grid name, uniqueness technically applies only among non-retired grids
-
-`description` precise grid description
-
-<i style='color:red'>*</i>`columns` A list or an array of column metadata where each element is metadata for a single 
-column on the grid, see [Grid Column Resource](#grid-column) for properties
-
-`owner` The user the grid belongs to, a null value is interpreted as a system grid visible to everyone
-
-**Note** This resource inherits all other standard metadata properties
-
-### Grid Column
-Encapsulates metadata about a single column on a patient grid
-
-#### Properties
-<i style='color:red'>*</i>`name` A unique column name, only needs to be unique in the context of a single grid
-
-`description` precise column description
-
-<i style='color:red'>*</i>`type` A global discriminator field used by the web service API to determine what subclass to 
-instantiate for a resource that has a class hierarchy, the supported values are `obscolumn` for a column that holds an 
-observation value e.g. form field value that hold an obs value, `agecolumn` for a column that holds an age or age range 
-value and finally `column` for all other columns.
-
-<i style='color:red'>*</i>`datatype` A value from the following possible values NAME, GENDER, ENC_AGE, OBS, 
-DATAFILTER_LOCATION, DATAFILTER_COUNTRY
-
-`filters`A list or an array of filter metadata where each element is metadata for a single filter on the column, see [Grid Filter Resource](#grid-filter) for properties
-
-#### Other Obs Column Properties
-The properties below only apply to a grid column where the _type_ property value is set to `obscolumn`
-
-<i style='color:red'>*</i>`encounterType` The type of the encounters where to match when evaluating the column obs values
-
-<i style='color:red'>*</i>`concept` The question concept to match when evaluating the column obs values, MUST be a 
-concept UUID for create or update [patient grid](#patient-grid-operations) and [column](#grid-column-operations) 
-operations
-
-
-#### Other Obs Column Properties
-The properties below only apply to a grid column where the _type_ property value is set to `agecolumn`
-
-<i style='color:red'>*</i>`encounterType` The type of the encounters where to match when evaluating the column obs values
-
-`convertToAgeRange` If set to true ages get converted to age range based on the age ranges defined in the system, see
-[Age Range Resource](#age-range) for how ranges work.
-
-**Note** This resource inherits all other standard resource properties
-
-### Grid Filter
-Encapsulates metadata about a single column on a patient grid, all filters are implemented with equals operator
-
-#### Properties
-<i style='color:red'>*</i>`name` A unique filter name, only needs to be unique in the context of a single column
-
-<i style='color:red'>*</i>`operand` The value to match column values against
-
-<i style='color:red'>*</i>`column` The grid column on which to apply the filter
-
-### Grid Report
-A read-only resource encapsulating report data for a specific patient grid.
-
-#### Properties
-`patientGrid` The patient grid that was evaluated as a ref [representation](https://wiki.openmrs.org/x/P4IaAQ)
-
-`report` The actual grid report data, it is a list of all patient data where each element in the list us data for a
-single patient, the element is a map of column names and their respective data values.
-
-
-**Note** Obs values in the report are trimmed down to a custom representation specific to this module with the
-properties below,
-
-`uuid` The uuid of the observation
-
-`concept` The question concept uuid
-
-`value` Display obs value
-
-`formPath` The field path on the form the observation was captured
-
-`formNamespace` The field namespace on the form the observation was captured
-
-`encounter` A map with 2 entries, one entry has the key named `uuid` while its value is the uuid of the encounter the
-observation belongs to, the other entry has key named `encounterType` while its value is the uuid of the encounter type
-the observation belongs to.
-
-### Age Range
-A read-only resource encapsulating metadata for an age range definition, for more on how the possible age range 
-definitions are configured refer to the [age range global property](../README.md#age-ranges).
-
-#### Properties
-`minAge` minimum age value
-
-`minAgeUnit` minimum age unit, only YEARS is currently supported
-
-`maxAge` maximum age value
-
-`maxAgeUnit` maximum age unit, only YEARS is currently supported
-
-`label` name for the age range
-
-`display` usually same as label
-
-### Patient Grid Operations
-#### Fetch All Patient Grids
+## Patient Grid
+### Fetch All Patient Grids
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid` (**Replace** SERVER_URL)
 
 **HTTP Method** `GET`
 
-**Example Response** See [Patient Grid Resource](#patient-grid) (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response** See [Patient Grid Resource](../resources/README.md#patient-grid) (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ))
 
 ```
 {
@@ -167,15 +35,15 @@ definitions are configured refer to the [age range global property](../README.md
 }
 ```
 
-#### Fetch A Single Grid
-To Include all the column and filter metadata for the grid, note that we fetch the full representation otherwise you can 
+### Fetch A Single Grid
+To Include all the column and filter metadata for the grid, note that we fetch the full representation otherwise you can
 exclude it the request parameter.
 
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}?v=full`
 
 **HTTP Method** `GET`
 
-**Example Response** See [Patient Grid Resource](#patient-grid) (Full [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response** See [Patient Grid Resource](../resources/README.md#patient-grid) (Full [Representation](https://wiki.openmrs.org/x/P4IaAQ))
 ```
 {
   "uuid": "2d6c993e-c2cc-11de-8d13-0010c6dffd0a",
@@ -310,7 +178,7 @@ exclude it the request parameter.
 }
 ```
 
-#### Create Patient Grid
+### Create New Patient Grid
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid`
 
 **HTTP Method** `POST`
@@ -372,13 +240,21 @@ exclude it the request parameter.
 }
 ```
 
-### Grid Column Operations
-#### Fetch A Single Column
+### Delete An Existing Grid
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}`
+
+**HTTP Method** `DELETE`
+
+**Request Parameter**
+`reason` Reason for deleting the grid
+
+## Grid Column
+### Fetch A Single Column
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/column/{COLUMN_UUID}`
 
 **HTTP Method** `GET`
 
-**Example Response** See [Grid Column Resource](#grid-column), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response** See [Grid Column Resource](../resources/README.md#grid-column), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
 ```
 {
   "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0b",
@@ -431,12 +307,12 @@ exclude it the request parameter.
 }
 ```
 
-#### Fetch All Columns For A Grid
+### Fetch All Columns For A Grid
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/column`
 
 **HTTP Method** `GET`
 
-**Example Response** See [Grid Column Resource](#grid-column), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response** See [Grid Column Resource](../resources/README.md#grid-column), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
 ```
 {
   "results": [
@@ -563,10 +439,10 @@ exclude it the request parameter.
 }
 ```
 
-#### Add New Column To A Grid
+### Add New Column To A Grid
 Currently, not supported, there is a ticket to to add support for this.
 
-#### Modify An Existing Column
+### Modify An Existing Column
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/column/{COLUMN_UUID}`
 
 **HTTP Method** `POST`
@@ -604,18 +480,18 @@ Currently, not supported, there is a ticket to to add support for this.
 }
 ```
 
-#### Remove A Column From A Grid
+### Remove Column From Grid
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/column/{COLUMN_UUID}`
 
 **HTTP Method** `DELETE`
 
-### Grid Filter Operations
-#### Fetch A Single Filter
+## Grid Filter
+### Fetch A Single Filter
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter/{FILTER_UUID}`
 
 **HTTP Method** `GET`
 
-**Example Response** See [Grid Filter Resource](#grid-filter), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response** See [Grid Filter Resource](../resources/README.md#grid-filter), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
 ```
 {
   "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0c",
@@ -647,12 +523,12 @@ Currently, not supported, there is a ticket to to add support for this.
 }
 ```
 
-#### Fetch All Filters For A Grid
+### Fetch All Filters For A Grid
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter`
 
 **HTTP Method** `GET`
 
-**Example Response:** See [Grid Filter Resource](#grid-filter), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response:** See [Grid Filter Resource](../resources/README.md#grid-filter), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
 ```
 {
   "results": [
@@ -716,7 +592,7 @@ Currently, not supported, there is a ticket to to add support for this.
 }
 ```
 
-#### Add New Filter To A Column
+### Add New Filter To A Grid Column
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter`
 
 **HTTP Method** `POST`
@@ -762,8 +638,8 @@ Currently, not supported, there is a ticket to to add support for this.
 }
 ```
 
-#### Modify An Existing Filter
-**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter/{FILTER_UUID}` 
+### Modify An Existing Filter
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter/{FILTER_UUID}`
 **(Replace GRID_UUID and FILTER_UUID)**
 
 **HTTP Method** `POST`
@@ -808,13 +684,44 @@ Currently, not supported, there is a ticket to to add support for this.
 }
 ```
 
-#### Remove A Filter
+### Remove Filter From Grid
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter/{FILTER_UUID}`
 
 **HTTP Method** `DELETE`
 
-### Grid Report Operations
-#### Run Grid Report
+## Age Ranges
+### Fetch All Age Ranges
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/agerange`
+
+**HTTP Method** `GET`
+
+**Example Response**
+
+```
+{
+  "results": [
+    {
+      "minAge": 0,
+      "minAgeUnit": "YEARS",
+      "maxAge": 17,
+      "maxAgeUnit": "YEARS",
+      "label": "<18yrs",
+      "display": "<18yrs"
+    },
+    {
+      "minAge": 18,
+      "minAgeUnit": "YEARS",
+      "maxAge": null,
+      "maxAgeUnit": "YEARS",
+      "label": "18+",
+      "display": "18+"
+    }
+  ]
+}
+```
+
+## Grid Report
+### Run Grid Report
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/report`
 
 **HTTP Method** `GET`
@@ -823,9 +730,9 @@ Currently, not supported, there is a ticket to to add support for this.
 `refresh` If set to true, any caches from previous runs are discarded, i.e. the patient grid is re-evaluate to produce
 fresh data
 
-**Example Response** See [Grid Report Resource](#grid-report), (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response** See [Grid Report Resource](../resources/README.md#grid-report), (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ))
 
-Please pay extra attention to obs column values, for more see the note on obs value properties under [Grid Report Resource](#grid-report)
+Please pay extra attention to obs column values, for more see the note on obs value properties under [Grid Report Resource](../resources/README.md#grid-report)
 ```
 {
   "results": [
@@ -964,33 +871,5 @@ Please pay extra attention to obs column values, for more see the note on obs va
 }
 ```
 
-### Age Ranges Operations
-#### Fetch All Age Ranges
-**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/agerange`
-
-**HTTP Method** `GET`
-
-**Example Response**
-
-```
-{
-  "results": [
-    {
-      "minAge": 0,
-      "minAgeUnit": "YEARS",
-      "maxAge": 17,
-      "maxAgeUnit": "YEARS",
-      "label": "<18yrs",
-      "display": "<18yrs"
-    },
-    {
-      "minAge": 18,
-      "minAgeUnit": "YEARS",
-      "maxAge": null,
-      "maxAgeUnit": "YEARS",
-      "label": "18+",
-      "display": "18+"
-    }
-  ]
-}
-```
+## Grid Download
+### Run Grid Download

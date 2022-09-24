@@ -38,7 +38,7 @@ You will have to generate a token from a Github package (with read access to pac
 ```
 
 # Global Properties
-### Grid Report Cache Directory
+## Grid Report Cache Directory
 
 **Property Name** `patientgrid.cacheDirectory`
 
@@ -47,7 +47,7 @@ application data directory otherwise an absolute path.
 
 Defaults to a folder named `.report_cache` in the application data directory
 
-### Age Ranges
+## Age Ranges
 
 **Property Name** `patientgrid.age.ranges`
 
@@ -69,4 +69,48 @@ Below are the key things to note from the example above,
    no maximum boundary.
 
 # Rest API Documentation
-Please see [Rest API Documentation](omod/README.md)
+For more details about the OpenMRS REST Web Services API, please refer to the links below,
+- [REST Web Services API For Clients](https://wiki.openmrs.org/x/P4IaAQ)
+- [REST Web Services Resource Representation](https://wiki.openmrs.org/x/P4IaAQ)
+- [OpenMRS REST API](https://rest.openmrs.org/#openmrs-rest-api)
+
+**NOTE** Authentication, resource representation, searching, paging, limiting results etc are not covered here, please
+refer to the resources above.
+
+## Resources
+1. [Patient Grid](docs/rest/resources/README.md#patient-grid)
+2. [Grid Column](docs/rest/resources/README.md#grid-column)
+3. [Grid Filter](docs/rest/resources/README.md#grid-filter)
+4. [Age Range](docs/rest/resources/README.md#age-range)
+5. [Grid Report](docs/rest/resources/README.md#grid-report)
+6. [Grid Download](docs/rest/resources/README.md#grid-download)
+
+## Endpoints
+### Patient Grid
+1. [Fetch All Patient Grids](docs/rest/endpoints/README.md#fetch-all-patient-grids)
+2. [Fetch A Single Grid](docs/rest/endpoints/README.md#fetch-a-single-grid)
+3. [Create New Patient Grid](docs/rest/endpoints/README.md#create-new-patient-grid)
+4. [Delete An Existing Grid](docs/rest/endpoints/README.md#delete-an-existing-grid)
+
+### Grid Column
+1. [Fetch A Single Column](docs/rest/endpoints/README.md#fetch-a-single-column)
+2. [Fetch All Columns For A Grid](docs/rest/endpoints/README.md#fetch-all-columns-for-a-grid)
+3. [Add New Column To A Grid](docs/rest/endpoints/README.md#add-new-column-to-a-grid)
+4. [Modify An Existing Column](docs/rest/endpoints/README.md#modify-an-existing-column)
+5. [Remove Column From Grid](docs/rest/endpoints/README.md#remove-column-from-grid)
+
+### Grid Filter
+1. [Fetch A Single Filter](docs/rest/endpoints/README.md#fetch-a-single-filter)
+2. [Fetch All Filters For A Grid](docs/rest/endpoints/README.md#fetch-all-filters-for-a-grid)
+3. [Add New Filter To A Grid Column](docs/rest/endpoints/README.md#add-new-filter-to-a-grid-column)
+4. [Modify An Existing Filter](docs/rest/endpoints/README.md#modify-an-existing-filter)
+5. [Remove Filter From Grid](docs/rest/endpoints/README.md#remove-filter-from-grid)
+
+### Age Range
+1. [Fetch All Age Ranges](docs/rest/endpoints/README.md#fetch-all-age-ranges)
+
+### Grid Report
+1. [Run Grid Report](docs/rest/endpoints/README.md#run-grid-report)
+
+### Grid Download
+1. [Run Grid Download Report](docs/rest/endpoints/README.md#run-grid-download)
