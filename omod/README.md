@@ -170,6 +170,7 @@ definitions are configured refer to the [age range global property](../README.md
 #### Fetch A Single Grid
 To Include all the column and filter metadata for the grid, note that we fetch the full representation otherwise you can 
 exclude it the request parameter.
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}?v=full`
 
 **HTTP Method** `GET`
@@ -258,90 +259,12 @@ exclude it the request parameter.
       "resourceVersion": "1.8"
     },
     {
-      "uuid": "0e6c993e-c2cc-11de-8d13-0010c6dffd0b",
-      "display": "name",
-      "name": "name",
-      "description": "patient name",
-      "datatype": "NAME",
-      "filters": [
-        
-      ],
-      "links": [
-        {
-          "rel": "self",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/0e6c993e-c2cc-11de-8d13-0010c6dffd0b"
-        },
-        {
-          "rel": "full",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/0e6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
-        }
-      ],
-      "type": "column",
-      "resourceVersion": "1.8"
-    },
-    {
       "uuid": "2f6c993e-c2cc-11de-8d13-0010c6dffd0b",
       "display": "civilStatus",
       "name": "civilStatus",
       "description": "patient civil status",
       "datatype": "OBS",
       "filters": [
-        {
-          "uuid": "2f6c993e-c2cc-11de-8d13-0010c6dffd0c",
-          "display": "is single",
-          "name": "is single",
-          "column": {
-            "uuid": "2f6c993e-c2cc-11de-8d13-0010c6dffd0b",
-            "display": "civilStatus",
-            "links": [
-              {
-                "rel": "self",
-                "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
-              }
-            ],
-            "type": "obscolumn"
-          },
-          "operand": "32d3611a-6699-4d52-823f-b4b788bac3e3",
-          "links": [
-            {
-              "rel": "self",
-              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c"
-            },
-            {
-              "rel": "full",
-              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
-            }
-          ],
-          "resourceVersion": "1.8"
-        },
-        {
-          "uuid": "3f6c993e-c2cc-11de-8d13-0010c6dffd0c",
-          "display": "is divorced",
-          "name": "is divorced",
-          "column": {
-            "uuid": "2f6c993e-c2cc-11de-8d13-0010c6dffd0b",
-            "display": "civilStatus",
-            "links": [
-              {
-                "rel": "self",
-                "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
-              }
-            ],
-            "type": "obscolumn"
-          },
-          "operand": "92afda7c-78c9-47bd-a841-0de0817027d4",
-          "links": [
-            {
-              "rel": "self",
-              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/3f6c993e-c2cc-11de-8d13-0010c6dffd0c"
-            },
-            {
-              "rel": "full",
-              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/3f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
-            }
-          ],
-          "resourceVersion": "1.8"
-        }
       ],
       "concept": {
         "uuid": "89ca642a-dab6-4f20-b712-e12ca4fc6d36",
@@ -426,7 +349,7 @@ exclude it the request parameter.
 }
 ```
 
-**Example Response:** (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response:** (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
 ```
 {
   "uuid": "7e6add6c-ca68-443a-92fa-9395845bc383",
