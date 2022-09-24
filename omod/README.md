@@ -190,7 +190,7 @@ exclude it the request parameter.
       "links": [
         {
           "rel": "self",
-          "uri": "http://localhost/ws/rest/v1/user/1010d442-e134-11de-babe-001e378eb67e"
+          "uri": "{SERVER_URL}/ws/rest/v1/user/1010d442-e134-11de-babe-001e378eb67e"
         }
       ]
     },
@@ -204,7 +204,7 @@ exclude it the request parameter.
     "links": [
       {
         "rel": "self",
-        "uri": "http://localhost/ws/rest/v1/user/c1d8f5c2-e131-11de-babe-001e378eb67e"
+        "uri": "{SERVER_URL}/ws/rest/v1/user/c1d8f5c2-e131-11de-babe-001e378eb67e"
       }
     ]
   },
@@ -226,7 +226,7 @@ exclude it the request parameter.
             "links": [
               {
                 "rel": "self",
-                "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+                "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
               }
             ],
             "type": "column"
@@ -235,11 +235,11 @@ exclude it the request parameter.
           "links": [
             {
               "rel": "self",
-              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+              "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c"
             },
             {
               "rel": "full",
-              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+              "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
             }
           ],
           "resourceVersion": "1.8"
@@ -248,11 +248,11 @@ exclude it the request parameter.
       "links": [
         {
           "rel": "self",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+          "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
         },
         {
           "rel": "full",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
+          "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
         }
       ],
       "type": "column",
@@ -272,7 +272,7 @@ exclude it the request parameter.
         "links": [
           {
             "rel": "self",
-            "uri": "http://localhost/ws/rest/v1/concept/89ca642a-dab6-4f20-b712-e12ca4fc6d36"
+            "uri": "{SERVER_URL}/ws/rest/v1/concept/89ca642a-dab6-4f20-b712-e12ca4fc6d36"
           }
         ]
       },
@@ -282,18 +282,18 @@ exclude it the request parameter.
         "links": [
           {
             "rel": "self",
-            "uri": "http://localhost/ws/rest/v1/encountertype/19218f76-6c39-45f4-8efa-4c5c6c199f50"
+            "uri": "{SERVER_URL}/ws/rest/v1/encountertype/19218f76-6c39-45f4-8efa-4c5c6c199f50"
           }
         ]
       },
       "links": [
         {
           "rel": "self",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+          "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
         },
         {
           "rel": "full",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
+          "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
         }
       ],
       "type": "obscolumn",
@@ -303,7 +303,7 @@ exclude it the request parameter.
   "links": [
     {
       "rel": "self",
-      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a"
+      "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a"
     }
   ],
   "resourceVersion": "1.8"
@@ -397,7 +397,7 @@ exclude it the request parameter.
         "links": [
           {
             "rel": "self",
-            "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+            "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
           }
         ],
         "type": "column"
@@ -406,11 +406,11 @@ exclude it the request parameter.
       "links": [
         {
           "rel": "self",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+          "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c"
         },
         {
           "rel": "full",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+          "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
         }
       ],
       "resourceVersion": "1.8"
@@ -419,11 +419,11 @@ exclude it the request parameter.
   "links": [
     {
       "rel": "self",
-      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+      "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
     },
     {
       "rel": "full",
-      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
+      "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
     }
   ],
   "type": "column",
@@ -452,11 +452,11 @@ exclude it the request parameter.
       "links": [
         {
           "rel": "self",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/0e6c993e-c2cc-11de-8d13-0010c6dffd0b"
+          "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/0e6c993e-c2cc-11de-8d13-0010c6dffd0b"
         },
         {
           "rel": "full",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/0e6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
+          "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/0e6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
         }
       ],
       "type": "column",
@@ -479,7 +479,7 @@ exclude it the request parameter.
             "links": [
               {
                 "rel": "self",
-                "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+                "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
               }
             ],
             "type": "obscolumn"
@@ -488,11 +488,11 @@ exclude it the request parameter.
           "links": [
             {
               "rel": "self",
-              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+              "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c"
             },
             {
               "rel": "full",
-              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+              "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
             }
           ],
           "resourceVersion": "1.8"
@@ -507,7 +507,7 @@ exclude it the request parameter.
             "links": [
               {
                 "rel": "self",
-                "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+                "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
               }
             ],
             "type": "obscolumn"
@@ -516,11 +516,11 @@ exclude it the request parameter.
           "links": [
             {
               "rel": "self",
-              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/3f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+              "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/3f6c993e-c2cc-11de-8d13-0010c6dffd0c"
             },
             {
               "rel": "full",
-              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/3f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+              "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/3f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
             }
           ],
           "resourceVersion": "1.8"
@@ -532,7 +532,7 @@ exclude it the request parameter.
         "links": [
           {
             "rel": "self",
-            "uri": "http://localhost/ws/rest/v1/concept/89ca642a-dab6-4f20-b712-e12ca4fc6d36"
+            "uri": "{SERVER_URL}/ws/rest/v1/concept/89ca642a-dab6-4f20-b712-e12ca4fc6d36"
           }
         ]
       },
@@ -542,18 +542,18 @@ exclude it the request parameter.
         "links": [
           {
             "rel": "self",
-            "uri": "http://localhost/ws/rest/v1/encountertype/19218f76-6c39-45f4-8efa-4c5c6c199f50"
+            "uri": "{SERVER_URL}/ws/rest/v1/encountertype/19218f76-6c39-45f4-8efa-4c5c6c199f50"
           }
         ]
       },
       "links": [
         {
           "rel": "self",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+          "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
         },
         {
           "rel": "full",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
+          "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
         }
       ],
       "type": "obscolumn",
@@ -592,11 +592,11 @@ Currently, not supported, there is a ticket to to add support for this.
   "links": [
     {
       "rel": "self",
-      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/1d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1e6c993e-c2cc-11de-8d13-0010c6dffd0b"
+      "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/1d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1e6c993e-c2cc-11de-8d13-0010c6dffd0b"
     },
     {
       "rel": "full",
-      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/1d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1e6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
+      "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/1d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1e6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
     }
   ],
   "type": "column",
@@ -627,7 +627,7 @@ Currently, not supported, there is a ticket to to add support for this.
     "links": [
       {
         "rel": "self",
-        "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+        "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
       }
     ],
     "type": "column"
@@ -636,11 +636,11 @@ Currently, not supported, there is a ticket to to add support for this.
   "links": [
     {
       "rel": "self",
-      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+      "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c"
     },
     {
       "rel": "full",
-      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+      "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
     }
   ],
   "resourceVersion": "1.8"
@@ -666,7 +666,7 @@ Currently, not supported, there is a ticket to to add support for this.
         "links": [
           {
             "rel": "self",
-            "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+            "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
           }
         ],
         "type": "column"
@@ -675,11 +675,11 @@ Currently, not supported, there is a ticket to to add support for this.
       "links": [
         {
           "rel": "self",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+          "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c"
         },
         {
           "rel": "full",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+          "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
         }
       ],
       "resourceVersion": "1.8"
@@ -694,7 +694,7 @@ Currently, not supported, there is a ticket to to add support for this.
         "links": [
           {
             "rel": "self",
-            "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+            "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
           }
         ],
         "type": "obscolumn"
@@ -703,11 +703,11 @@ Currently, not supported, there is a ticket to to add support for this.
       "links": [
         {
           "rel": "self",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+          "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c"
         },
         {
           "rel": "full",
-          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+          "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
         }
       ],
       "resourceVersion": "1.8"
@@ -742,7 +742,7 @@ Currently, not supported, there is a ticket to to add support for this.
     "links": [
       {
         "rel": "self",
-        "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+        "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
       }
     ],
     "type": "column"
@@ -751,11 +751,11 @@ Currently, not supported, there is a ticket to to add support for this.
   "links": [
     {
       "rel": "self",
-      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/84e778f2-9794-4d5c-93fd-c646357eab5a"
+      "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/84e778f2-9794-4d5c-93fd-c646357eab5a"
     },
     {
       "rel": "full",
-      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/84e778f2-9794-4d5c-93fd-c646357eab5a?v=full"
+      "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/84e778f2-9794-4d5c-93fd-c646357eab5a?v=full"
     }
   ],
   "resourceVersion": "1.8"
@@ -788,7 +788,7 @@ Currently, not supported, there is a ticket to to add support for this.
     "links": [
       {
         "rel": "self",
-        "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+        "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
       }
     ],
     "type": "column"
@@ -797,11 +797,11 @@ Currently, not supported, there is a ticket to to add support for this.
   "links": [
     {
       "rel": "self",
-      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+      "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c"
     },
     {
       "rel": "full",
-      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+      "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
     }
   ],
   "resourceVersion": "1.8"
