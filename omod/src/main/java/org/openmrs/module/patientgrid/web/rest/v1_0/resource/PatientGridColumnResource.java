@@ -112,6 +112,16 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		return description;
 	}
 	
+	/**
+	 * @see DelegatingSubResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
+		DelegatingResourceDescription description = super.getUpdatableProperties();
+		description.removeProperty("datatype");
+		return description;
+	}
+	
 	@PropertyGetter("display")
 	public String getDisplayString(PatientGridColumn delegate) {
 		return delegate.getName();

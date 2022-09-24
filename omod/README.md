@@ -9,21 +9,19 @@ refer to the resources above.
 
 ## Table of Contents
 
-1. [API Resources](#api-resources)
+1. API Resources
    1. [Patient Grid](#patient-grid) 
    2. [Grid Column](#grid-column)
    3. [Grid Filter](#grid-filter)
    4. [Age Range](#age-range)
    5. [Grid Report](#grid-report)
-   6. [Patient Grid Download](#)
-2. [Operations](#operations)
+   6. [Grid Download](#)
+2. Operations
    1. [Patient Grid Operations](#patient-grid-operations)
    2. [Grid Report Operations](#grid-report-operations)
    3. [Grid Column Operations](#grid-column-operations)
    4. [Grid Filter Operations](#grid-filter-operations)
    5. [Age Range Operations](#age-ranges-operations)
-
-## API Resources
 
 ### Patient Grid
 Encapsulates metadata about a single patient grid
@@ -88,6 +86,8 @@ Encapsulates metadata about a single column on a patient grid, all filters are i
 
 <i style='color:red'>*</i>`operand` The value to match column values against
 
+<i style='color:red'>*</i>`column` The grid column on which to apply the filter
+
 ### Grid Report
 A read-only resource encapsulating report data for a specific patient grid.
 
@@ -132,14 +132,13 @@ definitions are configured refer to the [age range global property](../README.md
 
 `display` usually same as label
 
-## Operations
 ### Patient Grid Operations
 #### Fetch All Patient Grids
-**Endpoint:** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid` (**Replace** SERVER_URL)
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid` (**Replace** SERVER_URL)
 
 **HTTP Method** `GET`
 
-**Example Response:** (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response** See [Patient Grid Resource](#patient-grid) (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ))
 
 ```
 {
@@ -168,32 +167,262 @@ definitions are configured refer to the [age range global property](../README.md
 }
 ```
 
+#### Fetch A Single Grid
+To Include all the column and filter metadata for the grid, note that we fetch the full representation otherwise you can 
+exclude it the request parameter.
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}?v=full`
+
+**HTTP Method** `GET`
+
+**Example Response** See [Patient Grid Resource](#patient-grid) (Full [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+```
+{
+  "uuid": "2d6c993e-c2cc-11de-8d13-0010c6dffd0a",
+  "display": "Male Patients",
+  "name": "Male Patients",
+  "description": "Male patient grid",
+  "retired": false,
+  "auditInfo": {
+    "creator": {
+      "uuid": "1010d442-e134-11de-babe-001e378eb67e",
+      "display": "admin",
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://localhost/ws/rest/v1/user/1010d442-e134-11de-babe-001e378eb67e"
+        }
+      ]
+    },
+    "dateCreated": "2022-08-28T00:00:00.000-0500",
+    "changedBy": null,
+    "dateChanged": null
+  },
+  "owner": {
+    "uuid": "c1d8f5c2-e131-11de-babe-001e378eb67e",
+    "display": "bruno",
+    "links": [
+      {
+        "rel": "self",
+        "uri": "http://localhost/ws/rest/v1/user/c1d8f5c2-e131-11de-babe-001e378eb67e"
+      }
+    ]
+  },
+  "columns": [
+    {
+      "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+      "display": "gender",
+      "name": "gender",
+      "description": "patient gender",
+      "datatype": "GENDER",
+      "filters": [
+        {
+          "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0c",
+          "display": "is male",
+          "name": "is male",
+          "column": {
+            "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+            "display": "gender",
+            "links": [
+              {
+                "rel": "self",
+                "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+              }
+            ],
+            "type": "column"
+          },
+          "operand": "M",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+            },
+            {
+              "rel": "full",
+              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+            }
+          ],
+          "resourceVersion": "1.8"
+        }
+      ],
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+        },
+        {
+          "rel": "full",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
+        }
+      ],
+      "type": "column",
+      "resourceVersion": "1.8"
+    },
+    {
+      "uuid": "0e6c993e-c2cc-11de-8d13-0010c6dffd0b",
+      "display": "name",
+      "name": "name",
+      "description": "patient name",
+      "datatype": "NAME",
+      "filters": [
+        
+      ],
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/0e6c993e-c2cc-11de-8d13-0010c6dffd0b"
+        },
+        {
+          "rel": "full",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/0e6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
+        }
+      ],
+      "type": "column",
+      "resourceVersion": "1.8"
+    },
+    {
+      "uuid": "2f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+      "display": "civilStatus",
+      "name": "civilStatus",
+      "description": "patient civil status",
+      "datatype": "OBS",
+      "filters": [
+        {
+          "uuid": "2f6c993e-c2cc-11de-8d13-0010c6dffd0c",
+          "display": "is single",
+          "name": "is single",
+          "column": {
+            "uuid": "2f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+            "display": "civilStatus",
+            "links": [
+              {
+                "rel": "self",
+                "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+              }
+            ],
+            "type": "obscolumn"
+          },
+          "operand": "32d3611a-6699-4d52-823f-b4b788bac3e3",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+            },
+            {
+              "rel": "full",
+              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+            }
+          ],
+          "resourceVersion": "1.8"
+        },
+        {
+          "uuid": "3f6c993e-c2cc-11de-8d13-0010c6dffd0c",
+          "display": "is divorced",
+          "name": "is divorced",
+          "column": {
+            "uuid": "2f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+            "display": "civilStatus",
+            "links": [
+              {
+                "rel": "self",
+                "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+              }
+            ],
+            "type": "obscolumn"
+          },
+          "operand": "92afda7c-78c9-47bd-a841-0de0817027d4",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/3f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+            },
+            {
+              "rel": "full",
+              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/3f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+            }
+          ],
+          "resourceVersion": "1.8"
+        }
+      ],
+      "concept": {
+        "uuid": "89ca642a-dab6-4f20-b712-e12ca4fc6d36",
+        "display": "CIVIL STATUS",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://localhost/ws/rest/v1/concept/89ca642a-dab6-4f20-b712-e12ca4fc6d36"
+          }
+        ]
+      },
+      "encounterType": {
+        "uuid": "19218f76-6c39-45f4-8efa-4c5c6c199f50",
+        "display": "Initial",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://localhost/ws/rest/v1/encountertype/19218f76-6c39-45f4-8efa-4c5c6c199f50"
+          }
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+        },
+        {
+          "rel": "full",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
+        }
+      ],
+      "type": "obscolumn",
+      "resourceVersion": "1.8"
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a"
+    }
+  ],
+  "resourceVersion": "1.8"
+}
+```
+
 #### Create Patient Grid
-**Endpoint:** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid`
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid`
 
 **HTTP Method** `POST`
 
 **Example Payload**
 ```
 {
-  "name" : "test",
-  "description" : "test description",
-  "columns" : [ {
-    "type" : "column",
-    "name" : "name",
-    "datatype" : "NAME"
-  }, {
-    "type" : "obscolumn",
-    "name" : "weight",
-    "datatype" : "OBS",
-    "concept" : "c607c80f-1ea9-4da3-bb88-6276ce8868dd",
-    "encounterType" : "19218f76-6c39-45f4-8efa-4c5c6c199f50"
-  }, {
-    "type" : "agecolumn",
-    "name" : "age",
-    "datatype" : "ENC_AGE",
-    "encounterType" : "19218f76-6c39-45f4-8efa-4c5c6c199f50"
-  } ]
+  "name": "test",
+  "description": "test description",
+  "columns": [
+    {
+      "type": "column",
+      "name": "name",
+      "datatype": "NAME"
+    },
+    {
+      "type": "obscolumn",
+      "name": "weight",
+      "datatype": "OBS",
+      "concept": "c607c80f-1ea9-4da3-bb88-6276ce8868dd",
+      "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
+    },
+    {
+      "type": "agecolumn",
+      "name": "age",
+      "datatype": "ENC_AGE",
+      "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50",
+      "filters": [
+        {
+          "name": "equal 12",
+          "operand": "12"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -222,75 +451,448 @@ definitions are configured refer to the [age range global property](../README.md
 
 ### Grid Column Operations
 #### Fetch A Single Column
-TODO
-
-#### Fetch All Columns For A Grid
-**Endpoint:** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{PATIENT_GRID_UUID}/column`
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/column/{COLUMN_UUID}`
 
 **HTTP Method** `GET`
 
-**Example Response:** See [Grid Column Resource](#grid-column), (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ))
-TODO
+**Example Response** See [Grid Column Resource](#grid-column), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
 ```
+{
+  "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+  "display": "gender",
+  "name": "gender",
+  "description": "patient gender",
+  "datatype": "GENDER",
+  "filters": [
+    {
+      "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0c",
+      "display": "is male",
+      "name": "is male",
+      "column": {
+        "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+        "display": "gender",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+          }
+        ],
+        "type": "column"
+      },
+      "operand": "M",
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+        },
+        {
+          "rel": "full",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+        }
+      ],
+      "resourceVersion": "1.8"
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+    },
+    {
+      "rel": "full",
+      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
+    }
+  ],
+  "type": "column",
+  "resourceVersion": "1.8"
+}
+```
+
+#### Fetch All Columns For A Grid
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/column`
+
+**HTTP Method** `GET`
+
+**Example Response** See [Grid Column Resource](#grid-column), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+```
+{
+  "results": [
+    {
+      "uuid": "0e6c993e-c2cc-11de-8d13-0010c6dffd0b",
+      "display": "name",
+      "name": "name",
+      "description": "patient name",
+      "datatype": "NAME",
+      "filters": [
+        
+      ],
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/0e6c993e-c2cc-11de-8d13-0010c6dffd0b"
+        },
+        {
+          "rel": "full",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/0e6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
+        }
+      ],
+      "type": "column",
+      "resourceVersion": "1.8"
+    },
+    {
+      "uuid": "2f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+      "display": "civilStatus",
+      "name": "civilStatus",
+      "description": "patient civil status",
+      "datatype": "OBS",
+      "filters": [
+        {
+          "uuid": "2f6c993e-c2cc-11de-8d13-0010c6dffd0c",
+          "display": "is single",
+          "name": "is single",
+          "column": {
+            "uuid": "2f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+            "display": "civilStatus",
+            "links": [
+              {
+                "rel": "self",
+                "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+              }
+            ],
+            "type": "obscolumn"
+          },
+          "operand": "32d3611a-6699-4d52-823f-b4b788bac3e3",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+            },
+            {
+              "rel": "full",
+              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+            }
+          ],
+          "resourceVersion": "1.8"
+        },
+        {
+          "uuid": "3f6c993e-c2cc-11de-8d13-0010c6dffd0c",
+          "display": "is divorced",
+          "name": "is divorced",
+          "column": {
+            "uuid": "2f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+            "display": "civilStatus",
+            "links": [
+              {
+                "rel": "self",
+                "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+              }
+            ],
+            "type": "obscolumn"
+          },
+          "operand": "92afda7c-78c9-47bd-a841-0de0817027d4",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/3f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+            },
+            {
+              "rel": "full",
+              "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/3f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+            }
+          ],
+          "resourceVersion": "1.8"
+        }
+      ],
+      "concept": {
+        "uuid": "89ca642a-dab6-4f20-b712-e12ca4fc6d36",
+        "display": "CIVIL STATUS",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://localhost/ws/rest/v1/concept/89ca642a-dab6-4f20-b712-e12ca4fc6d36"
+          }
+        ]
+      },
+      "encounterType": {
+        "uuid": "19218f76-6c39-45f4-8efa-4c5c6c199f50",
+        "display": "Initial",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://localhost/ws/rest/v1/encountertype/19218f76-6c39-45f4-8efa-4c5c6c199f50"
+          }
+        ]
+      },
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+        },
+        {
+          "rel": "full",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
+        }
+      ],
+      "type": "obscolumn",
+      "resourceVersion": "1.8"
+    }
+  ]
+}
 ```
 
 #### Add New Column To A Grid
 Currently, not supported, there is a ticket to to add support for this.
 
 #### Modify An Existing Column
-
-#### Remove A Column From A Grid
-**Endpoint:** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/}PATIENT_GRID_UUID}/column/{COLUMN_UUID}`
-
-**HTTP Method** `DELETE`
-
-### Grid Filter Operations
-
-### Grid Report Operations
-#### Fetch A Single Filter
-TODO
-
-#### Fetch All Filters For A Grid
-**Endpoint:** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{PATIENT_GRID_UUID}/filter`
-
-**HTTP Method** `GET`
-
-**Example Response:** See [Grid Filter Resource](#grid-filter), (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ))
-```
-```
-
-#### Add New Filter To A Column
-**Endpoint:** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{PATIENT_GRID_UUID}/filter`
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/column/{COLUMN_UUID}`
 
 **HTTP Method** `POST`
 
 **Example Payload**
 ```
+ {
+  "name": "New Name"
+}
+```
+
+**Example Response**
+```
+{
+  "uuid": "1e6c993e-c2cc-11de-8d13-0010c6dffd0b",
+  "display": "New Name",
+  "name": "New Name",
+  "description": "patient name",
+  "datatype": "NAME",
+  "filters": [
+    
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/1d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1e6c993e-c2cc-11de-8d13-0010c6dffd0b"
+    },
+    {
+      "rel": "full",
+      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/1d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1e6c993e-c2cc-11de-8d13-0010c6dffd0b?v=full"
+    }
+  ],
+  "type": "column",
+  "resourceVersion": "1.8"
+}
+```
+
+#### Remove A Column From A Grid
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/column/{COLUMN_UUID}`
+
+**HTTP Method** `DELETE`
+
+### Grid Filter Operations
+#### Fetch A Single Filter
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter/{FILTER_UUID}`
+
+**HTTP Method** `GET`
+
+**Example Response** See [Grid Filter Resource](#grid-filter), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+```
+{
+  "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0c",
+  "display": "is male",
+  "name": "is male",
+  "column": {
+    "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+    "display": "gender",
+    "links": [
+      {
+        "rel": "self",
+        "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+      }
+    ],
+    "type": "column"
+  },
+  "operand": "M",
+  "links": [
+    {
+      "rel": "self",
+      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+    },
+    {
+      "rel": "full",
+      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+    }
+  ],
+  "resourceVersion": "1.8"
+}
+```
+
+#### Fetch All Filters For A Grid
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter`
+
+**HTTP Method** `GET`
+
+**Example Response:** See [Grid Filter Resource](#grid-filter), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+```
+{
+  "results": [
+    {
+      "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0c",
+      "display": "is male",
+      "name": "is male",
+      "column": {
+        "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+        "display": "gender",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+          }
+        ],
+        "type": "column"
+      },
+      "operand": "M",
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+        },
+        {
+          "rel": "full",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+        }
+      ],
+      "resourceVersion": "1.8"
+    },
+    {
+      "uuid": "2f6c993e-c2cc-11de-8d13-0010c6dffd0c",
+      "display": "is single",
+      "name": "is single",
+      "column": {
+        "uuid": "2f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+        "display": "civilStatus",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/2f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+          }
+        ],
+        "type": "obscolumn"
+      },
+      "operand": "32d3611a-6699-4d52-823f-b4b788bac3e3",
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+        },
+        {
+          "rel": "full",
+          "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/2f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+        }
+      ],
+      "resourceVersion": "1.8"
+    }
+  ]
+}
+```
+
+#### Add New Filter To A Column
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter`
+
+**HTTP Method** `POST`
+
+**Example Payload**
+```
+{
+  "name": "male patients",
+  "column": "1f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+  "operand": "M"
+}
 ```
 
 **Example Response:**
 ```
+{
+  "uuid": "84e778f2-9794-4d5c-93fd-c646357eab5a",
+  "display": "male patients",
+  "name": "male patients",
+  "column": {
+    "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+    "display": "gender",
+    "links": [
+      {
+        "rel": "self",
+        "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+      }
+    ],
+    "type": "column"
+  },
+  "operand": "M",
+  "links": [
+    {
+      "rel": "self",
+      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/84e778f2-9794-4d5c-93fd-c646357eab5a"
+    },
+    {
+      "rel": "full",
+      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/84e778f2-9794-4d5c-93fd-c646357eab5a?v=full"
+    }
+  ],
+  "resourceVersion": "1.8"
+}
 ```
 
 #### Modify An Existing Filter
-**Endpoint:** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/}PATIENT_GRID_UUID}/filter/{FILTER_UUID}` 
-**(Replace PATIENT_GRID_UUID and FILTER_UUID)**
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter/{FILTER_UUID}` 
+**(Replace GRID_UUID and FILTER_UUID)**
 
 **HTTP Method** `POST`
 
 **Example Payload** (ONLY include properties you need to modify or set)
-
-**Example Response:**
 ```
+{
+  "name": "New Name",
+  "operand": "F"
+}
+```
+
+**Example Response**
+```
+{
+  "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0c",
+  "display": "New Name",
+  "name": "New Name",
+  "column": {
+    "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0b",
+    "display": "gender",
+    "links": [
+      {
+        "rel": "self",
+        "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/column/1f6c993e-c2cc-11de-8d13-0010c6dffd0b"
+      }
+    ],
+    "type": "column"
+  },
+  "operand": "F",
+  "links": [
+    {
+      "rel": "self",
+      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c"
+    },
+    {
+      "rel": "full",
+      "uri": "http://localhost/ws/rest/v1/patientgrid/patientgrid/2d6c993e-c2cc-11de-8d13-0010c6dffd0a/filter/1f6c993e-c2cc-11de-8d13-0010c6dffd0c?v=full"
+    }
+  ],
+  "resourceVersion": "1.8"
+}
 ```
 
 #### Remove A Filter
-**Endpoint:** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/}PATIENT_GRID_UUID}/filter/{FILTER_UUID}`
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter/{FILTER_UUID}`
 
 **HTTP Method** `DELETE`
 
+### Grid Report Operations
 #### Run Grid Report
-**Endpoint:** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/}PATIENT_GRID_UUID}/report`
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/report`
 
 **HTTP Method** `GET`
 
@@ -298,7 +900,7 @@ TODO
 `refresh` If set to true, any caches from previous runs are discarded, i.e. the patient grid is re-evaluate to produce
 fresh data
 
-**Example Response:** See [Grid Report Resource](#grid-report), (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ))
+**Example Response** See [Grid Report Resource](#grid-report), (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ))
 
 Please pay extra attention to obs column values, for more see the note on obs value properties under [Grid Report Resource](#grid-report)
 ```
@@ -441,11 +1043,11 @@ Please pay extra attention to obs column values, for more see the note on obs va
 
 ### Age Ranges Operations
 #### Fetch All Age Ranges
-**Endpoint:** `{SERVER_URL}/ws/rest/v1/patientgrid/agerange`
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/agerange`
 
 **HTTP Method** `GET`
 
-**Example Response:**
+**Example Response**
 
 ```
 {

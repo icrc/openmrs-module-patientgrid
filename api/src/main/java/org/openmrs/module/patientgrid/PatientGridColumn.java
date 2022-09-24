@@ -49,7 +49,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	private PatientGrid patientGrid;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(name = "datatype", nullable = false, length = 50)
+	@Column(name = "datatype", nullable = false, updatable = false, length = 50)
 	private ColumnDatatype datatype;
 	
 	@Access(AccessType.FIELD)
