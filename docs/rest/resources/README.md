@@ -110,5 +110,31 @@ observation belongs to, the other entry has key named `encounterType` while its 
 the observation belongs to.
 
 ## Grid Download
+A read-only resource encapsulating downloadable data for a specific patient grid.
 
 ### Properties
+`patientGrid` The patient grid that was evaluated as a ref [representation](https://wiki.openmrs.org/x/P4IaAQ)
+
+`report` The actual grid report data, it is a list of all patient data where each element in the list is data for a
+single patient, the element is a map of column names and their respective data values. The report contains extra map 
+entries i.e. one for each encounter type, if you generated your form fields based on a form, then each encounter type 
+would match that of its respective form. Therefore, for these extra column entries, the key is the uuid of the encounter 
+type and the value is a list of observation data for each encounter matching the encounter type for the patient.
+
+
+**Note** Obs values in the report are trimmed down to a custom representation specific to this module with the
+properties below,
+
+`uuid` The uuid of the observation
+
+`concept` The question concept uuid
+
+`value` Display obs value
+
+`formFieldPath` The field path on the form the observation was captured
+
+`formFieldNamespace` The field namespace on the form the observation was captured
+
+`encounter` A map with 2 entries, one entry has the key named `uuid` while its value is the uuid of the encounter the
+observation belongs to, the other entry has key named `encounterType` while its value is the uuid of the encounter type
+the observation belongs to.

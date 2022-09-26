@@ -872,7 +872,7 @@ Please pay extra attention to obs column values, for more see the note on obs va
 ```
 
 ### Fetch Encounters By Patient And Type
-**Endpoint** `{SERVER_URL}/openmrs/ws/rest/v1/encounter?v=custom:obs:(uuid,concept:ref,value,formFieldNamespace,formFieldPath,encounter:(uuid,encounterType:ref)))&s=patientgridGetEncounterHistory&patient={PATIENT_UUID}&encounterType={ENCOUNTER_TYPE_UUID}`
+**Endpoint** `{SERVER_URL}/openmrs/ws/rest/v1/encounter?s=patientgridGetEncounterHistory&patient={PATIENT_UUID}&encounterType={ENCOUNTER_TYPE_UUID}&v=custom:obs:(uuid,concept:ref,value,formFieldNamespace,formFieldPath,encounter:(uuid,encounterType:ref)))`
 
 **HTTP Method** `GET`
 
@@ -901,7 +901,7 @@ observation, if you need the full encounter and observations payloads, you can s
             "links": [
               {
                 "rel": "self",
-                "uri": "http://localhost/ws/rest/v1/concept/a09ab2c5-878e-4905-b25d-5784167d0216"
+                "uri": "{SERVER_URL}/ws/rest/v1/concept/a09ab2c5-878e-4905-b25d-5784167d0216"
               }
             ]
           },
@@ -916,7 +916,7 @@ observation, if you need the full encounter and observations payloads, you can s
               "links": [
                 {
                   "rel": "self",
-                  "uri": "http://localhost/ws/rest/v1/encountertype/29218f76-6c39-45f4-8efa-4c5c6c199f50"
+                  "uri": "{SERVER_URL}/ws/rest/v1/encountertype/29218f76-6c39-45f4-8efa-4c5c6c199f50"
                 }
               ]
             }
@@ -930,7 +930,7 @@ observation, if you need the full encounter and observations payloads, you can s
             "links": [
               {
                 "rel": "self",
-                "uri": "http://localhost/ws/rest/v1/concept/c607c80f-1ea9-4da3-bb88-6276ce8868dd"
+                "uri": "{SERVER_URL}/ws/rest/v1/concept/c607c80f-1ea9-4da3-bb88-6276ce8868dd"
               }
             ]
           },
@@ -945,7 +945,7 @@ observation, if you need the full encounter and observations payloads, you can s
               "links": [
                 {
                   "rel": "self",
-                  "uri": "http://localhost/ws/rest/v1/encountertype/29218f76-6c39-45f4-8efa-4c5c6c199f50"
+                  "uri": "{SERVER_URL}/ws/rest/v1/encountertype/29218f76-6c39-45f4-8efa-4c5c6c199f50"
                 }
               ]
             }
@@ -964,7 +964,7 @@ observation, if you need the full encounter and observations payloads, you can s
 
 **HTTP Method** `GET`
 
-**Example Response** See [Grid Report Resource](../resources/README.md#grid-download), (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+**Example Response** See [Grid Download Resource](../resources/README.md#grid-download), (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
 
 Please pay extra attention to obs column values, for more see the note on obs value properties under [Grid Download Resource](../resources/README.md#grid-download)
 
@@ -973,58 +973,192 @@ Please pay extra attention to obs column values, for more see the note on obs va
   "results": [
     {
       "patientGrid": {
-        "uuid": "5df6f9f2-6bc3-4d77-bac5-b412418fde0d",
+        "uuid": "1d6c993e-c2cc-11de-8d13-0010c6dffd0a",
         "display": "My Patients",
         "links": [
           {
             "rel": "self",
-            "uri": "http://localhost:8080/openmrs/ws/rest/v1/patientgrid/patientgrid/5df6f9f2-6bc3-4d77-bac5-b412418fde0d",
-            "resourceAlias": "patientgrid"
+            "uri": "{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/1d6c993e-c2cc-11de-8d13-0010c6dffd0a"
           }
         ]
       },
       "report": [
         {
+          "country": "United States",
           "gender": "M",
-          "493dd4bb-0d6b-427e-817e-4eb3c7db09a0": [
+          "name": "Johnny Test Doe",
+          "29218f76-6c39-45f4-8efa-4c5c6c199f50": [
             {
-              "a0de97ed-6c63-4dff-a096-4e811dc17a52": {
-                "formPath": null,
-                "formNamespace": null,
+              "6e6c993e-c2cc-11de-8d13-0010c6dffd0b": {
+                "formFieldPath": null,
                 "encounter": {
-                  "uuid": "d6560cbd-6661-4ff4-bbb4-2630ba64425c",
-                  "encounterType": "493dd4bb-0d6b-427e-817e-4eb3c7db09a0"
+                  "uuid": "9619d653-393b-4118-9e83-a3715b82d4ac",
+                  "encounterType": "29218f76-6c39-45f4-8efa-4c5c6c199f50"
                 },
-                "uuid": "7269d58f-8d38-4a6d-ad3f-0cfcea470fc0",
-                "value": 164.0,
-                "concept": "7c28584a-7203-4844-b164-b2860c3fdaef"
+                "uuid": "25fb7f47-b80a-4056-9285-bd798be13c63",
+                "value": 1080.0,
+                "concept": "a09ab2c5-878e-4905-b25d-5784167d0216",
+                "formFieldNamespace": null
               }
             }
           ],
-          "name": "John Doe",
-          "uuid": "445b123d-45ec-4e23-84a3-315406247e0f",
-          "age": 12
+          "19218f76-6c39-45f4-8efa-4c5c6c199f50": [
+            {
+              "4e6c993e-c2cc-11de-8d13-0010c6dffd0b": {
+                "formFieldPath": null,
+                "encounter": {
+                  "uuid": "6619d653-393b-4118-9e83-a3715b82d4ac",
+                  "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
+                },
+                "uuid": "64fb7f47-b80a-4056-9285-bd798be13c63",
+                "value": 72.0,
+                "concept": "c607c80f-1ea9-4da3-bb88-6276ce8868dd",
+                "formFieldNamespace": null
+              },
+              "5e6c993e-c2cc-11de-8d13-0010c6dffd0b": {
+                "formFieldPath": null,
+                "encounter": {
+                  "uuid": "6619d653-393b-4118-9e83-a3715b82d4ac",
+                  "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
+                },
+                "uuid": "94fb7f47-b80a-4056-9285-bd798be13c63",
+                "value": "SINGLE",
+                "concept": "89ca642a-dab6-4f20-b712-e12ca4fc6d36",
+                "formFieldNamespace": null
+              }
+            }
+          ],
+          "ageCategory": "18+",
+          "uuid": "a7e04421-525f-442f-8138-05b619d16def",
+          "ageAtInitial": 46,
+          "structure": "Austin"
         },
         {
+          "country": "United States",
           "gender": "F",
-          "493dd4bb-0d6b-427e-817e-4eb3c7db09a0": [
+          "name": "Collet Test Chebaskwony",
+          "29218f76-6c39-45f4-8efa-4c5c6c199f50": [
             {
-              "a0de97ed-6c63-4dff-a096-4e811dc17a52": {
-                "formPath": null,
-                "formNamespace": null,
+              
+            }
+          ],
+          "19218f76-6c39-45f4-8efa-4c5c6c199f50": [
+            {
+              "4e6c993e-c2cc-11de-8d13-0010c6dffd0b": {
+                "formFieldPath": null,
                 "encounter": {
-                  "uuid": "f6560cbd-6661-4ff4-bbb4-2630ba64425d",
-                  "encounterType": "493dd4bb-0d6b-427e-817e-4eb3c7db09a0"
+                  "uuid": "7619d653-393b-4118-9e83-a3715b82d4ac",
+                  "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
                 },
-                "uuid": "8269d58f-8d38-4a6d-ad3f-0cfcea470fc1",
-                "value": 180.0,
-                "concept": "7c28584a-7203-4844-b164-b2860c3fdaef"
+                "uuid": "74fb7f47-b80a-4056-9285-bd798be13c63",
+                "value": 88.0,
+                "concept": "c607c80f-1ea9-4da3-bb88-6276ce8868dd",
+                "formFieldNamespace": null
+              },
+              "5e6c993e-c2cc-11de-8d13-0010c6dffd0b": {
+                "formFieldPath": null,
+                "encounter": {
+                  "uuid": "7619d653-393b-4118-9e83-a3715b82d4ac",
+                  "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
+                },
+                "uuid": "04fb7f47-b80a-4056-9285-bd798be13c63",
+                "value": "MARRIED",
+                "concept": "89ca642a-dab6-4f20-b712-e12ca4fc6d36",
+                "formFieldNamespace": null
               }
             }
           ],
-          "name": "Mary Jane",
-          "uuid": "125b123d-45ec-4e23-84a3-315406247e0e",
-          "age": 20
+          "ageCategory": "18+",
+          "uuid": "5946f880-b197-400b-9caa-a3c661d23041",
+          "ageAtInitial": 45,
+          "structure": "Austin"
+        },
+        {
+          "country": "Uganda",
+          "gender": "M",
+          "name": "Mr. Horatio Test Hornblower",
+          "29218f76-6c39-45f4-8efa-4c5c6c199f50": [
+            {
+              "4e6c993e-c2cc-11de-8d13-0010c6dffd0b": {
+                "formFieldPath": null,
+                "encounter": {
+                  "uuid": "2619d653-393b-4118-9e83-a3715b82d4ac",
+                  "encounterType": "29218f76-6c39-45f4-8efa-4c5c6c199f50"
+                },
+                "uuid": "34fb7f47-b80a-4056-9285-bd798be13c63",
+                "value": 83.0,
+                "concept": "c607c80f-1ea9-4da3-bb88-6276ce8868dd",
+                "formFieldNamespace": null
+              },
+              "6e6c993e-c2cc-11de-8d13-0010c6dffd0b": {
+                "formFieldPath": null,
+                "encounter": {
+                  "uuid": "2619d653-393b-4118-9e83-a3715b82d4ac",
+                  "encounterType": "29218f76-6c39-45f4-8efa-4c5c6c199f50"
+                },
+                "uuid": "15fb7f47-b80a-4056-9285-bd798be13c63",
+                "value": 1060.0,
+                "concept": "a09ab2c5-878e-4905-b25d-5784167d0216",
+                "formFieldNamespace": null
+              }
+            }
+          ],
+          "19218f76-6c39-45f4-8efa-4c5c6c199f50": [
+            {
+              "4e6c993e-c2cc-11de-8d13-0010c6dffd0b": {
+                "formFieldPath": null,
+                "encounter": {
+                  "uuid": "1619d653-393b-4118-9e83-a3715b82d4ac",
+                  "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
+                },
+                "uuid": "24fb7f47-b80a-4056-9285-bd798be13c63",
+                "value": 82.0,
+                "concept": "c607c80f-1ea9-4da3-bb88-6276ce8868dd",
+                "formFieldNamespace": null
+              }
+            },
+            {
+              "4e6c993e-c2cc-11de-8d13-0010c6dffd0b": {
+                "formFieldPath": null,
+                "encounter": {
+                  "uuid": "5619d653-393b-4118-9e83-a3715b82d4ac",
+                  "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
+                },
+                "uuid": "54fb7f47-b80a-4056-9285-bd798be13c63",
+                "value": 85.0,
+                "concept": "c607c80f-1ea9-4da3-bb88-6276ce8868dd",
+                "formFieldNamespace": null
+              }
+            },
+            {
+              "4e6c993e-c2cc-11de-8d13-0010c6dffd0b": {
+                "formFieldPath": null,
+                "encounter": {
+                  "uuid": "4619d653-393b-4118-9e83-a3715b82d4ac",
+                  "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
+                },
+                "uuid": "44fb7f47-b80a-4056-9285-bd798be13c63",
+                "value": 84.0,
+                "concept": "c607c80f-1ea9-4da3-bb88-6276ce8868dd",
+                "formFieldNamespace": null
+              },
+              "5e6c993e-c2cc-11de-8d13-0010c6dffd0b": {
+                "formFieldPath": null,
+                "encounter": {
+                  "uuid": "4619d653-393b-4118-9e83-a3715b82d4ac",
+                  "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
+                },
+                "uuid": "84fb7f47-b80a-4056-9285-bd798be13c63",
+                "value": "SINGLE",
+                "concept": "89ca642a-dab6-4f20-b712-e12ca4fc6d36",
+                "formFieldNamespace": null
+              }
+            }
+          ],
+          "ageCategory": "18+",
+          "uuid": "da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
+          "ageAtInitial": 47,
+          "structure": "Kampala"
         }
       ],
       "resourceVersion": "1.8"
