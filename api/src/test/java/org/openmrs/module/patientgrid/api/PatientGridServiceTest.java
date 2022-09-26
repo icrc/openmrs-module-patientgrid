@@ -30,6 +30,7 @@ import org.openmrs.api.context.ServiceContext;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
+import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -188,10 +189,13 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void evaluate_shouldEvaluateThePatientGridAndCacheTheResults() {
 		PatientGrid patientGrid = service.getPatientGrid(1);
-		SimpleDataSet dataSet = service.evaluate(patientGrid);
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
-		assertEquals(dataSet, getCache().get(cacheKey).get());
+		assertNull(getCache().get(cacheKey));
+		
+		SimpleDataSet dataSet = service.evaluate(patientGrid);
+		
 		assertEquals(3, dataSet.getRows().size());
+		assertEquals(dataSet.getRows().size(), ((SimpleDataSet) getCache().get(cacheKey).get()).getRows().size());
 		Patient patient = ps.getPatient(2);
 		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataSet.getColumnValue(patient.getId(), "name"));
@@ -241,23 +245,32 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	public void evaluate_shouldReturnCachedResultsAndNotEvaluateThePatientGrid() {
-		final SimpleDataSet expectedDataSet = new SimpleDataSet(null, null);
+		final Integer patientId = 8888;
+		final String name = "Test Patient";
+		DataSetColumn column = new DataSetColumn(name, null, String.class);
+		final SimpleDataSet cachedDataSet = new SimpleDataSet(null, null);
+		cachedDataSet.addColumnValue(8888, column, name);
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		getCache().put(patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid(),
-		    expectedDataSet);
-		assertEquals(expectedDataSet, service.evaluate(patientGrid));
+		    cachedDataSet);
+		
+		SimpleDataSet newDataSet = service.evaluate(patientGrid);
+		
+		assertEquals(cachedDataSet.getRows().size(), newDataSet.getRows().size());
+		assertEquals(name, newDataSet.getColumnValue(patientId, name));
 	}
 	
 	@Test
 	public void evaluate_shouldIgnoreCachedResultsOfAnotherUserAndEvaluateThePatientGrid() {
-		final SimpleDataSet expectedDataSet = new SimpleDataSet(null, null);
+		final SimpleDataSet cachedDataSet = new SimpleDataSet(null, null);
 		PatientGrid patientGrid = service.getPatientGrid(1);
-		getCache().put("another-user-uuid" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid(),
-		    expectedDataSet);
-		SimpleDataSet dataSet = service.evaluate(patientGrid);
+		getCache().put("another-user-uuid" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid(), cachedDataSet);
+		
+		SimpleDataSet newDataSet = service.evaluate(patientGrid);
+		
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
-		assertNotEquals(expectedDataSet, service.evaluate(patientGrid));
-		assertEquals(dataSet, getCache().get(cacheKey).get());
+		assertNotEquals(cachedDataSet.getRows().size(), newDataSet.getRows().size());
+		assertEquals(newDataSet.getRows().size(), ((SimpleDataSet) getCache().get(cacheKey).get()).getRows().size());
 	}
 	
 	@Test

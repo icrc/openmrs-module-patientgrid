@@ -21,8 +21,6 @@ public class PatientGridConstants {
 	
 	public static final String CACHE_MANAGER_NAME = "patientGridReportsCacheManager";
 	
-	public static final String CACHE_MANAGER_FACTORY_NAME = "pgCacheManagerFactoryBean";
-	
 	public static final String CACHE_NAME_GRID_REPORTS = "patientGridReports";
 	
 	public static final String DEFAULT_DISK_CACHE_DIR_NAME = ".report_cache";

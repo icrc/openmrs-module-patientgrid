@@ -41,11 +41,10 @@
     </globalProperty>
     <globalProperty>
         <property>${project.parent.artifactId}.cacheDirectory</property>
-        <defaultValue>.report_cache</defaultValue>
         <description>
             Specifies the location of the directory to use to cache grid report data, it can be an absolute path
-            otherwise a folder name which will be located in ${project.parent.artifactId} folder in the application data
-            directory. Defaults to .report_cache in the application data directory
+            otherwise a folder name which will be located in the application data directory. Defaults to .report_cache
+            in the patientgrid folder in the application data directory
         </description>
     </globalProperty>
 

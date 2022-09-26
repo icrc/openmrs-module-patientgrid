@@ -43,9 +43,9 @@ You will have to generate a token from a Github package (with read access to pac
 **Property Name** `patientgrid.cacheDirectory`
 
 Specifies the location of the directory to use to cache grid report data, it can be an absolute path otherwise a folder 
-name which will be located in patientgrid folder in the application data directory.
+name which will be located in the application data directory.
 
-Defaults to a folder named `.report_cache` in the application data directory
+Defaults to a folder named `.report_cache` in the patientgrid folder in the application data directory
 
 ## Age Ranges
 

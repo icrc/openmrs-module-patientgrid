@@ -1,8 +1,11 @@
 package org.openmrs.module.patientgrid;
 
-import java.io.Serializable;
-
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
+import org.openmrs.serialization.SerializationException;
+import org.openmrs.serialization.SimpleXStreamSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.support.SimpleValueWrapper;
 
@@ -10,6 +13,8 @@ import org.springframework.cache.support.SimpleValueWrapper;
  * Custom implementation of spring's {@link Cache} abstraction backed by a {@link DiskCache}
  */
 public class PatientGridCache implements Cache {
+	
+	private static final Logger log = LoggerFactory.getLogger(PatientGridCache.class);
 	
 	private DiskCache diskCache;
 	
@@ -56,7 +61,20 @@ public class PatientGridCache implements Cache {
 	 */
 	@Override
 	public <T> T get(Object key, Class<T> type) {
-		return getDiskCache().getFileContents(key.toString());
+		String cachedValue = getDiskCache().getFileContents(key.toString());
+		if (cachedValue == null) {
+			return null;
+		}
+		
+		T value = null;
+		try {
+			value = Context.getSerializationService().deserialize(cachedValue, type, SimpleXStreamSerializer.class);
+		}
+		catch (SerializationException e) {
+			log.warn("Failed to deserialize cached grid report", e);
+		}
+		
+		return value;
 	}
 	
 	/**
@@ -64,7 +82,13 @@ public class PatientGridCache implements Cache {
 	 */
 	@Override
 	public void put(Object key, Object value) {
-		getDiskCache().setFileContents(key.toString(), (Serializable) value);
+		try {
+			String toCache = Context.getSerializationService().serialize(value, SimpleXStreamSerializer.class);
+			getDiskCache().setFileContents(key.toString(), toCache);
+		}
+		catch (SerializationException e) {
+			log.warn("Failed to serialize grid report", e);
+		}
 	}
 	
 	/**
