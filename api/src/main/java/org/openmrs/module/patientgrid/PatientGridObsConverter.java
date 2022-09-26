@@ -32,8 +32,8 @@ public class PatientGridObsConverter implements DataConverter {
 				obsData.put("encounter", encData);
 			}
 			
-			obsData.put("formNamespace", obs.getFormFieldNamespace());
-			obsData.put("formPath", obs.getFormFieldPath());
+			obsData.put("formFieldNamespace", obs.getFormFieldNamespace());
+			obsData.put("formFieldPath", obs.getFormFieldPath());
 			
 			return obsData;
 		}

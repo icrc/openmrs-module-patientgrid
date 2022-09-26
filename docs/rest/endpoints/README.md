@@ -727,7 +727,7 @@ Currently, not supported, there is a ticket to to add support for this.
 **HTTP Method** `GET`
 
 **Request Parameters**
-`refresh` If set to true, any caches from previous runs are discarded, i.e. the patient grid is re-evaluate to produce
+`refresh` If set to true, any caches from previous runs are discarded, i.e. the patient grid is re-evaluated to produce
 fresh data
 
 **Example Response** See [Grid Report Resource](../resources/README.md#grid-report), (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
@@ -751,8 +751,8 @@ Please pay extra attention to obs column values, for more see the note on obs va
         {
           "country": "United States",
           "cd4": {
-            "formPath": null,
-            "formNamespace": null,
+            "formFieldPath": null,
+            "formFieldNamespace": null,
             "encounter": {
               "uuid": "9619d653-393b-4118-9e83-a3715b82d4ac",
               "encounterType": "29218f76-6c39-45f4-8efa-4c5c6c199f50"
@@ -764,8 +764,8 @@ Please pay extra attention to obs column values, for more see the note on obs va
           "gender": "M",
           "name": "Johnny Test Doe",
           "weight": {
-            "formPath": null,
-            "formNamespace": null,
+            "formFieldPath": null,
+            "formFieldNamespace": null,
             "encounter": {
               "uuid": "6619d653-393b-4118-9e83-a3715b82d4ac",
               "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
@@ -779,8 +779,8 @@ Please pay extra attention to obs column values, for more see the note on obs va
           "ageAtInitial": 46,
           "structure": "Austin",
           "civilStatus": {
-            "formPath": null,
-            "formNamespace": null,
+            "formFieldPath": null,
+            "formFieldNamespace": null,
             "encounter": {
               "uuid": "6619d653-393b-4118-9e83-a3715b82d4ac",
               "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
@@ -796,8 +796,8 @@ Please pay extra attention to obs column values, for more see the note on obs va
           "gender": "F",
           "name": "Collet Test Chebaskwony",
           "weight": {
-            "formPath": null,
-            "formNamespace": null,
+            "formFieldPath": null,
+            "formFieldNamespace": null,
             "encounter": {
               "uuid": "7619d653-393b-4118-9e83-a3715b82d4ac",
               "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
@@ -811,8 +811,8 @@ Please pay extra attention to obs column values, for more see the note on obs va
           "ageAtInitial": 45,
           "structure": "Austin",
           "civilStatus": {
-            "formPath": null,
-            "formNamespace": null,
+            "formFieldPath": null,
+            "formFieldNamespace": null,
             "encounter": {
               "uuid": "7619d653-393b-4118-9e83-a3715b82d4ac",
               "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
@@ -825,8 +825,8 @@ Please pay extra attention to obs column values, for more see the note on obs va
         {
           "country": "Uganda",
           "cd4": {
-            "formPath": null,
-            "formNamespace": null,
+            "formFieldPath": null,
+            "formFieldNamespace": null,
             "encounter": {
               "uuid": "2619d653-393b-4118-9e83-a3715b82d4ac",
               "encounterType": "29218f76-6c39-45f4-8efa-4c5c6c199f50"
@@ -838,8 +838,8 @@ Please pay extra attention to obs column values, for more see the note on obs va
           "gender": "M",
           "name": "Mr. Horatio Test Hornblower",
           "weight": {
-            "formPath": null,
-            "formNamespace": null,
+            "formFieldPath": null,
+            "formFieldNamespace": null,
             "encounter": {
               "uuid": "4619d653-393b-4118-9e83-a3715b82d4ac",
               "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
@@ -853,8 +853,8 @@ Please pay extra attention to obs column values, for more see the note on obs va
           "ageAtInitial": 47,
           "structure": "Kampala",
           "civilStatus": {
-            "formPath": null,
-            "formNamespace": null,
+            "formFieldPath": null,
+            "formFieldNamespace": null,
             "encounter": {
               "uuid": "4619d653-393b-4118-9e83-a3715b82d4ac",
               "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
@@ -871,6 +871,164 @@ Please pay extra attention to obs column values, for more see the note on obs va
 }
 ```
 
+### Fetch Encounters By Patient And Type
+**Endpoint** `{SERVER_URL}/openmrs/ws/rest/v1/encounter?v=custom:obs:(uuid,concept:ref,value,formFieldNamespace,formFieldPath,encounter:(uuid,encounterType:ref)))&s=patientgridGetEncounterHistory&patient={PATIENT_UUID}&encounterType={ENCOUNTER_TYPE_UUID}`
+
+**HTTP Method** `GET`
+
+**Request Parameters**
+`v` Standard OpenMRS REST API request parameter to specify the representation to return, note that we are requesting for 
+a trimmed down response payload to just include the encounter observations and requesting specific fields for each 
+observation, if you need the full encounter and observations payloads, you can set the value to `full`
+
+`s` MUST always be set to `patientgridGetEncounterHistory`
+
+`patient` The UUID of the patient to match
+
+`encounterType` The UUID of the encounter type to match
+
+**Example Response** (Custom [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+```
+{
+  "results": [
+    {
+      "obs": [
+        {
+          "uuid": "15fb7f47-b80a-4056-9285-bd798be13c63",
+          "concept": {
+            "uuid": "a09ab2c5-878e-4905-b25d-5784167d0216",
+            "display": "CD4 COUNT",
+            "links": [
+              {
+                "rel": "self",
+                "uri": "http://localhost/ws/rest/v1/concept/a09ab2c5-878e-4905-b25d-5784167d0216"
+              }
+            ]
+          },
+          "value": 1060.0,
+          "formFieldNamespace": null,
+          "formFieldPath": null,
+          "encounter": {
+            "uuid": "2619d653-393b-4118-9e83-a3715b82d4ac",
+            "encounterType": {
+              "uuid": "29218f76-6c39-45f4-8efa-4c5c6c199f50",
+              "display": "Follow Up",
+              "links": [
+                {
+                  "rel": "self",
+                  "uri": "http://localhost/ws/rest/v1/encountertype/29218f76-6c39-45f4-8efa-4c5c6c199f50"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "uuid": "34fb7f47-b80a-4056-9285-bd798be13c63",
+          "concept": {
+            "uuid": "c607c80f-1ea9-4da3-bb88-6276ce8868dd",
+            "display": "WEIGHT (KG)",
+            "links": [
+              {
+                "rel": "self",
+                "uri": "http://localhost/ws/rest/v1/concept/c607c80f-1ea9-4da3-bb88-6276ce8868dd"
+              }
+            ]
+          },
+          "value": 83.0,
+          "formFieldNamespace": null,
+          "formFieldPath": null,
+          "encounter": {
+            "uuid": "2619d653-393b-4118-9e83-a3715b82d4ac",
+            "encounterType": {
+              "uuid": "29218f76-6c39-45f4-8efa-4c5c6c199f50",
+              "display": "Follow Up",
+              "links": [
+                {
+                  "rel": "self",
+                  "uri": "http://localhost/ws/rest/v1/encountertype/29218f76-6c39-45f4-8efa-4c5c6c199f50"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
 ## Grid Download
 
 ### Run Grid Download
+**Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/download`
+
+**HTTP Method** `GET`
+
+**Example Response** See [Grid Report Resource](../resources/README.md#grid-download), (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+
+Please pay extra attention to obs column values, for more see the note on obs value properties under [Grid Download Resource](../resources/README.md#grid-download)
+
+```
+{
+  "results": [
+    {
+      "patientGrid": {
+        "uuid": "5df6f9f2-6bc3-4d77-bac5-b412418fde0d",
+        "display": "My Patients",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://localhost:8080/openmrs/ws/rest/v1/patientgrid/patientgrid/5df6f9f2-6bc3-4d77-bac5-b412418fde0d",
+            "resourceAlias": "patientgrid"
+          }
+        ]
+      },
+      "report": [
+        {
+          "gender": "M",
+          "493dd4bb-0d6b-427e-817e-4eb3c7db09a0": [
+            {
+              "a0de97ed-6c63-4dff-a096-4e811dc17a52": {
+                "formPath": null,
+                "formNamespace": null,
+                "encounter": {
+                  "uuid": "d6560cbd-6661-4ff4-bbb4-2630ba64425c",
+                  "encounterType": "493dd4bb-0d6b-427e-817e-4eb3c7db09a0"
+                },
+                "uuid": "7269d58f-8d38-4a6d-ad3f-0cfcea470fc0",
+                "value": 164.0,
+                "concept": "7c28584a-7203-4844-b164-b2860c3fdaef"
+              }
+            }
+          ],
+          "name": "John Doe",
+          "uuid": "445b123d-45ec-4e23-84a3-315406247e0f",
+          "age": 12
+        },
+        {
+          "gender": "F",
+          "493dd4bb-0d6b-427e-817e-4eb3c7db09a0": [
+            {
+              "a0de97ed-6c63-4dff-a096-4e811dc17a52": {
+                "formPath": null,
+                "formNamespace": null,
+                "encounter": {
+                  "uuid": "f6560cbd-6661-4ff4-bbb4-2630ba64425d",
+                  "encounterType": "493dd4bb-0d6b-427e-817e-4eb3c7db09a0"
+                },
+                "uuid": "8269d58f-8d38-4a6d-ad3f-0cfcea470fc1",
+                "value": 180.0,
+                "concept": "7c28584a-7203-4844-b164-b2860c3fdaef"
+              }
+            }
+          ],
+          "name": "Mary Jane",
+          "uuid": "125b123d-45ec-4e23-84a3-315406247e0e",
+          "age": 20
+        }
+      ],
+      "resourceVersion": "1.8"
+    }
+  ]
+}
+```

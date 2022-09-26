@@ -111,6 +111,7 @@ refer to the resources above.
 
 ### Grid Report
 1. [Run Grid Report](docs/rest/endpoints/README.md#run-grid-report)
+2. [Fetch Encounters By Patient And Type](docs/rest/endpoints/README.md#)
 
 ### Grid Download
 1. [Run Grid Download](docs/rest/endpoints/README.md#run-grid-download)

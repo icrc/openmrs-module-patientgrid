@@ -101,9 +101,9 @@ properties below,
 
 `value` Display obs value
 
-`formPath` The field path on the form the observation was captured
+`formFieldPath` The field path on the form the observation was captured
 
-`formNamespace` The field namespace on the form the observation was captured
+`formFieldNamespace` The field namespace on the form the observation was captured
 
 `encounter` A map with 2 entries, one entry has the key named `uuid` while its value is the uuid of the encounter the
 observation belongs to, the other entry has key named `encounterType` while its value is the uuid of the encounter type
