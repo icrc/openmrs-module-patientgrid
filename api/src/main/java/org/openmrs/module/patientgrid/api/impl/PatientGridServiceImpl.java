@@ -145,4 +145,12 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		}
 	}
 	
+	/**
+	 * @see PatientGridService#evaluateIgnoreCache(PatientGrid)
+	 */
+	@Override
+	public SimpleDataSet evaluateIgnoreCache(PatientGrid patientGrid) {
+		return evaluate(patientGrid);
+	}
+	
 }

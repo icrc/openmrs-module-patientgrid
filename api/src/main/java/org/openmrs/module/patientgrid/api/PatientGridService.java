@@ -17,6 +17,7 @@ import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 
 /**
@@ -108,5 +109,16 @@ public interface PatientGridService extends OpenmrsService {
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
 	@Cacheable(key = CACHE_KEY_EXP, condition = CACHE_CONDITION_EXP, unless = CACHE_UNLESS_EXP)
 	SimpleDataSet evaluate(PatientGrid patientGrid);
+	
+	/**
+	 * Evaluates the specified {@link PatientGrid} ignoring any previously cached report data and will
+	 * update the cache with the latest report data.
+	 *
+	 * @param patientGrid the patient grid to evaluate
+	 * @return the generated {@link SimpleDataSet}
+	 */
+	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
+	@CachePut(key = CACHE_KEY_EXP, condition = CACHE_CONDITION_EXP, unless = CACHE_UNLESS_EXP)
+	SimpleDataSet evaluateIgnoreCache(PatientGrid patientGrid);
 	
 }
