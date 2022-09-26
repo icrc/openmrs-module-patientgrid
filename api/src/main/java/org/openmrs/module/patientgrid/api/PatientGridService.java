@@ -14,7 +14,7 @@ import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumnFilter;
-import org.openmrs.module.reporting.report.ReportData;
+import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -103,10 +103,10 @@ public interface PatientGridService extends OpenmrsService {
 	 * Evaluates the specified {@link PatientGrid}
 	 *
 	 * @param patientGrid the patient grid to evaluate
-	 * @return the generated {@link ReportData}
+	 * @return the generated {@link SimpleDataSet}
 	 */
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
 	@Cacheable(key = CACHE_KEY_EXP, condition = CACHE_CONDITION_EXP, unless = CACHE_UNLESS_EXP)
-	ReportData evaluate(PatientGrid patientGrid);
+	SimpleDataSet evaluate(PatientGrid patientGrid);
 	
 }

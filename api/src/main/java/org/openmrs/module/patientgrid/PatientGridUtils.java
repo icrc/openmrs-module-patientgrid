@@ -34,7 +34,6 @@ import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefi
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,15 +111,6 @@ public class PatientGridUtils {
 		}
 		
 		return dataSetDef;
-	}
-	
-	public static ReportDefinition convertToReportDefinition(PatientGrid patientGrid) {
-		ReportDefinition reportDef = new ReportDefinition();
-		reportDef.setName(patientGrid.getName());
-		reportDef.setDescription(patientGrid.getDescription());
-		reportDef.addDataSetDefinition("patientData", createPatientDataSetDefinition(patientGrid, true), null);
-		
-		return reportDef;
 	}
 	
 	/**

@@ -32,10 +32,9 @@ import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -61,7 +60,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	private CacheManager cacheManager;
 	
 	@Autowired
-	private ReportDefinitionService rds;
+	private DataSetDefinitionService dsds;
 	
 	@Autowired
 	private ServiceContext serviceContext;
@@ -73,7 +72,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		executeDataSet("entityBasisMaps.xml");
 		getCache().clear();
 		//We have test that replaces this service with a mock, we need to always put it back
-		serviceContext.setService(ReportDefinitionService.class, rds);
+		serviceContext.setService(DataSetDefinitionService.class, dsds);
 	}
 	
 	private Cache getCache() {
@@ -121,11 +120,11 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		grid.setDescription("test description");
 		grid.setCohort(new Cohort(101));
 		grid.addColumn(new PatientGridColumn("name", ColumnDatatype.NAME));
-		final ReportData cachedData = new ReportData();
+		final SimpleDataSet dataSet = new SimpleDataSet(null, null);
 		final String cacheKey = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		final String cacheKeyOther = "other" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
-		getCache().put(cacheKey, cachedData);
-		getCache().put(cacheKeyOther, cachedData);
+		getCache().put(cacheKey, dataSet);
+		getCache().put(cacheKeyOther, dataSet);
 		
 		service.savePatientGrid(grid);
 		
@@ -144,11 +143,11 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(grid.getRetiredBy());
 		assertNull(grid.getDateRetired());
 		
-		final ReportData cachedData = new ReportData();
+		final SimpleDataSet cachedDataSet = new SimpleDataSet(null, null);
 		final String cacheKey = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		final String cacheKeyOther = "other" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
-		getCache().put(cacheKey, cachedData);
-		getCache().put(cacheKeyOther, cachedData);
+		getCache().put(cacheKey, cachedDataSet);
+		getCache().put(cacheKeyOther, cachedDataSet);
 		
 		service.retirePatientGrid(grid, reason);
 		
@@ -169,11 +168,11 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(grid.getRetiredBy());
 		assertNotNull(grid.getDateRetired());
 		
-		final ReportData cachedData = new ReportData();
+		final SimpleDataSet cachedDataSet = new SimpleDataSet(null, null);
 		final String cacheKey = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		final String cacheKeyOther = "other" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
-		getCache().put(cacheKey, cachedData);
-		getCache().put(cacheKeyOther, cachedData);
+		getCache().put(cacheKey, cachedDataSet);
+		getCache().put(cacheKeyOther, cachedDataSet);
 		
 		service.unretirePatientGrid(grid);
 		
@@ -189,77 +188,76 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void evaluate_shouldEvaluateThePatientGridAndCacheTheResults() {
 		PatientGrid patientGrid = service.getPatientGrid(1);
-		ReportData reportData = service.evaluate(patientGrid);
+		SimpleDataSet dataSet = service.evaluate(patientGrid);
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
-		assertEquals(reportData, getCache().get(cacheKey).get());
-		SimpleDataSet dataset = (SimpleDataSet) reportData.getDataSets().get("patientData");
-		assertEquals(3, dataset.getRows().size());
+		assertEquals(dataSet, getCache().get(cacheKey).get());
+		assertEquals(3, dataSet.getRows().size());
 		Patient patient = ps.getPatient(2);
-		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
-		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
-		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
-		assertEquals(47, dataset.getColumnValue(patient.getId(), "ageAtInitial"));
-		assertEquals("18+", dataset.getColumnValue(patient.getId(), "ageCategory"));
-		Map<String, Object> obs = (Map) dataset.getColumnValue(patient.getId(), "weight");
+		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
+		assertEquals(patient.getPersonName().getFullName(), dataSet.getColumnValue(patient.getId(), "name"));
+		assertEquals(patient.getGender(), dataSet.getColumnValue(patient.getId(), "gender"));
+		assertEquals(47, dataSet.getColumnValue(patient.getId(), "ageAtInitial"));
+		assertEquals("18+", dataSet.getColumnValue(patient.getId(), "ageCategory"));
+		Map<String, Object> obs = (Map) dataSet.getColumnValue(patient.getId(), "weight");
 		assertEquals(84.0, obs.get("value"));
-		obs = (Map) dataset.getColumnValue(patient.getId(), "civilStatus");
+		obs = (Map) dataSet.getColumnValue(patient.getId(), "civilStatus");
 		assertEquals("SINGLE", obs.get("value"));
-		obs = (Map) dataset.getColumnValue(patient.getId(), "cd4");
+		obs = (Map) dataSet.getColumnValue(patient.getId(), "cd4");
 		assertEquals(1060.0, obs.get("value"));
 		Location location = locationService.getLocation(4000);
-		assertEquals(location.getName(), dataset.getColumnValue(patient.getId(), "structure"));
-		assertEquals(location.getCountry(), dataset.getColumnValue(patient.getId(), "country"));
+		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
+		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
 		
 		patient = ps.getPatient(6);
-		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
-		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
-		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
-		assertEquals(46, dataset.getColumnValue(patient.getId(), "ageAtInitial"));
-		assertEquals("18+", dataset.getColumnValue(patient.getId(), "ageCategory"));
-		obs = (Map) dataset.getColumnValue(patient.getId(), "weight");
+		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
+		assertEquals(patient.getPersonName().getFullName(), dataSet.getColumnValue(patient.getId(), "name"));
+		assertEquals(patient.getGender(), dataSet.getColumnValue(patient.getId(), "gender"));
+		assertEquals(46, dataSet.getColumnValue(patient.getId(), "ageAtInitial"));
+		assertEquals("18+", dataSet.getColumnValue(patient.getId(), "ageCategory"));
+		obs = (Map) dataSet.getColumnValue(patient.getId(), "weight");
 		assertEquals(72.0, obs.get("value"));
-		obs = (Map) dataset.getColumnValue(patient.getId(), "civilStatus");
+		obs = (Map) dataSet.getColumnValue(patient.getId(), "civilStatus");
 		assertEquals("SINGLE", obs.get("value"));
-		obs = (Map) dataset.getColumnValue(patient.getId(), "cd4");
+		obs = (Map) dataSet.getColumnValue(patient.getId(), "cd4");
 		assertEquals(1080.0, obs.get("value"));
 		location = locationService.getLocation(4001);
-		assertEquals(location.getName(), dataset.getColumnValue(patient.getId(), "structure"));
-		assertEquals(location.getCountry(), dataset.getColumnValue(patient.getId(), "country"));
+		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
+		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
 		
 		patient = ps.getPatient(7);
-		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
-		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
-		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
-		assertEquals(45, dataset.getColumnValue(patient.getId(), "ageAtInitial"));
-		assertEquals("18+", dataset.getColumnValue(patient.getId(), "ageCategory"));
-		obs = (Map) dataset.getColumnValue(patient.getId(), "weight");
+		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
+		assertEquals(patient.getPersonName().getFullName(), dataSet.getColumnValue(patient.getId(), "name"));
+		assertEquals(patient.getGender(), dataSet.getColumnValue(patient.getId(), "gender"));
+		assertEquals(45, dataSet.getColumnValue(patient.getId(), "ageAtInitial"));
+		assertEquals("18+", dataSet.getColumnValue(patient.getId(), "ageCategory"));
+		obs = (Map) dataSet.getColumnValue(patient.getId(), "weight");
 		assertEquals(88.0, obs.get("value"));
-		assertNull(dataset.getColumnValue(patient.getId(), "cd4"));
-		obs = (Map) dataset.getColumnValue(patient.getId(), "civilStatus");
+		assertNull(dataSet.getColumnValue(patient.getId(), "cd4"));
+		obs = (Map) dataSet.getColumnValue(patient.getId(), "civilStatus");
 		assertEquals("MARRIED", obs.get("value"));
-		assertEquals(location.getName(), dataset.getColumnValue(patient.getId(), "structure"));
-		assertEquals(location.getCountry(), dataset.getColumnValue(patient.getId(), "country"));
+		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
+		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
 	}
 	
 	@Test
 	public void evaluate_shouldReturnCachedResultsAndNotEvaluateThePatientGrid() {
-		final ReportData expectedCachedData = new ReportData();
+		final SimpleDataSet expectedDataSet = new SimpleDataSet(null, null);
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		getCache().put(patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid(),
-		    expectedCachedData);
-		assertEquals(expectedCachedData, service.evaluate(patientGrid));
+		    expectedDataSet);
+		assertEquals(expectedDataSet, service.evaluate(patientGrid));
 	}
 	
 	@Test
 	public void evaluate_shouldIgnoreCachedResultsOfAnotherUserAndEvaluateThePatientGrid() {
-		final ReportData expectedCachedData = new ReportData();
+		final SimpleDataSet expectedDataSet = new SimpleDataSet(null, null);
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		getCache().put("another-user-uuid" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid(),
-		    expectedCachedData);
-		ReportData reportData = service.evaluate(patientGrid);
+		    expectedDataSet);
+		SimpleDataSet dataSet = service.evaluate(patientGrid);
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
-		assertNotEquals(expectedCachedData, service.evaluate(patientGrid));
-		assertEquals(reportData, getCache().get(cacheKey).get());
+		assertNotEquals(expectedDataSet, service.evaluate(patientGrid));
+		assertEquals(dataSet, getCache().get(cacheKey).get());
 	}
 	
 	@Test
@@ -270,67 +268,65 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		assertNull(getCache().get(cacheKey));
 		
-		ReportData reportData = service.evaluate(patientGrid);
+		SimpleDataSet dataSet = service.evaluate(patientGrid);
 		
-		SimpleDataSet dataset = (SimpleDataSet) reportData.getDataSets().get("patientData");
-		assertTrue(dataset.getRows().isEmpty());
+		assertTrue(dataSet.getRows().isEmpty());
 		assertNull(getCache().get(cacheKey));
 	}
 	
 	@Test
-	public void evaluate_shouldNotCacheReportDataIfThereIsNoAuthenticatedUserAfterTheReportIsEvaluated() throws Exception {
-		ReportDefinitionService mockRds = Mockito.mock(ReportDefinitionService.class);
+	public void evaluate_shouldNotCacheDataSetIfThereIsNoAuthenticatedUserAfterTheDataSetIsEvaluated() throws Exception {
+		assertNotNull(Context.getAuthenticatedUser());
+		DataSetDefinitionService mockDsds = Mockito.mock(DataSetDefinitionService.class);
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		assertNull(getCache().get(cacheKey));
-		ReportData expectedReport = new ReportData();
-		SimpleDataSet simpleDataSet = new SimpleDataSet(null, null);
-		simpleDataSet.addRow(new DataSetRow());
-		expectedReport.getDataSets().put("patientData", simpleDataSet);
+		SimpleDataSet expectedDataSet = new SimpleDataSet(null, null);
+		expectedDataSet.addRow(new DataSetRow());
 		Mockito.doAnswer(invocation -> {
 			Context.logout();
 			assertNull(Context.getAuthenticatedUser());
-			return expectedReport;
-		}).when(mockRds).evaluate(any(ReportDefinition.class), any(EvaluationContext.class));
+			return expectedDataSet;
+		}).when(mockDsds).evaluate(any(DataSetDefinition.class), any(EvaluationContext.class));
 		
 		Context.addProxyPrivilege(PRIV_MANAGE_PATIENT_GRIDS);
-		serviceContext.setService(ReportDefinitionService.class, mockRds);
-		ReportData reportData;
+		serviceContext.setService(DataSetDefinitionService.class, mockDsds);
+		SimpleDataSet dataSet;
 		try {
-			reportData = service.evaluate(patientGrid);
+			dataSet = service.evaluate(patientGrid);
 		}
 		finally {
 			Context.removeProxyPrivilege(PRIV_MANAGE_PATIENT_GRIDS);
-			serviceContext.setService(ReportDefinitionService.class, rds);
+			serviceContext.setService(DataSetDefinitionService.class, dsds);
 		}
 		
-		assertEquals(expectedReport, reportData);
+		assertEquals(expectedDataSet, dataSet);
 		assertNull(getCache().get(cacheKey));
 	}
 	
 	@Test
-	public void evaluate_shouldNotCacheReportDataIfThereIsNoAuthenticatedUserBeforeTheReportIsEvaluated() throws Exception {
-		ReportDefinitionService mockRds = Mockito.mock(ReportDefinitionService.class);
+	public void evaluate_shouldNotCacheDataSetIfThereIsNoAuthenticatedUserBeforeTheDataSetIsEvaluated() throws Exception {
+		DataSetDefinitionService mockDsds = Mockito.mock(DataSetDefinitionService.class);
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		assertNull(getCache().get(cacheKey));
 		Context.logout();
 		assertNull(Context.getAuthenticatedUser());
-		ReportData expectedReport = new ReportData();
-		expectedReport.getDataSets().put("patientData", new SimpleDataSet(null, null));
-		Mockito.when(mockRds.evaluate(any(ReportDefinition.class), any(EvaluationContext.class))).thenReturn(expectedReport);
-		ReportData reportData;
+		SimpleDataSet expectedDataSet = new SimpleDataSet(null, null);
+		Mockito.when(mockDsds.evaluate(any(DataSetDefinition.class), any(EvaluationContext.class)))
+		        .thenReturn(expectedDataSet);
+		SimpleDataSet dataSet;
 		Context.addProxyPrivilege(PRIV_MANAGE_PATIENT_GRIDS);
-		serviceContext.setService(ReportDefinitionService.class, mockRds);
+		serviceContext.setService(DataSetDefinitionService.class, mockDsds);
 		try {
-			reportData = service.evaluate(patientGrid);
+			dataSet = service.evaluate(patientGrid);
 		}
 		finally {
 			Context.removeProxyPrivilege(PRIV_MANAGE_PATIENT_GRIDS);
-			serviceContext.setService(ReportDefinitionService.class, rds);
+			serviceContext.setService(DataSetDefinitionService.class, dsds);
 		}
 		
-		assertEquals(expectedReport, reportData);
+		assertEquals(expectedDataSet, dataSet);
 		assertNull(getCache().get(cacheKey));
 	}
 	
@@ -356,22 +352,21 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		Context.getCohortService().saveCohort(cohort);
 		patientGrid.setCohort(cohort);
 		
-		ReportData reportData = service.evaluate(patientGrid);
+		SimpleDataSet dataSet = service.evaluate(patientGrid);
 		
-		SimpleDataSet dataset = (SimpleDataSet) reportData.getDataSets().get("patientData");
-		assertEquals(2, dataset.getRows().size());
+		assertEquals(2, dataSet.getRows().size());
 		Patient patient = ps.getPatient(patientId2);
-		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
-		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
-		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
-		Map<String, Object> obs = (Map) dataset.getColumnValue(patient.getId(), "civilStatus");
+		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
+		assertEquals(patient.getPersonName().getFullName(), dataSet.getColumnValue(patient.getId(), "name"));
+		assertEquals(patient.getGender(), dataSet.getColumnValue(patient.getId(), "gender"));
+		Map<String, Object> obs = (Map) dataSet.getColumnValue(patient.getId(), "civilStatus");
 		assertEquals("SINGLE", obs.get("value"));
 		
 		patient = ps.getPatient(patientId6);
-		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
-		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
-		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
-		obs = (Map) dataset.getColumnValue(patient.getId(), "civilStatus");
+		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
+		assertEquals(patient.getPersonName().getFullName(), dataSet.getColumnValue(patient.getId(), "name"));
+		assertEquals(patient.getGender(), dataSet.getColumnValue(patient.getId(), "gender"));
+		obs = (Map) dataSet.getColumnValue(patient.getId(), "civilStatus");
 		assertEquals("SINGLE", obs.get("value"));
 	}
 	

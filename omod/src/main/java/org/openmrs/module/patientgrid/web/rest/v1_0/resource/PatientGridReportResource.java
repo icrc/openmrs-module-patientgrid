@@ -7,7 +7,6 @@ import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.patientgrid.web.rest.PatientGridReport;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
-import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -21,8 +20,7 @@ public class PatientGridReportResource extends BasePatientGridDataResource<Patie
 	 */
 	@Override
 	public SimpleDataSet evaluate(PatientGrid parent, RequestContext context) throws ResponseException {
-		ReportData reportData = Context.getService(PatientGridService.class).evaluate(parent);
-		return (SimpleDataSet) reportData.getDataSets().get("patientData");
+		return Context.getService(PatientGridService.class).evaluate(parent);
 	}
 	
 }

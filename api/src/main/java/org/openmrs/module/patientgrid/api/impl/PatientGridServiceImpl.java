@@ -14,11 +14,11 @@ import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.patientgrid.api.db.PatientGridDAO;
 import org.openmrs.module.patientgrid.filter.PatientGridFilterUtils;
+import org.openmrs.module.reporting.dataset.SimpleDataSet;
+import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reporting.report.ReportData;
-import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,7 +109,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 	/**
 	 * @see PatientGridService#evaluate(PatientGrid)
 	 */
-	public ReportData evaluate(PatientGrid patientGrid) {
+	public SimpleDataSet evaluate(PatientGrid patientGrid) {
 		if (log.isDebugEnabled()) {
 			log.debug("Generating report for patient grid: " + patientGrid);
 		}
@@ -118,7 +118,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		stopWatch.start();
 		
 		try {
-			ReportDefinition reportDef = PatientGridUtils.convertToReportDefinition(patientGrid);
+			PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, true);
 			EvaluationContext context = new EvaluationContext();
 			Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, context);
 			if (cohort == null) {
@@ -128,7 +128,9 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 			//TODO If cohort is not null but empty, return immediately
 			
 			context.setBaseCohort(cohort);
-			ReportData reportData = Context.getService(ReportDefinitionService.class).evaluate(reportDef, context);
+			
+			SimpleDataSet ds = (SimpleDataSet) Context.getService(DataSetDefinitionService.class).evaluate(dataSetDef,
+			    context);
 			
 			stopWatch.stop();
 			
@@ -136,7 +138,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 				log.debug("Report for patient grid " + patientGrid + " completed in " + stopWatch.toString());
 			}
 			
-			return reportData;
+			return ds;
 		}
 		catch (EvaluationException e) {
 			throw new APIException("Failed to evaluate patient grid: " + patientGrid, e);
