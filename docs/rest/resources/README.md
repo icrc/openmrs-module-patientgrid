@@ -119,7 +119,8 @@ A read-only resource encapsulating downloadable data for a specific patient grid
 single patient, the element is a map of column names and their respective data values. The report contains extra map 
 entries i.e. one for each encounter type, if you generated your form fields based on a form, then each encounter type 
 would match that of its respective form. Therefore, for these extra column entries, the key is the uuid of the encounter 
-type and the value is a list of observation data for each encounter matching the encounter type for the patient.
+type and the value is a list of observation data for each encounter matching the encounter type for the patient. It 
+means each item in the list is a list of observations for a single encounter matching the encounter type.
 
 
 **Note** Obs values in the report are trimmed down to a custom representation specific to this module with the

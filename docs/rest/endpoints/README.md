@@ -871,6 +871,7 @@ Please pay extra attention to obs column values, for more see the note on obs va
 }
 ```
 
+## Encounter History
 ### Fetch Encounters By Patient And Type
 **Endpoint** `{SERVER_URL}/openmrs/ws/rest/v1/encounter?s=patientgridGetEncounterHistory&patient={PATIENT_UUID}&encounterType={ENCOUNTER_TYPE_UUID}&v=custom:obs:(uuid,concept:ref,value,formFieldNamespace,formFieldPath,encounter:(uuid,encounterType:ref)))`
 
@@ -881,11 +882,11 @@ Please pay extra attention to obs column values, for more see the note on obs va
 a trimmed down response payload to just include the encounter observations and requesting specific fields for each 
 observation, if you need the full encounter and observations payloads, you can set the value to `full`
 
-`s` MUST always be set to `patientgridGetEncounterHistory`
+<i style='color:red'>*</i>`s` MUST always be set to `patientgridGetEncounterHistory`
 
-`patient` The UUID of the patient to match
+<i style='color:red'>*</i>`patient` The UUID of the patient to match
 
-`encounterType` The UUID of the encounter type to match
+<i style='color:red'>*</i>`encounterType` The UUID of the encounter type to match
 
 **Example Response** (Custom [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
 ```
@@ -966,7 +967,8 @@ observation, if you need the full encounter and observations payloads, you can s
 
 **Example Response** See [Grid Download Resource](../resources/README.md#grid-download), (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
 
-Please pay extra attention to obs column values, for more see the note on obs value properties under [Grid Download Resource](../resources/README.md#grid-download)
+Please pay extra attention to entries in the report that have key that is a UUID, and also the nested obs list values, for more 
+see the note on obs value properties under [Grid Download Resource](../resources/README.md#grid-download)
 
 ```
 {
