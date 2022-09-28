@@ -75,7 +75,7 @@
                                  referencedColumnNames="user_id" />
     </changeSet>
 
-    <changeSet id="${project.parent.artifactId}-202207291101" author="wluyima">
+    <changeSet id="${project.parent.artifactId}-202207291111" author="wluyima">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="patientgrid_patient_grid_column" />
@@ -126,7 +126,7 @@
                                  referencedColumnNames="user_id" />
     </changeSet>
 
-    <changeSet id="${project.parent.artifactId}-202207291102" author="wluyima">
+    <changeSet id="${project.parent.artifactId}-202207291112" author="wluyima">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="patientgrid_obs_patient_grid_column" />
