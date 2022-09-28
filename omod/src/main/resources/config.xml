@@ -23,8 +23,30 @@
         <require_module version="${datafilterVersion}">org.openmrs.module.datafilter</require_module>
         <require_module version="${webservicesRestVersion}">org.openmrs.module.webservices.rest</require_module>
     </require_modules>
+
+    <!-- Privileges -->
+    <privilege>
+        <name>Manage Patient Grids</name>
+        <description>Allows a user to view and manage patient grids</description>
+    </privilege>
     
     <!-- Global properties -->
+    <globalProperty>
+        <property>${project.parent.artifactId}.age.ranges</property>
+        <description>
+            Specifies a comma separated list of age range definitions in years to be used by grid columns that hold age
+            range values, in the future we might add support for months, below is an example list of age range
+            definitions for the global property value e.g. 0-18:&lt;18, 19-29:Youth, 30-39, 40-54:Middle Aged, 55+
+        </description>
+    </globalProperty>
+    <globalProperty>
+        <property>${project.parent.artifactId}.cacheDirectory</property>
+        <description>
+            Specifies the location of the directory to use to cache grid report data, it can be an absolute path
+            otherwise a folder name which will be located in the application data directory. Defaults to .report_cache
+            in the patientgrid folder in the application data directory
+        </description>
+    </globalProperty>
 
 </module>
 

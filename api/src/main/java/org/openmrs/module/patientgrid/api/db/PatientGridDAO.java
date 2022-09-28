@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
+import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 
 /**
  * Provides database access methods to manage {@link PatientGrid} objects
@@ -34,5 +35,10 @@ public interface PatientGridDAO {
 	 * @see org.openmrs.module.patientgrid.api.PatientGridService#getPatientGridColumnByUuid(String)
 	 */
 	PatientGridColumn getPatientGridColumnByUuid(String uuid);
+	
+	/**
+	 * @see org.openmrs.module.patientgrid.api.PatientGridService#getPatientGridColumnFilterByUuid(String)
+	 */
+	PatientGridColumnFilter getPatientGridColumnFilterByUuid(String uuid);
 	
 }

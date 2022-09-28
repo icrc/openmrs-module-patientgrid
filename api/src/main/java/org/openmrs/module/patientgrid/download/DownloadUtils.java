@@ -72,11 +72,6 @@ public class DownloadUtils {
 			throw new APIException(
 			        "Failed to generate downloadable patient grid report data for patient grid: " + patientGrid, e);
 		}
-		finally {
-			if (!stopWatch.isStopped()) {
-				stopWatch.stop();
-			}
-		}
 	}
 	
 }

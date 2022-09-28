@@ -5,13 +5,10 @@ import static org.openmrs.module.patientgrid.PatientGridConstants.GP_DISK_CACHE_
 import static org.openmrs.module.patientgrid.PatientGridConstants.MODULE_ID;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -30,18 +27,6 @@ public final class DiskCache {
 	
 	private File cacheDirectory;
 	
-	private DiskCache() {
-		log.info("Initializing disk cache");
-		
-		String dir = Context.getAdministrationService().getGlobalProperty(GP_DISK_CACHE_DIR);
-		if (StringUtils.isBlank(dir)) {
-			File parent = OpenmrsUtil.getDirectoryInApplicationDataDirectory(MODULE_ID);
-			this.cacheDirectory = new File(parent, DEFAULT_DISK_CACHE_DIR_NAME);
-		} else {
-			this.cacheDirectory = OpenmrsUtil.getDirectoryInApplicationDataDirectory(dir);
-		}
-	}
-	
 	private static class DiskCacheHolder {
 		
 		private static DiskCache INSTANCE = new DiskCache();
@@ -52,27 +37,51 @@ public final class DiskCache {
 		return DiskCacheHolder.INSTANCE;
 	}
 	
+	protected File getCacheDirectory() {
+		if (cacheDirectory == null) {
+			log.info("Initializing disk cache");
+			
+			String dir = Context.getAdministrationService().getGlobalProperty(GP_DISK_CACHE_DIR);
+			if (StringUtils.isBlank(dir)) {
+				File parent = OpenmrsUtil.getDirectoryInApplicationDataDirectory(MODULE_ID);
+				cacheDirectory = new File(parent, DEFAULT_DISK_CACHE_DIR_NAME);
+			} else {
+				cacheDirectory = OpenmrsUtil.getDirectoryInApplicationDataDirectory(dir);
+			}
+			
+			if (!cacheDirectory.exists()) {
+				log.info("Creating grid report cache directory at " + cacheDirectory);
+				
+				if (!cacheDirectory.mkdirs()) {
+					throw new APIException("Failed to create grid report cache directory at " + cacheDirectory);
+				}
+			}
+		}
+		
+		return cacheDirectory;
+	}
+	
 	public boolean hasFile(String filename) {
-		File file = new File(cacheDirectory, filename);
+		File file = new File(getCacheDirectory(), filename);
 		return file.exists() && file.isFile();
 	}
 	
-	public <T> T getFileContents(String filename) {
+	public String getFileContents(String filename) {
 		if (!hasFile(filename)) {
 			return null;
 		}
 		
-		try (FileInputStream in = new FileInputStream(new File(cacheDirectory, filename))) {
-			return SerializationUtils.deserialize(in);
+		try {
+			return FileUtils.readFileToString(new File(getCacheDirectory(), filename), StandardCharsets.UTF_8);
 		}
 		catch (IOException e) {
 			throw new APIException("Failed to read from file", e);
 		}
 	}
 	
-	public void setFileContents(String filename, Serializable contents) {
-		try (FileOutputStream out = new FileOutputStream(new File(cacheDirectory, filename))) {
-			SerializationUtils.serialize(contents, out);
+	public void setFileContents(String filename, String contents) {
+		try {
+			FileUtils.write(new File(getCacheDirectory(), filename), contents, StandardCharsets.UTF_8);
 		}
 		catch (IOException e) {
 			throw new APIException("Failed to write to file", e);
@@ -85,7 +94,7 @@ public final class DiskCache {
 		}
 		
 		try {
-			FileUtils.forceDelete(new File(cacheDirectory, filename));
+			FileUtils.forceDelete(new File(getCacheDirectory(), filename));
 		}
 		catch (IOException e) {
 			throw new APIException("Failed to delete file", e);
@@ -94,7 +103,7 @@ public final class DiskCache {
 	
 	public void deleteAllFiles() {
 		try {
-			FileUtils.deleteDirectory(cacheDirectory);
+			FileUtils.deleteDirectory(getCacheDirectory());
 		}
 		catch (IOException e) {
 			throw new APIException("Failed to delete directory for the disk cache", e);

@@ -107,7 +107,7 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	/**
 	 * Removes a column from the list of columns for this grid
 	 *
-	 * @param column the column to add
+	 * @param column the column to remove
 	 * @return true if the column was found and removed otherwise false
 	 */
 	public boolean removeColumn(PatientGridColumn column) {

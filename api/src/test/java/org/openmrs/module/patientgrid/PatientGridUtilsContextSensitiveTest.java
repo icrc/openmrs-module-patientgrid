@@ -58,7 +58,7 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 	}
 	
 	@Test
-	public void getEncounters_shouldReturnNullIfThePatientHasNoMatchingEncounters() throws Exception {
+	public void getEncounters_shouldReturnAnEmptyListIfThePatientHasNoMatchingEncounters() throws Exception {
 		Cohort cohort = new Cohort();
 		final Integer patientId = 8;
 		cohort.addMember(patientId);

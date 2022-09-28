@@ -21,8 +21,6 @@ public class PatientGridConstants {
 	
 	public static final String CACHE_MANAGER_NAME = "patientGridReportsCacheManager";
 	
-	public static final String CACHE_MANAGER_FACTORY_NAME = "pgCacheManagerFactoryBean";
-	
 	public static final String CACHE_NAME_GRID_REPORTS = "patientGridReports";
 	
 	public static final String DEFAULT_DISK_CACHE_DIR_NAME = ".report_cache";
@@ -34,7 +32,7 @@ public class PatientGridConstants {
 	
 	public static final String CACHE_CONDITION_EXP = "T(org.openmrs.api.context.Context).getAuthenticatedUser() != null";
 	
-	public static final String CACHE_UNLESS_EXP = "#result.getDataSets().get('patientData').getRows().isEmpty() || T(org.openmrs.api.context.Context).getAuthenticatedUser() == null";
+	public static final String CACHE_UNLESS_EXP = "#result.getRows().isEmpty() || T(org.openmrs.api.context.Context).getAuthenticatedUser() == null";
 	
 	public static final DateFormat DATETIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssXXX");
 	

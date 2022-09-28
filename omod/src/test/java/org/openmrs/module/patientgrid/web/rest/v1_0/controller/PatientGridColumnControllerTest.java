@@ -102,6 +102,20 @@ public class PatientGridColumnControllerTest extends BasePatientGridRestControll
 	}
 	
 	@Test
+	public void shouldAddAFilterToAnExistingColumn() throws Exception {
+		long initialFilterCount = service.getPatientGridColumnByUuid(COLUMN_UUID).getFilters().size();
+		SimpleObject filter = new SimpleObject();
+		filter.add("name", "equal 12");
+		filter.add("operand", "12");
+		SimpleObject payload = new SimpleObject();
+		payload.add("filters", new SimpleObject[] { filter });
+		
+		handle(newPostRequest(getURI() + "/" + getUuid(), payload));
+		
+		assertEquals(++initialFilterCount, service.getPatientGridColumnByUuid(COLUMN_UUID).getFilters().size());
+	}
+	
+	@Test
 	public void shouldUpdateAnExistingObsColumn() throws Exception {
 		long initialCount = getAllCount();
 		final String newName = "New Name";

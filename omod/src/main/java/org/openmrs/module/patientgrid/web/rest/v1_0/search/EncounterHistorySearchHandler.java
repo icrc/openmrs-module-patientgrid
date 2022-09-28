@@ -2,8 +2,10 @@ package org.openmrs.module.patientgrid.web.rest.v1_0.search;
 
 import static org.openmrs.module.patientgrid.PatientGridConstants.MODULE_ID;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
@@ -19,21 +21,22 @@ import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.GenericRestException;
+import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.stereotype.Component;
 
 @Component(MODULE_ID + ".encounterHistorySearchHandler")
 public class EncounterHistorySearchHandler implements SearchHandler {
 	
-	private static final String PARAM_PATIENT_UUID = "patient";
+	protected static final String PARAM_PATIENT = "patient";
 	
-	private static final String PARAM_ENC_UUID = "encounterType";
+	protected static final String PARAM_ENC_TYPE = "encounterType";
 	
-	private static final String SEARCH_CONFIG_NAME = MODULE_ID + "GetEncounterHistory";
+	protected static final String SEARCH_CONFIG_NAME = MODULE_ID + "GetEncounterHistory";
 	
 	private static final SearchQuery QUERY = new SearchQuery.Builder(
 	        "Allows you to find encounters of a specified encounter type for a single patient")
-	                .withRequiredParameters(PARAM_PATIENT_UUID, PARAM_ENC_UUID).build();
+	                .withRequiredParameters(PARAM_PATIENT, PARAM_ENC_TYPE).build();
 	
 	private static final SearchConfig CONFIG = new SearchConfig(SEARCH_CONFIG_NAME, RestConstants.VERSION_1 + "/encounter",
 	        Arrays.asList("1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*"), QUERY);
@@ -48,16 +51,16 @@ public class EncounterHistorySearchHandler implements SearchHandler {
 	 */
 	@Override
 	public PageableResult search(RequestContext requestContext) throws ResponseException {
-		final String patientUuid = requestContext.getParameter(PARAM_PATIENT_UUID);
-		final String encounterTypeUuid = requestContext.getParameter(PARAM_ENC_UUID);
+		final String patientUuid = requestContext.getParameter(PARAM_PATIENT);
+		final String encounterTypeUuid = requestContext.getParameter(PARAM_ENC_TYPE);
 		Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
 		if (patient == null) {
-			throw new GenericRestException("No patient found with uuid: " + patientUuid);
+			throw new ObjectNotFoundException();
 		}
 		
 		EncounterType type = Context.getEncounterService().getEncounterTypeByUuid(encounterTypeUuid);
 		if (type == null) {
-			throw new GenericRestException("No encounter type found with uuid: " + encounterTypeUuid);
+			throw new ObjectNotFoundException();
 		}
 		
 		Cohort cohort = new Cohort();
@@ -65,7 +68,12 @@ public class EncounterHistorySearchHandler implements SearchHandler {
 		cohort.addMember(patientId);
 		
 		try {
-			List<Encounter> encs = (List) PatientGridUtils.getEncounters(type, cohort, false).get(patientId);
+			List<Encounter> encs = new ArrayList();
+			Map<Integer, Object> idAndEncs = PatientGridUtils.getEncounters(type, cohort, false);
+			if (!idAndEncs.isEmpty()) {
+				encs = (List) idAndEncs.get(patientId);
+			}
+			
 			return new NeedsPaging(encs, requestContext);
 		}
 		catch (Exception e) {
