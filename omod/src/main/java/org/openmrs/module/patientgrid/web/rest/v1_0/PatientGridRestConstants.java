@@ -9,4 +9,6 @@ public final class PatientGridRestConstants {
 	
 	public static final String SUPPORTED_VERSIONS = "2.3.* - 2.5.*";
 	
+	public static final String PARAM_REFRESH = "refresh";
+	
 }

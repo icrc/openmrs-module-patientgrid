@@ -263,8 +263,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	public void evaluate_shouldIgnoreCachedDataSetsAndEvaluateThePatientGridAndCacheTheNewDataSet() {
-		final String name = "Test Patient";
-		DataSetColumn column = new DataSetColumn(name, null, String.class);
+		DataSetColumn column = new DataSetColumn("name", null, String.class);
 		final SimpleDataSet cachedDataSet = new SimpleDataSet(null, null);
 		cachedDataSet.addColumnValue(8888, column, "Test Patient");
 		PatientGrid patientGrid = service.getPatientGrid(1);
