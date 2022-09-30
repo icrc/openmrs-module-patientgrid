@@ -13,6 +13,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGridUtils;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
@@ -66,10 +67,12 @@ public class EncounterHistorySearchHandler implements SearchHandler {
 		Cohort cohort = new Cohort();
 		Integer patientId = patient.getId();
 		cohort.addMember(patientId);
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(cohort);
 		
 		try {
 			List<Encounter> encs = new ArrayList();
-			Map<Integer, Object> idAndEncs = PatientGridUtils.getEncounters(type, cohort, false);
+			Map<Integer, Object> idAndEncs = PatientGridUtils.getEncounters(type, context, false);
 			if (!idAndEncs.isEmpty()) {
 				encs = (List) idAndEncs.get(patientId);
 			}

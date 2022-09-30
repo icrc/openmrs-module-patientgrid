@@ -29,8 +29,7 @@ public class AllEncountersPatientDataEvaluator implements PatientDataEvaluator {
 	        throws EvaluationException {
 		
 		AllEncountersPatientDataDefinition def = (AllEncountersPatientDataDefinition) definition;
-		Map<Integer, Object> patientIdAndEncs = PatientGridUtils.getEncounters(def.getEncounterType(),
-		    context.getBaseCohort(), false);
+		Map<Integer, Object> patientIdAndEncs = PatientGridUtils.getEncounters(def.getEncounterType(), context, false);
 		Set<ObsPatientGridColumn> obsColumns = def.getPatientGrid().getObsColumns();
 		
 		Map<Integer, Object> patientIdAndEncList = patientIdAndEncs.entrySet().stream()

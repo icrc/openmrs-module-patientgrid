@@ -28,6 +28,10 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
+            <artifactId>calculation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
             <artifactId>reporting-api</artifactId>
         </dependency>
         <dependency>
@@ -58,15 +62,14 @@
             <version>${webservicesRestVersion}</version>
             <scope>provided</scope>
         </dependency>
-        
+
+        <!-- Test dependencies -->
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>webservices.rest-omod-2.2</artifactId>
             <version>${webservicesRestVersion}</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- Test dependencies -->
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>${project.parent.artifactId}-api</artifactId>
@@ -96,11 +99,6 @@
             <artifactId>webservices.rest-omod-common</artifactId>
             <version>${webservicesRestVersion}</version>
             <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>calculation-api</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
