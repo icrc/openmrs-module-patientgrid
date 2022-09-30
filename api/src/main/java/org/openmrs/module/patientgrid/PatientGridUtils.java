@@ -147,9 +147,7 @@ public class PatientGridUtils {
 			encDef.setWhich(TimeQualifier.LAST);
 		}
 		
-		EvaluationContext encContext = new EvaluationContext();
-		encContext.setBaseCohort(cohort);
-		Map<Integer, Object> results = Context.getService(PatientDataService.class).evaluate(encDef, encContext).getData();
+		Map<Integer, Object> results = Context.getService(PatientDataService.class).evaluate(encDef, context).getData();
 		
 		stopWatch.stop();
 		
