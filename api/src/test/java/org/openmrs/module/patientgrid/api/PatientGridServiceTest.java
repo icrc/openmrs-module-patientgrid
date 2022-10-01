@@ -143,15 +143,15 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(grid.getChangedBy());
 		assertNull(grid.getDateChanged());
 		grid.setName("test");
-		final SimpleDataSet dataSet = new SimpleDataSet(null, null);
+		final SimpleDataSet cachedDataSet = new SimpleDataSet(null, null);
 		final String cacheKeyUser1 = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		final String cacheKeyUser2 = grid.getUuid() + CACHE_KEY_SEPARATOR + "another-user-uuid-2";
 		final String cacheKeyUser3 = grid.getUuid() + CACHE_KEY_SEPARATOR + "another-user-uuid-3";
 		final String cacheKeyOtherGrid = "other" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
-		getCache().put(cacheKeyUser1, dataSet);
-		getCache().put(cacheKeyUser2, dataSet);
-		getCache().put(cacheKeyUser3, dataSet);
-		getCache().put(cacheKeyOtherGrid, dataSet);
+		getCache().put(cacheKeyUser1, cachedDataSet);
+		getCache().put(cacheKeyUser2, cachedDataSet);
+		getCache().put(cacheKeyUser3, cachedDataSet);
+		getCache().put(cacheKeyOtherGrid, cachedDataSet);
 		
 		service.savePatientGrid(grid);
 		
@@ -165,7 +165,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	public void retirePatientGrid_shouldRetireThePatientGrid() {
+	public void retirePatientGrid_shouldRetireThePatientGridAndClearAllCachedGridReportsForAllUsers() {
 		final String reason = "some reason";
 		PatientGrid grid = service.getPatientGrid(1);
 		assertFalse(grid.getRetired());
@@ -174,10 +174,14 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(grid.getDateRetired());
 		
 		final SimpleDataSet cachedDataSet = new SimpleDataSet(null, null);
-		final String cacheKey = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
-		final String cacheKeyOther = "other" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
-		getCache().put(cacheKey, cachedDataSet);
-		getCache().put(cacheKeyOther, cachedDataSet);
+		final String cacheKeyUser1 = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
+		final String cacheKeyUser2 = grid.getUuid() + CACHE_KEY_SEPARATOR + "another-user-uuid-2";
+		final String cacheKeyUser3 = grid.getUuid() + CACHE_KEY_SEPARATOR + "another-user-uuid-3";
+		final String cacheKeyOtherGrid = "other" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
+		getCache().put(cacheKeyUser1, cachedDataSet);
+		getCache().put(cacheKeyUser2, cachedDataSet);
+		getCache().put(cacheKeyUser3, cachedDataSet);
+		getCache().put(cacheKeyOtherGrid, cachedDataSet);
 		
 		service.retirePatientGrid(grid, reason);
 		
@@ -186,8 +190,10 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(grid.getRetiredBy());
 		assertNotNull(grid.getDateRetired());
 		
-		assertNull(getCache().get(cacheKey));
-		assertNotNull(getCache().get(cacheKeyOther));
+		assertNull(getCache().get(cacheKeyUser1));
+		assertNull(getCache().get(cacheKeyUser2));
+		assertNull(getCache().get(cacheKeyUser3));
+		assertNotNull(getCache().get(cacheKeyOtherGrid));
 	}
 	
 	@Test
@@ -199,10 +205,14 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(grid.getDateRetired());
 		
 		final SimpleDataSet cachedDataSet = new SimpleDataSet(null, null);
-		final String cacheKey = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
-		final String cacheKeyOther = "other" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
-		getCache().put(cacheKey, cachedDataSet);
-		getCache().put(cacheKeyOther, cachedDataSet);
+		final String cacheKeyUser1 = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
+		final String cacheKeyUser2 = grid.getUuid() + CACHE_KEY_SEPARATOR + "another-user-uuid-2";
+		final String cacheKeyUser3 = grid.getUuid() + CACHE_KEY_SEPARATOR + "another-user-uuid-3";
+		final String cacheKeyOtherGrid = "other" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
+		getCache().put(cacheKeyUser1, cachedDataSet);
+		getCache().put(cacheKeyUser2, cachedDataSet);
+		getCache().put(cacheKeyUser3, cachedDataSet);
+		getCache().put(cacheKeyOtherGrid, cachedDataSet);
 		
 		service.unretirePatientGrid(grid);
 		
@@ -211,8 +221,10 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(grid.getRetiredBy());
 		assertNull(grid.getDateRetired());
 		
-		assertNull(getCache().get(cacheKey));
-		assertNotNull(getCache().get(cacheKeyOther));
+		assertNull(getCache().get(cacheKeyUser1));
+		assertNull(getCache().get(cacheKeyUser2));
+		assertNull(getCache().get(cacheKeyUser3));
+		assertNotNull(getCache().get(cacheKeyOtherGrid));
 	}
 	
 	@Test
