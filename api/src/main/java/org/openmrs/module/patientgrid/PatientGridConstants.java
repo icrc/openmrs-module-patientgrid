@@ -27,6 +27,10 @@ public class PatientGridConstants {
 	
 	public static final String CACHE_KEY_SEPARATOR = "_";
 	
+	public static final String CACHE_EVICT_KEY_EXP = "#patientGrid.getUuid()";
+	
+	public static final String CACHE_EVICT_CONDITION_EXP = "#patientGrid.getId() != null";
+	
 	public static final String CACHE_KEY_EXP = "#patientGrid.getUuid()+'" + CACHE_KEY_SEPARATOR
 	        + "'+T(org.openmrs.api.context.Context).getAuthenticatedUser().getUuid()";
 	
