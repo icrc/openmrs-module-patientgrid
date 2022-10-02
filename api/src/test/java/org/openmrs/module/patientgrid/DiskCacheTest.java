@@ -24,12 +24,14 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ OpenmrsUtil.class, Context.class })
+@PowerMockIgnore("jdk.internal.reflect.*")
 public class DiskCacheTest {
 	
 	private static final String TEST_CACHE_PARENT_DIR = "test_report_cache";

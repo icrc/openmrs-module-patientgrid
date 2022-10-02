@@ -17,12 +17,14 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.serialization.SimpleXStreamSerializer;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Context.class)
+@PowerMockIgnore("jdk.internal.reflect.*")
 public class PatientGridCacheTest {
 	
 	@Mock
