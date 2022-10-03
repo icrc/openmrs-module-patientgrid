@@ -117,13 +117,18 @@ public class PatientGridUtils {
 	 * Fetches the encounters for the specified cohort of patients matching the given encounter type.
 	 *
 	 * @param type the encounter type to match
-	 * @param cohort the base cohort whose encounters to return
+	 * @param context {@link EvaluationContext} object
 	 * @param mostRecentOnly specifies whether to return only the most recent encounter for each patient
 	 *            or their encounter history
 	 * @return a map of patient ids to encounters
 	 */
-	public static Map<Integer, Object> getEncounters(EncounterType type, Cohort cohort, boolean mostRecentOnly)
+	public static Map<Integer, Object> getEncounters(EncounterType type, EvaluationContext context, boolean mostRecentOnly)
 	        throws EvaluationException {
+		
+		Cohort cohort = null;
+		if (context != null) {
+			cohort = context.getBaseCohort();
+		}
 		
 		if (cohort == null || cohort.size() > 1) {
 			if (mostRecentOnly) {
@@ -142,9 +147,7 @@ public class PatientGridUtils {
 			encDef.setWhich(TimeQualifier.LAST);
 		}
 		
-		EvaluationContext encContext = new EvaluationContext();
-		encContext.setBaseCohort(cohort);
-		Map<Integer, Object> results = Context.getService(PatientDataService.class).evaluate(encDef, encContext).getData();
+		Map<Integer, Object> results = Context.getService(PatientDataService.class).evaluate(encDef, context).getData();
 		
 		stopWatch.stop();
 		

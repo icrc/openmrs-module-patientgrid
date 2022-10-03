@@ -47,7 +47,7 @@ public class AgeAtLatestEncounterPatientDataEvaluator implements PatientDataEval
 				log.debug("Loading patient most recent patient encounters of type: " + def.getEncounterType());
 			}
 			
-			patientIdAndEnc = PatientGridUtils.getEncounters(def.getEncounterType(), context.getBaseCohort(), true);
+			patientIdAndEnc = PatientGridUtils.getEncounters(def.getEncounterType(), context, true);
 			typeAndEncData.put(def.getEncounterType(), patientIdAndEnc);
 		}
 		

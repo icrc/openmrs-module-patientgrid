@@ -1,5 +1,10 @@
 package org.openmrs.module.patientgrid;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.serialization.SerializationException;
@@ -110,8 +115,14 @@ public class PatientGridCache implements Cache {
 	 */
 	@Override
 	public void evict(Object key) {
-		//TODO if key is patient grid uuid ONLY then delete all files starting with it
-		getDiskCache().deleteFile(key.toString());
+		List<String> filenames = Collections.singletonList(key.toString());
+		//If key is patient grid uuid ONLY then delete all reports for the grid for all users
+		if (StringUtils.split(key.toString(), PatientGridConstants.CACHE_KEY_SEPARATOR).length == 1) {
+			String[] files = getDiskCache().getCacheDirectory().list((dir, name) -> name.startsWith(key.toString()));
+			filenames = Arrays.asList(files);
+		}
+		
+		filenames.stream().forEach(filename -> getDiskCache().deleteFile(filename));
 	}
 	
 	/**

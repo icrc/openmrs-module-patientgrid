@@ -609,4 +609,43 @@ public class PatientGridFilterUtilsTest {
 		assertEquals(YEARS, ageRange.getMaxAgeUnit());
 	}
 	
+	@Test
+	public void generateCohortDefinition_shouldFailIfNoConceptMatchesTheSpecifiedUuid() {
+		final String conceptUuid = "concept-uuid";
+		ObsPatientGridColumn column = new ObsPatientGridColumn("maritalStatus", null, null);
+		Concept concept = new Concept();
+		ConceptDatatype datatype = new ConceptDatatype();
+		datatype.setUuid(ConceptDatatype.CODED_UUID);
+		concept.setDatatype(datatype);
+		column.setConcept(concept);
+		EncounterType encounterType = new EncounterType();
+		column.setEncounterType(encounterType);
+		column.addFilter(new PatientGridColumnFilter("maritalStatus", conceptUuid));
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(column);
+		PowerMockito.mockStatic(Context.class);
+		ConceptService mockConceptService = Mockito.mock(ConceptService.class);
+		Mockito.when(Context.getConceptService()).thenReturn(mockConceptService);
+		expectedException.expect(APIException.class);
+		expectedException.expectMessage(equalTo("No concept found with uuid: " + conceptUuid));
+		
+		PatientGridFilterUtils.generateCohortDefinition(grid);
+	}
+	
+	@Test
+	public void generateCohortDefinition_shouldFailIfNoLocationMatchesTheSpecifiedUuid() {
+		final String countryLocationUuid = "country-location-uuid";
+		PatientGridColumn column = new PatientGridColumn("country", ColumnDatatype.DATAFILTER_COUNTRY);
+		column.addFilter(new PatientGridColumnFilter("equal country", countryLocationUuid));
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(column);
+		PowerMockito.mockStatic(Context.class);
+		LocationService mockLocationService = Mockito.mock(LocationService.class);
+		Mockito.when(Context.getLocationService()).thenReturn(mockLocationService);
+		expectedException.expect(APIException.class);
+		expectedException.expectMessage(equalTo("No location found with uuid: " + countryLocationUuid));
+		
+		PatientGridFilterUtils.generateCohortDefinition(grid);
+	}
+	
 }

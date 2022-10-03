@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * the cache is saved to a file where the entry key is the filename and the entry value are the file
  * contents.
  */
-public final class DiskCache {
+public class DiskCache {
 	
 	private static final Logger log = LoggerFactory.getLogger(DiskCache.class);
 	
@@ -61,7 +61,7 @@ public final class DiskCache {
 		return cacheDirectory;
 	}
 	
-	public boolean hasFile(String filename) {
+	private boolean hasFile(String filename) {
 		File file = new File(getCacheDirectory(), filename);
 		return file.exists() && file.isFile();
 	}

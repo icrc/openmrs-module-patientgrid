@@ -1,6 +1,8 @@
 package org.openmrs.module.patientgrid.api;
 
 import static org.openmrs.module.patientgrid.PatientGridConstants.CACHE_CONDITION_EXP;
+import static org.openmrs.module.patientgrid.PatientGridConstants.CACHE_EVICT_CONDITION_EXP;
+import static org.openmrs.module.patientgrid.PatientGridConstants.CACHE_EVICT_KEY_EXP;
 import static org.openmrs.module.patientgrid.PatientGridConstants.CACHE_KEY_EXP;
 import static org.openmrs.module.patientgrid.PatientGridConstants.CACHE_MANAGER_NAME;
 import static org.openmrs.module.patientgrid.PatientGridConstants.CACHE_NAME_GRID_REPORTS;
@@ -60,7 +62,7 @@ public interface PatientGridService extends OpenmrsService {
 	 * @return the saved patient grid
 	 */
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
-	@CacheEvict(key = CACHE_KEY_EXP)
+	@CacheEvict(key = CACHE_EVICT_KEY_EXP, condition = CACHE_EVICT_CONDITION_EXP, beforeInvocation = true)
 	PatientGrid savePatientGrid(PatientGrid patientGrid);
 	
 	/**

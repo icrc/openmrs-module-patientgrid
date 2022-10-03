@@ -13,6 +13,7 @@ import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.api.EncounterService;
 import org.openmrs.module.patientgrid.api.PatientGridService;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,7 +39,9 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		Cohort cohort = new Cohort();
 		final Integer patientId = 2;
 		cohort.addMember(patientId);
-		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), cohort, true);
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(cohort);
+		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), context, true);
 		assertEquals(1, idsAndEncs.size());
 		assertEquals(2004, ((Encounter) idsAndEncs.get(patientId)).getEncounterId().intValue());
 	}
@@ -48,7 +51,9 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		Cohort cohort = new Cohort();
 		final Integer patientId = 2;
 		cohort.addMember(patientId);
-		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), cohort, false);
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(cohort);
+		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), context, false);
 		assertEquals(1, idsAndEncs.size());
 		List<Encounter> encounters = (List) idsAndEncs.get(patientId);
 		assertEquals(3, encounters.size());
@@ -62,7 +67,9 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		Cohort cohort = new Cohort();
 		final Integer patientId = 8;
 		cohort.addMember(patientId);
-		assertTrue(PatientGridUtils.getEncounters(new EncounterType(102), cohort, true).isEmpty());
+		EvaluationContext context = new EvaluationContext();
+		context.setBaseCohort(cohort);
+		assertTrue(PatientGridUtils.getEncounters(new EncounterType(102), context, true).isEmpty());
 	}
 	
 }

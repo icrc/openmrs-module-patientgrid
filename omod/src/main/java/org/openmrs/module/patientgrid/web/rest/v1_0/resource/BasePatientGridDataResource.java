@@ -57,7 +57,7 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 	public PageableResult doGetAll(PatientGrid parent, RequestContext context) throws ResponseException {
 		SimpleDataSet dataset = evaluate(parent, context);
 		List<Map<String, Object>> report = new ArrayList(dataset.getRows().size());
-		dataset.getRows().parallelStream().forEach(row -> {
+		dataset.getRows().stream().forEach(row -> {
 			report.add(row.getColumnValuesByKey());
 		});
 		

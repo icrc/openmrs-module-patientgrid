@@ -180,7 +180,12 @@ public class PatientGridFilterUtils {
 		def.setCountry(matchOnCountry);
 		def.setLocations(new ArrayList(column.getFilters().size()));
 		for (PatientGridColumnFilter filter : column.getFilters()) {
-			def.getLocations().add(convert(filter.getOperand(), Location.class));
+			Location location = convert(filter.getOperand(), Location.class);
+			if (location == null) {
+				throw new APIException("No location found with uuid: " + filter.getOperand());
+			}
+			
+			def.getLocations().add(location);
 		}
 		
 		return def;
@@ -224,6 +229,9 @@ public class PatientGridFilterUtils {
 			Object value = filter.getOperand();
 			if (!String.class.isAssignableFrom(valueType)) {
 				value = convert(filter.getOperand(), valueType);
+				if (Concept.class.equals(valueType) && value == null) {
+					throw new APIException("No concept found with uuid: " + filter.getOperand());
+				}
 			}
 			
 			obsCohortDef.getValues().add(value);

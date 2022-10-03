@@ -1,5 +1,6 @@
 package org.openmrs.module.patientgrid.web.rest.v1_0.resource;
 
+import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.PARAM_REFRESH;
 import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.SUPPORTED_VERSIONS;
 
 import org.openmrs.api.context.Context;
@@ -20,7 +21,11 @@ public class PatientGridReportResource extends BasePatientGridDataResource<Patie
 	 */
 	@Override
 	public SimpleDataSet evaluate(PatientGrid parent, RequestContext context) throws ResponseException {
-		return Context.getService(PatientGridService.class).evaluate(parent);
+		if (Boolean.valueOf(context.getParameter(PARAM_REFRESH))) {
+			return Context.getService(PatientGridService.class).evaluateIgnoreCache(parent);
+		} else {
+			return Context.getService(PatientGridService.class).evaluate(parent);
+		}
 	}
 	
 }
