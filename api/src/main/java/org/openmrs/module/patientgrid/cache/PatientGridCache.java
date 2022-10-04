@@ -1,4 +1,4 @@
-package org.openmrs.module.patientgrid;
+package org.openmrs.module.patientgrid.cache;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.serialization.SerializationException;
 import org.openmrs.serialization.SimpleXStreamSerializer;

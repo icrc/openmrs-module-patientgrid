@@ -1,4 +1,4 @@
-package org.openmrs.module.patientgrid;
+package org.openmrs.module.patientgrid.cache;
 
 import static org.openmrs.module.patientgrid.PatientGridConstants.CACHE_NAME_GRID_REPORTS;
 

@@ -1,9 +1,11 @@
-package org.openmrs.module.patientgrid;
+package org.openmrs.module.patientgrid.converter;
 
 import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.module.patientgrid.PatientGridConstants;
+import org.openmrs.module.patientgrid.converter.PatientGridAgeConverter;
 import org.openmrs.module.reporting.common.Age;
 
 public class PatientGridAgeConverterTest {

@@ -1,4 +1,4 @@
-package org.openmrs.module.patientgrid;
+package org.openmrs.module.patientgrid.converter;
 
 import java.util.HashMap;
 import java.util.Map;

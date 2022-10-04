@@ -1,6 +1,7 @@
-package org.openmrs.module.patientgrid;
+package org.openmrs.module.patientgrid.evaluator;
 
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.patientgrid.definition.PersonUuidDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonPropertyDataEvaluator;
 
 /**

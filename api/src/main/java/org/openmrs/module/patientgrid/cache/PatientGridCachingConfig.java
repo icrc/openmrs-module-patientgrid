@@ -1,5 +1,6 @@
-package org.openmrs.module.patientgrid;
+package org.openmrs.module.patientgrid.cache;
 
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

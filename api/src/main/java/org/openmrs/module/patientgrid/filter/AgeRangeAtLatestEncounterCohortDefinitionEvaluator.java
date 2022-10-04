@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.patientgrid.AgeAtLatestEncounterPatientDataDefinition;
+import org.openmrs.module.patientgrid.definition.AgeAtLatestEncounterPatientDataDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;

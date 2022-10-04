@@ -1,4 +1,4 @@
-package org.openmrs.module.patientgrid;
+package org.openmrs.module.patientgrid.definition;
 
 import org.openmrs.Location;
 import org.openmrs.module.reporting.data.BaseDataDefinition;

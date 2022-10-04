@@ -1,4 +1,4 @@
-package org.openmrs.module.patientgrid;
+package org.openmrs.module.patientgrid.cache;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.openmrs.api.SerializationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.cache.DiskCache;
+import org.openmrs.module.patientgrid.cache.PatientGridCache;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.serialization.SimpleXStreamSerializer;
 import org.powermock.api.mockito.PowerMockito;

@@ -1,4 +1,4 @@
-package org.openmrs.module.patientgrid;
+package org.openmrs.module.patientgrid.cache;
 
 import static org.openmrs.module.patientgrid.PatientGridConstants.DEFAULT_DISK_CACHE_DIR_NAME;
 import static org.openmrs.module.patientgrid.PatientGridConstants.GP_DISK_CACHE_DIR;

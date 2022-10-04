@@ -1,4 +1,4 @@
-package org.openmrs.module.patientgrid;
+package org.openmrs.module.patientgrid.evaluator;
 
 import static org.openmrs.module.patientgrid.PatientGridConstants.KEY_AGES_AT_ENCS;
 import static org.openmrs.module.patientgrid.PatientGridConstants.KEY_MOST_RECENT_ENCS;
@@ -13,6 +13,8 @@ import org.openmrs.EncounterType;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.definition.AgeAtLatestEncounterPatientDataDefinition;
+import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.reporting.data.encounter.definition.AgeAtEncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.service.EncounterDataService;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;

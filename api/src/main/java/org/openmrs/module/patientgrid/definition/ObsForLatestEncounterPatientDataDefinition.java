@@ -1,19 +1,41 @@
-package org.openmrs.module.patientgrid;
+package org.openmrs.module.patientgrid.definition;
 
+import org.openmrs.Concept;
 import org.openmrs.EncounterType;
-import org.openmrs.module.reporting.common.Age;
+import org.openmrs.Obs;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
-public class AgeAtLatestEncounterPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
+public class ObsForLatestEncounterPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
+	
+	@ConfigurationProperty
+	private Concept concept;
 	
 	@ConfigurationProperty
 	private EncounterType encounterType;
 	
 	@Override
 	public Class<?> getDataType() {
-		return Age.class;
+		return Obs.class;
+	}
+	
+	/**
+	 * Gets the concept
+	 *
+	 * @return the concept
+	 */
+	public Concept getConcept() {
+		return concept;
+	}
+	
+	/**
+	 * Sets the concept
+	 *
+	 * @param concept the concept to set
+	 */
+	public void setConcept(Concept concept) {
+		this.concept = concept;
 	}
 	
 	/**

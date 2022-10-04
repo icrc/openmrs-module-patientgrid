@@ -1,4 +1,4 @@
-package org.openmrs.module.patientgrid;
+package org.openmrs.module.patientgrid.evaluator;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.EncounterType;
 import org.openmrs.api.EncounterService;
+import org.openmrs.module.patientgrid.definition.AgeAtLatestEncounterPatientDataDefinition;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;

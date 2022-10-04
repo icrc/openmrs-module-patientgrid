@@ -1,4 +1,4 @@
-package org.openmrs.module.patientgrid;
+package org.openmrs.module.patientgrid.converter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.converter.PatientGridObsConverter;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest {
