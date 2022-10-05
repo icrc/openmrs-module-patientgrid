@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.EncounterType;
-import org.openmrs.api.EncounterService;
 import org.openmrs.module.patientgrid.definition.AgeAtLatestEncounterPatientDataDefinition;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
@@ -21,9 +20,6 @@ public class AgeAtLatestEncounterPatientDataEvaluatorTest extends BaseModuleCont
 	
 	@Autowired
 	private PatientDataService patientDataService;
-	
-	@Autowired
-	private EncounterService encounterService;
 	
 	@Before
 	public void setup() {
