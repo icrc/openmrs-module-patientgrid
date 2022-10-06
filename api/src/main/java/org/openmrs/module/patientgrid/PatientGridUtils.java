@@ -23,9 +23,11 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeConverter;
 import org.openmrs.module.patientgrid.definition.AgeAtLatestEncounterPatientDataDefinition;
+import org.openmrs.module.patientgrid.definition.DateForLatestEncounterDataDefinition;
 import org.openmrs.module.patientgrid.definition.LocationPatientDataDefinition;
 import org.openmrs.module.patientgrid.definition.ObsForLatestEncounterPatientDataDefinition;
 import org.openmrs.module.patientgrid.definition.PersonUuidDataDefinition;
+import org.openmrs.module.patientgrid.filter.EncounterDatePatientGridColumn;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
@@ -83,17 +85,23 @@ public class PatientGridUtils {
 				case GENDER:
 					dataSetDef.addColumn(columnDef.getName(), GENDER_DATA_DEF, (String) null);
 					break;
+				case ENC_DATE:
+					EncounterDatePatientGridColumn dateColumn = (EncounterDatePatientGridColumn) columnDef;
+					DateForLatestEncounterDataDefinition dateDef = new DateForLatestEncounterDataDefinition();
+					dateDef.setEncounterType(dateColumn.getEncounterType());
+					dataSetDef.addColumn(columnDef.getName(), dateDef, (String) null);
+					break;
 				case ENC_AGE:
 					AgeAtEncounterPatientGridColumn ageColumn = (AgeAtEncounterPatientGridColumn) columnDef;
-					AgeAtLatestEncounterPatientDataDefinition def = new AgeAtLatestEncounterPatientDataDefinition();
-					def.setEncounterType(ageColumn.getEncounterType());
+					AgeAtLatestEncounterPatientDataDefinition ageDef = new AgeAtLatestEncounterPatientDataDefinition();
+					ageDef.setEncounterType(ageColumn.getEncounterType());
 					if (ageColumn.getConvertToAgeRange()) {
 						//TODO Define at class level so we construct once
 						AgeRangeConverter converter = new AgeRangeConverter();
 						getAgeRanges().forEach(r -> converter.addAgeRange(r));
-						dataSetDef.addColumn(columnDef.getName(), def, (String) null, converter);
+						dataSetDef.addColumn(columnDef.getName(), ageDef, (String) null, converter);
 					} else {
-						dataSetDef.addColumn(columnDef.getName(), def, (String) null, AGE_CONVERTER);
+						dataSetDef.addColumn(columnDef.getName(), ageDef, (String) null, AGE_CONVERTER);
 					}
 					
 					break;
