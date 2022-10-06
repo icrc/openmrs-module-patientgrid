@@ -1,10 +1,9 @@
-package org.openmrs.module.patientgrid.filter;
+package org.openmrs.module.patientgrid;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import org.openmrs.EncounterType;
-import org.openmrs.module.patientgrid.BaseEncounterTypePatientGridColumn;
 
 @Entity
 @Table(name = "patientgrid_enc_date_patient_grid_column")

@@ -27,7 +27,6 @@ import org.openmrs.module.patientgrid.definition.DateForLatestEncounterDataDefin
 import org.openmrs.module.patientgrid.definition.LocationPatientDataDefinition;
 import org.openmrs.module.patientgrid.definition.ObsForLatestEncounterPatientDataDefinition;
 import org.openmrs.module.patientgrid.definition.PersonUuidDataDefinition;
-import org.openmrs.module.patientgrid.filter.EncounterDatePatientGridColumn;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.converter.AgeRangeConverter;

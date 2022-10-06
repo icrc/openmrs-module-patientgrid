@@ -1,4 +1,4 @@
-package org.openmrs.module.patientgrid.filter;
+package org.openmrs.module.patientgrid.filter.evaluator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +14,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.patientgrid.PatientGridConstants;
+import org.openmrs.module.patientgrid.filter.definition.ObsForLatestEncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;

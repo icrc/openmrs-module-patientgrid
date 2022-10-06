@@ -1,4 +1,4 @@
-package org.openmrs.module.patientgrid.filter;
+package org.openmrs.module.patientgrid.filter.definition;
 
 import java.util.List;
 
