@@ -28,7 +28,7 @@ import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeConverter;
 import org.openmrs.module.patientgrid.converter.PatientGridObsConverter;
 import org.openmrs.module.patientgrid.definition.AgeAtLatestEncounterPatientDataDefinition;
-import org.openmrs.module.patientgrid.definition.DateForLatestEncounterDataDefinition;
+import org.openmrs.module.patientgrid.definition.DateForLatestEncounterPatientDataDefinition;
 import org.openmrs.module.patientgrid.definition.LocationPatientDataDefinition;
 import org.openmrs.module.patientgrid.definition.ObsForLatestEncounterPatientDataDefinition;
 import org.openmrs.module.reporting.common.Age.Unit;
@@ -114,7 +114,7 @@ public class PatientGridUtilsTest {
 		
 		assertEquals(PreferredNameDataDefinition.class, getDefinition(name, datasetDef).getClass());
 		assertEquals(GenderDataDefinition.class, getDefinition(gender, datasetDef).getClass());
-		DateForLatestEncounterDataDefinition dateDef = (DateForLatestEncounterDataDefinition) datasetDef
+		DateForLatestEncounterPatientDataDefinition dateDef = (DateForLatestEncounterPatientDataDefinition) datasetDef
 		        .getColumnDefinition(encDate).getDataDefinition().getParameterizable();
 		assertEquals(initial, dateDef.getEncounterType());
 		MappedData ageDef = datasetDef.getColumnDefinition(ageAtEnc).getDataDefinition();

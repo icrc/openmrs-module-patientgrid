@@ -9,14 +9,14 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.EncounterType;
 import org.openmrs.api.EncounterService;
-import org.openmrs.module.patientgrid.definition.DateForLatestEncounterDataDefinition;
+import org.openmrs.module.patientgrid.definition.DateForLatestEncounterPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class DateForLatestEncounterDataEvaluatorTest extends BaseModuleContextSensitiveTest {
+public class DateForLatestEncounterPatientDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	@Autowired
 	private PatientDataService patientDataService;
@@ -39,7 +39,7 @@ public class DateForLatestEncounterDataEvaluatorTest extends BaseModuleContextSe
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6, patientId7, patientId999)));
 		
-		DateForLatestEncounterDataDefinition def = new DateForLatestEncounterDataDefinition();
+		DateForLatestEncounterPatientDataDefinition def = new DateForLatestEncounterPatientDataDefinition();
 		def.setEncounterType(new EncounterType(101));
 		EvaluatedPatientData data = patientDataService.evaluate(def, context);
 		

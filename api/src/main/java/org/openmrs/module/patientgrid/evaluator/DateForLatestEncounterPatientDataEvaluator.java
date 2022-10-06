@@ -12,7 +12,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGridUtils;
-import org.openmrs.module.patientgrid.definition.DateForLatestEncounterDataDefinition;
+import org.openmrs.module.patientgrid.definition.DateForLatestEncounterPatientDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeDataDefinition;
 import org.openmrs.module.reporting.data.encounter.service.EncounterDataService;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
@@ -25,16 +25,16 @@ import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Handler(supports = DateForLatestEncounterDataDefinition.class, order = 50)
-public class DateForLatestEncounterDataEvaluator implements PatientDataEvaluator {
+@Handler(supports = DateForLatestEncounterPatientDataDefinition.class, order = 50)
+public class DateForLatestEncounterPatientDataEvaluator implements PatientDataEvaluator {
 	
-	private static final Logger log = LoggerFactory.getLogger(DateForLatestEncounterDataEvaluator.class);
+	private static final Logger log = LoggerFactory.getLogger(DateForLatestEncounterPatientDataEvaluator.class);
 	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
 	        throws EvaluationException {
 		
-		DateForLatestEncounterDataDefinition def = (DateForLatestEncounterDataDefinition) definition;
+		DateForLatestEncounterPatientDataDefinition def = (DateForLatestEncounterPatientDataDefinition) definition;
 		Map<EncounterType, Map> typeAndEncData = (Map) context.getFromCache(KEY_MOST_RECENT_ENCS);
 		if (typeAndEncData == null) {
 			typeAndEncData = new HashMap();
