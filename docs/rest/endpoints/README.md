@@ -1,12 +1,15 @@
 # REST API Endpoints
 
 ## Patient Grid
+
 ### Fetch All Patient Grids
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid` (**Replace** SERVER_URL)
 
 **HTTP Method** `GET`
 
-**Example Response** See [Patient Grid Resource](../resources/README.md#patient-grid) (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+**Example Response** See [Patient Grid Resource](../resources/README.md#patient-grid) (
+Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
 
 ```
 {
@@ -36,6 +39,7 @@
 ```
 
 ### Fetch A Single Grid
+
 To Include all the column and filter metadata for the grid, note that we fetch the full representation otherwise you can
 exclude it the request parameter.
 
@@ -43,7 +47,9 @@ exclude it the request parameter.
 
 **HTTP Method** `GET`
 
-**Example Response** See [Patient Grid Resource](../resources/README.md#patient-grid) (Full [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+**Example Response** See [Patient Grid Resource](../resources/README.md#patient-grid) (
+Full [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+
 ```
 {
   "uuid": "2d6c993e-c2cc-11de-8d13-0010c6dffd0a",
@@ -179,11 +185,13 @@ exclude it the request parameter.
 ```
 
 ### Create New Patient Grid
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid`
 
 **HTTP Method** `POST`
 
 **Example Payload**
+
 ```
 {
   "name": "test",
@@ -217,7 +225,9 @@ exclude it the request parameter.
 }
 ```
 
-**Example Response:** (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+**Example Response:** (
+Default [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+
 ```
 {
   "uuid": "7e6add6c-ca68-443a-92fa-9395845bc383",
@@ -241,6 +251,7 @@ exclude it the request parameter.
 ```
 
 ### Delete An Existing Grid
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}`
 
 **HTTP Method** `DELETE`
@@ -249,12 +260,16 @@ exclude it the request parameter.
 `reason` Reason for deleting the grid
 
 ## Grid Column
+
 ### Fetch A Single Column
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/column/{COLUMN_UUID}`
 
 **HTTP Method** `GET`
 
-**Example Response** See [Grid Column Resource](../resources/README.md#grid-column), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+**Example Response** See [Grid Column Resource](../resources/README.md#grid-column), (
+Default [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+
 ```
 {
   "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0b",
@@ -308,11 +323,14 @@ exclude it the request parameter.
 ```
 
 ### Fetch All Columns For A Grid
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/column`
 
 **HTTP Method** `GET`
 
-**Example Response** See [Grid Column Resource](../resources/README.md#grid-column), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+**Example Response** See [Grid Column Resource](../resources/README.md#grid-column), (
+Default [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+
 ```
 {
   "results": [
@@ -440,14 +458,17 @@ exclude it the request parameter.
 ```
 
 ### Add New Column To A Grid
+
 Currently, not supported, there is a ticket to to add support for this.
 
 ### Modify An Existing Column
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/column/{COLUMN_UUID}`
 
 **HTTP Method** `POST`
 
 **Example Payload**
+
 ```
  {
   "name": "New Name"
@@ -455,6 +476,7 @@ Currently, not supported, there is a ticket to to add support for this.
 ```
 
 **Example Response**
+
 ```
 {
   "uuid": "1e6c993e-c2cc-11de-8d13-0010c6dffd0b",
@@ -481,17 +503,22 @@ Currently, not supported, there is a ticket to to add support for this.
 ```
 
 ### Remove Column From Grid
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/column/{COLUMN_UUID}`
 
 **HTTP Method** `DELETE`
 
 ## Grid Filter
+
 ### Fetch A Single Filter
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter/{FILTER_UUID}`
 
 **HTTP Method** `GET`
 
-**Example Response** See [Grid Filter Resource](../resources/README.md#grid-filter), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+**Example Response** See [Grid Filter Resource](../resources/README.md#grid-filter), (
+Default [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+
 ```
 {
   "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0c",
@@ -524,11 +551,14 @@ Currently, not supported, there is a ticket to to add support for this.
 ```
 
 ### Fetch All Filters For A Grid
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter`
 
 **HTTP Method** `GET`
 
-**Example Response:** See [Grid Filter Resource](../resources/README.md#grid-filter), (Default [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+**Example Response:** See [Grid Filter Resource](../resources/README.md#grid-filter), (
+Default [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+
 ```
 {
   "results": [
@@ -593,11 +623,13 @@ Currently, not supported, there is a ticket to to add support for this.
 ```
 
 ### Add New Filter To A Grid Column
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter`
 
 **HTTP Method** `POST`
 
 **Example Payload**
+
 ```
 {
   "name": "male patients",
@@ -607,6 +639,7 @@ Currently, not supported, there is a ticket to to add support for this.
 ```
 
 **Example Response:**
+
 ```
 {
   "uuid": "84e778f2-9794-4d5c-93fd-c646357eab5a",
@@ -639,12 +672,14 @@ Currently, not supported, there is a ticket to to add support for this.
 ```
 
 ### Modify An Existing Filter
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter/{FILTER_UUID}`
 **(Replace GRID_UUID and FILTER_UUID)**
 
 **HTTP Method** `POST`
 
 **Example Payload** (ONLY include properties you need to modify or set)
+
 ```
 {
   "name": "New Name",
@@ -653,6 +688,7 @@ Currently, not supported, there is a ticket to to add support for this.
 ```
 
 **Example Response**
+
 ```
 {
   "uuid": "1f6c993e-c2cc-11de-8d13-0010c6dffd0c",
@@ -685,12 +721,15 @@ Currently, not supported, there is a ticket to to add support for this.
 ```
 
 ### Remove Filter From Grid
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/filter/{FILTER_UUID}`
 
 **HTTP Method** `DELETE`
 
 ## Age Ranges
+
 ### Fetch All Age Ranges
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/agerange`
 
 **HTTP Method** `GET`
@@ -721,7 +760,9 @@ Currently, not supported, there is a ticket to to add support for this.
 ```
 
 ## Grid Report
+
 ### Run Grid Report
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/report`
 
 **HTTP Method** `GET`
@@ -730,9 +771,12 @@ Currently, not supported, there is a ticket to to add support for this.
 `refresh` If set to true, any caches from previous runs are discarded, i.e. the patient grid is re-evaluated to produce
 fresh data
 
-**Example Response** See [Grid Report Resource](../resources/README.md#grid-report), (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+**Example Response** See [Grid Report Resource](../resources/README.md#grid-report), (
+Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
 
-Please pay extra attention to obs column values, for more see the note on obs value properties under [Grid Report Resource](../resources/README.md#grid-report)
+Please pay extra attention to obs column values, for more see the note on obs value properties
+under [Grid Report Resource](../resources/README.md#grid-report)
+
 ```
 {
   "results": [
@@ -786,7 +830,10 @@ Please pay extra attention to obs column values, for more see the note on obs va
               "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
             },
             "uuid": "94fb7f47-b80a-4056-9285-bd798be13c63",
-            "value": "SINGLE",
+            "value": {
+              "uuid": "32d3611a-6699-4d52-823f-b4b788bac3e3", 
+              "display": "SINGLE"
+            },
             "concept": "89ca642a-dab6-4f20-b712-e12ca4fc6d36"
           }
         },
@@ -818,7 +865,10 @@ Please pay extra attention to obs column values, for more see the note on obs va
               "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
             },
             "uuid": "04fb7f47-b80a-4056-9285-bd798be13c63",
-            "value": "MARRIED",
+            "value": {
+              "uuid": "92afda7c-78c9-47bd-a841-0de0817027d4", 
+              "display": "MARRIED"
+            },
             "concept": "89ca642a-dab6-4f20-b712-e12ca4fc6d36"
           }
         },
@@ -860,7 +910,10 @@ Please pay extra attention to obs column values, for more see the note on obs va
               "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
             },
             "uuid": "84fb7f47-b80a-4056-9285-bd798be13c63",
-            "value": "SINGLE",
+            "value": {
+              "uuid": "32d3611a-6699-4d52-823f-b4b788bac3e3", 
+              "display": "SINGLE"
+            },
             "concept": "89ca642a-dab6-4f20-b712-e12ca4fc6d36"
           }
         }
@@ -872,14 +925,17 @@ Please pay extra attention to obs column values, for more see the note on obs va
 ```
 
 ## Encounter History
+
 ### Fetch Encounters By Patient And Type
-**Endpoint** `{SERVER_URL}/openmrs/ws/rest/v1/encounter?s=patientgridGetEncounterHistory&patient={PATIENT_UUID}&encounterType={ENCOUNTER_TYPE_UUID}&v=custom:obs:(uuid,concept:ref,value,formFieldNamespace,formFieldPath,encounter:(uuid,encounterType:ref)))`
+
+**
+Endpoint** `{SERVER_URL}/openmrs/ws/rest/v1/encounter?s=patientgridGetEncounterHistory&patient={PATIENT_UUID}&encounterType={ENCOUNTER_TYPE_UUID}&v=custom:obs:(uuid,concept:ref,value,formFieldNamespace,formFieldPath,encounter:(uuid,encounterType:ref)))`
 
 **HTTP Method** `GET`
 
 **Request Parameters**
-`v` Standard OpenMRS REST API request parameter to specify the representation to return, note that we are requesting for 
-a trimmed down response payload to just include the encounter observations and requesting specific fields for each 
+`v` Standard OpenMRS REST API request parameter to specify the representation to return, note that we are requesting for
+a trimmed down response payload to just include the encounter observations and requesting specific fields for each
 observation, if you need the full encounter and observations payloads, you can set the value to `full`
 
 <i style='color:red'>*</i>`s` MUST always be set to `patientgridGetEncounterHistory`
@@ -888,7 +944,9 @@ observation, if you need the full encounter and observations payloads, you can s
 
 <i style='color:red'>*</i>`encounterType` The UUID of the encounter type to match
 
-**Example Response** (Custom [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+**Example Response** (
+Custom [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+
 ```
 {
   "results": [
@@ -961,14 +1019,16 @@ observation, if you need the full encounter and observations payloads, you can s
 ## Grid Download
 
 ### Run Grid Download
+
 **Endpoint** `{SERVER_URL}/ws/rest/v1/patientgrid/patientgrid/{GRID_UUID}/download`
 
 **HTTP Method** `GET`
 
-**Example Response** See [Grid Download Resource](../resources/README.md#grid-download), (Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
+**Example Response** See [Grid Download Resource](../resources/README.md#grid-download), (
+Ref [Representation](https://wiki.openmrs.org/x/P4IaAQ#RESTWebServicesAPIForClients-Representations))
 
-Please pay extra attention to entries in the report that have key that is a UUID, and also the nested obs list values, for more 
-see the note on obs value properties under [Grid Download Resource](../resources/README.md#grid-download)
+Please pay extra attention to entries in the report that have key that is a UUID, and also the nested obs list values,
+for more see the note on obs value properties under [Grid Download Resource](../resources/README.md#grid-download)
 
 ```
 {
@@ -1024,7 +1084,10 @@ see the note on obs value properties under [Grid Download Resource](../resources
                   "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
                 },
                 "uuid": "94fb7f47-b80a-4056-9285-bd798be13c63",
-                "value": "SINGLE",
+                "value": {
+                    "uuid": "32d3611a-6699-4d52-823f-b4b788bac3e3", 
+                    "display": "SINGLE"
+                },
                 "concept": "89ca642a-dab6-4f20-b712-e12ca4fc6d36",
                 "formFieldNamespace": null
               }
@@ -1064,7 +1127,10 @@ see the note on obs value properties under [Grid Download Resource](../resources
                   "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
                 },
                 "uuid": "04fb7f47-b80a-4056-9285-bd798be13c63",
-                "value": "MARRIED",
+                "value": {
+                  "uuid": "92afda7c-78c9-47bd-a841-0de0817027d4", 
+                  "display": "MARRIED"
+                },
                 "concept": "89ca642a-dab6-4f20-b712-e12ca4fc6d36",
                 "formFieldNamespace": null
               }
@@ -1151,7 +1217,10 @@ see the note on obs value properties under [Grid Download Resource](../resources
                   "encounterType": "19218f76-6c39-45f4-8efa-4c5c6c199f50"
                 },
                 "uuid": "84fb7f47-b80a-4056-9285-bd798be13c63",
-                "value": "SINGLE",
+                "value": {
+                    "uuid": "32d3611a-6699-4d52-823f-b4b788bac3e3", 
+                    "display": "SINGLE"
+                },
                 "concept": "89ca642a-dab6-4f20-b712-e12ca4fc6d36",
                 "formFieldNamespace": null
               }

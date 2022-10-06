@@ -20,7 +20,18 @@ public class PatientGridObsConverter implements DataConverter {
 			Map obsData = new HashMap(5);
 			obsData.put("uuid", obs.getUuid());
 			obsData.put("concept", obs.getConcept().getUuid());
-			obsData.put("value", DataUtil.convertData(obs, OBS_VALUE_CONVERTER));
+			Object value;
+			if (((Obs) original).getConcept().getDatatype().isCoded()) {
+				Map answerConcept = new HashMap(2);
+				answerConcept.put("uuid", obs.getValueCoded().getUuid());
+				answerConcept.put("display", DataUtil.convertData(obs, OBS_VALUE_CONVERTER));
+				value = answerConcept;
+			} else {
+				value = DataUtil.convertData(obs, OBS_VALUE_CONVERTER);
+			}
+			
+			obsData.put("value", value);
+
 			if (obs.getEncounter() != null) {
 				Encounter encounter = obs.getEncounter();
 				Map encData = new HashMap(3);

@@ -10,8 +10,10 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.api.EncounterService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
@@ -67,21 +69,32 @@ public class AllEncountersPatientDataEvaluatorTest extends BaseModuleContextSens
 		columnUuidAndObsMap = encounters.get(2);
 		assertEquals(2, columnUuidAndObsMap.size());
 		assertEquals(Double.valueOf(84), columnUuidAndObsMap.get(weightColumnUuid).get("value"));
-		assertEquals("SINGLE", columnUuidAndObsMap.get(civilStatusColumn).get("value"));
+		Concept civilStatusConcept = Context.getConceptService().getConcept(5);
+		assertEquals(civilStatusConcept.getUuid(),
+		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("uuid"));
+		assertEquals(civilStatusConcept.getDisplayString(),
+		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("display"));
 		
 		encounters = (List) data.getData().get(patientId6);
 		assertEquals(1, encounters.size());
 		columnUuidAndObsMap = encounters.get(0);
 		assertEquals(2, columnUuidAndObsMap.size());
 		assertEquals(Double.valueOf(72), columnUuidAndObsMap.get(weightColumnUuid).get("value"));
-		assertEquals("SINGLE", columnUuidAndObsMap.get(civilStatusColumn).get("value"));
+		assertEquals(civilStatusConcept.getUuid(),
+		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("uuid"));
+		assertEquals(civilStatusConcept.getDisplayString(),
+		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("display"));
 		
 		encounters = (List) data.getData().get(patientId7);
 		assertEquals(1, encounters.size());
 		columnUuidAndObsMap = encounters.get(0);
 		assertEquals(2, columnUuidAndObsMap.size());
 		assertEquals(Double.valueOf(88), columnUuidAndObsMap.get(weightColumnUuid).get("value"));
-		assertEquals("MARRIED", columnUuidAndObsMap.get(civilStatusColumn).get("value"));
+		civilStatusConcept = Context.getConceptService().getConcept(6);
+		assertEquals(civilStatusConcept.getUuid(),
+		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("uuid"));
+		assertEquals(civilStatusConcept.getDisplayString(),
+		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("display"));
 		
 		encounters = (List) data.getData().get(patientId8);
 		assertEquals(1, encounters.size());

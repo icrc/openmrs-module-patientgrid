@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.patientgrid.converter.PatientGridObsConverter;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest {
@@ -39,7 +38,6 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 		obs.getEncounter().setForm(form);
 		Map convertedObs = (Map) converter.convert(obs);
 		assertEquals(obs.getUuid(), convertedObs.get("uuid"));
-		assertEquals(obs.getUuid(), convertedObs.get("uuid"));
 		assertEquals(obs.getConcept().getUuid(), convertedObs.get("concept"));
 		assertEquals(Double.valueOf(82), convertedObs.get("value"));
 		Map encounterData = (Map) convertedObs.get("encounter");
@@ -56,7 +54,6 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 		obs.setEncounter(null);
 		Map convertedObs = (Map) converter.convert(obs);
 		assertEquals(obs.getUuid(), convertedObs.get("uuid"));
-		assertEquals(obs.getUuid(), convertedObs.get("uuid"));
 		assertEquals(obs.getConcept().getUuid(), convertedObs.get("concept"));
 		assertEquals(Double.valueOf(82), convertedObs.get("value"));
 		assertNull(convertedObs.get("encounter"));
@@ -67,13 +64,23 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 		Obs obs = Context.getObsService().getObs(1002);
 		Map convertedObs = (Map) converter.convert(obs);
 		assertEquals(obs.getUuid(), convertedObs.get("uuid"));
-		assertEquals(obs.getUuid(), convertedObs.get("uuid"));
 		assertEquals(obs.getConcept().getUuid(), convertedObs.get("concept"));
 		assertEquals(Double.valueOf(82), convertedObs.get("value"));
 		Map encounterData = (Map) convertedObs.get("encounter");
 		assertEquals(obs.getEncounter().getUuid(), encounterData.get("uuid"));
 		assertEquals(obs.getEncounter().getEncounterType().getUuid(), encounterData.get("encounterType"));
 		assertNull(encounterData.get("form"));
+	}
+	
+	@Test
+	public void shouldIncludeTheAnswerConceptUuidForAnObsWithACodedValue() {
+		Obs obs = Context.getObsService().getObs(1008);
+		Map convertedObs = (Map) converter.convert(obs);
+		assertEquals(obs.getUuid(), convertedObs.get("uuid"));
+		assertEquals(obs.getConcept().getUuid(), convertedObs.get("concept"));
+		Map codedValue = (Map) convertedObs.get("value");
+		assertEquals(obs.getValueCoded().getUuid(), codedValue.get("uuid"));
+		assertEquals(obs.getValueCoded().getDisplayString(), codedValue.get("display"));
 	}
 	
 }
