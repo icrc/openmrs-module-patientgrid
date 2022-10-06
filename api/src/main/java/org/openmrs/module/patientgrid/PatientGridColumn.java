@@ -81,6 +81,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public enum ColumnDatatype {
 		NAME,
 		GENDER,
+		ENC_DATE,
 		ENC_AGE,
 		OBS,
 		DATAFILTER_LOCATION,

@@ -249,4 +249,33 @@
                                  referencedColumnNames="user_id" />
     </changeSet>
 
+    <changeSet id="${project.parent.artifactId}-202210051515" author="wluyima">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="patientgrid_enc_date_patient_grid_column" />
+            </not>
+        </preConditions>
+        <comment>Add patientgrid_enc_date_patient_grid_column table</comment>
+        <createTable tableName="patientgrid_enc_date_patient_grid_column">
+            <column name="patient_grid_column_id" type="int" autoIncrement="true" >
+                <constraints primaryKey="true" nullable="false" unique="true" />
+            </column>
+            <column name="encounter_type_id" type="int">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="enc_date_column_parent_column_fk"
+                                 baseTableName="patientgrid_enc_date_patient_grid_column"
+                                 baseColumnNames="patient_grid_column_id"
+                                 referencedTableName="patientgrid_patient_grid_column"
+                                 referencedColumnNames="patient_grid_column_id" />
+
+        <addForeignKeyConstraint constraintName="enc_date_column_encounter_type_fk"
+                                 baseTableName="patientgrid_enc_date_patient_grid_column"
+                                 baseColumnNames="encounter_type_id"
+                                 referencedTableName="encounter_type"
+                                 referencedColumnNames="encounter_type_id" />
+    </changeSet>
+
 </databaseChangeLog>
