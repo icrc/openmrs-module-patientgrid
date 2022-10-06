@@ -30,7 +30,7 @@ instantiate for a resource that has a class hierarchy, the supported values are 
 observation value e.g. form field value that hold an obs value, `agecolumn` for a column that holds an age or age range 
 value and finally `column` for all other columns.
 
-<i style='color:red'>*</i>`datatype` A value from the following possible values NAME, GENDER, ENC_AGE, OBS, 
+<i style='color:red'>*</i>`datatype` A value from the following possible values NAME, GENDER, ENC_DATE, ENC_AGE, OBS, 
 DATAFILTER_LOCATION, DATAFILTER_COUNTRY
 
 `filters`A list or an array of filter metadata where each element is metadata for a single filter on the column, see 

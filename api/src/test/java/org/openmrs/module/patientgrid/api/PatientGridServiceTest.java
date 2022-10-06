@@ -23,6 +23,7 @@ import org.mockito.Mockito;
 import org.openmrs.Cohort;
 import org.openmrs.Location;
 import org.openmrs.Patient;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -55,6 +56,10 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	@Autowired
 	@Qualifier("patientService")
 	private PatientService ps;
+	
+	@Autowired
+	@Qualifier("encounterService")
+	private EncounterService es;
 	
 	@Autowired
 	@Qualifier(CACHE_MANAGER_NAME)
@@ -252,6 +257,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		Location location = locationService.getLocation(4000);
 		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
+		assertEquals(es.getEncounter(2004).getEncounterDatetime(), dataSet.getColumnValue(patient.getId(), "encDate"));
 		
 		patient = ps.getPatient(6);
 		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
@@ -268,6 +274,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		location = locationService.getLocation(4001);
 		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
+		assertEquals(es.getEncounter(2006).getEncounterDatetime(), dataSet.getColumnValue(patient.getId(), "encDate"));
 		
 		patient = ps.getPatient(7);
 		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
@@ -282,6 +289,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals("MARRIED", obs.get("value"));
 		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
+		assertEquals(es.getEncounter(2007).getEncounterDatetime(), dataSet.getColumnValue(patient.getId(), "encDate"));
 	}
 	
 	@Test

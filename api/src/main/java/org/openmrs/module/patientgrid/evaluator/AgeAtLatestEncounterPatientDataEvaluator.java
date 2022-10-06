@@ -72,7 +72,7 @@ public class AgeAtLatestEncounterPatientDataEvaluator implements PatientDataEval
 			EncounterEvaluationContext encContext = new EncounterEvaluationContext(context, encIdSet);
 			encIdAndAge = Context.getService(EncounterDataService.class)
 			        .evaluate(new AgeAtEncounterDataDefinition(), encContext).getData();
-			typeAndEncData.put(def.getEncounterType(), encIdAndAge);
+			typeAndAgesData.put(def.getEncounterType(), encIdAndAge);
 		}
 		
 		EncounterService es = Context.getEncounterService();
