@@ -278,4 +278,34 @@
                                  referencedColumnNames="encounter_type_id" />
     </changeSet>
 
+    <changeSet id="${project.parent.artifactId}-202210061101" author="wluyima">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="is_shared" tableName="patientgrid_patient_grid" />
+            </not>
+        </preConditions>
+        <comment>Add is_shared column to patientgrid_patient_grid table</comment>
+
+        <addColumn tableName="patientgrid_patient_grid">
+            <column name="is_shared" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="${project.parent.artifactId}-202210061102" author="wluyima">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="is_hidden" tableName="patientgrid_patient_grid_column" />
+            </not>
+        </preConditions>
+        <comment>Add is_hidden column to patientgrid_patient_grid_column table</comment>
+
+        <addColumn tableName="patientgrid_patient_grid_column">
+            <column name="is_hidden" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

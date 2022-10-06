@@ -23,6 +23,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 
 @Resource(name = NAMESPACE + "/patientgrid", supportedClass = PatientGrid.class, supportedOpenmrsVersions = {
@@ -41,6 +42,7 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 		
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			description.addProperty("owner", Representation.REF);
+			description.addProperty("shared");
 			if (rep instanceof FullRepresentation) {
 				description.addRequiredProperty("columns", Representation.DEFAULT);
 				description.addProperty("auditInfo");
@@ -58,6 +60,7 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 		DelegatingResourceDescription description = super.getCreatableProperties();
 		description.addRequiredProperty("columns");
 		description.addProperty("owner");
+		description.addProperty("shared");
 		return description;
 	}
 	
@@ -108,6 +111,7 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model.property("owner", new RefProperty("#/definitions/UserGetRef"));
+			model.property("shared", new BooleanProperty());
 			if (rep instanceof FullRepresentation) {
 				model.property("columns",
 				    new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridColumnGet")));
@@ -127,6 +131,7 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 		model.property("columns", new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridColumnCreate")));
 		model.required("columns");
 		model.property("owner", new RefProperty("#/definitions/UserGetRef"));
+		model.property("shared", new BooleanProperty()._default(false));
 		return model;
 	}
 	

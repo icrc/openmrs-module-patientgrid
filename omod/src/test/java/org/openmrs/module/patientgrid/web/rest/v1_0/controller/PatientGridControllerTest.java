@@ -67,6 +67,7 @@ public class PatientGridControllerTest extends BasePatientGridRestControllerTest
 		ageColumn.add("name", "age");
 		ageColumn.add("datatype", ColumnDatatype.ENC_AGE);
 		ageColumn.add("encounterType", "19218f76-6c39-45f4-8efa-4c5c6c199f50");
+		ageColumn.add("hidden", true);
 		SimpleObject filter = new SimpleObject();
 		filter.add("name", "equal 12");
 		filter.add("operand", "12");
@@ -74,6 +75,7 @@ public class PatientGridControllerTest extends BasePatientGridRestControllerTest
 		SimpleObject grid = new SimpleObject();
 		grid.put("name", "test");
 		grid.put("description", "test description");
+		grid.put("shared", true);
 		grid.add("columns", Arrays.asList(nameColumn, weightColumn, ageColumn));
 		SimpleObject result = deserialize(handle(newPostRequest(getURI(), grid)));
 		assertEquals(++initialCount, getAllCount());

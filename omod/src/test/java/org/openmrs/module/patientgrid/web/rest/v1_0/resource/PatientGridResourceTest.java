@@ -33,6 +33,7 @@ public class PatientGridResourceTest extends BaseDelegatingResourceTest<PatientG
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
+		assertPropEquals("shared", false);
 		assertPropNotPresent("columns");
 		assertPropNotPresent("auditInfo");
 	}
@@ -40,6 +41,7 @@ public class PatientGridResourceTest extends BaseDelegatingResourceTest<PatientG
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
+		assertPropEquals("shared", false);
 		assertPropPresent("columns");
 		assertPropPresent("auditInfo");
 	}

@@ -15,6 +15,8 @@ column on the grid, see [Grid Column Resource](#grid-column) for properties
 
 `owner` The user the grid belongs to, a null value is interpreted as a system grid visible to everyone
 
+`shared` Specifies if a grid is shared or not, defaults to false
+
 **Note** This resource inherits all other standard metadata properties
 
 ## Grid Column
@@ -32,6 +34,8 @@ value and finally `column` for all other columns.
 
 <i style='color:red'>*</i>`datatype` A value from the following possible values NAME, GENDER, ENC_DATE, ENC_AGE, OBS, 
 DATAFILTER_LOCATION, DATAFILTER_COUNTRY
+
+`hidden` Specifies if a column is hidden or not, defaults to false
 
 `filters`A list or an array of filter metadata where each element is metadata for a single filter on the column, see 
 [Grid Filter Resource](#grid-filter) for properties
