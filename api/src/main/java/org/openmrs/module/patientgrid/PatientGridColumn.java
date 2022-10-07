@@ -21,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.openmrs.Auditable;
 import org.openmrs.BaseOpenmrsObject;
@@ -38,6 +39,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	@Column(name = "patient_grid_column_id")
 	private Integer patientGridColumnId;
 	
+	@NotNull
 	@Column(nullable = false)
 	private String name;
 	
@@ -48,9 +50,14 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	@JoinColumn(name = "patient_grid_id", nullable = false)
 	private PatientGrid patientGrid;
 	
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(name = "datatype", nullable = false, updatable = false, length = 50)
 	private ColumnDatatype datatype;
+	
+	@NotNull
+	@Column(name = "is_hidden", nullable = false)
+	private Boolean hidden = false;
 	
 	@Access(AccessType.FIELD)
 	@OneToMany(mappedBy = "patientGridColumn", orphanRemoval = true, cascade = CascadeType.ALL)
@@ -60,6 +67,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	@JoinColumn(name = "creator", nullable = false, updatable = false)
 	private User creator;
 	
+	@NotNull
 	@Column(name = "date_created", nullable = false, updatable = false)
 	private Date dateCreated;
 	
@@ -81,6 +89,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public enum ColumnDatatype {
 		NAME,
 		GENDER,
+		ENC_DATE,
 		ENC_AGE,
 		OBS,
 		DATAFILTER_LOCATION,
@@ -191,6 +200,24 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	 */
 	public void setDatatype(ColumnDatatype datatype) {
 		this.datatype = datatype;
+	}
+	
+	/**
+	 * Gets the hidden
+	 *
+	 * @return the hidden
+	 */
+	public Boolean getHidden() {
+		return hidden;
+	}
+	
+	/**
+	 * Sets the hidden
+	 *
+	 * @param hidden the hidden to set
+	 */
+	public void setHidden(Boolean hidden) {
+		this.hidden = hidden;
 	}
 	
 	/**

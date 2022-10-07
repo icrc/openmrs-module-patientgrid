@@ -25,6 +25,12 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
+import org.openmrs.module.patientgrid.converter.PatientGridAgeConverter;
+import org.openmrs.module.patientgrid.converter.PatientGridObsConverter;
+import org.openmrs.module.patientgrid.definition.AgeAtLatestEncounterPatientDataDefinition;
+import org.openmrs.module.patientgrid.definition.DateForLatestEncounterPatientDataDefinition;
+import org.openmrs.module.patientgrid.definition.LocationPatientDataDefinition;
+import org.openmrs.module.patientgrid.definition.ObsForLatestEncounterPatientDataDefinition;
 import org.openmrs.module.reporting.common.Age.Unit;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -82,6 +88,7 @@ public class PatientGridUtilsTest {
 	public void createPatientDataSetDefinition_shouldCreateAPatientDataSetDefinitionForTheGrid() {
 		final String gender = "gender";
 		final String name = "name";
+		final String encDate = "encDate";
 		final String ageAtEnc = "ageAtEnc";
 		final String ageCategory = "ageCategory";
 		final String admissionType = "admissionType";
@@ -93,6 +100,7 @@ public class PatientGridUtilsTest {
 		PatientGrid patientGrid = new PatientGrid();
 		patientGrid.addColumn(new PatientGridColumn(name, ColumnDatatype.NAME));
 		patientGrid.addColumn(new PatientGridColumn(gender, ColumnDatatype.GENDER));
+		patientGrid.addColumn(new EncounterDatePatientGridColumn(encDate, initial));
 		patientGrid.addColumn(new AgeAtEncounterPatientGridColumn(ageAtEnc, initial));
 		patientGrid.addColumn(new AgeAtEncounterPatientGridColumn(ageCategory, admission, true));
 		patientGrid.addColumn(new PatientGridColumn(structure, ColumnDatatype.DATAFILTER_LOCATION));
@@ -106,8 +114,12 @@ public class PatientGridUtilsTest {
 		
 		assertEquals(PreferredNameDataDefinition.class, getDefinition(name, datasetDef).getClass());
 		assertEquals(GenderDataDefinition.class, getDefinition(gender, datasetDef).getClass());
+		DateForLatestEncounterPatientDataDefinition dateDef = (DateForLatestEncounterPatientDataDefinition) datasetDef
+		        .getColumnDefinition(encDate).getDataDefinition().getParameterizable();
+		assertEquals(initial, dateDef.getEncounterType());
 		MappedData ageDef = datasetDef.getColumnDefinition(ageAtEnc).getDataDefinition();
 		assertEquals(AgeAtLatestEncounterPatientDataDefinition.class, ageDef.getParameterizable().getClass());
+		assertEquals(initial, ((AgeAtLatestEncounterPatientDataDefinition) ageDef.getParameterizable()).getEncounterType());
 		assertEquals(1, ageDef.getConverters().size());
 		assertEquals(PatientGridAgeConverter.class, ageDef.getConverters().get(0).getClass());
 		MappedData locationDef = datasetDef.getColumnDefinition(structure).getDataDefinition();
@@ -120,7 +132,8 @@ public class PatientGridUtilsTest {
 		PropertyConverter converter = (PropertyConverter) countryDef.getConverters().get(0);
 		assertEquals("country", converter.getPropertyName());
 		MappedData ageCategoryDef = datasetDef.getColumnDefinition(ageCategory).getDataDefinition();
-		assertEquals(AgeAtLatestEncounterPatientDataDefinition.class, ageCategoryDef.getParameterizable().getClass());
+		assertEquals(admission,
+		    ((AgeAtLatestEncounterPatientDataDefinition) ageCategoryDef.getParameterizable()).getEncounterType());
 		assertEquals(1, ageCategoryDef.getConverters().size());
 		List<AgeRange> ageRanges = ((AgeRangeConverter) ageCategoryDef.getConverters().get(0)).getAgeRanges();
 		assertEquals(2, ageRanges.size());
@@ -137,10 +150,13 @@ public class PatientGridUtilsTest {
 		assertNull(ageRange.getMaxAge());
 		assertNull(ageRange.getMaxAgeUnit());
 		assertEquals("18+", ageRange.getLabel());
-		ObsForLatestEncounterPatientDataDefinition obsDef = (ObsForLatestEncounterPatientDataDefinition) ((Mapped) datasetDef
-		        .getColumnDefinition(admissionType).getDataDefinition()).getParameterizable();
+		MappedData mappedObsDef = datasetDef.getColumnDefinition(admissionType).getDataDefinition();
+		ObsForLatestEncounterPatientDataDefinition obsDef = (ObsForLatestEncounterPatientDataDefinition) mappedObsDef
+		        .getParameterizable();
 		assertEquals(admissionConcept, obsDef.getConcept());
 		assertEquals(admission, obsDef.getEncounterType());
+		assertEquals(1, mappedObsDef.getConverters().size());
+		assertEquals(PatientGridObsConverter.class, mappedObsDef.getConverters().get(0).getClass());
 	}
 	
 	@Test

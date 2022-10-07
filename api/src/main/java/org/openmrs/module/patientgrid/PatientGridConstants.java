@@ -1,5 +1,7 @@
 package org.openmrs.module.patientgrid;
 
+import org.openmrs.module.patientgrid.converter.PatientGridObsConverter;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -11,9 +13,9 @@ public class PatientGridConstants {
 	
 	public static final String COLUMN_UUID = "uuid";
 	
-	protected static final String KEY_MOST_RECENT_ENCS = PatientGridConstants.class.getName() + "_ENCS";
+	public static final String KEY_MOST_RECENT_ENCS = PatientGridConstants.class.getName() + "_ENCS";
 	
-	protected static final String KEY_AGES_AT_ENCS = PatientGridConstants.class.getName() + "_AGES";
+	public static final String KEY_AGES_AT_ENCS = PatientGridConstants.class.getName() + "_AGES";
 	
 	public static final String GP_AGE_RANGES = MODULE_ID + ".age.ranges";
 	

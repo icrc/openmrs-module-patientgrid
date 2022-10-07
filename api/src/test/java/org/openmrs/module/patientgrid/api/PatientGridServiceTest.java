@@ -21,8 +21,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openmrs.Cohort;
+import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.Patient;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -55,6 +57,10 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	@Autowired
 	@Qualifier("patientService")
 	private PatientService ps;
+	
+	@Autowired
+	@Qualifier("encounterService")
+	private EncounterService es;
 	
 	@Autowired
 	@Qualifier(CACHE_MANAGER_NAME)
@@ -246,12 +252,15 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		Map<String, Object> obs = (Map) dataSet.getColumnValue(patient.getId(), "weight");
 		assertEquals(84.0, obs.get("value"));
 		obs = (Map) dataSet.getColumnValue(patient.getId(), "civilStatus");
-		assertEquals("SINGLE", obs.get("value"));
+		Concept civilStatusAnswerConcept = Context.getConceptService().getConcept(5);
+		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
+		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
 		obs = (Map) dataSet.getColumnValue(patient.getId(), "cd4");
 		assertEquals(1060.0, obs.get("value"));
 		Location location = locationService.getLocation(4000);
 		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
+		assertEquals(es.getEncounter(2004).getEncounterDatetime(), dataSet.getColumnValue(patient.getId(), "encDate"));
 		
 		patient = ps.getPatient(6);
 		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
@@ -262,12 +271,14 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		obs = (Map) dataSet.getColumnValue(patient.getId(), "weight");
 		assertEquals(72.0, obs.get("value"));
 		obs = (Map) dataSet.getColumnValue(patient.getId(), "civilStatus");
-		assertEquals("SINGLE", obs.get("value"));
+		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
+		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
 		obs = (Map) dataSet.getColumnValue(patient.getId(), "cd4");
 		assertEquals(1080.0, obs.get("value"));
 		location = locationService.getLocation(4001);
 		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
+		assertEquals(es.getEncounter(2006).getEncounterDatetime(), dataSet.getColumnValue(patient.getId(), "encDate"));
 		
 		patient = ps.getPatient(7);
 		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
@@ -279,9 +290,12 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(88.0, obs.get("value"));
 		assertNull(dataSet.getColumnValue(patient.getId(), "cd4"));
 		obs = (Map) dataSet.getColumnValue(patient.getId(), "civilStatus");
-		assertEquals("MARRIED", obs.get("value"));
+		civilStatusAnswerConcept = Context.getConceptService().getConcept(6);
+		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
+		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
 		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
+		assertEquals(es.getEncounter(2007).getEncounterDatetime(), dataSet.getColumnValue(patient.getId(), "encDate"));
 	}
 	
 	@Test
@@ -430,14 +444,17 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(patient.getPersonName().getFullName(), dataSet.getColumnValue(patient.getId(), "name"));
 		assertEquals(patient.getGender(), dataSet.getColumnValue(patient.getId(), "gender"));
 		Map<String, Object> obs = (Map) dataSet.getColumnValue(patient.getId(), "civilStatus");
-		assertEquals("SINGLE", obs.get("value"));
+		Concept civilStatusAnswerConcept = Context.getConceptService().getConcept(5);
+		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
+		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
 		
 		patient = ps.getPatient(patientId6);
 		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataSet.getColumnValue(patient.getId(), "name"));
 		assertEquals(patient.getGender(), dataSet.getColumnValue(patient.getId(), "gender"));
 		obs = (Map) dataSet.getColumnValue(patient.getId(), "civilStatus");
-		assertEquals("SINGLE", obs.get("value"));
+		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
+		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
 	}
 	
 	@Test

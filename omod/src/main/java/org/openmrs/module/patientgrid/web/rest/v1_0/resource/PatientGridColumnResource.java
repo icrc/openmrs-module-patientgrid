@@ -31,6 +31,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 
@@ -66,6 +67,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 			description.addRequiredProperty("name");
 			description.addProperty("description");
 			description.addRequiredProperty("datatype");
+			description.addProperty("hidden");
 			description.addProperty("filters");
 			description.addSelfLink();
 			if (representation instanceof DefaultRepresentation) {
@@ -109,6 +111,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		description.addRequiredProperty("datatype");
 		description.addProperty("description");
 		description.addProperty("filters");
+		description.addProperty("hidden");
 		return description;
 	}
 	
@@ -202,6 +205,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		model.property("name", new StringProperty());
 		model.property("uuid", new StringProperty());
 		model.property("datatype", new EnumProperty(ColumnDatatype.class));
+		model.property("hidden", new BooleanProperty());
 		model.property("description", new StringProperty());
 		model.property("filters", new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridFilterGet")));
 		return model;
@@ -215,6 +219,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		ModelImpl model = new ModelImpl();
 		model.property("name", new StringProperty().required(true));
 		model.property("datatype", new EnumProperty(ColumnDatatype.class).required(true));
+		model.property("hidden", new BooleanProperty()._default(false));
 		model.property("description", new StringProperty());
 		model.property("filters", new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridFilterCreate")));
 		model.required("filters");

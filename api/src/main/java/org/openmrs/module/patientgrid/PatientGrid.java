@@ -18,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.openmrs.BaseChangeableOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
@@ -42,6 +43,10 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User owner;
+	
+	@NotNull
+	@Column(name = "is_shared", nullable = false)
+	private Boolean shared = false;
 	
 	@ManyToOne
 	@JoinColumn(name = "cohort_id")
@@ -134,6 +139,24 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	 */
 	public void setOwner(User owner) {
 		this.owner = owner;
+	}
+	
+	/**
+	 * Gets the shared
+	 *
+	 * @return the shared
+	 */
+	public Boolean getShared() {
+		return shared;
+	}
+	
+	/**
+	 * Sets the shared
+	 *
+	 * @param shared the shared to set
+	 */
+	public void setShared(Boolean shared) {
+		this.shared = shared;
 	}
 	
 	/**
