@@ -12,6 +12,7 @@ import java.util.Iterator;
 
 import org.junit.Test;
 import org.openmrs.module.patientgrid.AgeAtEncounterPatientGridColumn;
+import org.openmrs.module.patientgrid.EncounterDatePatientGridColumn;
 import org.openmrs.module.patientgrid.ObsPatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
@@ -56,6 +57,11 @@ public class PatientGridControllerTest extends BasePatientGridRestControllerTest
 		nameColumn.add("type", "column");
 		nameColumn.add("name", "name");
 		nameColumn.add("datatype", ColumnDatatype.NAME);
+		SimpleObject endDateColumn = new SimpleObject();
+		endDateColumn.add("type", "encounterdatecolumn");
+		endDateColumn.add("name", "encDate");
+		endDateColumn.add("datatype", ColumnDatatype.ENC_DATE);
+		endDateColumn.add("encounterType", "19218f76-6c39-45f4-8efa-4c5c6c199f50");
 		SimpleObject weightColumn = new SimpleObject();
 		weightColumn.add("type", "obscolumn");
 		weightColumn.add("name", "weight");
@@ -76,13 +82,14 @@ public class PatientGridControllerTest extends BasePatientGridRestControllerTest
 		grid.put("name", "test");
 		grid.put("description", "test description");
 		grid.put("shared", true);
-		grid.add("columns", Arrays.asList(nameColumn, weightColumn, ageColumn));
+		grid.add("columns", Arrays.asList(nameColumn, endDateColumn, weightColumn, ageColumn));
 		SimpleObject result = deserialize(handle(newPostRequest(getURI(), grid)));
 		assertEquals(++initialCount, getAllCount());
 		PatientGrid savePatientGrid = service.getPatientGridByUuid(Util.getByPath(result, "uuid").toString());
-		assertEquals(3, savePatientGrid.getColumns().size());
+		assertEquals(4, savePatientGrid.getColumns().size());
 		Iterator<PatientGridColumn> columns = savePatientGrid.getColumns().iterator();
 		assertTrue(columns.next() instanceof PatientGridColumn);
+		assertTrue(columns.next() instanceof EncounterDatePatientGridColumn);
 		assertTrue(columns.next() instanceof ObsPatientGridColumn);
 		assertTrue(columns.next() instanceof AgeAtEncounterPatientGridColumn);
 	}

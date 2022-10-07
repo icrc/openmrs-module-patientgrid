@@ -44,22 +44,26 @@ DATAFILTER_LOCATION, DATAFILTER_COUNTRY
 `filters`A list or an array of filter metadata where each element is metadata for a single filter on the column, see
 [Grid Filter Resource](#grid-filter) for properties
 
+### Other Encounter Date Column Properties
+
+The properties below apply to a grid column where the _type_ property value is set to `encounterdatecolumn`
+
+<i style='color:red'>*</i>`encounterType` The type of the encounters to match when evaluating the column date values
+
 ### Other Obs Column Properties
 
-The properties below only apply to a grid column where the _type_ property value is set to `obscolumn`
+The properties below apply to a grid column where the _type_ property value is set to `obscolumn`
 
-<i style='color:red'>*</i>`encounterType` The type of the encounters where to match when evaluating the column obs
-values
+<i style='color:red'>*</i>`encounterType` The type of the encounters to match when evaluating the column obs values
 
 <i style='color:red'>*</i>`concept` The question concept to match when evaluating the column obs values, MUST be a
 concept UUID for create or update operations
 
-### Other Obs Column Properties
+### Other Age Obs Column Properties
 
-The properties below only apply to a grid column where the _type_ property value is set to `agecolumn`
+The properties below apply to a grid column where the _type_ property value is set to `agecolumn`
 
-<i style='color:red'>*</i>`encounterType` The type of the encounters where to match when evaluating the column obs
-values
+<i style='color:red'>*</i>`encounterType` The type of the encounters to match when evaluating the column age values
 
 `convertToAgeRange` If set to true ages get converted to age range based on the age ranges defined in the system, see
 [Age Range Resource](#age-range) for how ranges work.

@@ -794,6 +794,7 @@ under [Grid Report Resource](../resources/README.md#grid-report)
       "report": [
         {
           "country": "United States",
+          "encDate": "2022-08-28T00:00:00.000-0500",
           "cd4": {
             "formFieldPath": null,
             "formFieldNamespace": null,
@@ -839,6 +840,7 @@ under [Grid Report Resource](../resources/README.md#grid-report)
         },
         {
           "country": "United States",
+          "encDate": "2022-08-27T00:00:00.000-0500",
           "cd4": null,
           "gender": "F",
           "name": "Collet Test Chebaskwony",
@@ -874,6 +876,7 @@ under [Grid Report Resource](../resources/README.md#grid-report)
         },
         {
           "country": "Uganda",
+          "encDate": "2022-08-26T00:00:00.000-0500",
           "cd4": {
             "formFieldPath": null,
             "formFieldNamespace": null,
@@ -1049,6 +1052,7 @@ for more see the note on obs value properties under [Grid Download Resource](../
           "country": "United States",
           "gender": "M",
           "name": "Johnny Test Doe",
+          "encDate": "2022-08-28T00:00:00.000-0500",
           "29218f76-6c39-45f4-8efa-4c5c6c199f50": [
             {
               "6e6c993e-c2cc-11de-8d13-0010c6dffd0b": {
@@ -1102,6 +1106,7 @@ for more see the note on obs value properties under [Grid Download Resource](../
           "country": "United States",
           "gender": "F",
           "name": "Collet Test Chebaskwony",
+          "encDate": "2022-08-27T00:00:00.000-0500",
           "29218f76-6c39-45f4-8efa-4c5c6c199f50": [
             {
               
@@ -1145,6 +1150,7 @@ for more see the note on obs value properties under [Grid Download Resource](../
           "country": "Uganda",
           "gender": "M",
           "name": "Mr. Horatio Test Hornblower",
+          "encDate": "2022-08-26T00:00:00.000-0500",
           "29218f76-6c39-45f4-8efa-4c5c6c199f50": [
             {
               "4e6c993e-c2cc-11de-8d13-0010c6dffd0b": {
