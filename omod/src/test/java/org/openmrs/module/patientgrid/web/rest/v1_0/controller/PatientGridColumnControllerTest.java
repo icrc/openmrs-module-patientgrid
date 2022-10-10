@@ -88,6 +88,22 @@ public class PatientGridColumnControllerTest extends BasePatientGridRestControll
 		assertEquals(AgeAtEncounterPatientGridColumn.class, savedColumn.getClass());
 	}
 	
+	//@Test
+	public void shouldAddANewEncounterDateColumnToThePatientGrid() throws Exception {
+		long initialCount = getAllCount();
+		SimpleObject column = new SimpleObject();
+		column.add("type", "encounterdatecolumn");
+		column.add("name", "encDate");
+		column.add("datatype", ColumnDatatype.ENC_DATE);
+		column.add("encounterType", "19218f76-6c39-45f4-8efa-4c5c6c199f50");
+		
+		SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
+		
+		assertEquals(++initialCount, getAllCount());
+		PatientGridColumn savedColumn = service.getPatientGridColumnByUuid(Util.getByPath(result, "uuid").toString());
+		assertEquals(AgeAtEncounterPatientGridColumn.class, savedColumn.getClass());
+	}
+	
 	@Test
 	public void shouldUpdateAnExistingPatientGridColumn() throws Exception {
 		long initialCount = getAllCount();

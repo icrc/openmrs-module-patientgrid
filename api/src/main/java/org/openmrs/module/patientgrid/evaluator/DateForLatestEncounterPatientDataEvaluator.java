@@ -35,6 +35,7 @@ public class DateForLatestEncounterPatientDataEvaluator implements PatientDataEv
 	        throws EvaluationException {
 		
 		DateForLatestEncounterPatientDataDefinition def = (DateForLatestEncounterPatientDataDefinition) definition;
+		//TODO Move this code to a base class
 		Map<EncounterType, Map> typeAndEncData = (Map) context.getFromCache(KEY_MOST_RECENT_ENCS);
 		if (typeAndEncData == null) {
 			typeAndEncData = new HashMap();

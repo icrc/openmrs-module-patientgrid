@@ -31,7 +31,7 @@ public class PatientGridObsConverter implements DataConverter {
 			}
 			
 			obsData.put("value", value);
-
+			
 			if (obs.getEncounter() != null) {
 				Encounter encounter = obs.getEncounter();
 				Map encData = new HashMap(3);
