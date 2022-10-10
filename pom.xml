@@ -55,7 +55,7 @@
         <reportingVersion>1.14.0</reportingVersion>
         <datafilterVersion>1.2.0</datafilterVersion>
         <webservicesRestVersion>2.27.0</webservicesRestVersion>
-        <serializationXstreamVersion>0.2.12</serializationXstreamVersion>
+        <serializationXstreamVersion>0.2.15</serializationXstreamVersion>
     </properties>
 
     <dependencyManagement>
@@ -137,7 +137,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.2.2</version>
+                    <version>3.3.0</version>
                     <executions>
                         <execution>
                             <goals>
