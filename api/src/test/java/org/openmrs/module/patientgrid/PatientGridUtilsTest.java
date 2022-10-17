@@ -12,6 +12,7 @@ import static org.openmrs.module.patientgrid.PatientGridConstants.GP_AGE_RANGES;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -26,6 +27,7 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeConverter;
+import org.openmrs.module.patientgrid.converter.PatientGridAgeRangeConverter;
 import org.openmrs.module.patientgrid.converter.PatientGridObsConverter;
 import org.openmrs.module.patientgrid.definition.AgeAtLatestEncounterPatientDataDefinition;
 import org.openmrs.module.patientgrid.definition.DateForLatestEncounterPatientDataDefinition;
@@ -36,7 +38,6 @@ import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.JoinDataDefinition;
 import org.openmrs.module.reporting.data.MappedData;
-import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.converter.PropertyConverter;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
@@ -47,6 +48,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Context.class)
@@ -58,6 +60,11 @@ public class PatientGridUtilsTest {
 	
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
+	
+	@Before
+	public void setup() {
+		Whitebox.setInternalState(PatientGridUtils.class, "ageRangeConverter", (Object) null);
+	}
 	
 	private DataDefinition getDefinition(String columnName, PatientDataSetDefinition def) {
 		JoinDataDefinition nameDef = (JoinDataDefinition) ((Mapped) def.getColumnDefinition(columnName).getDataDefinition())
@@ -135,7 +142,7 @@ public class PatientGridUtilsTest {
 		assertEquals(admission,
 		    ((AgeAtLatestEncounterPatientDataDefinition) ageCategoryDef.getParameterizable()).getEncounterType());
 		assertEquals(1, ageCategoryDef.getConverters().size());
-		List<AgeRange> ageRanges = ((AgeRangeConverter) ageCategoryDef.getConverters().get(0)).getAgeRanges();
+		List<AgeRange> ageRanges = ((PatientGridAgeRangeConverter) ageCategoryDef.getConverters().get(0)).getAgeRanges();
 		assertEquals(2, ageRanges.size());
 		AgeRange ageRange = ageRanges.get(0);
 		assertEquals(0, ageRange.getMinAge().intValue());
