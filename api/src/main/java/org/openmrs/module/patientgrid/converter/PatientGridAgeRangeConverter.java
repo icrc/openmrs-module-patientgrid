@@ -1,7 +1,6 @@
 package org.openmrs.module.patientgrid.converter;
 
 import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
-import org.openmrs.module.reporting.data.converter.DataConverter;
 
 /**
  * {@link AgeRangeConverter} subclass that checks for nulls before delegating back to its parent
@@ -10,7 +9,7 @@ import org.openmrs.module.reporting.data.converter.DataConverter;
 public class PatientGridAgeRangeConverter extends AgeRangeConverter {
 	
 	/**
-	 * @see DataConverter#convert(Object)
+	 * @see AgeRangeConverter#convert(Object)
 	 */
 	@Override
 	public Object convert(Object original) {

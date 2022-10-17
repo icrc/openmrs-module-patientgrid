@@ -74,7 +74,9 @@ Encapsulates metadata about a single column on a patient grid, all filters are i
 
 <i style='color:red'>*</i>`name` A unique filter name, only needs to be unique in the context of a single column
 
-<i style='color:red'>*</i>`operand` The value to match column values against
+<i style='color:red'>*</i>`operand` The value to match column values against, currently accepted values are strings.
+For an age range column, this is a serialized json string of the age range to match against,
+see [Age Range Resource](#age-range)
 
 <i style='color:red'>*</i>`column` The grid column on which to apply the filter
 
@@ -137,8 +139,8 @@ A read-only resource encapsulating downloadable data for a specific patient grid
 single patient, the element is a map of column names and their respective data values. The report contains extra map
 entries i.e. one for each encounter type, if you generated your form fields based on a form, then each encounter type
 would match that of its respective form. Therefore, for these extra column entries, the key is the uuid of the encounter
-type and the value is a list of observation data for each encounter matching the encounter type for the patient. It
-means each item in the list is a list of observations for a single encounter matching the encounter type.
+type and the value is a list of encounters. Each item in the list is a map of observation data for a single encounter 
+and each map entry has the grid column uuid as the key and the obs data as the value.
 
 **Note** Obs values in the report are trimmed down to a custom representation specific to this module with the
 properties below,
