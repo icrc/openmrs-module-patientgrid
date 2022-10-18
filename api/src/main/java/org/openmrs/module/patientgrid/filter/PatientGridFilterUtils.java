@@ -1,6 +1,7 @@
 package org.openmrs.module.patientgrid.filter;
 
 import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.DATAFILTER_COUNTRY;
+import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.ENC_AGE;
 import static org.openmrs.module.patientgrid.PatientGridConstants.DATETIME_FORMAT;
 import static org.openmrs.module.patientgrid.PatientGridConstants.DATE_FORMAT;
 
@@ -60,14 +61,15 @@ public class PatientGridFilterUtils {
 	public static CohortDefinition generateCohortDefinition(PatientGrid patientGrid) {
 		Map<String, CohortDefinition> columnAndCohortDefMap = new HashMap(patientGrid.getColumns().size());
 		for (PatientGridColumn column : patientGrid.getColumns()) {
-			if (!column.getFilters().isEmpty()) {
-				CohortDefinition cohortDef;
+			CohortDefinition cohortDef = null;
+			if (ENC_AGE.equals(column.getDatatype())) {
+				//for age, we will always create a range cohort definition as it's used to filter on the encounter type
+				cohortDef = createAgeRangeCohortDefinition(column);
+			} else if (!column.getFilters().isEmpty()) {
+				
 				switch (column.getDatatype()) {
 					case GENDER:
 						cohortDef = createGenderCohortDefinition(column);
-						break;
-					case ENC_AGE:
-						cohortDef = createAgeRangeCohortDefinition(column);
 						break;
 					case OBS:
 						cohortDef = createObsCohortDefinition(column);
@@ -79,7 +81,8 @@ public class PatientGridFilterUtils {
 					default:
 						throw new APIException("Don't know how to filter data for column type: " + column.getDatatype());
 				}
-				
+			}
+			if (cohortDef != null) {
 				columnAndCohortDefMap.put(column.getName(), cohortDef);
 			}
 		}

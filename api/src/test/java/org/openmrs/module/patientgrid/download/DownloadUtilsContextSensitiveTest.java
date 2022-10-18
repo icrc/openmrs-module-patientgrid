@@ -52,7 +52,7 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		
 		SimpleDataSet dataset = DownloadUtils.evaluate(patientGrid);
 		
-		assertEquals(3, dataset.getRows().size());
+		assertEquals(4, dataset.getRows().size());
 		Patient patient = ps.getPatient(2);
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
@@ -135,6 +135,21 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		encounters = (List) dataset.getColumnValue(patient.getId(), followUpEncTypeUuid);
 		assertEquals(1, encounters.size());
 		assertTrue(encounters.get(0).isEmpty());
+		
+		// a patient with no values
+		patient = ps.getPatient(8);
+		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
+		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
+		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
+		assertNull(dataset.getColumnValue(patient.getId(), "ageAtInitial"));
+		assertNull(dataset.getColumnValue(patient.getId(), "ageCategory"));
+		location = locationService.getLocation(4000);
+		assertEquals(location.getName(), dataset.getColumnValue(patient.getId(), "structure"));
+		assertEquals(location.getCountry(), dataset.getColumnValue(patient.getId(), "country"));
+		encounters = (List) dataset.getColumnValue(patient.getId(), initialEncTypeUuid);
+		assertEquals(1, encounters.size());
+		columnUuidAndObsMap = encounters.get(0);
+		assertTrue(columnUuidAndObsMap.isEmpty());
 	}
 	
 	@Test

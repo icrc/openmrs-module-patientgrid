@@ -32,6 +32,8 @@ import org.openmrs.api.context.ServiceContext;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
@@ -68,6 +70,9 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	
 	@Autowired
 	private DataSetDefinitionService dsds;
+	
+	@Autowired
+	private CohortDefinitionService cds;
 	
 	@Autowired
 	private ServiceContext serviceContext;
@@ -240,8 +245,8 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(getCache().get(cacheKey));
 		
 		SimpleDataSet dataSet = service.evaluate(patientGrid);
-		
-		assertEquals(3, dataSet.getRows().size());
+		//as no filter on the age all patients will be returned
+		assertEquals(4, dataSet.getRows().size());
 		assertEquals(dataSet.getRows().size(), ((SimpleDataSet) getCache().get(cacheKey).get()).getRows().size());
 		Patient patient = ps.getPatient(2);
 		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
@@ -293,6 +298,23 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		civilStatusAnswerConcept = Context.getConceptService().getConcept(6);
 		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
 		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
+		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
+		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
+		assertEquals(es.getEncounter(2007).getEncounterDatetime(), dataSet.getColumnValue(patient.getId(), "encDate"));
+		
+		patient = ps.getPatient(8);
+		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
+		assertEquals(patient.getPersonName().getFullName(), dataSet.getColumnValue(patient.getId(), "name"));
+		assertEquals(patient.getGender(), dataSet.getColumnValue(patient.getId(), "gender"));
+		assertNull(dataSet.getColumnValue(patient.getId(), "ageAtInitial"));
+		assertNull(dataSet.getColumnValue(patient.getId(), "ageCategory"));
+		assertNull(dataSet.getColumnValue(patient.getId(), "weight"));
+		assertNull(dataSet.getColumnValue(patient.getId(), "cd4"));
+		assertNull(dataSet.getColumnValue(patient.getId(), "civilStatus"));
+		civilStatusAnswerConcept = Context.getConceptService().getConcept(6);
+		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
+		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
+		location = locationService.getLocation(4000);
 		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
 		assertEquals(es.getEncounter(2007).getEncounterDatetime(), dataSet.getColumnValue(patient.getId(), "encDate"));
@@ -391,6 +413,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void evaluate_shouldNotCacheDataSetIfThereIsNoAuthenticatedUserBeforeTheDataSetIsEvaluated() throws Exception {
 		DataSetDefinitionService mockDsds = Mockito.mock(DataSetDefinitionService.class);
+		CohortDefinitionService mockCds = Mockito.mock(CohortDefinitionService.class);
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		assertNull(getCache().get(cacheKey));
@@ -399,15 +422,18 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		SimpleDataSet expectedDataSet = new SimpleDataSet(null, null);
 		Mockito.when(mockDsds.evaluate(any(DataSetDefinition.class), any(EvaluationContext.class)))
 		        .thenReturn(expectedDataSet);
+		Mockito.when(mockCds.evaluate(any(CohortDefinition.class), any(EvaluationContext.class))).thenReturn(null);
 		SimpleDataSet dataSet;
 		Context.addProxyPrivilege(PRIV_MANAGE_PATIENT_GRIDS);
 		serviceContext.setService(DataSetDefinitionService.class, mockDsds);
+		serviceContext.setService(CohortDefinitionService.class, mockCds);
 		try {
 			dataSet = service.evaluate(patientGrid);
 		}
 		finally {
 			Context.removeProxyPrivilege(PRIV_MANAGE_PATIENT_GRIDS);
 			serviceContext.setService(DataSetDefinitionService.class, dsds);
+			serviceContext.setService(CohortDefinitionService.class, cds);
 		}
 		
 		assertEquals(expectedDataSet, dataSet);
