@@ -91,6 +91,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	
 	@PropertySetter("filters")
 	public void setFilters(PatientGridColumn column, PatientGridColumnFilter... filters) {
+		column.getFilters().clear();
 		for (PatientGridColumnFilter filter : filters) {
 			column.addFilter(filter);
 		}
