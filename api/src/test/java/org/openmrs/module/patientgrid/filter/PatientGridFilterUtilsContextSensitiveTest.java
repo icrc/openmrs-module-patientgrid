@@ -65,7 +65,7 @@ public class PatientGridFilterUtilsContextSensitiveTest extends BaseModuleContex
 	}
 	
 	@Test
-	public void filterPatients_shouldReturnNullIfNoFiltersAreFound() throws Exception {
+	public void filterPatients_shouldNotReturnNullIfNoFiltersAreFoundAsFilterOnEncounterTypeByDefault() throws Exception {
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		boolean hasFilteredColumns = false;
 		for (PatientGridColumn column : patientGrid.getColumns()) {
@@ -76,7 +76,8 @@ public class PatientGridFilterUtilsContextSensitiveTest extends BaseModuleContex
 		}
 		assertFalse(hasFilteredColumns);
 		
-		assertNull(PatientGridFilterUtils.filterPatients(patientGrid, null));
+		Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, null);
+		assertEquals(4, cohort.getMemberships().size());
 	}
 	
 }

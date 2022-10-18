@@ -38,7 +38,14 @@ public class AgeRangeAtLatestEncounterCohortDefinition extends BaseCohortDefinit
 	}
 	
 	/**
-	 * Gets the ageRanges
+	 * @return true if all ages will be accepted
+	 */
+	public boolean isAllAgesAccepted() {
+		return ageRanges == null || ageRanges.isEmpty();
+	}
+	
+	/**
+	 * Gets the ageRanges. If no age ranges, it means that all ages will be accepted
 	 *
 	 * @return the ageRanges
 	 */

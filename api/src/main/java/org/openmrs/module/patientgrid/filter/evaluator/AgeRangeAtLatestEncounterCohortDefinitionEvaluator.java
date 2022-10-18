@@ -1,5 +1,6 @@
 package org.openmrs.module.patientgrid.filter.evaluator;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,16 +32,20 @@ public class AgeRangeAtLatestEncounterCohortDefinitionEvaluator implements Cohor
 		ageDef.setEncounterType(def.getEncounterType());
 		EvaluatedPatientData data = Context.getService(PatientDataService.class).evaluate(ageDef, evaluationContext);
 		Map<Integer, Age> patientAndAge = (Map) data.getData();
-		Set<Integer> patientIds = patientAndAge.entrySet().stream().filter(entry -> {
-			for (AgeRange ageRange : def.getAgeRanges()) {
-				if (entry.getValue() != null && ageRange.isInRange(entry.getValue())) {
-					return true;
+		Set<Integer> patientIds;
+		if (def.isAllAgesAccepted()) {
+			patientIds = new HashSet<>(patientAndAge.keySet());
+		} else {
+			patientIds = patientAndAge.entrySet().stream().filter(entry -> {
+				for (AgeRange ageRange : def.getAgeRanges()) {
+					if (entry.getValue() != null && ageRange.isInRange(entry.getValue())) {
+						return true;
+					}
 				}
-			}
-			
-			return false;
-		}).map(Map.Entry::getKey).collect(Collectors.toSet());
-		
+				
+				return false;
+			}).map(Map.Entry::getKey).collect(Collectors.toSet());
+		}
 		return new EvaluatedCohort(new Cohort(patientIds), cohortDefinition, evaluationContext);
 	}
 	
