@@ -22,6 +22,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeConverter;
+import org.openmrs.module.patientgrid.converter.PatientGridAgeRangeConverter;
 import org.openmrs.module.patientgrid.definition.AgeAtLatestEncounterPatientDataDefinition;
 import org.openmrs.module.patientgrid.definition.DateForLatestEncounterPatientDataDefinition;
 import org.openmrs.module.patientgrid.definition.LocationPatientDataDefinition;
@@ -61,6 +62,8 @@ public class PatientGridUtils {
 	
 	private static final DataConverter AGE_CONVERTER = new PatientGridAgeConverter();
 	
+	private static PatientGridAgeRangeConverter ageRangeConverter;
+	
 	/**
 	 * Create a {@link PatientDataSetDefinition} instance from the specified {@link PatientGrid} object
 	 * 
@@ -95,10 +98,12 @@ public class PatientGridUtils {
 					AgeAtLatestEncounterPatientDataDefinition ageDef = new AgeAtLatestEncounterPatientDataDefinition();
 					ageDef.setEncounterType(ageColumn.getEncounterType());
 					if (ageColumn.getConvertToAgeRange()) {
-						//TODO Define at class level so we construct once
-						AgeRangeConverter converter = new AgeRangeConverter();
-						getAgeRanges().forEach(r -> converter.addAgeRange(r));
-						dataSetDef.addColumn(columnDef.getName(), ageDef, (String) null, converter);
+						if (ageRangeConverter == null) {
+							ageRangeConverter = new PatientGridAgeRangeConverter();
+							getAgeRanges().forEach(r -> ageRangeConverter.addAgeRange(r));
+						}
+						
+						dataSetDef.addColumn(columnDef.getName(), ageDef, (String) null, ageRangeConverter);
 					} else {
 						dataSetDef.addColumn(columnDef.getName(), ageDef, (String) null, AGE_CONVERTER);
 					}

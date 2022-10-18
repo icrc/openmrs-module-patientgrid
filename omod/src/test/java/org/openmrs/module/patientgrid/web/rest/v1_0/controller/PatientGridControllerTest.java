@@ -91,7 +91,8 @@ public class PatientGridControllerTest extends BasePatientGridRestControllerTest
 		assertTrue(columns.next() instanceof PatientGridColumn);
 		assertTrue(columns.next() instanceof EncounterDatePatientGridColumn);
 		assertTrue(columns.next() instanceof ObsPatientGridColumn);
-		assertTrue(columns.next() instanceof AgeAtEncounterPatientGridColumn);
+		AgeAtEncounterPatientGridColumn ageGridColumn = (AgeAtEncounterPatientGridColumn) columns.next();
+		assertEquals(1, ageGridColumn.getFilters().size());
 	}
 	
 	@Test
