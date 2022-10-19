@@ -430,14 +430,15 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		}
 		assertTrue(hasFilteredColumns);
 		assertTrue(patientGrid.getCohort().getActiveMemberships().isEmpty());
-		Cohort cohort = new Cohort(Arrays.asList(patientId2, patientId6, patientId7));
+		//the Cohort is not used in fact
+		Cohort cohort = new Cohort(Arrays.asList(patientId2));
 		cohort.setName("test");
 		cohort.setDescription("test");
 		Context.getCohortService().saveCohort(cohort);
 		patientGrid.setCohort(cohort);
 		
 		SimpleDataSet dataSet = service.evaluate(patientGrid);
-		
+		//it should failed here.
 		assertEquals(2, dataSet.getRows().size());
 		Patient patient = ps.getPatient(patientId2);
 		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
