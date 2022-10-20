@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGridConstants;
+import org.openmrs.module.patientgrid.xstream.CustomXstreamSerializer;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
+import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.serialization.SerializationException;
-import org.openmrs.serialization.SimpleXStreamSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
@@ -23,6 +23,8 @@ public class PatientGridCache implements Cache {
 	private static final Logger log = LoggerFactory.getLogger(PatientGridCache.class);
 	
 	private DiskCache diskCache;
+	
+	private OpenmrsSerializer serializer;
 	
 	private DiskCache getDiskCache() {
 		if (diskCache == null) {
@@ -62,6 +64,22 @@ public class PatientGridCache implements Cache {
 		return ret;
 	}
 	
+	protected void setSerializer(OpenmrsSerializer serializer) {
+		this.serializer = serializer;
+	}
+	
+	protected OpenmrsSerializer getSerializer() {
+		if (serializer == null) {
+			try {
+				serializer = new CustomXstreamSerializer();
+			}
+			catch (SerializationException e) {
+				log.error("can't create CustomXstreamSerializer");
+			}
+		}
+		return serializer;
+	}
+	
 	/**
 	 * @see Cache#get(Object, Class)
 	 */
@@ -74,7 +92,7 @@ public class PatientGridCache implements Cache {
 		
 		T value = null;
 		try {
-			value = Context.getSerializationService().deserialize(cachedValue, type, SimpleXStreamSerializer.class);
+			value = getSerializer().deserialize(cachedValue, type);
 		}
 		catch (SerializationException e) {
 			log.warn("Failed to deserialize cached grid report", e);
@@ -89,7 +107,7 @@ public class PatientGridCache implements Cache {
 	@Override
 	public void put(Object key, Object value) {
 		try {
-			String toCache = Context.getSerializationService().serialize(value, SimpleXStreamSerializer.class);
+			String toCache = getSerializer().serialize(value);
 			getDiskCache().setFileContents(key.toString(), toCache);
 		}
 		catch (SerializationException e) {

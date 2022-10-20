@@ -17,6 +17,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.cache.DiskCache;
 import org.openmrs.module.patientgrid.cache.PatientGridCache;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
+import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.serialization.SimpleXStreamSerializer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -36,7 +37,7 @@ public class PatientGridCacheTest {
 	private SimpleDataSet mockDataSet;
 	
 	@Mock
-	private SerializationService mockSerializationService;
+	private OpenmrsSerializer mockOpenmrsSerializer;
 	
 	private PatientGridCache cache = new PatientGridCache();
 	
@@ -44,15 +45,14 @@ public class PatientGridCacheTest {
 	public void setup() {
 		PowerMockito.mockStatic(Context.class);
 		Whitebox.setInternalState(cache, DiskCache.class, mockDiskCache);
-		when(Context.getSerializationService()).thenReturn(mockSerializationService);
+		cache.setSerializer(mockOpenmrsSerializer);
 	}
 	
 	@Test
 	public void get_shouldReturnTheDeserializedDataSet() throws Exception {
 		final String filename = "test_file";
 		final String testReportData = "Test report data";
-		when(mockSerializationService.deserialize(testReportData, SimpleDataSet.class, SimpleXStreamSerializer.class))
-		        .thenReturn(mockDataSet);
+		when(mockOpenmrsSerializer.deserialize(testReportData, SimpleDataSet.class)).thenReturn(mockDataSet);
 		when(mockDiskCache.getFileContents(filename)).thenReturn(testReportData);
 		
 		assertEquals(mockDataSet, cache.get(filename, SimpleDataSet.class));
@@ -61,13 +61,13 @@ public class PatientGridCacheTest {
 	@Test
 	public void get_shouldReturnNullIfNoCachedDataSetExists() {
 		assertNull(cache.get("some-file", SimpleDataSet.class));
-		Mockito.verifyZeroInteractions(mockSerializationService);
+		Mockito.verifyZeroInteractions(mockOpenmrsSerializer);
 	}
 	
 	@Test
 	public void getValueWrapper_shouldReturnNullIfNoCachedValueExists() {
 		assertNull(cache.get("some-file"));
-		Mockito.verifyZeroInteractions(mockSerializationService);
+		Mockito.verifyZeroInteractions(mockOpenmrsSerializer);
 	}
 	
 	@Test
@@ -75,8 +75,7 @@ public class PatientGridCacheTest {
 		final String filename = "test_file";
 		final String testReportData = "Test report data";
 		when(mockDiskCache.getFileContents(filename)).thenReturn(testReportData);
-		when(mockSerializationService.deserialize(testReportData, SimpleDataSet.class, SimpleXStreamSerializer.class))
-		        .thenReturn(mockDataSet);
+		when(mockOpenmrsSerializer.deserialize(testReportData, SimpleDataSet.class)).thenReturn(mockDataSet);
 		
 		assertEquals(mockDataSet, cache.get(filename).get());
 	}
@@ -85,7 +84,7 @@ public class PatientGridCacheTest {
 	public void put_shouldSerializeAndSaveTheSpecifiedDataSet() throws Exception {
 		final String filename = "test_file";
 		final String testReportData = "Test report data";
-		when(mockSerializationService.serialize(mockDataSet, SimpleXStreamSerializer.class)).thenReturn(testReportData);
+		when(mockOpenmrsSerializer.serialize(mockDataSet)).thenReturn(testReportData);
 		
 		cache.put(filename, mockDataSet);
 		
@@ -97,8 +96,7 @@ public class PatientGridCacheTest {
 		final String filename = "test_file";
 		final String oldTestReportData = "Old Test report data";
 		when(mockDiskCache.getFileContents(filename)).thenReturn(oldTestReportData);
-		when(mockSerializationService.deserialize(oldTestReportData, SimpleDataSet.class, SimpleXStreamSerializer.class))
-		        .thenReturn(mockDataSet);
+		when(mockOpenmrsSerializer.deserialize(oldTestReportData, SimpleDataSet.class)).thenReturn(mockDataSet);
 		
 		assertEquals(mockDataSet, cache.putIfAbsent(filename, mockDataSet).get());
 		Mockito.verify(mockDiskCache, never()).setFileContents(eq(filename), anyString());
@@ -109,7 +107,7 @@ public class PatientGridCacheTest {
 	public void putIfAbsent_shouldSerializeAndSaveTheSpecifiedDataSet() throws Exception {
 		final String filename = "test_file";
 		final String testReportData = "Test report data";
-		when(mockSerializationService.serialize(mockDataSet, SimpleXStreamSerializer.class)).thenReturn(testReportData);
+		when(mockOpenmrsSerializer.serialize(mockDataSet)).thenReturn(testReportData);
 		
 		assertNull(cache.putIfAbsent(filename, mockDataSet));
 		

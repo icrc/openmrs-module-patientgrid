@@ -240,6 +240,8 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	public void evaluate_shouldEvaluateThePatientGridAndCacheTheDataSet() {
+		List<Patient> allPatients = ps.getAllPatients();
+		
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		assertNull(getCache().get(cacheKey));
