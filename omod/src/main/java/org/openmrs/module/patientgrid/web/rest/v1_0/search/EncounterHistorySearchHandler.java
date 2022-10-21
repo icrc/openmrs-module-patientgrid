@@ -12,6 +12,7 @@ import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
 import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -67,7 +68,7 @@ public class EncounterHistorySearchHandler implements SearchHandler {
 		Cohort cohort = new Cohort();
 		Integer patientId = patient.getId();
 		cohort.addMember(patientId);
-		EvaluationContext context = new EvaluationContext();
+		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(cohort);
 		
 		try {
