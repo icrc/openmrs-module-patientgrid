@@ -14,6 +14,7 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
@@ -45,7 +46,7 @@ public class AllEncountersPatientDataEvaluatorTest extends BaseModuleContextSens
 		final Integer patientId6 = 6;
 		final Integer patientId7 = 7;
 		final Integer patientId8 = 8;
-		EvaluationContext context = new EvaluationContext();
+		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6, patientId7, patientId8)));
 		
 		AllEncountersPatientDataDefinition def = new AllEncountersPatientDataDefinition();

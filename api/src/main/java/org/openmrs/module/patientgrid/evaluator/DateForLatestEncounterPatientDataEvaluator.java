@@ -1,18 +1,16 @@
 package org.openmrs.module.patientgrid.evaluator;
 
-import static org.openmrs.module.patientgrid.PatientGridConstants.KEY_MOST_RECENT_ENCS;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.patientgrid.PatientGridUtils;
+import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
 import org.openmrs.module.patientgrid.definition.DateForLatestEncounterPatientDataDefinition;
+import org.openmrs.module.patientgrid.function.MostRecentEncounterPerPatientByTypeFunction;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeDataDefinition;
 import org.openmrs.module.reporting.data.encounter.service.EncounterDataService;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
@@ -35,22 +33,9 @@ public class DateForLatestEncounterPatientDataEvaluator implements PatientDataEv
 	        throws EvaluationException {
 		
 		DateForLatestEncounterPatientDataDefinition def = (DateForLatestEncounterPatientDataDefinition) definition;
-		//TODO Move this code to a base class
-		Map<EncounterType, Map> typeAndEncData = (Map) context.getFromCache(KEY_MOST_RECENT_ENCS);
-		if (typeAndEncData == null) {
-			typeAndEncData = new HashMap();
-			context.addToCache(KEY_MOST_RECENT_ENCS, typeAndEncData);
-		}
-		
-		Map<Integer, Object> patientIdAndEnc = typeAndEncData.get(def.getEncounterType());
-		if (patientIdAndEnc == null) {
-			if (log.isDebugEnabled()) {
-				log.debug("Loading patient most recent patient encounters of type: " + def.getEncounterType());
-			}
-			
-			patientIdAndEnc = PatientGridUtils.getEncounters(def.getEncounterType(), context, true);
-			typeAndEncData.put(def.getEncounterType(), patientIdAndEnc);
-		}
+		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
+		Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
+		    new MostRecentEncounterPerPatientByTypeFunction(contextPersistantCache));
 		
 		Map<Integer, Object> encIdAndEnc = patientIdAndEnc.values().stream()
 		        .collect(Collectors.toMap(e -> ((Encounter) e).getId(), Function.identity()));

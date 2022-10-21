@@ -39,7 +39,7 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		Cohort cohort = new Cohort();
 		final Integer patientId = 2;
 		cohort.addMember(patientId);
-		EvaluationContext context = new EvaluationContext();
+		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(cohort);
 		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), context, true);
 		assertEquals(1, idsAndEncs.size());
@@ -51,7 +51,7 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		Cohort cohort = new Cohort();
 		final Integer patientId = 2;
 		cohort.addMember(patientId);
-		EvaluationContext context = new EvaluationContext();
+		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(cohort);
 		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), context, false);
 		assertEquals(1, idsAndEncs.size());
@@ -67,7 +67,7 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		Cohort cohort = new Cohort();
 		final Integer patientId = 8;
 		cohort.addMember(patientId);
-		EvaluationContext context = new EvaluationContext();
+		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(cohort);
 		assertTrue(PatientGridUtils.getEncounters(new EncounterType(102), context, true).isEmpty());
 	}

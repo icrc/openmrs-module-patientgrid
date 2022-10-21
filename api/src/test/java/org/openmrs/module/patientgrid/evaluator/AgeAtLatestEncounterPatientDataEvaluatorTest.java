@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.EncounterType;
+import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
 import org.openmrs.module.patientgrid.definition.AgeAtLatestEncounterPatientDataDefinition;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
@@ -34,7 +35,7 @@ public class AgeAtLatestEncounterPatientDataEvaluatorTest extends BaseModuleCont
 		final Integer patientId7 = 7;
 		final Integer patientId8 = 8;//Has encounter but no birthdate
 		final Integer patientId999 = 999;//Has no encounter and no birthdate
-		EvaluationContext context = new EvaluationContext();
+		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6, patientId7, patientId8, patientId999)));
 		
 		AgeAtLatestEncounterPatientDataDefinition def = new AgeAtLatestEncounterPatientDataDefinition();

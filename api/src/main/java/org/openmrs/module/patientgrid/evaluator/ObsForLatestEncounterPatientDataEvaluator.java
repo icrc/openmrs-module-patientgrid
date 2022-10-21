@@ -1,16 +1,15 @@
 package org.openmrs.module.patientgrid.evaluator;
 
-import static org.openmrs.module.patientgrid.PatientGridConstants.KEY_MOST_RECENT_ENCS;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
 import org.openmrs.module.patientgrid.definition.ObsForLatestEncounterPatientDataDefinition;
 import org.openmrs.module.patientgrid.PatientGridUtils;
+import org.openmrs.module.patientgrid.function.MostRecentEncounterPerPatientByTypeFunction;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.evaluator.PatientDataEvaluator;
@@ -29,21 +28,9 @@ public class ObsForLatestEncounterPatientDataEvaluator implements PatientDataEva
 	        throws EvaluationException {
 		
 		ObsForLatestEncounterPatientDataDefinition def = (ObsForLatestEncounterPatientDataDefinition) definition;
-		Map<EncounterType, Object> typeAndEncData = (Map) context.getFromCache(KEY_MOST_RECENT_ENCS);
-		if (typeAndEncData == null) {
-			typeAndEncData = new HashMap();
-			context.addToCache(KEY_MOST_RECENT_ENCS, typeAndEncData);
-		}
-		
-		Map<Integer, Object> patientIdAndEnc = (Map) typeAndEncData.get(def.getEncounterType());
-		if (patientIdAndEnc == null) {
-			if (log.isDebugEnabled()) {
-				log.debug("Loading patient most recent patient encounters of type: " + def.getEncounterType());
-			}
-			
-			patientIdAndEnc = PatientGridUtils.getEncounters(def.getEncounterType(), context, true);
-			typeAndEncData.put(def.getEncounterType(), patientIdAndEnc);
-		}
+		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
+		Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
+		    new MostRecentEncounterPerPatientByTypeFunction(contextPersistantCache));
 		
 		Map<Integer, Object> patientIdAndObs = new HashMap(patientIdAndEnc.size());
 		for (Map.Entry<Integer, Object> e : patientIdAndEnc.entrySet()) {

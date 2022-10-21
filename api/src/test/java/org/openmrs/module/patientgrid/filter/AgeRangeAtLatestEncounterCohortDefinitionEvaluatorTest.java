@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
+import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
 import org.openmrs.module.patientgrid.filter.definition.AgeRangeAtLatestEncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
@@ -35,25 +36,25 @@ public class AgeRangeAtLatestEncounterCohortDefinitionEvaluatorTest extends Base
 		def.setEncounterType(new EncounterType(101));
 		def.setAgeRanges(asList(new AgeRange(48, null)));
 		
-		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, null);
+		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContextPersistantCache());
 		
 		Assert.assertTrue(evaluatedCohort.isEmpty());
 		
 		def.setAgeRanges(asList(new AgeRange(45, 45)));
-		evaluatedCohort = cohortDefService.evaluate(def, null);
+		evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContextPersistantCache());
 		
 		assertEquals(1, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
 		
 		def.setAgeRanges(asList(new AgeRange(46, 47)));
-		evaluatedCohort = cohortDefService.evaluate(def, null);
+		evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContextPersistantCache());
 		
 		assertEquals(2, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(2)));
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
 		
 		def.setAgeRanges(asList(new AgeRange(45, 47)));
-		evaluatedCohort = cohortDefService.evaluate(def, null);
+		evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContextPersistantCache());
 		
 		assertEquals(3, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(2)));

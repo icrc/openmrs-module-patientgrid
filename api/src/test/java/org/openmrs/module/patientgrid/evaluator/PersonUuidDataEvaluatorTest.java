@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.PersonService;
+import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
 import org.openmrs.module.patientgrid.definition.PersonUuidDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
@@ -27,7 +28,7 @@ public class PersonUuidDataEvaluatorTest extends BaseModuleContextSensitiveTest 
 	public void evaluate_shouldReturnThePatientUuid() throws Exception {
 		final Integer patientId2 = 2;
 		final Integer patientId6 = 6;
-		EvaluationContext context = new EvaluationContext();
+		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6)));
 		
 		EvaluatedPersonData data = personDataService.evaluate(new PersonUuidDataDefinition(), context);

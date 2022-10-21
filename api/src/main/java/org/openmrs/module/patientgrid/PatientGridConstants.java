@@ -13,10 +13,6 @@ public class PatientGridConstants {
 	
 	public static final String COLUMN_UUID = "uuid";
 	
-	public static final String KEY_MOST_RECENT_ENCS = PatientGridConstants.class.getName() + "_ENCS";
-	
-	public static final String KEY_AGES_AT_ENCS = PatientGridConstants.class.getName() + "_AGES";
-	
 	public static final String GP_AGE_RANGES = MODULE_ID + ".age.ranges";
 	
 	public static final String GP_DISK_CACHE_DIR = MODULE_ID + ".cacheDirectory";

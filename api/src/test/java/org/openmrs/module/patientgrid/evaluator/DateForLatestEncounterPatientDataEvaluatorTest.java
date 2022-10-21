@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.EncounterType;
 import org.openmrs.api.EncounterService;
+import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
 import org.openmrs.module.patientgrid.definition.DateForLatestEncounterPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
@@ -36,7 +37,7 @@ public class DateForLatestEncounterPatientDataEvaluatorTest extends BaseModuleCo
 		final Integer patientId6 = 6;
 		final Integer patientId7 = 7;
 		final Integer patientId999 = 999;//Has no encounter
-		EvaluationContext context = new EvaluationContext();
+		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6, patientId7, patientId999)));
 		
 		DateForLatestEncounterPatientDataDefinition def = new DateForLatestEncounterPatientDataDefinition();

@@ -66,7 +66,7 @@ public class LocationCohortDefinitionEvaluator implements CohortDefinitionEvalua
 				final Integer locationId = Integer.valueOf(map.getBasisIdentifier());
 				Location location = locationService.getLocation(locationId);
 				if (location == null) {
-					log.warn("No location found with id: " + locationId);
+					log.warn("No location found with id: {}", locationId);
 					continue;
 				}
 				

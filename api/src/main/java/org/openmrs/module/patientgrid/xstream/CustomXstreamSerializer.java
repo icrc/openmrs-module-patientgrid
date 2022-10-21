@@ -1,5 +1,6 @@
 package org.openmrs.module.patientgrid.xstream;
 
+import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.ConverterLookup;
 import com.thoughtworks.xstream.mapper.Mapper;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
@@ -22,7 +23,9 @@ public class CustomXstreamSerializer extends SimpleXStreamSerializer {
 		xstream.omitField(SimpleDataSet.class, "sortCriteria");
 		xstream.omitField(SimpleDataSet.class, "context");
 		xstream.omitField(SimpleDataSet.class, "metaData");
-		xstream.registerConverter(new CustomUserConverter());
+		//secure xstream
+		XStream.setupDefaultSecurity(xstream);
+		xstream.allowTypesByWildcard(new String[] { "org.openmrs.**" });
 		//do stuff on xstream
 	}
 }

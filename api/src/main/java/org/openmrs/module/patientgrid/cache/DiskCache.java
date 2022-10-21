@@ -29,7 +29,7 @@ public class DiskCache {
 	
 	private static class DiskCacheHolder {
 		
-		private static DiskCache INSTANCE = new DiskCache();
+		private final static DiskCache INSTANCE = new DiskCache();
 		
 	}
 	
@@ -50,7 +50,7 @@ public class DiskCache {
 			}
 			
 			if (!cacheDirectory.exists()) {
-				log.info("Creating grid report cache directory at " + cacheDirectory);
+				log.info("Creating grid report cache directory at {}", cacheDirectory);
 				
 				if (!cacheDirectory.mkdirs()) {
 					throw new APIException("Failed to create grid report cache directory at " + cacheDirectory);

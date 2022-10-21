@@ -48,7 +48,7 @@ import org.springframework.cache.CacheManager;
 
 public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	
-	private static String TEST_UUID = "1d6c993e-c2cc-11de-8d13-0010c6dffd0a";
+	private static final String TEST_UUID = "1d6c993e-c2cc-11de-8d13-0010c6dffd0a";
 	
 	@Autowired
 	private PatientGridService service;
@@ -247,8 +247,9 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(getCache().get(cacheKey));
 		
 		SimpleDataSet dataSet = service.evaluate(patientGrid);
-		//as no filter on the age all patients will be returned
-		assertEquals(4, dataSet.getRows().size());
+		//as no filter on the age all 4 patients are returned by the filter
+		//but we have a static cohort.
+		assertEquals(3, dataSet.getRows().size());
 		assertEquals(dataSet.getRows().size(), ((SimpleDataSet) getCache().get(cacheKey).get()).getRows().size());
 		Patient patient = ps.getPatient(2);
 		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
@@ -300,23 +301,6 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		civilStatusAnswerConcept = Context.getConceptService().getConcept(6);
 		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
 		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
-		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
-		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
-		assertEquals(es.getEncounter(2007).getEncounterDatetime(), dataSet.getColumnValue(patient.getId(), "encDate"));
-		
-		patient = ps.getPatient(8);
-		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
-		assertEquals(patient.getPersonName().getFullName(), dataSet.getColumnValue(patient.getId(), "name"));
-		assertEquals(patient.getGender(), dataSet.getColumnValue(patient.getId(), "gender"));
-		assertNull(dataSet.getColumnValue(patient.getId(), "ageAtInitial"));
-		assertNull(dataSet.getColumnValue(patient.getId(), "ageCategory"));
-		assertNull(dataSet.getColumnValue(patient.getId(), "weight"));
-		assertNull(dataSet.getColumnValue(patient.getId(), "cd4"));
-		assertNull(dataSet.getColumnValue(patient.getId(), "civilStatus"));
-		civilStatusAnswerConcept = Context.getConceptService().getConcept(6);
-		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
-		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
-		location = locationService.getLocation(4000);
 		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
 		assertEquals(es.getEncounter(2007).getEncounterDatetime(), dataSet.getColumnValue(patient.getId(), "encDate"));
@@ -444,8 +428,8 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	public void evaluate_shouldFiltersPatientsWhenEvaluatingAGridWithFilteredColumns() {
-		final Integer patientId2 = 2;
-		final Integer patientId6 = 6;
+		final Integer patientId2 = 2; // male
+		//		final Integer patientId6 = 6; // male that should be returned by the filter but not included in the static cohort so it won't be returned
 		final Integer patientId7 = 7;//Female
 		//The filters are for male and (married or single) patients
 		PatientGrid patientGrid = service.getPatientGrid(2);
@@ -458,7 +442,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		}
 		assertTrue(hasFilteredColumns);
 		assertTrue(patientGrid.getCohort().getActiveMemberships().isEmpty());
-		Cohort cohort = new Cohort(Arrays.asList(patientId2, patientId6, patientId7));
+		Cohort cohort = new Cohort(Arrays.asList(patientId2, patientId7));
 		cohort.setName("test");
 		cohort.setDescription("test");
 		Context.getCohortService().saveCohort(cohort);
@@ -466,7 +450,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		
 		SimpleDataSet dataSet = service.evaluate(patientGrid);
 		
-		assertEquals(2, dataSet.getRows().size());
+		assertEquals(1, dataSet.getRows().size());
 		Patient patient = ps.getPatient(patientId2);
 		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataSet.getColumnValue(patient.getId(), "name"));
@@ -476,13 +460,6 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
 		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
 		
-		patient = ps.getPatient(patientId6);
-		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
-		assertEquals(patient.getPersonName().getFullName(), dataSet.getColumnValue(patient.getId(), "name"));
-		assertEquals(patient.getGender(), dataSet.getColumnValue(patient.getId(), "gender"));
-		obs = (Map) dataSet.getColumnValue(patient.getId(), "civilStatus");
-		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
-		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
 	}
 	
 	@Test

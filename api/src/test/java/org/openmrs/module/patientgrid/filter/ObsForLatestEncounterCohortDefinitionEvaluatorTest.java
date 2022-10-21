@@ -9,6 +9,7 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
 import org.openmrs.module.patientgrid.filter.definition.ObsForLatestEncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
@@ -34,7 +35,7 @@ public class ObsForLatestEncounterCohortDefinitionEvaluatorTest extends BaseModu
 		def.setConcept(new Concept(5089));
 		def.setEncounterType(new EncounterType(101));
 		def.setValues(asList(72.0, 84.0, 88.0));
-		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, null);
+		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContextPersistantCache());
 		Assert.assertEquals(3, evaluatedCohort.activeMembershipSize());
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(2)));
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
@@ -42,7 +43,7 @@ public class ObsForLatestEncounterCohortDefinitionEvaluatorTest extends BaseModu
 		
 		//Try with a narrowed down value list
 		def.setValues(asList(72.0, 84.0));
-		evaluatedCohort = cohortDefService.evaluate(def, null);
+		evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContextPersistantCache());
 		Assert.assertEquals(2, evaluatedCohort.activeMembershipSize());
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(2)));
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
@@ -51,7 +52,7 @@ public class ObsForLatestEncounterCohortDefinitionEvaluatorTest extends BaseModu
 		def.setPropertyName("valueCoded");
 		def.setConcept(new Concept(4));
 		def.setValues(asList(Context.getConceptService().getConcept(5)));
-		evaluatedCohort = cohortDefService.evaluate(def, null);
+		evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContextPersistantCache());
 		Assert.assertEquals(2, evaluatedCohort.activeMembershipSize());
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(2)));
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));

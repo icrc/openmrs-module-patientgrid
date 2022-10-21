@@ -55,7 +55,7 @@ public class PatientGridReportControllerTest extends BasePatientGridRestControll
 		assertEquals(getAllCount(), Util.getResultsSize(result));
 		Map report = (Map) ((List) Util.getByPath(result, "results")).get(0);
 		assertEquals(GRID_UUID, Util.getByPath(report, new String[] { "patientGrid", "uuid" }));
-		assertEquals(4, ((List) Util.getByPath(report, "report")).size());
+		assertEquals(3, ((List) Util.getByPath(report, "report")).size());
 	}
 	
 	@Test

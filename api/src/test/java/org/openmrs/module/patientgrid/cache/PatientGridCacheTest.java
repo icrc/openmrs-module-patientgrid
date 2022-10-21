@@ -1,29 +1,25 @@
 package org.openmrs.module.patientgrid.cache;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.dataset.SimpleDataSet;
+import org.openmrs.serialization.OpenmrsSerializer;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.openmrs.api.SerializationService;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.patientgrid.cache.DiskCache;
-import org.openmrs.module.patientgrid.cache.PatientGridCache;
-import org.openmrs.module.reporting.dataset.SimpleDataSet;
-import org.openmrs.serialization.OpenmrsSerializer;
-import org.openmrs.serialization.SimpleXStreamSerializer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Context.class)
