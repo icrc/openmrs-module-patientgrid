@@ -1,5 +1,7 @@
 package org.openmrs.module.patientgrid.cache;
 
+import java.io.*;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +17,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.support.SimpleValueWrapper;
 
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.FileImageOutputStream;
+
 /**
  * Custom implementation of spring's {@link Cache} abstraction backed by a {@link DiskCache}
  */
@@ -24,7 +29,7 @@ public class PatientGridCache implements Cache {
 	
 	private DiskCache diskCache;
 	
-	private OpenmrsSerializer serializer;
+	private CustomXstreamSerializer serializer;
 	
 	private DiskCache getDiskCache() {
 		if (diskCache == null) {
@@ -64,11 +69,11 @@ public class PatientGridCache implements Cache {
 		return ret;
 	}
 	
-	protected void setSerializer(OpenmrsSerializer serializer) {
+	protected void setSerializer(CustomXstreamSerializer serializer) {
 		this.serializer = serializer;
 	}
 	
-	protected OpenmrsSerializer getSerializer() {
+	protected CustomXstreamSerializer getSerializer() {
 		if (serializer == null) {
 			try {
 				serializer = new CustomXstreamSerializer();
@@ -85,16 +90,15 @@ public class PatientGridCache implements Cache {
 	 */
 	@Override
 	public <T> T get(Object key, Class<T> type) {
-		String cachedValue = getDiskCache().getFileContents(key.toString());
-		if (cachedValue == null) {
+		File targetFile = getDiskCache().getFile(key.toString());
+		if (targetFile == null || !targetFile.exists()) {
 			return null;
 		}
-		
 		T value = null;
 		try {
-			value = getSerializer().deserialize(cachedValue, type);
+			value = (T) getSerializer().fromXML(targetFile);
 		}
-		catch (SerializationException e) {
+		catch (IOException e) {
 			log.warn("Failed to deserialize cached grid report", e);
 		}
 		
@@ -106,11 +110,16 @@ public class PatientGridCache implements Cache {
 	 */
 	@Override
 	public void put(Object key, Object value) {
-		try {
-			String toCache = getSerializer().serialize(value);
-			getDiskCache().setFileContents(key.toString(), toCache);
+		if (value == null) {
+			return;
 		}
-		catch (SerializationException e) {
+		File targetFile = getDiskCache().getFile(key.toString());
+		
+		try {
+			getSerializer().toXML(value, targetFile);
+			
+		}
+		catch (IOException e) {
 			log.warn("Failed to serialize grid report", e);
 		}
 	}

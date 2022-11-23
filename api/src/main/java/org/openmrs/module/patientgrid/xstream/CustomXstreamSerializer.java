@@ -1,11 +1,12 @@
 package org.openmrs.module.patientgrid.xstream;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.ConverterLookup;
-import com.thoughtworks.xstream.mapper.Mapper;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.serialization.SerializationException;
 import org.openmrs.serialization.SimpleXStreamSerializer;
+
+import java.io.*;
+import java.nio.file.Files;
 
 /**
  * Custom Xstream Serializer to persist only the minimum data form SimpleDataSet. SimpleDataSet must
@@ -13,8 +14,30 @@ import org.openmrs.serialization.SimpleXStreamSerializer;
  */
 public class CustomXstreamSerializer extends SimpleXStreamSerializer {
 	
+	private static final String ENCODING = "UTF-8";
+	
+	private static final int DEFAULT_BUFFER_SIZE = 4 * 8192;
+	
 	public CustomXstreamSerializer() throws SerializationException {
 		init();
+	}
+	
+	public void toXML(Object value, File target) throws IOException {
+		File parent = target.getParentFile();
+		if (parent != null && !parent.mkdirs() && !parent.isDirectory()) {
+			throw new IOException("Directory '" + parent + "' could not be created");
+		}
+		try (BufferedWriter writer = new BufferedWriter(
+		        new OutputStreamWriter(Files.newOutputStream(target.toPath()), ENCODING), DEFAULT_BUFFER_SIZE)) {
+			xstream.toXML(value, writer);
+		}
+	}
+	
+	public Object fromXML(File targetFile) throws IOException {
+		try (final InputStreamReader buffered = new InputStreamReader(
+		        new BufferedInputStream(Files.newInputStream(targetFile.toPath()), DEFAULT_BUFFER_SIZE), ENCODING)) {
+			return xstream.fromXML(buffered);
+		}
 	}
 	
 	private void init() {

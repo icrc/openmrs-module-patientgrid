@@ -11,22 +11,23 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class MostRecentEncounterPerPatientByTypeFunction implements Function<EncounterType, Map> {
-
-  private final EvaluationContext context;
-
-  private static final Logger log = LoggerFactory.getLogger(MostRecentEncounterPerPatientByTypeFunction.class);
-
-  public MostRecentEncounterPerPatientByTypeFunction(EvaluationContext context) {
-    this.context = context;
-  }
-
-  @Override
-  public Map apply(EncounterType encounterType) {
-    log.debug("Loading patient most recent patient encounters of type: {}", encounterType);
-    try {
-      return PatientGridUtils.getEncounters(encounterType, context, true);
-    } catch (EvaluationException e) {
-      throw new RuntimeException(e);
-    }
-  }
+	
+	private final EvaluationContext context;
+	
+	private static final Logger log = LoggerFactory.getLogger(MostRecentEncounterPerPatientByTypeFunction.class);
+	
+	public MostRecentEncounterPerPatientByTypeFunction(EvaluationContext context) {
+		this.context = context;
+	}
+	
+	@Override
+	public Map apply(EncounterType encounterType) {
+		log.debug("Loading patient most recent patient encounters of type: {}", encounterType);
+		try {
+			return PatientGridUtils.getEncounters(encounterType, context, true);
+		}
+		catch (EvaluationException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

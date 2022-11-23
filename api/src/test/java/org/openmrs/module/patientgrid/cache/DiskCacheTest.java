@@ -110,21 +110,4 @@ public class DiskCacheTest {
 		DiskCache.getInstance().getCacheDirectory();
 	}
 	
-	@Test
-	public void getFileContents_shouldReturnTheContentsIfTheSpecifiedFileIfItExists() {
-		File testParentDir = new File(getClass().getClassLoader().getResource(TEST_CACHE_PARENT_DIR).getFile());
-		when(OpenmrsUtil.getDirectoryInApplicationDataDirectory(MODULE_ID)).thenReturn(testParentDir);
-		
-		assertEquals("<test></test>", DiskCache.getInstance().getFileContents("test_grid_report"));
-	}
-	
-	@Test
-	public void getFileContents_shouldReturnNullIfTheSpecifiedFileDoesNotExist() throws Exception {
-		File testParentDir = new File(getClass().getClassLoader().getResource(TEST_CACHE_PARENT_DIR).getFile());
-		when(OpenmrsUtil.getDirectoryInApplicationDataDirectory(MODULE_ID)).thenReturn(testParentDir);
-		
-		assertNull(DiskCache.getInstance().getFileContents("some_file"));
-		PowerMockito.verifyZeroInteractions(FileUtils.class);
-	}
-	
 }
