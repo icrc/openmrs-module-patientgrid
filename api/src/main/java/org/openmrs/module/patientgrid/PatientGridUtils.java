@@ -155,7 +155,7 @@ public class PatientGridUtils {
 		stopWatch.start();
 		
 		EncountersForPatientDataDefinition encDef = new EncountersForPatientDataDefinition();
-
+		
 		encDef.setTypes(Collections.singletonList(type));
 		if (mostRecentOnly) {
 			encDef.setWhich(TimeQualifier.LAST);

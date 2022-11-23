@@ -291,13 +291,13 @@ public class PatientGridFilterUtils {
 	
 	/**
 	 * Evaluates any filters found on the columns on the specified {@link PatientGrid} and returns the
-	 * matching patients
-	 * How it works:
-	 * {@link PatientGridFilterUtils#generateCohortDefinition(PatientGrid)} will create a CohortDefinition used by CohortDefinitionService
-	 * The custom CohortDefinition are in the package org.openmrs.module.patientgrid.filter.definition
-	 * A definition is evalution by an evaluator defined in the package org.openmrs.module.patientgrid.filter.evaluator
-	 *
-	 * For instance {@link AgeRangeAtLatestEncounterCohortDefinition} is evaluated {@link org.openmrs.module.patientgrid.filter.evaluator.AgeRangeAtLatestEncounterCohortDefinitionEvaluator}
+	 * matching patients How it works:
+	 * {@link PatientGridFilterUtils#generateCohortDefinition(PatientGrid)} will create a
+	 * CohortDefinition used by CohortDefinitionService The custom CohortDefinition are in the package
+	 * org.openmrs.module.patientgrid.filter.definition A definition is evalution by an evaluator
+	 * defined in the package org.openmrs.module.patientgrid.filter.evaluator For instance
+	 * {@link AgeRangeAtLatestEncounterCohortDefinition} is evaluated
+	 * {@link org.openmrs.module.patientgrid.filter.evaluator.AgeRangeAtLatestEncounterCohortDefinitionEvaluator}
 	 * thanks to the annotation Handler
 	 *
 	 * @param patientGrid the {@link PatientGrid} object

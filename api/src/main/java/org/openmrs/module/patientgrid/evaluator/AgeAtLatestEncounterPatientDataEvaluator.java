@@ -19,42 +19,39 @@ import java.util.Map;
 
 @Handler(supports = AgeAtLatestEncounterPatientDataDefinition.class, order = 50)
 public class AgeAtLatestEncounterPatientDataEvaluator implements PatientDataEvaluator {
-
-  private static final Logger log = LoggerFactory.getLogger(AgeAtLatestEncounterPatientDataEvaluator.class);
-
-  @Override
-  public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
-      throws EvaluationException {
-
-    AgeAtLatestEncounterPatientDataDefinition def = (AgeAtLatestEncounterPatientDataDefinition) definition;
-    EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
-
-    MostRecentEncounterPerPatientByTypeFunction encounterFct = new MostRecentEncounterPerPatientByTypeFunction(
-        contextPersistantCache);
-    //will retrieve the map patientid-> Ecounter if not in cache
-    Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
-        encounterFct);
-
-    PatientAgePerEncounterIdByTypeFunction agePerEncounterIdFct = new PatientAgePerEncounterIdByTypeFunction(context,
-        patientIdAndEnc);
-    //will retrieve the map encounter id -> age if not in cache
-    Map<Integer, Object> encIdAndAge = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
-        agePerEncounterIdFct);
-
-
-    //transform these 2 maps in patient id -> age
-    Map<Integer, Object> patientIdAndAge = new HashMap<>();
-    patientIdAndEnc.entrySet().forEach(e ->
-    {
-      Integer patientId = e.getKey();
-      Encounter en = (Encounter) e.getValue();
-      patientIdAndAge.put(patientId, encIdAndAge.get(en.getId()));
-    });
-    EvaluatedPatientData result = new EvaluatedPatientData(definition, context);
-    result.setData(patientIdAndAge);
-
-    return result;
-  }
-
-
+	
+	private static final Logger log = LoggerFactory.getLogger(AgeAtLatestEncounterPatientDataEvaluator.class);
+	
+	@Override
+	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
+	        throws EvaluationException {
+		
+		AgeAtLatestEncounterPatientDataDefinition def = (AgeAtLatestEncounterPatientDataDefinition) definition;
+		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
+		
+		MostRecentEncounterPerPatientByTypeFunction encounterFct = new MostRecentEncounterPerPatientByTypeFunction(
+		        contextPersistantCache);
+		//will retrieve the map patientid-> Ecounter if not in cache
+		Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
+		    encounterFct);
+		
+		PatientAgePerEncounterIdByTypeFunction agePerEncounterIdFct = new PatientAgePerEncounterIdByTypeFunction(context,
+		        patientIdAndEnc);
+		//will retrieve the map encounter id -> age if not in cache
+		Map<Integer, Object> encIdAndAge = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
+		    agePerEncounterIdFct);
+		
+		//transform these 2 maps in patient id -> age
+		Map<Integer, Object> patientIdAndAge = new HashMap<>();
+		patientIdAndEnc.entrySet().forEach(e -> {
+			Integer patientId = e.getKey();
+			Encounter en = (Encounter) e.getValue();
+			patientIdAndAge.put(patientId, encIdAndAge.get(en.getId()));
+		});
+		EvaluatedPatientData result = new EvaluatedPatientData(definition, context);
+		result.setData(patientIdAndAge);
+		
+		return result;
+	}
+	
 }
