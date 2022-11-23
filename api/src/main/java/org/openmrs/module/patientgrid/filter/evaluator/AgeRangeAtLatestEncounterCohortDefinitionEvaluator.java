@@ -23,6 +23,17 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 @Handler(supports = AgeRangeAtLatestEncounterCohortDefinition.class, order = 50)
 public class AgeRangeAtLatestEncounterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	
+	/**
+	 * Will use a the PatientData evaluator
+	 * {@link org.openmrs.module.patientgrid.evaluator.AgeAtLatestEncounterPatientDataEvaluator} via
+	 * {@link AgeAtLatestEncounterPatientDataDefinition} to filter the patients ( based on their age and
+	 * if they have an encounter)
+	 *
+	 * @param cohortDefinition definition to evaluate
+	 * @param evaluationContext context to use during evaluation
+	 * @return
+	 * @throws EvaluationException
+	 */
 	@Override
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext evaluationContext)
 	        throws EvaluationException {

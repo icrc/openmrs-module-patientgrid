@@ -1,11 +1,13 @@
 package org.openmrs.module.patientgrid.cache;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.xstream.CustomXstreamSerializer;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.serialization.OpenmrsSerializer;
 import org.powermock.api.mockito.PowerMockito;
@@ -14,12 +16,11 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.when;
+import java.io.File;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Context.class)
@@ -33,23 +34,32 @@ public class PatientGridCacheTest {
 	private SimpleDataSet mockDataSet;
 	
 	@Mock
-	private OpenmrsSerializer mockOpenmrsSerializer;
+	private CustomXstreamSerializer mockOpenmrsSerializer;
 	
-	private PatientGridCache cache = new PatientGridCache();
+	private final PatientGridCache cache = new PatientGridCache();
+	
+	final String filename = "test_file";
+	
+	File file;
 	
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
 		PowerMockito.mockStatic(Context.class);
 		Whitebox.setInternalState(cache, DiskCache.class, mockDiskCache);
 		cache.setSerializer(mockOpenmrsSerializer);
+		file = File.createTempFile("test", ".txt");
+		when(mockDiskCache.getFile(filename)).thenReturn(file);
+	}
+	
+	@After
+	public void clean() throws Exception {
+		file.delete();
 	}
 	
 	@Test
 	public void get_shouldReturnTheDeserializedDataSet() throws Exception {
 		final String filename = "test_file";
-		final String testReportData = "Test report data";
-		when(mockOpenmrsSerializer.deserialize(testReportData, SimpleDataSet.class)).thenReturn(mockDataSet);
-		when(mockDiskCache.getFileContents(filename)).thenReturn(testReportData);
+		when(mockOpenmrsSerializer.fromXML(anyObject())).thenReturn(mockDataSet);
 		
 		assertEquals(mockDataSet, cache.get(filename, SimpleDataSet.class));
 	}
@@ -68,46 +78,38 @@ public class PatientGridCacheTest {
 	
 	@Test
 	public void getValueWrapper_shouldReturnTheWrappedValueOfTheDeserializedDataSet() throws Exception {
-		final String filename = "test_file";
-		final String testReportData = "Test report data";
-		when(mockDiskCache.getFileContents(filename)).thenReturn(testReportData);
-		when(mockOpenmrsSerializer.deserialize(testReportData, SimpleDataSet.class)).thenReturn(mockDataSet);
+		when(mockOpenmrsSerializer.fromXML(file)).thenReturn(mockDataSet);
 		
 		assertEquals(mockDataSet, cache.get(filename).get());
 	}
 	
 	@Test
 	public void put_shouldSerializeAndSaveTheSpecifiedDataSet() throws Exception {
-		final String filename = "test_file";
-		final String testReportData = "Test report data";
-		when(mockOpenmrsSerializer.serialize(mockDataSet)).thenReturn(testReportData);
 		
 		cache.put(filename, mockDataSet);
 		
-		Mockito.verify(mockDiskCache).setFileContents(filename, testReportData);
+		Mockito.verify(mockDiskCache).getFile(filename);
+		Mockito.verify(mockOpenmrsSerializer).toXML(mockDataSet, file);
 	}
 	
 	@Test
 	public void putIfAbsent_shouldReturnExistingValueAndNotSetTheNewValue() throws Exception {
-		final String filename = "test_file";
-		final String oldTestReportData = "Old Test report data";
-		when(mockDiskCache.getFileContents(filename)).thenReturn(oldTestReportData);
-		when(mockOpenmrsSerializer.deserialize(oldTestReportData, SimpleDataSet.class)).thenReturn(mockDataSet);
+		final SimpleDataSet oldDataSet = mock(SimpleDataSet.class);
+		when(mockOpenmrsSerializer.fromXML(file)).thenReturn(oldDataSet);
 		
-		assertEquals(mockDataSet, cache.putIfAbsent(filename, mockDataSet).get());
-		Mockito.verify(mockDiskCache, never()).setFileContents(eq(filename), anyString());
+		assertSame(oldDataSet, cache.putIfAbsent(filename, mockDataSet).get());
+		
+		assertSame(oldDataSet, cache.get(filename).get());
+		Mockito.verify(mockOpenmrsSerializer, never()).toXML(mockDataSet, file);
 		
 	}
 	
 	@Test
 	public void putIfAbsent_shouldSerializeAndSaveTheSpecifiedDataSet() throws Exception {
-		final String filename = "test_file";
-		final String testReportData = "Test report data";
-		when(mockOpenmrsSerializer.serialize(mockDataSet)).thenReturn(testReportData);
 		
 		assertNull(cache.putIfAbsent(filename, mockDataSet));
 		
-		Mockito.verify(mockDiskCache).setFileContents(filename, testReportData);
+		Mockito.verify(mockOpenmrsSerializer).toXML(mockDataSet, file);
 		
 	}
 	

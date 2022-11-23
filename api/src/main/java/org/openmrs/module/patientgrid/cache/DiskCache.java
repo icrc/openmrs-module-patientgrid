@@ -66,26 +66,8 @@ public class DiskCache {
 		return file.exists() && file.isFile();
 	}
 	
-	public String getFileContents(String filename) {
-		if (!hasFile(filename)) {
-			return null;
-		}
-		
-		try {
-			return FileUtils.readFileToString(new File(getCacheDirectory(), filename), StandardCharsets.UTF_8);
-		}
-		catch (IOException e) {
-			throw new APIException("Failed to read from file", e);
-		}
-	}
-	
-	public void setFileContents(String filename, String contents) {
-		try {
-			FileUtils.write(new File(getCacheDirectory(), filename), contents, StandardCharsets.UTF_8);
-		}
-		catch (IOException e) {
-			throw new APIException("Failed to write to file", e);
-		}
+	public File getFile(String filename) {
+		return new File(getCacheDirectory(), filename);
 	}
 	
 	public void deleteFile(String filename) {
