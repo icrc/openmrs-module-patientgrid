@@ -37,6 +37,31 @@ You will have to generate a token from a Github package (with read access to pac
 </server>
 ```
 
+# Main entry points for code
+
+## API
+the entry point is `org.openmrs.module.patientgrid.api.impl.PatientGridServiceImpl`.
+To generate the result ie the `SimpleDataSet`, OpenMRS reporting module is used. See `org.openmrs.module.patientgrid.api.impl.PatientGridServiceImpl.evaluate`
+
+## Cohort
+The first step is to generate a Cohort or a list of Patients:
+
+ - It's done via `org.openmrs.module.patientgrid.filter.PatientGridFilterUtils.filterPatients` that will create some `BaseCohortDefinition`.
+ - Patient Grid custom definitions are defined in the package: `org.openmrs.module.patientgrid.filter.definition`
+ - These definition will be used by evaluator the extract patient list (list of patient id)
+ - Patient Grid custom evaluators are defined in the package: `AgeRangeAtLatestEncounterCohortDefinitionEvaluator`
+ - To improve perf, caching is used. For example, the evaluator `org.openmrs.module.patientgrid.filter.evaluator.AgeRangeAtLatestEncounterCohortDefinitionEvaluator` will use a Data Evaluator to pre-compute results and cache them.
+
+## Data
+Based on the Cohort module, we will have to compute the data (for instance the age of the patient).
+The evaluators will use definition `DataDefinition` to  perform the evaluation.
+ - Custom definition are in the package: `org.openmrs.module.patientgrid.definition`
+ - Evaluators in `org.openmrs.module.patientgrid.evaluator`
+
+## EvaluationContext 
+it's the context shared by Cohort and Data evaluators
+For performance reason we created a `EvaluationContextPersistantCache` containing a cache that can used by both steps ie Cohort and Data Evaluation.
+
 # Global Properties
 ## Grid Report Cache Directory
 

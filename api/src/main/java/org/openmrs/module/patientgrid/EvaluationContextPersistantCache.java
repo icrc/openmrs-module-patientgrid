@@ -12,7 +12,7 @@ import java.util.function.Function;
 public class EvaluationContextPersistantCache extends EvaluationContext {
 	
 	/**
-	 * Must be initialize at startup to be shared with child context.
+	 * Must be initialized at startup to be shared with child context.
 	 */
 	private transient Map<String, Object> persistentCache = new HashMap<>();
 	

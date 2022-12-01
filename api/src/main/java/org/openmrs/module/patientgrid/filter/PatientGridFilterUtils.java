@@ -54,7 +54,7 @@ public class PatientGridFilterUtils {
 	 * @param patientGrid the {@link PatientGrid} object
 	 * @return the {@link CohortDefinition} object
 	 */
-	public static CohortDefinition generateCohortDefinition(PatientGrid patientGrid) {
+	protected static CohortDefinition generateCohortDefinition(PatientGrid patientGrid) {
 		Map<String, CohortDefinition> columnAndCohortDefMap = new HashMap(patientGrid.getColumns().size());
 		for (PatientGridColumn column : patientGrid.getColumns()) {
 			CohortDefinition cohortDef = null;
