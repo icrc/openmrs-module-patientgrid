@@ -186,7 +186,7 @@ public class PatientGridUtils {
 		        .filter(o -> o.getConcept().equals(concept) && !o.hasGroupMembers(true)).collect(Collectors.toList());
 		
 		if (matches.size() > 1) {
-			throw new APIException("Found multiple obs with question concept " + concept + " for encounter " + encounter);
+			log.warn("Multi obs answer not yet supported. No data will be returned for " + encounter);
 		}
 		
 		if (matches.size() == 1) {
