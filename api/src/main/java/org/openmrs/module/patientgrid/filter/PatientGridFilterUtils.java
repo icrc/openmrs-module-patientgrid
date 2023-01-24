@@ -24,6 +24,7 @@ import org.openmrs.module.patientgrid.*;
 import org.openmrs.module.patientgrid.filter.definition.AgeRangeAtLatestEncounterCohortDefinition;
 import org.openmrs.module.patientgrid.filter.definition.LocationCohortDefinition;
 import org.openmrs.module.patientgrid.filter.definition.ObsForLatestEncounterCohortDefinition;
+import org.openmrs.module.patientgrid.filter.definition.PeriodCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
@@ -73,6 +74,9 @@ public class PatientGridFilterUtils {
 					case DATAFILTER_LOCATION:
 					case DATAFILTER_COUNTRY:
 						cohortDef = createLocationCohortDefinition(column, column.getDatatype() == DATAFILTER_COUNTRY);
+						break;
+					case ENC_DATE:
+						cohortDef = createPeriodCohortDefinition(column);
 						break;
 					default:
 						throw new APIException("Don't know how to filter data for column type: " + column.getDatatype());
@@ -188,6 +192,19 @@ public class PatientGridFilterUtils {
 			def.getLocations().add(location);
 		}
 		
+		return def;
+	}
+	
+	private static PeriodCohortDefinition createPeriodCohortDefinition(PatientGridColumn column) {
+		PeriodCohortDefinition def = new PeriodCohortDefinition();
+		for (PatientGridColumnFilter filter : column.getFilters()) {
+			Date date = convert(filter.getOperand(), Date.class);
+			if (filter.getName().equals("fromDate")) {
+				def.setFromDate(date);
+			} else {
+				def.setToDate(date);
+			}
+		}
 		return def;
 	}
 	
