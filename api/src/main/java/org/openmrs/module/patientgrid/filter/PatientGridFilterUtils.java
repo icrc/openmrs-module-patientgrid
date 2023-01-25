@@ -197,6 +197,8 @@ public class PatientGridFilterUtils {
 	
 	private static PeriodCohortDefinition createPeriodCohortDefinition(PatientGridColumn column) {
 		PeriodCohortDefinition def = new PeriodCohortDefinition();
+		EncounterDatePatientGridColumn periodColumn = (EncounterDatePatientGridColumn) column;
+		def.setEncounterType(periodColumn.getEncounterType());
 		for (PatientGridColumnFilter filter : column.getFilters()) {
 			Date date = convert(filter.getOperand(), Date.class);
 			if (filter.getName().equals("fromDate")) {

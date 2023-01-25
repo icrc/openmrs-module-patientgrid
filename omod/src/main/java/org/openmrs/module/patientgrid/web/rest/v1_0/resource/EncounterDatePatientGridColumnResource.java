@@ -5,8 +5,10 @@ import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConsta
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.EncounterDatePatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumn;
+import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.SubClassHandler;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -59,7 +61,11 @@ public class EncounterDatePatientGridColumnResource extends BaseDelegatingSubcla
 	public String getDisplayString(PatientGridColumn delegate) {
 		return getSuperclassResource().getDisplayString(delegate);
 	}
-	
+
+	@PropertySetter("filters")
+	public void setFilters(PatientGridColumn column, PatientGridColumnFilter... filters) {
+		getSuperclassResource().setFilters(column, filters);
+	}
 	/**
 	 * @see BaseDelegatingSubclassHandler#getCreatableProperties()
 	 */
