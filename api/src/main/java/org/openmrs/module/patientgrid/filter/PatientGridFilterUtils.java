@@ -135,6 +135,17 @@ public class PatientGridFilterUtils {
 			catch (IOException e) {
 				throw new APIException("Failed to convert: " + value + " to an AgeRange", e);
 			}
+		} else if (PeriodRange.class.isAssignableFrom(clazz)) {
+			Map map = null;
+			try {
+				map = MAPPER.readValue(value, Map.class);
+				ret = new PeriodRange(convert((String) map.get("fromDate"), Date.class),
+				        convert((String) map.get("toDate"), Date.class));
+				
+			}
+			catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		} else {
 			throw new APIException("Don't know how to convert operand value to type: " + clazz.getName());
 		}
@@ -200,12 +211,9 @@ public class PatientGridFilterUtils {
 		EncounterDatePatientGridColumn periodColumn = (EncounterDatePatientGridColumn) column;
 		def.setEncounterType(periodColumn.getEncounterType());
 		for (PatientGridColumnFilter filter : column.getFilters()) {
-			Date date = convert(filter.getOperand(), Date.class);
-			if (filter.getName().equals("fromDate")) {
-				def.setFromDate(date);
-			} else {
-				def.setToDate(date);
-			}
+			PeriodRange periodRange = convert(filter.getOperand(), PeriodRange.class);
+			def.setFromDate(periodRange.getFromDate());
+			def.setToDate(periodRange.getToDate());
 		}
 		return def;
 	}
