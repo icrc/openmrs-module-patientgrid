@@ -1,5 +1,6 @@
 package org.openmrs.module.patientgrid;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.openmrs.*;
@@ -24,15 +25,17 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.openmrs.module.patientgrid.PatientGridConstants.GP_AGE_RANGES;
-import static org.openmrs.module.patientgrid.PatientGridConstants.OBS_CONVERTER;
+import static org.openmrs.module.patientgrid.PatientGridConstants.*;
 import static org.openmrs.module.reporting.common.Age.Unit.YEARS;
 
 public class PatientGridUtils {
 
+	public static final ObjectMapper MAPPER = new ObjectMapper();
 	private static final Logger log = LoggerFactory.getLogger(PatientGridUtils.class);
 
 	private static final DataConverter COUNTRY_CONVERTER = new PropertyConverter(String.class, "country");
@@ -248,4 +251,60 @@ public class PatientGridUtils {
 		return patientGrid.getObsColumns().stream().map(c -> c.getEncounterType()).collect(Collectors.toSet());
 	}
 
+	/**
+	 * Converts the specified string to the specified type
+	 *
+	 * @param value the value to convert
+	 * @param clazz the type to convert to
+	 * @return the converted value
+	 */
+	public static <T> T convert(String value, Class<T> clazz) throws APIException {
+		Object ret;
+		if (Double.class.isAssignableFrom(clazz)) {
+			ret = Double.valueOf(value);
+		} else if (Integer.class.isAssignableFrom(clazz)) {
+			ret = Integer.valueOf(value);
+		} else if (Boolean.class.isAssignableFrom(clazz)) {
+			ret = Boolean.valueOf(value);
+		} else if (Date.class.isAssignableFrom(clazz)) {
+			try {
+				ret = DATETIME_FORMAT.parse(value);
+			}
+			catch (ParseException e) {
+				try {
+					ret = DATE_FORMAT.parse(value);
+				}
+				catch (ParseException pe) {
+					throw new APIException("Failed to convert " + value + " to a date", pe);
+				}
+			}
+		} else if (Concept.class.isAssignableFrom(clazz)) {
+			ret = Context.getConceptService().getConceptByUuid(value);
+		} else if (Location.class.isAssignableFrom(clazz)) {
+			ret = Context.getLocationService().getLocationByUuid(value);
+		} else if (AgeRange.class.isAssignableFrom(clazz)) {
+			try {
+				Map map = MAPPER.readValue(value, Map.class);
+				ret = new AgeRange((Integer) map.get("minAge"), (Integer) map.get("maxAge"));
+			}
+			catch (IOException e) {
+				throw new APIException("Failed to convert: " + value + " to an AgeRange", e);
+			}
+		} else if (PeriodRange.class.isAssignableFrom(clazz)) {
+			Map map = null;
+			try {
+				map = MAPPER.readValue(value, Map.class);
+				ret = new PeriodRange(convert((String) map.get("fromDate"), Date.class),
+				        convert((String) map.get("toDate"), Date.class));
+
+			}
+			catch (IOException e) {
+				throw new APIException("Failed to convert: " + value + " to a PeriodRange", e);
+			}
+		} else {
+			throw new APIException("Don't know how to convert operand value to type: " + clazz.getName());
+		}
+
+		return (T) ret;
+	}
 }
