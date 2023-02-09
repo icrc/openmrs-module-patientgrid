@@ -2,6 +2,7 @@
 Provides an API for managing and evaluating a grid of patient data
 
 # Packages
+
 packages can be found on [GitHub Packages](https://github.com/orgs/icrc/packages?repo_name=openmrs-module-patientgrid).
 
 # SNAPSHOT and Release Deployments
