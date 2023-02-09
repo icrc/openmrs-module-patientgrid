@@ -8,7 +8,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeConverter;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeRangeConverter;
-import org.openmrs.module.patientgrid.converter.TestConverter;
 import org.openmrs.module.patientgrid.definition.*;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -79,7 +78,7 @@ public class PatientGridUtils {
 					EncounterDatePatientGridColumn dateColumn = (EncounterDatePatientGridColumn) columnDef;
 					DateForLatestEncounterPatientDataDefinition dateDef = new DateForLatestEncounterPatientDataDefinition();
 					dateDef.setEncounterType(dateColumn.getEncounterType());
-					dataSetDef.addColumn(columnDef.getName(), dateDef, (String) null, new TestConverter());
+					dataSetDef.addColumn(columnDef.getName(), dateDef, (String) null);
 					break;
 				case ENC_AGE:
 					AgeAtEncounterPatientGridColumn ageColumn = (AgeAtEncounterPatientGridColumn) columnDef;
