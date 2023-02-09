@@ -1,43 +1,18 @@
 package org.openmrs.module.patientgrid.filter;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.openmrs.module.patientgrid.PatientGridConstants.DATETIME_FORMAT;
-import static org.openmrs.module.patientgrid.PatientGridConstants.DATE_FORMAT;
-import static org.openmrs.module.patientgrid.filter.PatientGridFilterUtils.MAPPER;
-import static org.openmrs.module.reporting.common.Age.Unit.YEARS;
-import static org.openmrs.module.reporting.common.BooleanOperator.AND;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.openmrs.Concept;
-import org.openmrs.ConceptDatatype;
-import org.openmrs.EncounterType;
-import org.openmrs.Location;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.patientgrid.AgeAtEncounterPatientGridColumn;
-import org.openmrs.module.patientgrid.ObsPatientGridColumn;
-import org.openmrs.module.patientgrid.PatientGrid;
-import org.openmrs.module.patientgrid.PatientGridColumn;
+import org.openmrs.module.patientgrid.*;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
-import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.patientgrid.filter.definition.AgeRangeAtLatestEncounterCohortDefinition;
 import org.openmrs.module.patientgrid.filter.definition.LocationCohortDefinition;
 import org.openmrs.module.patientgrid.filter.definition.ObsForLatestEncounterCohortDefinition;
@@ -48,6 +23,16 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.*;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.*;
+import static org.openmrs.module.patientgrid.PatientGridConstants.DATETIME_FORMAT;
+import static org.openmrs.module.patientgrid.PatientGridConstants.DATE_FORMAT;
+import static org.openmrs.module.patientgrid.PatientGridUtils.MAPPER;
+import static org.openmrs.module.reporting.common.Age.Unit.YEARS;
+import static org.openmrs.module.reporting.common.BooleanOperator.AND;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Context.class)
@@ -167,18 +152,18 @@ public class PatientGridFilterUtilsTest {
 	
 	@Test
 	public void convert_shouldConvertAStringToADouble() {
-		assertEquals(Double.valueOf(45.0), PatientGridFilterUtils.convert("45.0", Double.class));
+		assertEquals(Double.valueOf(45.0), PatientGridUtils.convert("45.0", Double.class));
 	}
 	
 	@Test
 	public void convert_shouldConvertAStringToAnInteger() {
-		assertEquals(Integer.valueOf(45), PatientGridFilterUtils.convert("45", Integer.class));
+		assertEquals(Integer.valueOf(45), PatientGridUtils.convert("45", Integer.class));
 	}
 	
 	@Test
 	public void convert_shouldConvertAStringToABoolean() {
-		assertEquals(true, PatientGridFilterUtils.convert("true", Boolean.class));
-		assertEquals(false, PatientGridFilterUtils.convert("false", Boolean.class));
+		assertEquals(true, PatientGridUtils.convert("true", Boolean.class));
+		assertEquals(false, PatientGridUtils.convert("false", Boolean.class));
 	}
 	
 	@Test
@@ -190,19 +175,19 @@ public class PatientGridFilterUtilsTest {
 		Mockito.when(Context.getConceptService()).thenReturn(mockConceptService);
 		Mockito.when(mockConceptService.getConceptByUuid(conceptUuid)).thenReturn(mockConcept);
 		
-		assertEquals(mockConcept, PatientGridFilterUtils.convert(conceptUuid, Concept.class));
+		assertEquals(mockConcept, PatientGridUtils.convert(conceptUuid, Concept.class));
 	}
 	
 	@Test
 	public void convert_shouldConvertAStringToADate() throws Exception {
 		final String date = "2022-09-09";
-		assertEquals(DATE_FORMAT.parse(date), PatientGridFilterUtils.convert(date, Date.class));
+		assertEquals(DATE_FORMAT.parse(date), PatientGridUtils.convert(date, Date.class));
 	}
 	
 	@Test
 	public void convert_shouldConvertAStringToADatetime() throws Exception {
 		final String date = "2022-09-09 14:00:05+00:00";
-		assertEquals(DATETIME_FORMAT.parse(date), PatientGridFilterUtils.convert(date, Date.class));
+		assertEquals(DATETIME_FORMAT.parse(date), PatientGridUtils.convert(date, Date.class));
 	}
 	
 	@Test
@@ -210,7 +195,7 @@ public class PatientGridFilterUtilsTest {
 		final Integer minAge = 18;
 		Map ageRange = Collections.singletonMap("minAge", minAge);
 		
-		AgeRange value = PatientGridFilterUtils.convert(MAPPER.writeValueAsString(ageRange), AgeRange.class);
+		AgeRange value = PatientGridUtils.convert(MAPPER.writeValueAsString(ageRange), AgeRange.class);
 		
 		assertEquals(minAge, value.getMinAge());
 		assertEquals(YEARS, value.getMinAgeUnit());
@@ -220,7 +205,7 @@ public class PatientGridFilterUtilsTest {
 		final Integer maxAge = 45;
 		ageRange = Collections.singletonMap("maxAge", maxAge);
 		
-		value = PatientGridFilterUtils.convert(MAPPER.writeValueAsString(ageRange), AgeRange.class);
+		value = PatientGridUtils.convert(MAPPER.writeValueAsString(ageRange), AgeRange.class);
 		
 		assertEquals(maxAge, value.getMaxAge());
 		assertEquals(YEARS, value.getMaxAgeUnit());
@@ -231,7 +216,7 @@ public class PatientGridFilterUtilsTest {
 		ageRange.put("minAge", minAge);
 		ageRange.put("maxAge", maxAge);
 		
-		value = PatientGridFilterUtils.convert(MAPPER.writeValueAsString(ageRange), AgeRange.class);
+		value = PatientGridUtils.convert(MAPPER.writeValueAsString(ageRange), AgeRange.class);
 		
 		assertEquals(minAge, value.getMinAge());
 		assertEquals(YEARS, value.getMinAgeUnit());
@@ -245,7 +230,7 @@ public class PatientGridFilterUtilsTest {
 		expectedException.expect(APIException.class);
 		expectedException.expectMessage(equalTo("Don't know how to convert operand value to type: " + clazz.getName()));
 		
-		PatientGridFilterUtils.convert("visit-uuid", clazz);
+		PatientGridUtils.convert("visit-uuid", clazz);
 	}
 	
 	@Test
@@ -257,7 +242,7 @@ public class PatientGridFilterUtilsTest {
 		Mockito.when(Context.getLocationService()).thenReturn(mockLocationService);
 		Mockito.when(mockLocationService.getLocationByUuid(locationUuid)).thenReturn(mockLocation);
 		
-		assertEquals(mockLocation, PatientGridFilterUtils.convert(locationUuid, Location.class));
+		assertEquals(mockLocation, PatientGridUtils.convert(locationUuid, Location.class));
 	}
 	
 	@Test

@@ -1,18 +1,5 @@
 package org.openmrs.module.patientgrid.filter;
 
-import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.DATAFILTER_COUNTRY;
-import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.ENC_AGE;
-import static org.openmrs.module.patientgrid.PatientGridConstants.DATETIME_FORMAT;
-import static org.openmrs.module.patientgrid.PatientGridConstants.DATE_FORMAT;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.openmrs.Cohort;
@@ -36,7 +23,9 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.*;
+
+import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.*;
 
 /**
  * Contains patient grid filter utility methods
@@ -44,9 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class PatientGridFilterUtils {
 	
 	private static final Logger log = LoggerFactory.getLogger(PatientGridFilterUtils.class);
-	
-	protected static final ObjectMapper MAPPER = new ObjectMapper();
-	
+
 	/**
 	 * Utility method that generates a {@link CohortDefinition} based on the column filters of the
 	 * specified {@link PatientGrid}
@@ -56,11 +43,23 @@ public class PatientGridFilterUtils {
 	 */
 	public static CohortDefinition generateCohortDefinition(PatientGrid patientGrid) {
 		Map<String, CohortDefinition> columnAndCohortDefMap = new HashMap(patientGrid.getColumns().size());
+		PeriodRange periodRange = null;
+		for (PatientGridColumn column : patientGrid.getColumns()) {
+			if (ENC_DATE.equals(column.getDatatype())) {
+				if (!column.getFilters().isEmpty()) {
+					for (PatientGridColumnFilter filter : column.getFilters()) {
+						periodRange = PatientGridUtils.convert(filter.getOperand(), PeriodRange.class);
+					}
+				}
+				break;
+			}
+		}
+		
 		for (PatientGridColumn column : patientGrid.getColumns()) {
 			CohortDefinition cohortDef = null;
 			if (ENC_AGE.equals(column.getDatatype())) {
 				//for age, we will always create a range cohort definition as it's used to filter on the encounter type
-				cohortDef = createAgeRangeCohortDefinition(column);
+				cohortDef = createAgeRangeCohortDefinition(column, periodRange);
 			} else if (!column.getFilters().isEmpty()) {
 				
 				switch (column.getDatatype()) {
@@ -68,11 +67,13 @@ public class PatientGridFilterUtils {
 						cohortDef = createGenderCohortDefinition(column);
 						break;
 					case OBS:
-						cohortDef = createObsCohortDefinition(column);
+						cohortDef = createObsCohortDefinition(column, periodRange);
 						break;
 					case DATAFILTER_LOCATION:
 					case DATAFILTER_COUNTRY:
 						cohortDef = createLocationCohortDefinition(column, column.getDatatype() == DATAFILTER_COUNTRY);
+						break;
+					case ENC_DATE:
 						break;
 					default:
 						throw new APIException("Don't know how to filter data for column type: " + column.getDatatype());
@@ -91,53 +92,7 @@ public class PatientGridFilterUtils {
 		
 		return createCohortDef(columnAndCohortDefMap, BooleanOperator.AND);
 	}
-	
-	/**
-	 * Converts the specified string to the specified type
-	 *
-	 * @param value the value to convert
-	 * @param clazz the type to convert to
-	 * @return the converted value
-	 */
-	protected static <T> T convert(String value, Class<T> clazz) throws APIException {
-		Object ret;
-		if (Double.class.isAssignableFrom(clazz)) {
-			ret = Double.valueOf(value);
-		} else if (Integer.class.isAssignableFrom(clazz)) {
-			ret = Integer.valueOf(value);
-		} else if (Boolean.class.isAssignableFrom(clazz)) {
-			ret = Boolean.valueOf(value);
-		} else if (Date.class.isAssignableFrom(clazz)) {
-			try {
-				ret = DATETIME_FORMAT.parse(value);
-			}
-			catch (ParseException e) {
-				try {
-					ret = DATE_FORMAT.parse(value);
-				}
-				catch (ParseException pe) {
-					throw new APIException("Failed to convert " + value + " to a date", pe);
-				}
-			}
-		} else if (Concept.class.isAssignableFrom(clazz)) {
-			ret = Context.getConceptService().getConceptByUuid(value);
-		} else if (Location.class.isAssignableFrom(clazz)) {
-			ret = Context.getLocationService().getLocationByUuid(value);
-		} else if (AgeRange.class.isAssignableFrom(clazz)) {
-			try {
-				Map map = MAPPER.readValue(value, Map.class);
-				ret = new AgeRange((Integer) map.get("minAge"), (Integer) map.get("maxAge"));
-			}
-			catch (IOException e) {
-				throw new APIException("Failed to convert: " + value + " to an AgeRange", e);
-			}
-		} else {
-			throw new APIException("Don't know how to convert operand value to type: " + clazz.getName());
-		}
-		
-		return (T) ret;
-	}
-	
+
 	/**
 	 * Creates a {@link AgeRangeAtLatestEncounterCohortDefinition} based on the filters for the
 	 * specified {@link PatientGridColumn}
@@ -145,19 +100,21 @@ public class PatientGridFilterUtils {
 	 * @param column {@link PatientGridColumn} object
 	 * @return AgeRangeAtLatestEncounterCohortDefinition
 	 */
-	private static AgeRangeAtLatestEncounterCohortDefinition createAgeRangeCohortDefinition(PatientGridColumn column) {
+	private static AgeRangeAtLatestEncounterCohortDefinition createAgeRangeCohortDefinition(PatientGridColumn column,
+	        PeriodRange periodRange) {
 		AgeAtEncounterPatientGridColumn ageColumn = (AgeAtEncounterPatientGridColumn) column;
 		AgeRangeAtLatestEncounterCohortDefinition def = new AgeRangeAtLatestEncounterCohortDefinition();
 		def.setEncounterType(ageColumn.getEncounterType());
 		def.setAgeRanges(new ArrayList(column.getFilters().size()));
+		def.setPeriodRange(periodRange);
 		for (PatientGridColumnFilter filter : column.getFilters()) {
 			AgeRange ageRange;
 			if (!ageColumn.getConvertToAgeRange()) {
 				//TODO support less than 1yr
-				Integer age = convert(filter.getOperand(), Integer.class);
+				Integer age = PatientGridUtils.convert(filter.getOperand(), Integer.class);
 				ageRange = new AgeRange(age, age);
 			} else {
-				ageRange = convert(filter.getOperand(), AgeRange.class);
+				ageRange = PatientGridUtils.convert(filter.getOperand(), AgeRange.class);
 			}
 			
 			def.getAgeRanges().add(ageRange);
@@ -180,7 +137,7 @@ public class PatientGridFilterUtils {
 		def.setCountry(matchOnCountry);
 		def.setLocations(new ArrayList(column.getFilters().size()));
 		for (PatientGridColumnFilter filter : column.getFilters()) {
-			Location location = convert(filter.getOperand(), Location.class);
+			Location location = PatientGridUtils.convert(filter.getOperand(), Location.class);
 			if (location == null) {
 				throw new APIException("No location found with uuid: " + filter.getOperand());
 			}
@@ -198,12 +155,14 @@ public class PatientGridFilterUtils {
 	 * @param column {@link PatientGridColumn} object
 	 * @return ObsForLatestEncounterCohortDefinition
 	 */
-	private static ObsForLatestEncounterCohortDefinition createObsCohortDefinition(PatientGridColumn column) {
+	private static ObsForLatestEncounterCohortDefinition createObsCohortDefinition(PatientGridColumn column,
+	        PeriodRange periodRange) {
 		ObsPatientGridColumn obsColumn = (ObsPatientGridColumn) column;
 		ObsForLatestEncounterCohortDefinition obsCohortDef = new ObsForLatestEncounterCohortDefinition();
 		Concept concept = obsColumn.getConcept();
 		obsCohortDef.setConcept(concept);
 		obsCohortDef.setEncounterType(obsColumn.getEncounterType());
+		obsCohortDef.setPeriodRange(periodRange);
 		Class<?> valueType;
 		if (concept.getDatatype().isNumeric()) {
 			obsCohortDef.setPropertyName("valueNumeric");
@@ -228,7 +187,7 @@ public class PatientGridFilterUtils {
 		for (PatientGridColumnFilter filter : column.getFilters()) {
 			Object value = filter.getOperand();
 			if (!String.class.isAssignableFrom(valueType)) {
-				value = convert(filter.getOperand(), valueType);
+				value = PatientGridUtils.convert(filter.getOperand(), valueType);
 				if (Concept.class.equals(valueType) && value == null) {
 					throw new APIException("No concept found with uuid: " + filter.getOperand());
 				}

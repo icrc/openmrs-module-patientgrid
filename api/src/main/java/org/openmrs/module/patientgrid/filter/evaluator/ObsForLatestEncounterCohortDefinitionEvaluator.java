@@ -1,7 +1,5 @@
 package org.openmrs.module.patientgrid.filter.evaluator;
 
-import java.util.List;
-
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
@@ -20,6 +18,8 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @Handler(supports = ObsForLatestEncounterCohortDefinition.class, order = 50)
 public class ObsForLatestEncounterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
@@ -42,7 +42,8 @@ public class ObsForLatestEncounterCohortDefinitionEvaluator implements CohortDef
 		ObsForLatestEncounterCohortDefinition cohortDef = (ObsForLatestEncounterCohortDefinition) cohortDefinition;
 		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) evaluationContext;
 		
-		MostRecentEncounterIdByTypeFunction function = new MostRecentEncounterIdByTypeFunction(sf);
+		MostRecentEncounterIdByTypeFunction function = new MostRecentEncounterIdByTypeFunction(sf,
+		        cohortDef.getPeriodRange());
 		List<Integer> encounterIds = contextPersistantCache.computeListIfAbsent(cohortDef.getEncounterType(), function);
 		
 		Criteria criteria = sf.getCurrentSession().createCriteria(Obs.class, "o");

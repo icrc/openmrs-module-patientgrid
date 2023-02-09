@@ -1,37 +1,17 @@
 package org.openmrs.module.patientgrid;
 
-import static org.openmrs.module.patientgrid.PatientGridConstants.GP_AGE_RANGES;
-import static org.openmrs.module.patientgrid.PatientGridConstants.OBS_CONVERTER;
-import static org.openmrs.module.reporting.common.Age.Unit.YEARS;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.openmrs.Cohort;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
+import org.openmrs.*;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeConverter;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeRangeConverter;
-import org.openmrs.module.patientgrid.converter.TestConverter;
-import org.openmrs.module.patientgrid.definition.AgeAtLatestEncounterPatientDataDefinition;
-import org.openmrs.module.patientgrid.definition.DateForLatestEncounterPatientDataDefinition;
-import org.openmrs.module.patientgrid.definition.LocationPatientDataDefinition;
-import org.openmrs.module.patientgrid.definition.ObsForLatestEncounterPatientDataDefinition;
-import org.openmrs.module.patientgrid.definition.PersonUuidDataDefinition;
+import org.openmrs.module.patientgrid.definition.*;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.converter.PropertyConverter;
@@ -45,26 +25,35 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.openmrs.module.patientgrid.PatientGridConstants.*;
+import static org.openmrs.module.reporting.common.Age.Unit.YEARS;
+
 public class PatientGridUtils {
-	
+
+	public static final ObjectMapper MAPPER = new ObjectMapper();
 	private static final Logger log = LoggerFactory.getLogger(PatientGridUtils.class);
-	
+
 	private static final DataConverter COUNTRY_CONVERTER = new PropertyConverter(String.class, "country");
-	
+
 	private static final LocationPatientDataDefinition LOCATION_DATA_DEF = new LocationPatientDataDefinition();
-	
+
 	private static final PreferredNameDataDefinition NAME_DATA_DEF = new PreferredNameDataDefinition();
-	
+
 	private static final GenderDataDefinition GENDER_DATA_DEF = new GenderDataDefinition();
-	
+
 	private static final PersonUuidDataDefinition UUID_DATA_DEF = new PersonUuidDataDefinition();
-	
+
 	private static final DataConverter OBJECT_CONVERTER = new ObjectFormatter();
-	
+
 	private static final DataConverter AGE_CONVERTER = new PatientGridAgeConverter();
-	
+
 	private static PatientGridAgeRangeConverter ageRangeConverter;
-	
+
 	/**
 	 * Create a {@link PatientDataSetDefinition} instance from the specified {@link PatientGrid} object
 	 *
@@ -75,12 +64,12 @@ public class PatientGridUtils {
 	public static PatientDataSetDefinition createPatientDataSetDefinition(PatientGrid patientGrid, boolean includeObs) {
 		PatientDataSetDefinition dataSetDef = new PatientDataSetDefinition();
 		dataSetDef.addColumn(PatientGridConstants.COLUMN_UUID, UUID_DATA_DEF, (String) null);
-		
+
 		for (PatientGridColumn columnDef : patientGrid.getColumns()) {
 			if (!includeObs && columnDef.getDatatype() == ColumnDatatype.OBS) {
 				continue;
 			}
-			
+
 			switch (columnDef.getDatatype()) {
 				case NAME:
 					dataSetDef.addColumn(columnDef.getName(), NAME_DATA_DEF, (String) null, OBJECT_CONVERTER);
@@ -92,7 +81,7 @@ public class PatientGridUtils {
 					EncounterDatePatientGridColumn dateColumn = (EncounterDatePatientGridColumn) columnDef;
 					DateForLatestEncounterPatientDataDefinition dateDef = new DateForLatestEncounterPatientDataDefinition();
 					dateDef.setEncounterType(dateColumn.getEncounterType());
-					dataSetDef.addColumn(columnDef.getName(), dateDef, (String) null, new TestConverter());
+					dataSetDef.addColumn(columnDef.getName(), dateDef, (String) null);
 					break;
 				case ENC_AGE:
 					AgeAtEncounterPatientGridColumn ageColumn = (AgeAtEncounterPatientGridColumn) columnDef;
@@ -103,12 +92,12 @@ public class PatientGridUtils {
 							ageRangeConverter = new PatientGridAgeRangeConverter();
 							getAgeRanges().forEach(r -> ageRangeConverter.addAgeRange(r));
 						}
-						
+
 						dataSetDef.addColumn(columnDef.getName(), ageDef, (String) null, ageRangeConverter);
 					} else {
 						dataSetDef.addColumn(columnDef.getName(), ageDef, (String) null, AGE_CONVERTER);
 					}
-					
+
 					break;
 				case OBS:
 					ObsPatientGridColumn obsColumn = (ObsPatientGridColumn) columnDef;
@@ -127,10 +116,10 @@ public class PatientGridUtils {
 					throw new APIException("Don't know how to handle column type: " + columnDef.getDatatype());
 			}
 		}
-		
+
 		return dataSetDef;
 	}
-	
+
 	/**
 	 * Fetches the encounters for the specified cohort of patients matching the given encounter type.
 	 *
@@ -140,40 +129,44 @@ public class PatientGridUtils {
 	 *            or their encounter history
 	 * @return a map of patient ids to encounters
 	 */
-	public static Map<Integer, Object> getEncounters(EncounterType type, EvaluationContext context, boolean mostRecentOnly)
-	        throws EvaluationException {
-		
+	public static Map<Integer, Object> getEncounters(EncounterType type, EvaluationContext context, boolean mostRecentOnly,
+	        PeriodRange periodRange) throws EvaluationException {
 		Cohort cohort = null;
 		if (context != null) {
 			cohort = context.getBaseCohort();
 		}
-		
+
 		if (cohort == null || cohort.size() > 1) {
 			log.info("Fetching encounters of type:{}, most recently: {}", type, mostRecentOnly);
 		}
-		
+
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		
+
 		EncountersForPatientDataDefinition encDef = new EncountersForPatientDataDefinition();
+		
+		if (periodRange != null) {
+			encDef.setOnOrAfter(periodRange.getFromDate());
+			encDef.setOnOrBefore(periodRange.getToDate());
+		}
 		
 		encDef.setTypes(Collections.singletonList(type));
 		if (mostRecentOnly) {
 			encDef.setWhich(TimeQualifier.LAST);
 		}
-		
+
 		Map<Integer, Object> results = Context.getService(PatientDataService.class).evaluate(encDef, context).getData();
-		
+
 		stopWatch.stop();
-		
+
 		if (cohort == null || cohort.size() > 1) {
 			log.info("Fetching encounters of type: {}, most recently: {} completed in {}", type, mostRecentOnly,
 			    stopWatch.toString());
 		}
-		
+
 		return results;
 	}
-	
+
 	/**
 	 * Gets the observation from the specified encounter with a question concept that matches the
 	 * specified concept ignoring obs groupings and voided obs.
@@ -185,18 +178,18 @@ public class PatientGridUtils {
 	public static Obs getObsByConcept(Encounter encounter, Concept concept) {
 		List<Obs> matches = encounter.getObsAtTopLevel(false).stream()
 		        .filter(o -> o.getConcept().equals(concept) && !o.hasGroupMembers(true)).collect(Collectors.toList());
-		
+
 		if (matches.size() > 1) {
 			log.warn("Multi obs answer not yet supported. No data will be returned for " + encounter);
 		}
-		
+
 		if (matches.size() == 1) {
 			return matches.get(0);
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Parses the specified age range string to generate a list of {@link AgeRange} objects
 	 *
@@ -218,7 +211,7 @@ public class PatientGridUtils {
 					range = rangeAndLabel[0].trim();
 					label = rangeAndLabel[1].trim();
 				}
-				
+
 				String[] minAndMax = range.split("-");
 				Integer min = Integer.parseInt(minAndMax[0]);
 				Integer max = Integer.parseInt(minAndMax[1]);
@@ -227,10 +220,10 @@ public class PatientGridUtils {
 				ageRanges.add(new AgeRange(ageRanges.get(i - 1).getMaxAge() + 1, YEARS, null, null, ranges[i].trim()));
 			}
 		}
-		
+
 		return ageRanges;
 	}
-	
+
 	/**
 	 * Gets the list of age ranges
 	 *
@@ -243,10 +236,10 @@ public class PatientGridUtils {
 			throw new APIException(
 			        "No age ranges defined, please set the value for the global property named: " + GP_AGE_RANGES);
 		}
-		
+
 		return parseAgeRangeString(ageRange);
 	}
-	
+
 	/**
 	 * Gets all encounter types defined on all ObsPatientGridColumns in the specified
 	 * {@link PatientGrid}
@@ -257,5 +250,61 @@ public class PatientGridUtils {
 	public static Set<EncounterType> getEncounterTypes(PatientGrid patientGrid) {
 		return patientGrid.getObsColumns().stream().map(c -> c.getEncounterType()).collect(Collectors.toSet());
 	}
-	
+
+	/**
+	 * Converts the specified string to the specified type
+	 *
+	 * @param value the value to convert
+	 * @param clazz the type to convert to
+	 * @return the converted value
+	 */
+	public static <T> T convert(String value, Class<T> clazz) throws APIException {
+		Object ret;
+		if (Double.class.isAssignableFrom(clazz)) {
+			ret = Double.valueOf(value);
+		} else if (Integer.class.isAssignableFrom(clazz)) {
+			ret = Integer.valueOf(value);
+		} else if (Boolean.class.isAssignableFrom(clazz)) {
+			ret = Boolean.valueOf(value);
+		} else if (Date.class.isAssignableFrom(clazz)) {
+			try {
+				ret = DATETIME_FORMAT.parse(value);
+			}
+			catch (ParseException e) {
+				try {
+					ret = DATE_FORMAT.parse(value);
+				}
+				catch (ParseException pe) {
+					throw new APIException("Failed to convert " + value + " to a date", pe);
+				}
+			}
+		} else if (Concept.class.isAssignableFrom(clazz)) {
+			ret = Context.getConceptService().getConceptByUuid(value);
+		} else if (Location.class.isAssignableFrom(clazz)) {
+			ret = Context.getLocationService().getLocationByUuid(value);
+		} else if (AgeRange.class.isAssignableFrom(clazz)) {
+			try {
+				Map map = MAPPER.readValue(value, Map.class);
+				ret = new AgeRange((Integer) map.get("minAge"), (Integer) map.get("maxAge"));
+			}
+			catch (IOException e) {
+				throw new APIException("Failed to convert: " + value + " to an AgeRange", e);
+			}
+		} else if (PeriodRange.class.isAssignableFrom(clazz)) {
+			Map map = null;
+			try {
+				map = MAPPER.readValue(value, Map.class);
+				ret = new PeriodRange(convert((String) map.get("fromDate"), Date.class),
+				        convert((String) map.get("toDate"), Date.class));
+
+			}
+			catch (IOException e) {
+				throw new APIException("Failed to convert: " + value + " to a PeriodRange", e);
+			}
+		} else {
+			throw new APIException("Don't know how to convert operand value to type: " + clazz.getName());
+		}
+
+		return (T) ret;
+	}
 }

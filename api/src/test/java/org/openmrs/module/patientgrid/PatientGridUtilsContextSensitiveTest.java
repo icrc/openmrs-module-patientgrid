@@ -1,11 +1,5 @@
 package org.openmrs.module.patientgrid;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
@@ -17,6 +11,12 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensitiveTest {
 	
@@ -41,7 +41,7 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		cohort.addMember(patientId);
 		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(cohort);
-		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), context, true);
+		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), context, true, null);
 		assertEquals(1, idsAndEncs.size());
 		assertEquals(2004, ((Encounter) idsAndEncs.get(patientId)).getEncounterId().intValue());
 	}
@@ -53,7 +53,7 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		cohort.addMember(patientId);
 		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(cohort);
-		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), context, false);
+		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), context, false, null);
 		assertEquals(1, idsAndEncs.size());
 		List<Encounter> encounters = (List) idsAndEncs.get(patientId);
 		assertEquals(3, encounters.size());
@@ -69,7 +69,7 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		cohort.addMember(patientId);
 		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(cohort);
-		assertTrue(PatientGridUtils.getEncounters(new EncounterType(102), context, true).isEmpty());
+		assertTrue(PatientGridUtils.getEncounters(new EncounterType(102), context, true, null).isEmpty());
 	}
 	
 }

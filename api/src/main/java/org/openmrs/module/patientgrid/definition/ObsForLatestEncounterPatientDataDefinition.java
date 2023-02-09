@@ -3,6 +3,7 @@ package org.openmrs.module.patientgrid.definition;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
+import org.openmrs.module.patientgrid.PeriodRange;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -14,6 +15,17 @@ public class ObsForLatestEncounterPatientDataDefinition extends BaseDataDefiniti
 	
 	@ConfigurationProperty
 	private EncounterType encounterType;
+	
+	public PeriodRange getPeriodRange() {
+		return periodRange;
+	}
+	
+	public void setPeriodRange(PeriodRange periodRange) {
+		this.periodRange = periodRange;
+	}
+	
+	@ConfigurationProperty
+	private PeriodRange periodRange;
 	
 	@Override
 	public Class<?> getDataType() {

@@ -1,10 +1,5 @@
 package org.openmrs.module.patientgrid.evaluator;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
@@ -21,6 +16,9 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import static java.util.Arrays.asList;
+import static org.junit.Assert.*;
 
 public class ObsForLatestEncounterPatientDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
@@ -50,7 +48,7 @@ public class ObsForLatestEncounterPatientDataEvaluatorTest extends BaseModuleCon
 		EncounterType encounterType = new EncounterType(101);
 		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId8)));
-		assertFalse(PatientGridUtils.getEncounters(encounterType, context, true).isEmpty());
+		assertFalse(PatientGridUtils.getEncounters(encounterType, context, true, null).isEmpty());
 		context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6)));
 		Concept concept = cs.getConcept(5089);
