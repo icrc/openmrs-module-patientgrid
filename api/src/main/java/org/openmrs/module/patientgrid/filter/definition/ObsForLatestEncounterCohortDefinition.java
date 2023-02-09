@@ -1,11 +1,12 @@
 package org.openmrs.module.patientgrid.filter.definition;
 
-import java.util.List;
-
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
+import org.openmrs.module.patientgrid.PeriodRange;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+
+import java.util.List;
 
 /**
  * Custom CohortDefinition for getting a cohort of patients having observations matching a specific
@@ -24,6 +25,8 @@ public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition 
 	
 	@ConfigurationProperty
 	private List<Object> values;
+	
+	private PeriodRange periodRange;
 	
 	/**
 	 * Gets the propertyName
@@ -97,4 +100,11 @@ public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition 
 		this.values = values;
 	}
 	
+	public void setPeriodRange(PeriodRange periodRange) {
+		this.periodRange = periodRange;
+	}
+	
+	public PeriodRange getPeriodRange() {
+		return periodRange;
+	}
 }

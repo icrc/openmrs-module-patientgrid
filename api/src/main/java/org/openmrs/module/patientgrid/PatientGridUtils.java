@@ -1,36 +1,16 @@
 package org.openmrs.module.patientgrid;
 
-import static org.openmrs.module.patientgrid.PatientGridConstants.GP_AGE_RANGES;
-import static org.openmrs.module.patientgrid.PatientGridConstants.OBS_CONVERTER;
-import static org.openmrs.module.reporting.common.Age.Unit.YEARS;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.openmrs.Cohort;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
+import org.openmrs.*;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeConverter;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeRangeConverter;
-import org.openmrs.module.patientgrid.definition.AgeAtLatestEncounterPatientDataDefinition;
-import org.openmrs.module.patientgrid.definition.DateForLatestEncounterPatientDataDefinition;
-import org.openmrs.module.patientgrid.definition.LocationPatientDataDefinition;
-import org.openmrs.module.patientgrid.definition.ObsForLatestEncounterPatientDataDefinition;
-import org.openmrs.module.patientgrid.definition.PersonUuidDataDefinition;
+import org.openmrs.module.patientgrid.definition.*;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.converter.PropertyConverter;
@@ -43,6 +23,13 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.openmrs.module.patientgrid.PatientGridConstants.GP_AGE_RANGES;
+import static org.openmrs.module.patientgrid.PatientGridConstants.OBS_CONVERTER;
+import static org.openmrs.module.reporting.common.Age.Unit.YEARS;
 
 public class PatientGridUtils {
 
@@ -139,9 +126,8 @@ public class PatientGridUtils {
 	 *            or their encounter history
 	 * @return a map of patient ids to encounters
 	 */
-	public static Map<Integer, Object> getEncounters(EncounterType type, EvaluationContext context, boolean mostRecentOnly)
-	        throws EvaluationException {
-
+	public static Map<Integer, Object> getEncounters(EncounterType type, EvaluationContext context, boolean mostRecentOnly,
+	        PeriodRange periodRange) throws EvaluationException {
 		Cohort cohort = null;
 		if (context != null) {
 			cohort = context.getBaseCohort();
@@ -155,7 +141,12 @@ public class PatientGridUtils {
 		stopWatch.start();
 
 		EncountersForPatientDataDefinition encDef = new EncountersForPatientDataDefinition();
-
+		
+		if (periodRange != null) {
+			encDef.setOnOrAfter(periodRange.getFromDate());
+			encDef.setOnOrBefore(periodRange.getToDate());
+		}
+		
 		encDef.setTypes(Collections.singletonList(type));
 		if (mostRecentOnly) {
 			encDef.setWhich(TimeQualifier.LAST);

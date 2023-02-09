@@ -1,10 +1,5 @@
 package org.openmrs.module.patientgrid.evaluator;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import org.openmrs.Encounter;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -23,6 +18,11 @@ import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 @Handler(supports = DateForLatestEncounterPatientDataDefinition.class, order = 50)
 public class DateForLatestEncounterPatientDataEvaluator implements PatientDataEvaluator {
 	
@@ -35,7 +35,7 @@ public class DateForLatestEncounterPatientDataEvaluator implements PatientDataEv
 		DateForLatestEncounterPatientDataDefinition def = (DateForLatestEncounterPatientDataDefinition) definition;
 		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
 		Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
-		    new MostRecentEncounterPerPatientByTypeFunction(contextPersistantCache));
+		    new MostRecentEncounterPerPatientByTypeFunction(contextPersistantCache, def.getPeriodRange()));
 		
 		Map<Integer, Object> encIdAndEnc = patientIdAndEnc.values().stream()
 		        .collect(Collectors.toMap(e -> ((Encounter) e).getId(), Function.identity()));

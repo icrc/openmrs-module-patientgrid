@@ -1,11 +1,12 @@
 package org.openmrs.module.patientgrid.filter.definition;
 
-import java.util.List;
-
 import org.openmrs.EncounterType;
+import org.openmrs.module.patientgrid.PeriodRange;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+
+import java.util.List;
 
 /**
  * Custom CohortDefinition for getting a cohort of patients matching specific age ranges at their
@@ -18,6 +19,9 @@ public class AgeRangeAtLatestEncounterCohortDefinition extends BaseCohortDefinit
 	
 	@ConfigurationProperty
 	private List<AgeRange> ageRanges;
+	
+	@ConfigurationProperty
+	private PeriodRange periodRange;
 	
 	/**
 	 * Gets the encounterType
@@ -62,4 +66,11 @@ public class AgeRangeAtLatestEncounterCohortDefinition extends BaseCohortDefinit
 		this.ageRanges = ageRanges;
 	}
 	
+	public PeriodRange getPeriodRange() {
+		return periodRange;
+	}
+	
+	public void setPeriodRange(PeriodRange periodRange) {
+		this.periodRange = periodRange;
+	}
 }

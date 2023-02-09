@@ -1,12 +1,5 @@
 package org.openmrs.module.patientgrid.web.rest.v1_0.search;
 
-import static org.openmrs.module.patientgrid.PatientGridConstants.MODULE_ID;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -26,6 +19,13 @@ import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static org.openmrs.module.patientgrid.PatientGridConstants.MODULE_ID;
 
 @Component(MODULE_ID + ".encounterHistorySearchHandler")
 public class EncounterHistorySearchHandler implements SearchHandler {
@@ -73,7 +73,7 @@ public class EncounterHistorySearchHandler implements SearchHandler {
 		
 		try {
 			List<Encounter> encs = new ArrayList();
-			Map<Integer, Object> idAndEncs = PatientGridUtils.getEncounters(type, context, false);
+			Map<Integer, Object> idAndEncs = PatientGridUtils.getEncounters(type, context, false, null);
 			if (!idAndEncs.isEmpty()) {
 				encs = (List) idAndEncs.get(patientId);
 			}

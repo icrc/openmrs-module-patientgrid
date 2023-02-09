@@ -1,14 +1,5 @@
 package org.openmrs.module.patientgrid.download;
 
-import static org.openmrs.module.patientgrid.PatientGridConstants.OBS_CONVERTER;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
@@ -21,6 +12,11 @@ import org.openmrs.module.reporting.data.patient.evaluator.PatientDataEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.openmrs.module.patientgrid.PatientGridConstants.OBS_CONVERTER;
+
 @Handler(supports = AllEncountersPatientDataDefinition.class, order = 50)
 public class AllEncountersPatientDataEvaluator implements PatientDataEvaluator {
 	
@@ -29,7 +25,8 @@ public class AllEncountersPatientDataEvaluator implements PatientDataEvaluator {
 	        throws EvaluationException {
 		
 		AllEncountersPatientDataDefinition def = (AllEncountersPatientDataDefinition) definition;
-		Map<Integer, Object> patientIdAndEncs = PatientGridUtils.getEncounters(def.getEncounterType(), context, false);
+		Map<Integer, Object> patientIdAndEncs = PatientGridUtils.getEncounters(def.getEncounterType(), context, false,
+		    def.getPeriodRange());
 		Set<ObsPatientGridColumn> obsColumns = def.getPatientGrid().getObsColumns();
 		
 		Map<Integer, Object> patientIdAndEncList = patientIdAndEncs.entrySet().stream()
