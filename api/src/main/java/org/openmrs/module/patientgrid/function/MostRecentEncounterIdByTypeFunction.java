@@ -28,6 +28,8 @@ public class MostRecentEncounterIdByTypeFunction implements Function<EncounterTy
 	
 	private PeriodRange periodRange;
 	
+	private final PeriodRange periodRange;
+	
 	private SessionFactory sf;
 	
 	private static final Logger log = LoggerFactory.getLogger(MostRecentEncounterIdByTypeFunction.class);
