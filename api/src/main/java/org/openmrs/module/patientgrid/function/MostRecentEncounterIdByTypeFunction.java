@@ -16,10 +16,17 @@ public class MostRecentEncounterIdByTypeFunction implements Function<EncounterTy
 	        + "patient p WHERE e.patient_id = p.patient_id AND e.encounter_type = :encType AND e.voided = false AND"
 	        + " p.voided = false GROUP BY e.patient_id";
 	
-	private final static String MOST_RECENT_ENC_IDS = "SELECT e1.encounter_id FROM encounter e1 INNER JOIN ("
-	        + MOST_RECENT_DATES + ") e2 ON e1.patient_id = e2.patient_id AND e1.encounter_datetime = e2.maxDate";
+	private final static String MOST_RECENT_DATES_WITHIN_PERIODRANGE = "SELECT e.patient_id, max(e.encounter_datetime) AS maxDate FROM encounter e, "
+	        + "patient p WHERE e.patient_id = p.patient_id AND e.encounter_type = :encType AND e.voided = false AND"
+	        + " p.voided = false AND (e.encounter_datetime BETWEEN :fromDate AND :toDate) GROUP BY e.patient_id";
 	
-	private final PeriodRange periodRange;
+	private final String MOST_RECENT_ENC_IDS = this.periodRange == null
+	        ? "SELECT e1.encounter_id FROM encounter e1 INNER JOIN (" + MOST_RECENT_DATES
+	                + ") e2 ON e1.patient_id = e2.patient_id AND e1.encounter_datetime = e2.maxDate"
+	        : "SELECT e1.encounter_id FROM encounter e1 INNER JOIN (" + MOST_RECENT_DATES_WITHIN_PERIODRANGE
+	                + ") e2 ON e1.patient_id = e2.patient_id AND e1.encounter_datetime = e2.maxDate";
+	
+	private PeriodRange periodRange;
 	
 	private SessionFactory sf;
 	
@@ -35,6 +42,10 @@ public class MostRecentEncounterIdByTypeFunction implements Function<EncounterTy
 		log.debug("Loading ids for the latest patient encounters of type: {}", encounterType);
 		Query query = sf.getCurrentSession().createSQLQuery(MOST_RECENT_ENC_IDS);
 		query.setParameter("encType", encounterType);
+		if (periodRange != null) {
+			query.setParameter("fromDate", periodRange.getFromDate());
+			query.setParameter("toDate", periodRange.getToDate());
+		}
 		return query.list();
 	}
 }
