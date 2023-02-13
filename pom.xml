@@ -49,7 +49,7 @@
     <properties>
         <formatter.lineEnding>AUTO</formatter.lineEnding>
         <javaCompilerVersion>1.8</javaCompilerVersion>
-        <openmrsPlatformVersion>2.3.0</openmrsPlatformVersion>
+        <openmrsPlatformVersion>2.6.0</openmrsPlatformVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <calculationVersion>1.2</calculationVersion>
         <reportingVersion>1.14.0</reportingVersion>
