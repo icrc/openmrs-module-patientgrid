@@ -61,11 +61,12 @@ public class EncounterDatePatientGridColumnResource extends BaseDelegatingSubcla
 	public String getDisplayString(PatientGridColumn delegate) {
 		return getSuperclassResource().getDisplayString(delegate);
 	}
-
+	
 	@PropertySetter("filters")
 	public void setFilters(PatientGridColumn column, PatientGridColumnFilter... filters) {
 		getSuperclassResource().setFilters(column, filters);
 	}
+	
 	/**
 	 * @see BaseDelegatingSubclassHandler#getCreatableProperties()
 	 */

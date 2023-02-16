@@ -11,6 +11,8 @@ import org.openmrs.module.patientgrid.*;
 import org.openmrs.module.patientgrid.filter.definition.AgeRangeAtLatestEncounterCohortDefinition;
 import org.openmrs.module.patientgrid.filter.definition.LocationCohortDefinition;
 import org.openmrs.module.patientgrid.filter.definition.ObsForLatestEncounterCohortDefinition;
+import org.openmrs.module.patientgrid.period.DateRange;
+import org.openmrs.module.patientgrid.period.DateRangeConverter;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
@@ -33,7 +35,7 @@ import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.*;
 public class PatientGridFilterUtils {
 	
 	private static final Logger log = LoggerFactory.getLogger(PatientGridFilterUtils.class);
-
+	
 	/**
 	 * Utility method that generates a {@link CohortDefinition} based on the column filters of the
 	 * specified {@link PatientGrid}
@@ -42,13 +44,13 @@ public class PatientGridFilterUtils {
 	 * @return the {@link CohortDefinition} object
 	 */
 	public static CohortDefinition generateCohortDefinition(PatientGrid patientGrid) {
-		Map<String, CohortDefinition> columnAndCohortDefMap = new HashMap(patientGrid.getColumns().size());
-		PeriodRange periodRange = null;
+		final Map<String, CohortDefinition> columnAndCohortDefMap = new HashMap(patientGrid.getColumns().size());
+		DateRange periodRange = null;
 		for (PatientGridColumn column : patientGrid.getColumns()) {
 			if (ENC_DATE.equals(column.getDatatype())) {
 				if (!column.getFilters().isEmpty()) {
 					for (PatientGridColumnFilter filter : column.getFilters()) {
-						periodRange = PatientGridUtils.convert(filter.getOperand(), PeriodRange.class);
+						periodRange = new DateRangeConverter("UTC", "UTC").convert(filter.getOperand());
 					}
 				}
 				break;
@@ -92,7 +94,7 @@ public class PatientGridFilterUtils {
 		
 		return createCohortDef(columnAndCohortDefMap, BooleanOperator.AND);
 	}
-
+	
 	/**
 	 * Creates a {@link AgeRangeAtLatestEncounterCohortDefinition} based on the filters for the
 	 * specified {@link PatientGridColumn}
@@ -101,7 +103,7 @@ public class PatientGridFilterUtils {
 	 * @return AgeRangeAtLatestEncounterCohortDefinition
 	 */
 	private static AgeRangeAtLatestEncounterCohortDefinition createAgeRangeCohortDefinition(PatientGridColumn column,
-	        PeriodRange periodRange) {
+	        DateRange periodRange) {
 		AgeAtEncounterPatientGridColumn ageColumn = (AgeAtEncounterPatientGridColumn) column;
 		AgeRangeAtLatestEncounterCohortDefinition def = new AgeRangeAtLatestEncounterCohortDefinition();
 		def.setEncounterType(ageColumn.getEncounterType());
@@ -156,7 +158,7 @@ public class PatientGridFilterUtils {
 	 * @return ObsForLatestEncounterCohortDefinition
 	 */
 	private static ObsForLatestEncounterCohortDefinition createObsCohortDefinition(PatientGridColumn column,
-	        PeriodRange periodRange) {
+	        DateRange periodRange) {
 		ObsPatientGridColumn obsColumn = (ObsPatientGridColumn) column;
 		ObsForLatestEncounterCohortDefinition obsCohortDef = new ObsForLatestEncounterCohortDefinition();
 		Concept concept = obsColumn.getConcept();

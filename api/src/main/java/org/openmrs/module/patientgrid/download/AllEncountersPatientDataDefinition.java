@@ -2,7 +2,7 @@ package org.openmrs.module.patientgrid.download;
 
 import org.openmrs.EncounterType;
 import org.openmrs.module.patientgrid.PatientGrid;
-import org.openmrs.module.patientgrid.PeriodRange;
+import org.openmrs.module.patientgrid.period.DateRange;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -17,16 +17,16 @@ public class AllEncountersPatientDataDefinition extends BaseDataDefinition imple
 	@ConfigurationProperty
 	private EncounterType encounterType;
 	
-	public PeriodRange getPeriodRange() {
+	public DateRange getPeriodRange() {
 		return periodRange;
 	}
 	
-	public void setPeriodRange(PeriodRange periodRange) {
+	public void setPeriodRange(DateRange periodRange) {
 		this.periodRange = periodRange;
 	}
 	
 	@ConfigurationProperty
-	private PeriodRange periodRange;
+	private DateRange periodRange;
 	
 	@Override
 	public Class<?> getDataType() {

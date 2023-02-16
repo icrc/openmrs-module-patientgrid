@@ -1,7 +1,7 @@
 package org.openmrs.module.patientgrid.definition;
 
 import org.openmrs.EncounterType;
-import org.openmrs.module.patientgrid.PeriodRange;
+import org.openmrs.module.patientgrid.period.DateRange;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
@@ -12,16 +12,16 @@ public class AgeAtLatestEncounterPatientDataDefinition extends BaseDataDefinitio
 	@ConfigurationProperty
 	private EncounterType encounterType;
 	
-	public PeriodRange getPeriodRange() {
+	public DateRange getPeriodRange() {
 		return periodRange;
 	}
 	
-	public void setPeriodRange(PeriodRange periodRange) {
+	public void setPeriodRange(DateRange periodRange) {
 		this.periodRange = periodRange;
 	}
 	
 	@ConfigurationProperty
-	PeriodRange periodRange;
+  DateRange periodRange;
 	
 	@Override
 	public Class<?> getDataType() {
