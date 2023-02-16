@@ -3,7 +3,9 @@ package org.openmrs.module.patientgrid.api.impl;
 import org.apache.commons.lang3.time.StopWatch;
 import org.openmrs.Cohort;
 import org.openmrs.CohortMembership;
+import org.openmrs.User;
 import org.openmrs.api.APIException;
+import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.patientgrid.*;
@@ -117,7 +119,8 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		try {
 			PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, true);
 			EvaluationContextPersistantCache context = new EvaluationContextPersistantCache();
-			Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, context);
+			String clientTimezone = Context.getAuthenticatedUser().getUserProperty("clientTimezone");
+			Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, context, clientTimezone);
 			//if not filters done by PatientGridFilterUtils, we will use the static cohort
 			if (cohort == null) {
 				cohort = patientGrid.getCohort();

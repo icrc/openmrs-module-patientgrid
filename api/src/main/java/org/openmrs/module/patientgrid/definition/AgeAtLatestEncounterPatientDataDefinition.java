@@ -21,7 +21,7 @@ public class AgeAtLatestEncounterPatientDataDefinition extends BaseDataDefinitio
 	}
 	
 	@ConfigurationProperty
-  DateRange periodRange;
+	DateRange periodRange;
 	
 	@Override
 	public Class<?> getDataType() {

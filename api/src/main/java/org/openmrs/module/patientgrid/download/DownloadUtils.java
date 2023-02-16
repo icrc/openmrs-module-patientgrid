@@ -2,6 +2,7 @@ package org.openmrs.module.patientgrid.download;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.openmrs.Cohort;
+import org.openmrs.User;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.*;
@@ -17,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.ENC_DATE;
-import static org.openmrs.module.patientgrid.PatientGridUtils.convert;
 
 /**
  * Contains utilities to generate the downloadable patient grid report data
@@ -42,7 +42,7 @@ public class DownloadUtils {
 				if (ENC_DATE.equals(column.getDatatype())) {
 					if (!column.getFilters().isEmpty()) {
 						for (PatientGridColumnFilter filter : column.getFilters()) {
-							periodRange = new DateRangeConverter("UTC", "UTC").convert(filter.getOperand());
+							periodRange = new DateRangeConverter("UTC").convert(filter.getOperand());
 						}
 					}
 					break;
@@ -59,7 +59,8 @@ public class DownloadUtils {
 			});
 			
 			EvaluationContext context = new EvaluationContextPersistantCache();
-			Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, context);
+			String clientTimezone = Context.getAuthenticatedUser().getUserProperty("clientTimezone");
+			Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, context, clientTimezone);
 			if (cohort == null) {
 				cohort = patientGrid.getCohort();
 			}
