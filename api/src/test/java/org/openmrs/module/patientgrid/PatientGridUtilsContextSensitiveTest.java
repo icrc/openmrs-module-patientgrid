@@ -57,9 +57,9 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		assertEquals(1, idsAndEncs.size());
 		List<Encounter> encounters = (List) idsAndEncs.get(patientId);
 		assertEquals(3, encounters.size());
-		assertEquals(2001, encounters.get(0).getEncounterId().intValue());
+		assertEquals(2004, encounters.get(0).getEncounterId().intValue());
 		assertEquals(2005, encounters.get(1).getEncounterId().intValue());
-		assertEquals(2004, encounters.get(2).getEncounterId().intValue());
+		assertEquals(2001, encounters.get(2).getEncounterId().intValue());
 	}
 	
 	@Test

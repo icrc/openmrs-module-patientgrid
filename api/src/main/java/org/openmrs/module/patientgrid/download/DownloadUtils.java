@@ -2,7 +2,6 @@ package org.openmrs.module.patientgrid.download;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.openmrs.Cohort;
-import org.openmrs.User;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.*;
@@ -59,7 +58,7 @@ public class DownloadUtils {
 			});
 			
 			EvaluationContext context = new EvaluationContextPersistantCache();
-			String clientTimezone = Context.getAuthenticatedUser().getUserProperty("clientTimezone");
+			String clientTimezone = PatientGridUtils.getCurrentUserTimeZone();
 			Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, context, clientTimezone);
 			if (cohort == null) {
 				cohort = patientGrid.getCohort();

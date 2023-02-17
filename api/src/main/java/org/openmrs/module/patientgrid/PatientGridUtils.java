@@ -162,6 +162,7 @@ public class PatientGridUtils {
 		}
 		
 		Map<Integer, Object> results = Context.getService(PatientDataService.class).evaluate(encDef, context).getData();
+		EncounterComparator.sortListOfEncounters(results);
 		
 		stopWatch.stop();
 		
@@ -301,5 +302,9 @@ public class PatientGridUtils {
 		}
 		
 		return (T) ret;
+	}
+	
+	public static String getCurrentUserTimeZone() {
+		return Context.getAuthenticatedUser().getUserProperty("clientTimezone");
 	}
 }

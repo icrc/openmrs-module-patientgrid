@@ -53,17 +53,7 @@ public class PatientGridFilterUtils {
 			LOG.warn("use server timezone {} instead of User Timezone", userTimeZone);
 		}
 		final Map<String, CohortDefinition> columnAndCohortDefMap = new HashMap(patientGrid.getColumns().size());
-		DateRange periodRange = null;
-		for (PatientGridColumn column : patientGrid.getColumns()) {
-			if (ENC_DATE.equals(column.getDatatype())) {
-				if (!column.getFilters().isEmpty()) {
-					for (PatientGridColumnFilter filter : column.getFilters()) {
-						periodRange = new DateRangeConverter(userTimeZone).convert(filter.getOperand());
-					}
-				}
-				break;
-			}
-		}
+		DateRange periodRange = extractPeriodRange(patientGrid, userTimeZone);
 		
 		for (PatientGridColumn column : patientGrid.getColumns()) {
 			CohortDefinition cohortDef = null;
@@ -101,6 +91,21 @@ public class PatientGridFilterUtils {
 		}
 		
 		return createCohortDef(columnAndCohortDefMap, BooleanOperator.AND);
+	}
+	
+	public static DateRange extractPeriodRange(PatientGrid patientGrid, String userTimeZone) {
+		DateRange periodRange = null;
+		for (PatientGridColumn column : patientGrid.getColumns()) {
+			if (ENC_DATE.equals(column.getDatatype())) {
+				if (!column.getFilters().isEmpty()) {
+					for (PatientGridColumnFilter filter : column.getFilters()) {
+						periodRange = new DateRangeConverter(userTimeZone).convert(filter.getOperand());
+					}
+				}
+				break;
+			}
+		}
+		return periodRange;
 	}
 	
 	/**

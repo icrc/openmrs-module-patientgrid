@@ -119,7 +119,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		try {
 			PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, true);
 			EvaluationContextPersistantCache context = new EvaluationContextPersistantCache();
-			String clientTimezone = Context.getAuthenticatedUser().getUserProperty("clientTimezone");
+			String clientTimezone = PatientGridUtils.getCurrentUserTimeZone();
 			Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, context, clientTimezone);
 			//if not filters done by PatientGridFilterUtils, we will use the static cohort
 			if (cohort == null) {
