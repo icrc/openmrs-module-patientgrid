@@ -69,13 +69,13 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		final String cd4ColumnUuid = "6e6c993e-c2cc-11de-8d13-0010c6dffd0b";
 		List<Map<String, Map>> encounters = (List) dataset.getColumnValue(patient.getId(), initialEncTypeUuid);
 		assertEquals(3, encounters.size());
-		Map<String, Map> columnUuidAndObsMap = encounters.get(0);
+		Map<String, Map> columnUuidAndObsMap = encounters.get(2);
 		assertEquals(1, columnUuidAndObsMap.size());
 		assertEquals(Double.valueOf(82), columnUuidAndObsMap.get(weightColumnUuid).get("value"));
 		columnUuidAndObsMap = encounters.get(1);
 		assertEquals(1, columnUuidAndObsMap.size());
 		assertEquals(Double.valueOf(85), columnUuidAndObsMap.get(weightColumnUuid).get("value"));
-		columnUuidAndObsMap = encounters.get(2);
+		columnUuidAndObsMap = encounters.get(0);
 		assertEquals(2, columnUuidAndObsMap.size());
 		assertEquals(Double.valueOf(84), columnUuidAndObsMap.get(weightColumnUuid).get("value"));
 		Concept civilStatusConcept = Context.getConceptService().getConcept(5);

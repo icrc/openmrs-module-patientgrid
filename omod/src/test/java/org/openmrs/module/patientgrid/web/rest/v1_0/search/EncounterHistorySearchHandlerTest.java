@@ -1,9 +1,7 @@
 package org.openmrs.module.patientgrid.web.rest.v1_0.search;
 
 import static org.junit.Assert.assertEquals;
-import static org.openmrs.module.patientgrid.web.rest.v1_0.search.EncounterHistorySearchHandler.PARAM_ENC_TYPE;
-import static org.openmrs.module.patientgrid.web.rest.v1_0.search.EncounterHistorySearchHandler.PARAM_PATIENT;
-import static org.openmrs.module.patientgrid.web.rest.v1_0.search.EncounterHistorySearchHandler.SEARCH_CONFIG_NAME;
+import static org.openmrs.module.patientgrid.web.rest.v1_0.search.EncounterHistorySearchHandler.*;
 import static org.openmrs.module.webservices.rest.web.RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID;
 
 import org.junit.Before;
@@ -35,8 +33,9 @@ public class EncounterHistorySearchHandlerTest extends RestControllerTestUtils {
 		Parameter handler = new Parameter(REQUEST_PROPERTY_FOR_SEARCH_ID, SEARCH_CONFIG_NAME);
 		Parameter patient = new Parameter(PARAM_PATIENT, "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
 		Parameter encType = new Parameter(PARAM_ENC_TYPE, "19218f76-6c39-45f4-8efa-4c5c6c199f50");
+		Parameter patientGridUuid = new Parameter(PARAM_PATIENT_GRID_UUID, "1d6c993e-c2cc-11de-8d13-0010c6dffd0a");
 		
-		SimpleObject result = deserialize(handle(newGetRequest(URI, handler, patient, encType)));
+		SimpleObject result = deserialize(handle(newGetRequest(URI, handler, patient, encType, patientGridUuid)));
 		
 		assertEquals(3, Util.getResultsSize(result));
 	}

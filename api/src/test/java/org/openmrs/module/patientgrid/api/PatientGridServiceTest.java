@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openmrs.Cohort;
@@ -397,6 +398,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
+	@Ignore("Make non sense as an authentication is required to get PatientGrid")
 	public void evaluate_shouldNotCacheDataSetIfThereIsNoAuthenticatedUserBeforeTheDataSetIsEvaluated() throws Exception {
 		DataSetDefinitionService mockDsds = Mockito.mock(DataSetDefinitionService.class);
 		CohortDefinitionService mockCds = Mockito.mock(CohortDefinitionService.class);

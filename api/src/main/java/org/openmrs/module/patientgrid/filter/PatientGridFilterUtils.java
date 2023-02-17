@@ -11,6 +11,8 @@ import org.openmrs.module.patientgrid.*;
 import org.openmrs.module.patientgrid.filter.definition.AgeRangeAtLatestEncounterCohortDefinition;
 import org.openmrs.module.patientgrid.filter.definition.LocationCohortDefinition;
 import org.openmrs.module.patientgrid.filter.definition.ObsForLatestEncounterCohortDefinition;
+import org.openmrs.module.patientgrid.period.DateRange;
+import org.openmrs.module.patientgrid.period.DateRangeConverter;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
@@ -32,8 +34,12 @@ import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.*;
  */
 public class PatientGridFilterUtils {
 	
-	private static final Logger log = LoggerFactory.getLogger(PatientGridFilterUtils.class);
-
+	private static final Logger LOG = LoggerFactory.getLogger(PatientGridFilterUtils.class);
+	
+	public static CohortDefinition generateCohortDefinition(PatientGrid patientGrid) {
+		return generateCohortDefinition(patientGrid, null);
+	}
+	
 	/**
 	 * Utility method that generates a {@link CohortDefinition} based on the column filters of the
 	 * specified {@link PatientGrid}
@@ -41,19 +47,13 @@ public class PatientGridFilterUtils {
 	 * @param patientGrid the {@link PatientGrid} object
 	 * @return the {@link CohortDefinition} object
 	 */
-	public static CohortDefinition generateCohortDefinition(PatientGrid patientGrid) {
-		Map<String, CohortDefinition> columnAndCohortDefMap = new HashMap(patientGrid.getColumns().size());
-		PeriodRange periodRange = null;
-		for (PatientGridColumn column : patientGrid.getColumns()) {
-			if (ENC_DATE.equals(column.getDatatype())) {
-				if (!column.getFilters().isEmpty()) {
-					for (PatientGridColumnFilter filter : column.getFilters()) {
-						periodRange = PatientGridUtils.convert(filter.getOperand(), PeriodRange.class);
-					}
-				}
-				break;
-			}
+	public static CohortDefinition generateCohortDefinition(PatientGrid patientGrid, String userTimeZone) {
+		if (userTimeZone == null) {
+			userTimeZone = TimeZone.getDefault().getID();
+			LOG.warn("use server timezone {} instead of User Timezone", userTimeZone);
 		}
+		final Map<String, CohortDefinition> columnAndCohortDefMap = new HashMap(patientGrid.getColumns().size());
+		DateRange periodRange = extractPeriodRange(patientGrid, userTimeZone);
 		
 		for (PatientGridColumn column : patientGrid.getColumns()) {
 			CohortDefinition cohortDef = null;
@@ -85,14 +85,29 @@ public class PatientGridFilterUtils {
 		}
 		
 		if (columnAndCohortDefMap.isEmpty()) {
-			log.debug("No filters to apply to patient grid {}", patientGrid);
+			LOG.debug("No filters to apply to patient grid {}", patientGrid);
 			
 			return null;
 		}
 		
 		return createCohortDef(columnAndCohortDefMap, BooleanOperator.AND);
 	}
-
+	
+	public static DateRange extractPeriodRange(PatientGrid patientGrid, String userTimeZone) {
+		DateRange periodRange = null;
+		for (PatientGridColumn column : patientGrid.getColumns()) {
+			if (ENC_DATE.equals(column.getDatatype())) {
+				if (!column.getFilters().isEmpty()) {
+					for (PatientGridColumnFilter filter : column.getFilters()) {
+						periodRange = new DateRangeConverter(userTimeZone).convert(filter.getOperand());
+					}
+				}
+				break;
+			}
+		}
+		return periodRange;
+	}
+	
 	/**
 	 * Creates a {@link AgeRangeAtLatestEncounterCohortDefinition} based on the filters for the
 	 * specified {@link PatientGridColumn}
@@ -101,7 +116,7 @@ public class PatientGridFilterUtils {
 	 * @return AgeRangeAtLatestEncounterCohortDefinition
 	 */
 	private static AgeRangeAtLatestEncounterCohortDefinition createAgeRangeCohortDefinition(PatientGridColumn column,
-	        PeriodRange periodRange) {
+	        DateRange periodRange) {
 		AgeAtEncounterPatientGridColumn ageColumn = (AgeAtEncounterPatientGridColumn) column;
 		AgeRangeAtLatestEncounterCohortDefinition def = new AgeRangeAtLatestEncounterCohortDefinition();
 		def.setEncounterType(ageColumn.getEncounterType());
@@ -156,7 +171,7 @@ public class PatientGridFilterUtils {
 	 * @return ObsForLatestEncounterCohortDefinition
 	 */
 	private static ObsForLatestEncounterCohortDefinition createObsCohortDefinition(PatientGridColumn column,
-	        PeriodRange periodRange) {
+	        DateRange periodRange) {
 		ObsPatientGridColumn obsColumn = (ObsPatientGridColumn) column;
 		ObsForLatestEncounterCohortDefinition obsCohortDef = new ObsForLatestEncounterCohortDefinition();
 		Concept concept = obsColumn.getConcept();
@@ -240,7 +255,7 @@ public class PatientGridFilterUtils {
 		
 		final String compositionString = StringUtils.join(disjunctions, " " + operator + " ");
 		if (operator == BooleanOperator.AND) {
-			log.debug("CohortDefinition compositionString for all filters -> {}", compositionString);
+			LOG.debug("CohortDefinition compositionString for all filters -> {}", compositionString);
 		}
 		
 		cohortDef.setCompositionString(compositionString);
@@ -251,7 +266,7 @@ public class PatientGridFilterUtils {
 	/**
 	 * Evaluates any filters found on the columns on the specified {@link PatientGrid} and returns the
 	 * matching patients How it works:
-	 * {@link PatientGridFilterUtils#generateCohortDefinition(PatientGrid)} will create a
+	 * {@link PatientGridFilterUtils#generateCohortDefinition(PatientGrid,String)} will create a
 	 * CohortDefinition used by CohortDefinitionService The custom CohortDefinition are in the package
 	 * org.openmrs.module.patientgrid.filter.definition A definition is evalution by an evaluator
 	 * defined in the package org.openmrs.module.patientgrid.filter.evaluator For instance
@@ -261,19 +276,21 @@ public class PatientGridFilterUtils {
 	 *
 	 * @param patientGrid the {@link PatientGrid} object
 	 * @param context the {@link EvaluationContext} object
+	 * @param userTimeZone the user Timezone provided by user_property and clientTimezone key
 	 * @return a Cohort of matching patients or null if no filters are found
 	 * @throws EvaluationException
 	 */
-	public static Cohort filterPatients(PatientGrid patientGrid, EvaluationContext context) throws EvaluationException {
+	public static Cohort filterPatients(PatientGrid patientGrid, EvaluationContext context, String userTimeZone)
+	        throws EvaluationException {
 		if (context == null) {
 			context = new EvaluationContextPersistantCache();
 		}
-		CohortDefinition cohortDef = PatientGridFilterUtils.generateCohortDefinition(patientGrid);
+		CohortDefinition cohortDef = PatientGridFilterUtils.generateCohortDefinition(patientGrid, userTimeZone);
 		if (cohortDef == null) {
 			return null;
 		}
 		
-		log.debug("Filtering patients for patient grid {}", patientGrid);
+		LOG.debug("Filtering patients for patient grid {}", patientGrid);
 		
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
@@ -282,7 +299,7 @@ public class PatientGridFilterUtils {
 		
 		stopWatch.stop();
 		
-		log.debug("Running filters for patient grid {} completed in {}", patientGrid, stopWatch.toString());
+		LOG.debug("Running filters for patient grid {} completed in {}", patientGrid, stopWatch.toString());
 		
 		return cohort;
 	}

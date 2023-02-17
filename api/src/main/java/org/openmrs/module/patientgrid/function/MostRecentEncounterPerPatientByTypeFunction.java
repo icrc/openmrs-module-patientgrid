@@ -2,7 +2,7 @@ package org.openmrs.module.patientgrid.function;
 
 import org.openmrs.EncounterType;
 import org.openmrs.module.patientgrid.PatientGridUtils;
-import org.openmrs.module.patientgrid.PeriodRange;
+import org.openmrs.module.patientgrid.period.DateRange;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.slf4j.Logger;
@@ -15,11 +15,11 @@ public class MostRecentEncounterPerPatientByTypeFunction implements Function<Enc
 	
 	private final EvaluationContext context;
 	
-	private final PeriodRange periodRange;
+	private final DateRange periodRange;
 	
 	private static final Logger log = LoggerFactory.getLogger(MostRecentEncounterPerPatientByTypeFunction.class);
 	
-	public MostRecentEncounterPerPatientByTypeFunction(EvaluationContext context, PeriodRange periodRange) {
+	public MostRecentEncounterPerPatientByTypeFunction(EvaluationContext context, DateRange periodRange) {
 		this.context = context;
 		this.periodRange = periodRange;
 	}

@@ -2,7 +2,7 @@ package org.openmrs.module.patientgrid.filter.definition;
 
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
-import org.openmrs.module.patientgrid.PeriodRange;
+import org.openmrs.module.patientgrid.period.DateRange;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
@@ -26,7 +26,7 @@ public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition 
 	@ConfigurationProperty
 	private List<Object> values;
 	
-	private PeriodRange periodRange;
+	private DateRange periodRange;
 	
 	/**
 	 * Gets the propertyName
@@ -100,11 +100,11 @@ public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition 
 		this.values = values;
 	}
 	
-	public void setPeriodRange(PeriodRange periodRange) {
+	public void setPeriodRange(DateRange periodRange) {
 		this.periodRange = periodRange;
 	}
 	
-	public PeriodRange getPeriodRange() {
+	public DateRange getPeriodRange() {
 		return periodRange;
 	}
 }

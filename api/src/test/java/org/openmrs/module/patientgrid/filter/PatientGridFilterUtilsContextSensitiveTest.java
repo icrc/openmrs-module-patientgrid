@@ -57,7 +57,7 @@ public class PatientGridFilterUtilsContextSensitiveTest extends BaseModuleContex
 		Context.getCohortService().saveCohort(cohort);
 		patientGrid.setCohort(cohort);
 		
-		Cohort filteredCohort = PatientGridFilterUtils.filterPatients(patientGrid, null);
+		Cohort filteredCohort = PatientGridFilterUtils.filterPatients(patientGrid, null, null);
 		
 		assertEquals(2, filteredCohort.size());
 		assertNotNull(filteredCohort.getActiveMembership(patientService.getPatient(patientId2)));
@@ -76,7 +76,7 @@ public class PatientGridFilterUtilsContextSensitiveTest extends BaseModuleContex
 		}
 		assertFalse(hasFilteredColumns);
 		
-		Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, null);
+		Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, null, null);
 		assertEquals(4, cohort.getMemberships().size());
 	}
 	

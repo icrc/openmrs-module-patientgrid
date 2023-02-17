@@ -1,7 +1,7 @@
 package org.openmrs.module.patientgrid.filter.definition;
 
 import org.openmrs.EncounterType;
-import org.openmrs.module.patientgrid.PeriodRange;
+import org.openmrs.module.patientgrid.period.DateRange;
 import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -21,7 +21,7 @@ public class AgeRangeAtLatestEncounterCohortDefinition extends BaseCohortDefinit
 	private List<AgeRange> ageRanges;
 	
 	@ConfigurationProperty
-	private PeriodRange periodRange;
+	private DateRange periodRange;
 	
 	/**
 	 * Gets the encounterType
@@ -66,11 +66,11 @@ public class AgeRangeAtLatestEncounterCohortDefinition extends BaseCohortDefinit
 		this.ageRanges = ageRanges;
 	}
 	
-	public PeriodRange getPeriodRange() {
+	public DateRange getPeriodRange() {
 		return periodRange;
 	}
 	
-	public void setPeriodRange(PeriodRange periodRange) {
+	public void setPeriodRange(DateRange periodRange) {
 		this.periodRange = periodRange;
 	}
 }
