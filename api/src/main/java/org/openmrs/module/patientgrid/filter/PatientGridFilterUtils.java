@@ -117,11 +117,12 @@ public class PatientGridFilterUtils {
 			String defaultCode = Context.getAdministrationService().getGlobalProperty(GP_DEFAULT_PERIOD_RANGE,
 			    systemDefaultCode);
 			String operand = String.format("{\"code\":\"%s\"}", defaultCode);
-			try{
+			try {
 				periodRange = new DateRangeConverter(userTimeZone).convert(operand);
-			}catch (APIException e){
+			}
+			catch (APIException e) {
 				LOG.warn("The period range '{}' defined in the global property '{}' is not supported", defaultCode,
-						GP_DEFAULT_PERIOD_RANGE);
+				    GP_DEFAULT_PERIOD_RANGE);
 			}
 			if (periodRange == null) {
 				operand = String.format("{\"code\":\"%s\"}", systemDefaultCode);

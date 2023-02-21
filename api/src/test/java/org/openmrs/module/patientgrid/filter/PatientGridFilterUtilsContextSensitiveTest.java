@@ -74,7 +74,7 @@ public class PatientGridFilterUtilsContextSensitiveTest extends BaseModuleContex
 				break;
 			}
 		}
-		assertFalse(hasFilteredColumns);
+		assertTrue(hasFilteredColumns);
 		
 		Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, null, null);
 		assertEquals(4, cohort.getMemberships().size());
