@@ -13,6 +13,7 @@ import org.openmrs.module.patientgrid.filter.definition.LocationCohortDefinition
 import org.openmrs.module.patientgrid.filter.definition.ObsForLatestEncounterCohortDefinition;
 import org.openmrs.module.patientgrid.period.DateRange;
 import org.openmrs.module.patientgrid.period.DateRangeConverter;
+import org.openmrs.module.patientgrid.period.DateRangeType;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.*;
+import static org.openmrs.module.patientgrid.PatientGridConstants.GP_DEFAULT_PERIOD_RANGE;
 
 /**
  * Contains patient grid filter utility methods
@@ -93,6 +95,11 @@ public class PatientGridFilterUtils {
 		return createCohortDef(columnAndCohortDefMap, BooleanOperator.AND);
 	}
 	
+	/**
+	 * @param patientGrid
+	 * @param userTimeZone
+	 * @return
+	 */
 	public static DateRange extractPeriodRange(PatientGrid patientGrid, String userTimeZone) {
 		DateRange periodRange = null;
 		for (PatientGridColumn column : patientGrid.getColumns()) {
@@ -104,6 +111,23 @@ public class PatientGridFilterUtils {
 				}
 				break;
 			}
+		}
+		if (periodRange == null) {
+			String systemDefaultCode = DateRangeType.LASTTHIRTYDAYS.name();
+			String defaultCode = Context.getAdministrationService().getGlobalProperty(GP_DEFAULT_PERIOD_RANGE,
+			    systemDefaultCode);
+			String operand = String.format("{\"code\":\"%s\"}", defaultCode);
+			try{
+				periodRange = new DateRangeConverter(userTimeZone).convert(operand);
+			}catch (APIException e){
+				LOG.warn("The period range '{}' defined in the global property '{}' is not supported", defaultCode,
+						GP_DEFAULT_PERIOD_RANGE);
+			}
+			if (periodRange == null) {
+				operand = String.format("{\"code\":\"%s\"}", systemDefaultCode);
+				periodRange = new DateRangeConverter(userTimeZone).convert(operand);
+			}
+			
 		}
 		return periodRange;
 	}
@@ -266,7 +290,7 @@ public class PatientGridFilterUtils {
 	/**
 	 * Evaluates any filters found on the columns on the specified {@link PatientGrid} and returns the
 	 * matching patients How it works:
-	 * {@link PatientGridFilterUtils#generateCohortDefinition(PatientGrid,String)} will create a
+	 * {@link PatientGridFilterUtils#generateCohortDefinition(PatientGrid, String)} will create a
 	 * CohortDefinition used by CohortDefinitionService The custom CohortDefinition are in the package
 	 * org.openmrs.module.patientgrid.filter.definition A definition is evalution by an evaluator
 	 * defined in the package org.openmrs.module.patientgrid.filter.evaluator For instance

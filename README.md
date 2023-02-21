@@ -38,6 +38,17 @@ You will have to generate a token from a Github package (with read access to pac
 ```
 
 # Global Properties
+
+## Period range
+
+**Property Name** `patientgrid.defaultPeriod`
+
+Specifies the default period to use if no period defined in the query in order to limit the number of lines.
+By default, the last 30 days (LASTTHIRTYDAYS) will be used.
+Current supported values are defined in the class `DateRangeType`: LASTSEVENDAYS, LASTTHIRTYDAYS, WEEKTODATE, MONTHTODATE,...
+
+Defaults to a folder named `.report_cache` in the patientgrid folder in the application data directory
+
 ## Grid Report Cache Directory
 
 **Property Name** `patientgrid.cacheDirectory`
