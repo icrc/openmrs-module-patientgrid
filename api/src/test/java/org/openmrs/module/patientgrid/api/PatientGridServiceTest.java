@@ -211,7 +211,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void unretirePatientGrid_shouldUnretireThePatientGrid() {
 		PatientGrid grid = service.getPatientGrid(3);
-		assertTrue(grid.getRetired());
+		assertTrue(grid.getRetired().booleanValue());
 		assertNotNull(grid.getRetireReason());
 		assertNotNull(grid.getRetiredBy());
 		assertNotNull(grid.getDateRetired());

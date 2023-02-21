@@ -3,6 +3,9 @@ package org.openmrs.module.patientgrid;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.ISODateTimeFormat;
 import org.openmrs.*;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -306,5 +309,17 @@ public class PatientGridUtils {
 	
 	public static String getCurrentUserTimeZone() {
 		return Context.getAuthenticatedUser().getUserProperty("clientTimezone");
+	}
+	
+	public static String getCurrentDateInUserTimeZone() {
+		return getCurrentDateInUserTimeZone(DateTime.now());
+		
+	}
+	
+	public static String getCurrentDateInUserTimeZone(DateTime now) {
+		TimeZone tz = TimeZone.getTimeZone(getCurrentUserTimeZone());
+		DateTime dateTime = now.withZone(DateTimeZone.forTimeZone(tz));
+		return ISODateTimeFormat.date().print(dateTime);
+		
 	}
 }

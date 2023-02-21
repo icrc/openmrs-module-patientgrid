@@ -50,7 +50,7 @@ public class DateRangeConverter {
 				return rangeType;
 			}
 			catch (IllegalArgumentException e) {
-				return DateRangeType.CUSTOMDAYSINCLUSIVE;
+				return null;
 			}
 		}
 		return DateRangeType.CUSTOMDAYSINCLUSIVE;
@@ -74,6 +74,9 @@ public class DateRangeConverter {
 		DateRangeParameter parameter = new DateRangeParameter(fromDate, toDate,
 		        currentDateInServerTz == null ? null : currentDateInServerTz.withZone(getUserTimeZone()));
 		DateRangeType rangeType = getRangeType(type);
+		if (rangeType == null) {
+			throw new APIException("Can't parse TimeRange: " + in);
+		}
 		return rangeType.getConverter().convert(parameter);
 		
 	}

@@ -1,13 +1,16 @@
 package org.openmrs.module.patientgrid.filter;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.openmrs.*;
 import org.openmrs.api.APIException;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
@@ -28,6 +31,7 @@ import java.util.*;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 import static org.openmrs.module.patientgrid.PatientGridConstants.DATETIME_FORMAT;
 import static org.openmrs.module.patientgrid.PatientGridConstants.DATE_FORMAT;
 import static org.openmrs.module.patientgrid.PatientGridUtils.MAPPER;
@@ -41,6 +45,13 @@ public class PatientGridFilterUtilsTest {
 	
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
+	
+	@Before
+	public void prepareMock() {
+		PowerMockito.mockStatic(Context.class);
+		AdministrationService mockAdminService = PowerMockito.mock(AdministrationService.class);
+		when(Context.getAdministrationService()).thenReturn(mockAdminService);
+	}
 	
 	@Test
 	public void generateCohortDefinition_shouldCreateAGenderCohortDefinitionForMalePatients() {
@@ -169,7 +180,6 @@ public class PatientGridFilterUtilsTest {
 	@Test
 	public void convert_shouldConvertAUuidToAConcept() {
 		final String conceptUuid = "concept-uuid";
-		PowerMockito.mockStatic(Context.class);
 		Concept mockConcept = Mockito.mock(Concept.class);
 		ConceptService mockConceptService = Mockito.mock(ConceptService.class);
 		Mockito.when(Context.getConceptService()).thenReturn(mockConceptService);
@@ -236,7 +246,6 @@ public class PatientGridFilterUtilsTest {
 	@Test
 	public void convert_shouldConvertAUuidToALocation() {
 		final String locationUuid = "location-uuid";
-		PowerMockito.mockStatic(Context.class);
 		Location mockLocation = Mockito.mock(Location.class);
 		LocationService mockLocationService = Mockito.mock(LocationService.class);
 		Mockito.when(Context.getLocationService()).thenReturn(mockLocationService);
@@ -307,7 +316,6 @@ public class PatientGridFilterUtilsTest {
 		column.addFilter(new PatientGridColumnFilter("maritalStatus", conceptUuid));
 		PatientGrid grid = new PatientGrid();
 		grid.addColumn(column);
-		PowerMockito.mockStatic(Context.class);
 		Concept mockConcept = Mockito.mock(Concept.class);
 		ConceptService mockConceptService = Mockito.mock(ConceptService.class);
 		Mockito.when(Context.getConceptService()).thenReturn(mockConceptService);
@@ -444,7 +452,6 @@ public class PatientGridFilterUtilsTest {
 		column.addFilter(new PatientGridColumnFilter("equal location", locationUuid));
 		PatientGrid grid = new PatientGrid();
 		grid.addColumn(column);
-		PowerMockito.mockStatic(Context.class);
 		Location mockLocation = Mockito.mock(Location.class);
 		LocationService mockLocationService = Mockito.mock(LocationService.class);
 		Mockito.when(Context.getLocationService()).thenReturn(mockLocationService);
@@ -465,7 +472,6 @@ public class PatientGridFilterUtilsTest {
 		column.addFilter(new PatientGridColumnFilter("equal location2", locationUuid2));
 		PatientGrid grid = new PatientGrid();
 		grid.addColumn(column);
-		PowerMockito.mockStatic(Context.class);
 		Location mockLocation1 = Mockito.mock(Location.class);
 		Location mockLocation2 = Mockito.mock(Location.class);
 		LocationService mockLocationService = Mockito.mock(LocationService.class);
@@ -486,7 +492,6 @@ public class PatientGridFilterUtilsTest {
 		column.addFilter(new PatientGridColumnFilter("equal country", countryLocationUuid));
 		PatientGrid grid = new PatientGrid();
 		grid.addColumn(column);
-		PowerMockito.mockStatic(Context.class);
 		Location mockLocation = Mockito.mock(Location.class);
 		LocationService mockLocationService = Mockito.mock(LocationService.class);
 		Mockito.when(Context.getLocationService()).thenReturn(mockLocationService);
@@ -507,7 +512,6 @@ public class PatientGridFilterUtilsTest {
 		column.addFilter(new PatientGridColumnFilter("equal country2", countryLocationUuid2));
 		PatientGrid grid = new PatientGrid();
 		grid.addColumn(column);
-		PowerMockito.mockStatic(Context.class);
 		Location mockLocation1 = Mockito.mock(Location.class);
 		Location mockLocation2 = Mockito.mock(Location.class);
 		LocationService mockLocationService = Mockito.mock(LocationService.class);
@@ -611,7 +615,6 @@ public class PatientGridFilterUtilsTest {
 		column.addFilter(new PatientGridColumnFilter("maritalStatus", conceptUuid));
 		PatientGrid grid = new PatientGrid();
 		grid.addColumn(column);
-		PowerMockito.mockStatic(Context.class);
 		ConceptService mockConceptService = Mockito.mock(ConceptService.class);
 		Mockito.when(Context.getConceptService()).thenReturn(mockConceptService);
 		expectedException.expect(APIException.class);
@@ -627,7 +630,6 @@ public class PatientGridFilterUtilsTest {
 		column.addFilter(new PatientGridColumnFilter("equal country", countryLocationUuid));
 		PatientGrid grid = new PatientGrid();
 		grid.addColumn(column);
-		PowerMockito.mockStatic(Context.class);
 		LocationService mockLocationService = Mockito.mock(LocationService.class);
 		Mockito.when(Context.getLocationService()).thenReturn(mockLocationService);
 		expectedException.expect(APIException.class);

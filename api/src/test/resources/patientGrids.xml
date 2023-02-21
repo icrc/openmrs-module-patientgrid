@@ -32,6 +32,8 @@
     <patientgrid_patient_grid_column patient_grid_column_id="12" patient_grid_id="2" name="civilStatus" description="patient civil status" datatype="OBS" is_hidden="0" creator="1" date_created="2022-08-02 00:00:00" uuid="2f6c993e-c2cc-11de-8d13-0010c6dffd0b" />
     <patientgrid_patient_grid_column patient_grid_column_id="13" patient_grid_id="3" name="name" description="patient name" datatype="NAME" is_hidden="0" creator="1" date_created="2022-08-02 00:00:00" uuid="3f6c993e-c2cc-11de-8d13-0010c6dffd0b" />
     <patientgrid_patient_grid_column patient_grid_column_id="14" patient_grid_id="1" name="encDate" description="encounter date" datatype="ENC_DATE" is_hidden="0" creator="1" date_created="2022-08-02 00:00:00" uuid="4f6c993e-c2cc-11de-8d13-0010c6dffd0b" />
+    <patientgrid_patient_grid_column patient_grid_column_id="15" patient_grid_id="2" name="encDate" description="encounter date" datatype="ENC_DATE" is_hidden="0" creator="1" date_created="2022-08-02 00:00:00" uuid="5f6c993e-c2cc-11de-8d13-0010c6dffd0b" />
+    <patientgrid_patient_grid_column patient_grid_column_id="16" patient_grid_id="3" name="encDate" description="encounter date" datatype="ENC_DATE" is_hidden="0" creator="1" date_created="2022-08-02 00:00:00" uuid="6f6c993e-c2cc-11de-8d13-0010c6dffd0b" />
 
     <patientgrid_enc_age_patient_grid_column patient_grid_column_id="3" encounter_type_id="101" convert_to_age_range="0" />
     <patientgrid_enc_age_patient_grid_column patient_grid_column_id="7" encounter_type_id="101" convert_to_age_range="1" />
@@ -42,8 +44,13 @@
     <patientgrid_obs_patient_grid_column patient_grid_column_id="12" concept_id="4" encounter_type_id="101" />
 
     <patientgrid_enc_date_patient_grid_column patient_grid_column_id="14" encounter_type_id="101" />
+    <patientgrid_enc_date_patient_grid_column patient_grid_column_id="15" encounter_type_id="101" />
+    <patientgrid_enc_date_patient_grid_column patient_grid_column_id="16" encounter_type_id="101" />
 
     <patientgrid_patient_grid_column_filter patient_grid_column_filter_id="1" patient_grid_column_id="11" name="is male" operator="EQUALS" operand="M" creator="1" date_created="2022-08-02 00:00:00" uuid="1f6c993e-c2cc-11de-8d13-0010c6dffd0c" />
     <patientgrid_patient_grid_column_filter patient_grid_column_filter_id="2" patient_grid_column_id="12" name="is single" operator="EQUALS" operand="32d3611a-6699-4d52-823f-b4b788bac3e3" creator="1" date_created="2022-08-02 00:00:00" uuid="2f6c993e-c2cc-11de-8d13-0010c6dffd0c" />
     <patientgrid_patient_grid_column_filter patient_grid_column_filter_id="3" patient_grid_column_id="12" name="is divorced" operator="EQUALS" operand="92afda7c-78c9-47bd-a841-0de0817027d4" creator="1" date_created="2022-08-02 00:00:00" uuid="3f6c993e-c2cc-11de-8d13-0010c6dffd0c" />
+    <patientgrid_patient_grid_column_filter patient_grid_column_filter_id="4" patient_grid_column_id="14" name="date" operator="EQUALS" operand="{&quot;code&quot;:&quot;customDaysInclusive&quot;,&quot;fromDate&quot;:&quot;2022-04-01 00:00:00&quot;,&quot;toDate&quot;:&quot;2022-12-31 00:00:00&quot;}" creator="1" date_created="2022-08-02 00:00:00" uuid="4f6c993e-c2cc-11de-8d13-0010c6dffd0c" />
+    <patientgrid_patient_grid_column_filter patient_grid_column_filter_id="5" patient_grid_column_id="15" name="date" operator="EQUALS" operand="{&quot;code&quot;:&quot;customDaysInclusive&quot;,&quot;fromDate&quot;:&quot;2022-04-01 00:00:00&quot;,&quot;toDate&quot;:&quot;2022-12-31 00:00:00&quot;}" creator="1" date_created="2022-08-02 00:00:00" uuid="5f6c993e-c2cc-11de-8d13-0010c6dffd0c" />
+    <patientgrid_patient_grid_column_filter patient_grid_column_filter_id="6" patient_grid_column_id="16" name="date" operator="EQUALS" operand="{&quot;code&quot;:&quot;customDaysInclusive&quot;,&quot;fromDate&quot;:&quot;2022-04-01 00:00:00&quot;,&quot;toDate&quot;:&quot;2022-12-31 00:00:00&quot;}" creator="1" date_created="2022-08-02 00:00:00" uuid="6f6c993e-c2cc-11de-8d13-0010c6dffd0c" />
 </dataset>

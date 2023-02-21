@@ -15,6 +15,11 @@ public class PatientGridConstants {
 	
 	public static final String GP_AGE_RANGES = MODULE_ID + ".age.ranges";
 	
+	/**
+	 * default period definition to use if no period given or not supported by the system
+	 */
+	public static final String GP_DEFAULT_PERIOD_RANGE = MODULE_ID + ".defaultPeriod";
+	
 	public static final String GP_DISK_CACHE_DIR = MODULE_ID + ".cacheDirectory";
 	
 	public static final String CACHE_MANAGER_NAME = "patientGridReportsCacheManager";

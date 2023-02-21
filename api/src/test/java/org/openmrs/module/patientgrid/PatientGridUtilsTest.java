@@ -9,9 +9,11 @@ import static org.mockito.Mockito.when;
 import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.NAME;
 import static org.openmrs.module.patientgrid.PatientGridConstants.GP_AGE_RANGES;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -19,10 +21,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
+import org.openmrs.*;
 import org.openmrs.api.APIException;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
@@ -71,6 +70,23 @@ public class PatientGridUtilsTest {
 		JoinDataDefinition nameDef = (JoinDataDefinition) ((Mapped) def.getColumnDefinition(columnName).getDataDefinition())
 		        .getParameterizable();
 		return nameDef.getJoinedDefinition();
+	}
+	
+	@Test
+	public void getCurrentDateInUserTimeZone_shouldReturnDate() throws ParseException {
+		PowerMockito.mockStatic(Context.class);
+		User user = new User();
+		user.setUserProperty("clientTimezone", "Asia/Phnom_Penh");
+		when(Context.getAuthenticatedUser()).thenReturn(user);
+		String currentTime = PatientGridUtils.getCurrentUserTimeZone();
+		
+		assertEquals("Asia/Phnom_Penh", currentTime);
+		
+		DateTime thirtyOne = new DateTime(PatientGridConstants.DATETIME_FORMAT.parse("2023-01-31 14:25:10Z").getTime()); // jan 31 at 21:25 in Asia
+		DateTime theFirst = new DateTime(PatientGridConstants.DATETIME_FORMAT.parse("2023-01-31 17:00:20Z").getTime()); // feb 1 in Asia
+		
+		assertEquals("2023-01-31", PatientGridUtils.getCurrentDateInUserTimeZone(thirtyOne));
+		assertEquals("2023-02-01", PatientGridUtils.getCurrentDateInUserTimeZone(theFirst));
 	}
 	
 	@Test
