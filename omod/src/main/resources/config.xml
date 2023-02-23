@@ -47,6 +47,19 @@
             in the patientgrid folder in the application data directory
         </description>
     </globalProperty>
+    <globalProperty>
+        <property>${project.parent.artifactId}.defaultPeriod</property>
+        <description>
+            Specifies the default Period to apply to filter encounters / patients if the frontend doesn't specify it. By default, it
+          will use the last 30 days
+        </description>
+    </globalProperty>
+    <globalProperty>
+        <property>${project.parent.artifactId}.maxCacheFileAge</property>
+        <description>
+            Specifies the max age ( in hour) cache files should be kept on disk
+        </description>
+    </globalProperty>
 
 </module>
 
