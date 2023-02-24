@@ -61,7 +61,7 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		assertEquals(
 		    "{\"code\":\"customDaysInclusive\",\"fromDate\":\"2022-04-01 00:00:00\",\"toDate\":\"2022-12-31 00:00:00\"}",
 		    extendedDataSet.getPeriodOperand());
-		assertEquals("2022-04-01_2022-12-31", extendedDataSet.getUsedDateRange());
+		assertEquals("1648771200000-1672531199999", extendedDataSet.getUsedDateRange());
 		assertEquals(4, dataset.getRows().size());
 		Patient patient = ps.getPatient(2);
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
