@@ -113,6 +113,8 @@ public class PatientGridCache implements Cache {
 		if (targetFile == null || !targetFile.exists()) {
 			return null;
 		}
+		//to show that the file has been used.
+		targetFile.setLastModified(System.currentTimeMillis());
 		T value = null;
 		try {
 			value = (T) getSerializer().fromXML(targetFile);
