@@ -113,7 +113,7 @@ public class PatientGridCache implements Cache {
 		if (targetFile == null || !targetFile.exists()) {
 			return null;
 		}
-		//to show that the file has been used.
+		//to show that the file has been used and shoud not be clean by cleaner task.
 		targetFile.setLastModified(System.currentTimeMillis());
 		T value = null;
 		try {
