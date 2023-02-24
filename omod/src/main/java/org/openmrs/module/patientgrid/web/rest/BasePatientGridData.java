@@ -11,9 +11,16 @@ public abstract class BasePatientGridData {
 	
 	private List<Map<String, Object>> report;
 	
-	public BasePatientGridData(PatientGrid patientGrid, List<Map<String, Object>> report) {
+	private ReportMetadata reportMetadata;
+	
+	public BasePatientGridData(ReportMetadata reportInfo, PatientGrid patientGrid, List<Map<String, Object>> report) {
 		this.patientGrid = patientGrid;
 		this.report = report;
+		this.reportMetadata = reportInfo;
+	}
+	
+	public ReportMetadata getReportMetadata() {
+		return reportMetadata;
 	}
 	
 	/**

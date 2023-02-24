@@ -71,7 +71,7 @@ public class DateRangeConverter {
 		final String type = (String) map.get("code");
 		final DateTime fromDate = getDateForUser(map, "fromDate");
 		final DateTime toDate = getDateForUser(map, "toDate");
-		DateRangeParameter parameter = new DateRangeParameter(fromDate, toDate,
+		DateRangeParameter parameter = new DateRangeParameter(in, fromDate, toDate,
 		        currentDateInServerTz == null ? null : currentDateInServerTz.withZone(getUserTimeZone()));
 		DateRangeType rangeType = getRangeType(type);
 		if (rangeType == null) {

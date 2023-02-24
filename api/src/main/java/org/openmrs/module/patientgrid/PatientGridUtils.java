@@ -308,12 +308,12 @@ public class PatientGridUtils {
 	}
 	
 	public static String getCurrentUserTimeZone() {
-		return Context.getAuthenticatedUser().getUserProperty("clientTimezone");
-	}
-	
-	public static String getCurrentDateInUserTimeZone() {
-		return getCurrentDateInUserTimeZone(DateTime.now());
-		
+		String userTimeZone = Context.getAuthenticatedUser().getUserProperty("clientTimezone");
+		if (userTimeZone == null) {
+			userTimeZone = TimeZone.getDefault().getID();
+			LOG.warn("use server timezone {} instead of User Timezone", userTimeZone);
+		}
+		return userTimeZone;
 	}
 	
 	public static String getCurrentDateInUserTimeZone(DateTime now) {

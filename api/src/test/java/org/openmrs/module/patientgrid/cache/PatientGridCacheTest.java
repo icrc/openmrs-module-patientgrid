@@ -7,6 +7,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.ExtendedDataSet;
+import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.patientgrid.xstream.CustomXstreamSerializer;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.serialization.OpenmrsSerializer;
@@ -23,15 +25,14 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(Context.class)
+@PrepareForTest({ Context.class, PatientGridUtils.class })
 @PowerMockIgnore("jdk.internal.reflect.*")
 public class PatientGridCacheTest {
 	
 	@Mock
 	private DiskCache mockDiskCache;
 	
-	@Mock
-	private SimpleDataSet mockDataSet;
+	private final String utcTimeZone = "UTC";
 	
 	@Mock
 	private CustomXstreamSerializer mockOpenmrsSerializer;
@@ -45,10 +46,12 @@ public class PatientGridCacheTest {
 	@Before
 	public void setup() throws Exception {
 		PowerMockito.mockStatic(Context.class);
+		PowerMockito.mockStatic(PatientGridUtils.class);
 		Whitebox.setInternalState(cache, DiskCache.class, mockDiskCache);
 		cache.setSerializer(mockOpenmrsSerializer);
 		file = File.createTempFile("test", ".txt");
 		when(mockDiskCache.getFile(filename)).thenReturn(file);
+		when(PatientGridUtils.getCurrentUserTimeZone()).thenReturn("utcTimeZone");
 	}
 	
 	@After
@@ -59,14 +62,65 @@ public class PatientGridCacheTest {
 	@Test
 	public void get_shouldReturnTheDeserializedDataSet() throws Exception {
 		final String filename = "test_file";
-		when(mockOpenmrsSerializer.fromXML(anyObject())).thenReturn(mockDataSet);
+		ExtendedDataSet dataSet = new ExtendedDataSet();
+		when(mockOpenmrsSerializer.fromXML(anyObject())).thenReturn(dataSet);
 		
-		assertEquals(mockDataSet, cache.get(filename, SimpleDataSet.class));
+		assertEquals(dataSet, cache.get(filename, ExtendedDataSet.class));
+	}
+	
+	@Test
+	public void get_shouldReturnNullIfVersionIsObsolete() throws Exception {
+		//setup
+		final String filename = "test_file";
+		ExtendedDataSet dataSet = new ExtendedDataSet();
+		dataSet.setXstreamVersion("");
+		assertFalse(dataSet.isLastVersion());
+		
+		//action
+		when(mockOpenmrsSerializer.fromXML(anyObject())).thenReturn(dataSet);
+		
+		//assert
+		assertNull(cache.get(filename));
+	}
+	
+	@Test
+	public void get_shouldReturnNullIfDateRangeChanged() throws Exception {
+		//setup
+		final String filename = "test_file";
+		ExtendedDataSet dataSet = new ExtendedDataSet();
+		dataSet.setUsedDateRange("");
+		dataSet.setPeriodOperand("{\"code\":\"LASTTHIRTYDAYS\"}");
+		
+		//action
+		when(mockOpenmrsSerializer.fromXML(anyObject())).thenReturn(dataSet);
+		
+		//assert
+		assertNull(cache.get(filename));
+	}
+	
+	@Test
+	public void get_shouldReturnCacheIfNotObsolete() throws Exception {
+		//setup
+		final String filename = "test_file";
+		ExtendedDataSet dataSet = new ExtendedDataSet();
+		dataSet.setUsedDateRange("2022-04-01_2022-12-31");
+		final String oldTimeZone = System.getProperty("user.timezone");
+		System.setProperty("user.timezone", utcTimeZone);
+		dataSet.setPeriodOperand(
+		    "{\"code\":\"customDaysInclusive\",\"fromDate\":\"2022-04-01 00:00:00\",\"toDate\":\"2022-12-31 00:00:00\"}");
+		
+		//action
+		when(mockOpenmrsSerializer.fromXML(anyObject())).thenReturn(dataSet);
+		
+		//assert
+		assertSame(dataSet, cache.get(filename).get());
+		
+		System.setProperty("user.timezone", oldTimeZone);
 	}
 	
 	@Test
 	public void get_shouldReturnNullIfNoCachedDataSetExists() {
-		assertNull(cache.get("some-file", SimpleDataSet.class));
+		assertNull(cache.get("some-file", ExtendedDataSet.class));
 		Mockito.verifyZeroInteractions(mockOpenmrsSerializer);
 	}
 	
@@ -78,38 +132,40 @@ public class PatientGridCacheTest {
 	
 	@Test
 	public void getValueWrapper_shouldReturnTheWrappedValueOfTheDeserializedDataSet() throws Exception {
-		when(mockOpenmrsSerializer.fromXML(file)).thenReturn(mockDataSet);
+		ExtendedDataSet dataSet = new ExtendedDataSet();
+		when(mockOpenmrsSerializer.fromXML(file)).thenReturn(dataSet);
 		
-		assertEquals(mockDataSet, cache.get(filename).get());
+		assertSame(dataSet, cache.get(filename).get());
 	}
 	
 	@Test
 	public void put_shouldSerializeAndSaveTheSpecifiedDataSet() throws Exception {
-		
-		cache.put(filename, mockDataSet);
+		ExtendedDataSet dataSet = new ExtendedDataSet();
+		cache.put(filename, dataSet);
 		
 		Mockito.verify(mockDiskCache).getFile(filename);
-		Mockito.verify(mockOpenmrsSerializer).toXML(mockDataSet, file);
+		Mockito.verify(mockOpenmrsSerializer).toXML(dataSet, file);
 	}
 	
 	@Test
 	public void putIfAbsent_shouldReturnExistingValueAndNotSetTheNewValue() throws Exception {
-		final SimpleDataSet oldDataSet = mock(SimpleDataSet.class);
+		final ExtendedDataSet oldDataSet = new ExtendedDataSet();
+		ExtendedDataSet dataSet = new ExtendedDataSet();
 		when(mockOpenmrsSerializer.fromXML(file)).thenReturn(oldDataSet);
 		
-		assertSame(oldDataSet, cache.putIfAbsent(filename, mockDataSet).get());
+		assertSame(oldDataSet, cache.putIfAbsent(filename, dataSet).get());
 		
 		assertSame(oldDataSet, cache.get(filename).get());
-		Mockito.verify(mockOpenmrsSerializer, never()).toXML(mockDataSet, file);
+		Mockito.verify(mockOpenmrsSerializer, never()).toXML(dataSet, file);
 		
 	}
 	
 	@Test
 	public void putIfAbsent_shouldSerializeAndSaveTheSpecifiedDataSet() throws Exception {
+		ExtendedDataSet dataSet = new ExtendedDataSet();
+		assertNull(cache.putIfAbsent(filename, dataSet));
 		
-		assertNull(cache.putIfAbsent(filename, mockDataSet));
-		
-		Mockito.verify(mockOpenmrsSerializer).toXML(mockDataSet, file);
+		Mockito.verify(mockOpenmrsSerializer).toXML(dataSet, file);
 		
 	}
 	

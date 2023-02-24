@@ -3,9 +3,11 @@ package org.openmrs.module.patientgrid.web.rest.v1_0.resource;
 import java.util.ArrayList;
 
 import org.junit.Before;
+import org.openmrs.module.patientgrid.ExtendedDataSet;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.patientgrid.web.rest.PatientGridDownload;
+import org.openmrs.module.patientgrid.web.rest.ReportMetadata;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,7 +26,12 @@ public class PatientGridDownloadResourceTest extends BaseDelegatingResourceTest<
 	@Override
 	public PatientGridDownload newObject() {
 		PatientGrid patientGrid = service.getPatientGridByUuid(GRID_UUID);
-		return new PatientGridDownload(patientGrid, new ArrayList());
+		ExtendedDataSet dataSet = new ExtendedDataSet();
+		dataSet.setUsedDateRange("periodUsedStartEndDate");
+		dataSet.setTruncated(true);
+		dataSet.setInitialRowsCount(1000);
+		dataSet.setRowsCountLimit(100);
+		return new PatientGridDownload(new ReportMetadata(dataSet), patientGrid, new ArrayList());
 	}
 	
 	@Override
@@ -40,6 +47,7 @@ public class PatientGridDownloadResourceTest extends BaseDelegatingResourceTest<
 	private void validateRepresentation() {
 		assertPropPresent("patientGrid");
 		assertPropPresent("report");
+		assertPropPresent("reportMetadata");
 	}
 	
 	@Override

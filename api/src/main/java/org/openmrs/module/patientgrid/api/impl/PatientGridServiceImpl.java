@@ -3,14 +3,13 @@ package org.openmrs.module.patientgrid.api.impl;
 import org.apache.commons.lang3.time.StopWatch;
 import org.openmrs.Cohort;
 import org.openmrs.CohortMembership;
-import org.openmrs.User;
 import org.openmrs.api.APIException;
-import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.patientgrid.*;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.patientgrid.api.db.PatientGridDAO;
+import org.openmrs.module.patientgrid.filter.ObjectWithDateRange;
 import org.openmrs.module.patientgrid.filter.PatientGridFilterUtils;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
@@ -110,7 +109,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 	/**
 	 * @see PatientGridService#evaluate(PatientGrid)
 	 */
-	public SimpleDataSet evaluate(PatientGrid patientGrid) {
+	public ExtendedDataSet evaluate(PatientGrid patientGrid) {
 		log.debug("Generating report for patient grid: {}", patientGrid);
 		
 		StopWatch stopWatch = new StopWatch();
@@ -119,8 +118,10 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		try {
 			PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, true);
 			EvaluationContextPersistantCache context = new EvaluationContextPersistantCache();
-			String clientTimezone = PatientGridUtils.getCurrentUserTimeZone();
-			Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, context, clientTimezone);
+			final String clientTimezone = PatientGridUtils.getCurrentUserTimeZone();
+			ObjectWithDateRange<Cohort> cohortWithPeriod = PatientGridFilterUtils.filterPatients(patientGrid, context,
+			    clientTimezone);
+			Cohort cohort = cohortWithPeriod == null ? null : cohortWithPeriod.getObject();
 			//if not filters done by PatientGridFilterUtils, we will use the static cohort
 			if (cohort == null) {
 				cohort = patientGrid.getCohort();
@@ -139,12 +140,15 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 			} else {
 				ds = (SimpleDataSet) Context.getService(DataSetDefinitionService.class).evaluate(dataSetDef, context);
 			}
+			ExtendedDataSet extendedDataSet = new ExtendedDataSet(ds,
+			        cohortWithPeriod == null ? null : cohortWithPeriod.getDateRange());
+			//go on configuration here.
 			
 			stopWatch.stop();
 			
 			log.debug("Report for patient grid {} completed in {}", patientGrid, stopWatch.toString());
 			context.clearPersistentCache();
-			return ds;
+			return extendedDataSet;
 		}
 		catch (EvaluationException e) {
 			throw new APIException("Failed to evaluate patient grid: " + patientGrid, e);
@@ -180,7 +184,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 	 * @see PatientGridService#evaluateIgnoreCache(PatientGrid)
 	 */
 	@Override
-	public SimpleDataSet evaluateIgnoreCache(PatientGrid patientGrid) {
+	public ExtendedDataSet evaluateIgnoreCache(PatientGrid patientGrid) {
 		return evaluate(patientGrid);
 	}
 	

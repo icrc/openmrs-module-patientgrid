@@ -30,9 +30,11 @@ import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ServiceContext;
+import org.openmrs.module.patientgrid.ExtendedDataSet;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
+import org.openmrs.module.patientgrid.period.DateRange;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -133,7 +135,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		grid.setDescription("test description");
 		grid.setCohort(new Cohort(101));
 		grid.addColumn(new PatientGridColumn("name", ColumnDatatype.NAME));
-		final SimpleDataSet dataSet = new SimpleDataSet(null, null);
+		final ExtendedDataSet dataSet = new ExtendedDataSet(new SimpleDataSet(null, null), null);
 		final String cacheKey = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		final String cacheKeyOtherGrid = "other" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		getCache().put(cacheKey, dataSet);
@@ -155,7 +157,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(grid.getChangedBy());
 		assertNull(grid.getDateChanged());
 		grid.setName("test");
-		final SimpleDataSet cachedDataSet = new SimpleDataSet(null, null);
+		final ExtendedDataSet cachedDataSet = new ExtendedDataSet(null, null);
 		final String cacheKeyUser1 = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		final String cacheKeyUser2 = grid.getUuid() + CACHE_KEY_SEPARATOR + "another-user-uuid-2";
 		final String cacheKeyUser3 = grid.getUuid() + CACHE_KEY_SEPARATOR + "another-user-uuid-3";
@@ -185,7 +187,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(grid.getRetiredBy());
 		assertNull(grid.getDateRetired());
 		
-		final SimpleDataSet cachedDataSet = new SimpleDataSet(null, null);
+		final ExtendedDataSet cachedDataSet = new ExtendedDataSet(new SimpleDataSet(null, null), null);
 		final String cacheKeyUser1 = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		final String cacheKeyUser2 = grid.getUuid() + CACHE_KEY_SEPARATOR + "another-user-uuid-2";
 		final String cacheKeyUser3 = grid.getUuid() + CACHE_KEY_SEPARATOR + "another-user-uuid-3";
@@ -217,14 +219,16 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(grid.getDateRetired());
 		
 		final SimpleDataSet cachedDataSet = new SimpleDataSet(null, null);
+		DateRange dateRange = new DateRange("test", null, null);
+		final ExtendedDataSet extendedDataSet = new ExtendedDataSet(cachedDataSet, null);
 		final String cacheKeyUser1 = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		final String cacheKeyUser2 = grid.getUuid() + CACHE_KEY_SEPARATOR + "another-user-uuid-2";
 		final String cacheKeyUser3 = grid.getUuid() + CACHE_KEY_SEPARATOR + "another-user-uuid-3";
 		final String cacheKeyOtherGrid = "other" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
-		getCache().put(cacheKeyUser1, cachedDataSet);
-		getCache().put(cacheKeyUser2, cachedDataSet);
-		getCache().put(cacheKeyUser3, cachedDataSet);
-		getCache().put(cacheKeyOtherGrid, cachedDataSet);
+		getCache().put(cacheKeyUser1, extendedDataSet);
+		getCache().put(cacheKeyUser2, extendedDataSet);
+		getCache().put(cacheKeyUser3, extendedDataSet);
+		getCache().put(cacheKeyOtherGrid, extendedDataSet);
 		
 		service.unretirePatientGrid(grid);
 		
@@ -247,11 +251,12 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		assertNull(getCache().get(cacheKey));
 		
-		SimpleDataSet dataSet = service.evaluate(patientGrid);
+		SimpleDataSet dataSet = service.evaluate(patientGrid).getSimpleDataSet();
 		//as no filter on the age all 4 patients are returned by the filter
 		//but we have a static cohort.
 		assertEquals(3, dataSet.getRows().size());
-		assertEquals(dataSet.getRows().size(), ((SimpleDataSet) getCache().get(cacheKey).get()).getRows().size());
+		assertEquals(dataSet.getRows().size(),
+		    ((ExtendedDataSet) getCache().get(cacheKey).get()).getSimpleDataSet().getRows().size());
 		Patient patient = ps.getPatient(2);
 		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataSet.getColumnValue(patient.getId(), "name"));
@@ -317,9 +322,9 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		cachedDataSet.addColumnValue(patientId, column, name);
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		getCache().put(patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid(),
-		    cachedDataSet);
+		    new ExtendedDataSet(cachedDataSet, null));
 		
-		SimpleDataSet newDataSet = service.evaluate(patientGrid);
+		SimpleDataSet newDataSet = service.evaluate(patientGrid).getSimpleDataSet();
 		
 		assertEquals(cachedDataSet.getRows().size(), newDataSet.getRows().size());
 		assertEquals(name, newDataSet.getColumnValue(patientId, columnName));
@@ -334,10 +339,11 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		getCache().put(cacheKey, cachedDataSet);
 		
-		SimpleDataSet newDataSet = service.evaluateIgnoreCache(patientGrid);
+		SimpleDataSet newDataSet = service.evaluateIgnoreCache(patientGrid).getSimpleDataSet();
 		
 		assertNotEquals(cachedDataSet.getRows().size(), newDataSet.getRows().size());
-		assertEquals(newDataSet.getRows().size(), ((SimpleDataSet) getCache().get(cacheKey).get()).getRows().size());
+		assertEquals(newDataSet.getRows().size(),
+		    ((ExtendedDataSet) getCache().get(cacheKey).get()).getSimpleDataSet().getRows().size());
 	}
 	
 	@Test
@@ -346,11 +352,12 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		getCache().put("another-user-uuid" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid(), cachedDataSet);
 		
-		SimpleDataSet newDataSet = service.evaluate(patientGrid);
+		SimpleDataSet newDataSet = service.evaluate(patientGrid).getSimpleDataSet();
 		
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		assertNotEquals(cachedDataSet.getRows().size(), newDataSet.getRows().size());
-		assertEquals(newDataSet.getRows().size(), ((SimpleDataSet) getCache().get(cacheKey).get()).getRows().size());
+		assertEquals(newDataSet.getRows().size(),
+		    ((ExtendedDataSet) getCache().get(cacheKey).get()).getSimpleDataSet().getRows().size());
 	}
 	
 	@Test
@@ -361,7 +368,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		assertNull(getCache().get(cacheKey));
 		
-		SimpleDataSet dataSet = service.evaluate(patientGrid);
+		SimpleDataSet dataSet = service.evaluate(patientGrid).getSimpleDataSet();
 		
 		assertTrue(dataSet.getRows().isEmpty());
 		assertNull(getCache().get(cacheKey));
@@ -386,7 +393,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		serviceContext.setService(DataSetDefinitionService.class, mockDsds);
 		SimpleDataSet dataSet;
 		try {
-			dataSet = service.evaluate(patientGrid);
+			dataSet = service.evaluate(patientGrid).getSimpleDataSet();
 		}
 		finally {
 			Context.removeProxyPrivilege(PRIV_MANAGE_PATIENT_GRIDS);
@@ -416,7 +423,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		serviceContext.setService(DataSetDefinitionService.class, mockDsds);
 		serviceContext.setService(CohortDefinitionService.class, mockCds);
 		try {
-			dataSet = service.evaluate(patientGrid);
+			dataSet = service.evaluate(patientGrid).getSimpleDataSet();
 		}
 		finally {
 			Context.removeProxyPrivilege(PRIV_MANAGE_PATIENT_GRIDS);
@@ -450,7 +457,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		Context.getCohortService().saveCohort(cohort);
 		patientGrid.setCohort(cohort);
 		
-		SimpleDataSet dataSet = service.evaluate(patientGrid);
+		SimpleDataSet dataSet = service.evaluate(patientGrid).getSimpleDataSet();
 		
 		assertEquals(1, dataSet.getRows().size());
 		Patient patient = ps.getPatient(patientId2);

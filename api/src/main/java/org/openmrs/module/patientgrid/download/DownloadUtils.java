@@ -5,6 +5,7 @@ import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.*;
+import org.openmrs.module.patientgrid.filter.ObjectWithDateRange;
 import org.openmrs.module.patientgrid.filter.PatientGridFilterUtils;
 import org.openmrs.module.patientgrid.period.DateRange;
 import org.openmrs.module.patientgrid.period.DateRangeConverter;
@@ -27,7 +28,7 @@ public class DownloadUtils {
 	
 	private static DataSetDefinitionService dataSetService;
 	
-	public static SimpleDataSet evaluate(PatientGrid patientGrid) {
+	public static ExtendedDataSet evaluate(PatientGrid patientGrid) {
 		log.debug("Generating downloadable patient grid report data for patient grid: {}", patientGrid);
 		
 		StopWatch stopWatch = new StopWatch();
@@ -35,13 +36,13 @@ public class DownloadUtils {
 		
 		try {
 			PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, false);
-			
+			String clientTimezone = PatientGridUtils.getCurrentUserTimeZone();
 			DateRange periodRange = null;
 			for (PatientGridColumn column : patientGrid.getColumns()) {
 				if (ENC_DATE.equals(column.getDatatype())) {
 					if (!column.getFilters().isEmpty()) {
 						for (PatientGridColumnFilter filter : column.getFilters()) {
-							periodRange = new DateRangeConverter("UTC").convert(filter.getOperand());
+							periodRange = new DateRangeConverter(clientTimezone).convert(filter.getOperand());
 						}
 					}
 					break;
@@ -58,15 +59,17 @@ public class DownloadUtils {
 			});
 			
 			EvaluationContext context = new EvaluationContextPersistantCache();
-			String clientTimezone = PatientGridUtils.getCurrentUserTimeZone();
-			Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, context, clientTimezone);
+			ObjectWithDateRange<Cohort> cohortAndDate = PatientGridFilterUtils.filterPatients(patientGrid, context,
+			    clientTimezone);
+			Cohort cohort = cohortAndDate == null ? null : cohortAndDate.getObject();
 			if (cohort == null) {
 				cohort = patientGrid.getCohort();
 			}
 			
 			if (cohort != null && cohort.isEmpty()) {
 				log.info("Cohort is empty, nothing to evaluate");
-				return new SimpleDataSet(dataSetDef, context);
+				return new ExtendedDataSet(new SimpleDataSet(dataSetDef, context),
+				        cohortAndDate == null ? null : cohortAndDate.getDateRange());
 			}
 			
 			context.setBaseCohort(cohort);
@@ -80,8 +83,9 @@ public class DownloadUtils {
 			
 			log.debug("Generating downloadable patient grid report data for patient grid {}  completed in {}", patientGrid,
 			    stopWatch.toString());
-			
-			return dataSet;
+			ExtendedDataSet res = new ExtendedDataSet(dataSet, cohortAndDate.getDateRange());
+			//TODO: go on configuration here
+			return res;
 		}
 		catch (EvaluationException e) {
 			throw new APIException(

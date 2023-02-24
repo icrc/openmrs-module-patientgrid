@@ -57,11 +57,15 @@ public class PatientGridFilterUtilsContextSensitiveTest extends BaseModuleContex
 		Context.getCohortService().saveCohort(cohort);
 		patientGrid.setCohort(cohort);
 		
-		Cohort filteredCohort = PatientGridFilterUtils.filterPatients(patientGrid, null, null);
+		ObjectWithDateRange<Cohort> filteredCohort = PatientGridFilterUtils.filterPatients(patientGrid, null, null);
 		
-		assertEquals(2, filteredCohort.size());
-		assertNotNull(filteredCohort.getActiveMembership(patientService.getPatient(patientId2)));
-		assertNotNull(filteredCohort.getActiveMembership(patientService.getPatient(patientId6)));
+		assertEquals(2, filteredCohort.getObject().size());
+		assertNotNull(filteredCohort.getObject().getActiveMembership(patientService.getPatient(patientId2)));
+		assertNotNull(filteredCohort.getObject().getActiveMembership(patientService.getPatient(patientId6)));
+		
+		assertEquals(
+		    "{\"code\":\"customDaysInclusive\",\"fromDate\":\"2022-04-01 00:00:00\",\"toDate\":\"2022-12-31 00:00:00\"}",
+		    filteredCohort.getDateRange().getOperand());
 	}
 	
 	@Test
@@ -76,7 +80,7 @@ public class PatientGridFilterUtilsContextSensitiveTest extends BaseModuleContex
 		}
 		assertTrue(hasFilteredColumns);
 		
-		Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, null, null);
+		Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, null, null).getObject();
 		assertEquals(4, cohort.getMemberships().size());
 	}
 	

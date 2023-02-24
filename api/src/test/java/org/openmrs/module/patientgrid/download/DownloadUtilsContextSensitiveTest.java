@@ -19,6 +19,7 @@ import org.openmrs.Patient;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.ExtendedDataSet;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.api.PatientGridService;
@@ -50,8 +51,13 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 	public void evaluate_shouldReturnDownloadReportDataForTheSpecifiedPatientGrid() {
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		
-		SimpleDataSet dataset = DownloadUtils.evaluate(patientGrid);
+		ExtendedDataSet extendedDataSet = DownloadUtils.evaluate(patientGrid);
+		SimpleDataSet dataset = extendedDataSet.getSimpleDataSet();
 		
+		assertEquals(
+		    "{\"code\":\"customDaysInclusive\",\"fromDate\":\"2022-04-01 00:00:00\",\"toDate\":\"2022-12-31 00:00:00\"}",
+		    extendedDataSet.getPeriodOperand());
+		assertEquals("2022-04-01_2023-01-01", extendedDataSet.getUsedDateRange());
 		assertEquals(4, dataset.getRows().size());
 		Patient patient = ps.getPatient(2);
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
@@ -174,7 +180,7 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		Context.getCohortService().saveCohort(cohort);
 		patientGrid.setCohort(cohort);
 		
-		SimpleDataSet dataset = DownloadUtils.evaluate(patientGrid);
+		SimpleDataSet dataset = DownloadUtils.evaluate(patientGrid).getSimpleDataSet();
 		
 		assertEquals(2, dataset.getRows().size());
 		Patient patient = ps.getPatient(2);

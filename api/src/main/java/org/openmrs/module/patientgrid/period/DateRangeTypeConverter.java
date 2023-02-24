@@ -26,7 +26,7 @@ public abstract class DateRangeTypeConverter {
 			DateTime startOfDay = startOfDay(currentDate);
 			DateTime endOfDay = endOfDay(currentDate);
 			
-			return new DateRange(startOfDay.toDate(), endOfDay.toDate());
+			return new DateRange(in.getOperand(), startOfDay.toDate(), endOfDay.toDate());
 		}
 	}
 	
@@ -35,7 +35,7 @@ public abstract class DateRangeTypeConverter {
 		@Override
 		public DateRange convert(DateRangeParameter in) {
 			DateTime yesterday = in.getCurrentDateInUserTz().minusDays(1);
-			return new DateRange(startOfDay(yesterday).toDate(), endOfDay(yesterday).toDate());
+			return new DateRange(in.getOperand(), startOfDay(yesterday).toDate(), endOfDay(yesterday).toDate());
 		}
 	}
 	
@@ -46,7 +46,7 @@ public abstract class DateRangeTypeConverter {
 			DateTime startOfDay = startOfDay(in.getFromDateInUserTz());
 			DateTime endOfDay = endOfDay(in.getToDateInUserTz());
 			
-			return new DateRange(startOfDay.toDate(), endOfDay.toDate());
+			return new DateRange(in.getOperand(), startOfDay.toDate(), endOfDay.toDate());
 		}
 	}
 	
@@ -56,7 +56,7 @@ public abstract class DateRangeTypeConverter {
 		public DateRange convert(DateRangeParameter in) {
 			DateTime today = in.getCurrentDateInUserTz();
 			//6 interval
-			return new DateRange(startOfDay(today.minusDays(6)).toDate(), endOfDay(today).toDate());
+			return new DateRange(in.getOperand(), startOfDay(today.minusDays(6)).toDate(), endOfDay(today).toDate());
 		}
 	}
 	
@@ -66,7 +66,7 @@ public abstract class DateRangeTypeConverter {
 		public DateRange convert(DateRangeParameter in) {
 			DateTime today = in.getCurrentDateInUserTz();
 			//6 interval
-			return new DateRange(startOfDay(today.minusDays(29)).toDate(), endOfDay(today).toDate());
+			return new DateRange(in.getOperand(), startOfDay(today.minusDays(29)).toDate(), endOfDay(today).toDate());
 		}
 	}
 	
@@ -76,7 +76,7 @@ public abstract class DateRangeTypeConverter {
 		public DateRange convert(DateRangeParameter in) {
 			DateTime today = in.getCurrentDateInUserTz();
 			//6 interval
-			return new DateRange(startOfDay(today.withDayOfWeek(1)).toDate(), endOfDay(today).toDate());
+			return new DateRange(in.getOperand(), startOfDay(today.withDayOfWeek(1)).toDate(), endOfDay(today).toDate());
 		}
 	}
 	
@@ -86,7 +86,7 @@ public abstract class DateRangeTypeConverter {
 		public DateRange convert(DateRangeParameter in) {
 			DateTime today = in.getCurrentDateInUserTz();
 			//6 interval
-			return new DateRange(startOfDay(today.withDayOfMonth(1)).toDate(), endOfDay(today).toDate());
+			return new DateRange(in.getOperand(), startOfDay(today.withDayOfMonth(1)).toDate(), endOfDay(today).toDate());
 		}
 	}
 	
@@ -96,7 +96,7 @@ public abstract class DateRangeTypeConverter {
 		public DateRange convert(DateRangeParameter in) {
 			DateTime today = in.getCurrentDateInUserTz();
 			//6 interval
-			return new DateRange(startOfDay(quarterStartFor(today)).toDate(), endOfDay(today).toDate());
+			return new DateRange(in.getOperand(), startOfDay(quarterStartFor(today)).toDate(), endOfDay(today).toDate());
 		}
 	}
 	
@@ -106,7 +106,7 @@ public abstract class DateRangeTypeConverter {
 		public DateRange convert(DateRangeParameter in) {
 			DateTime today = in.getCurrentDateInUserTz();
 			//6 interval
-			return new DateRange(startOfDay(today.withDayOfYear(1)).toDate(), endOfDay(today).toDate());
+			return new DateRange(in.getOperand(), startOfDay(today.withDayOfYear(1)).toDate(), endOfDay(today).toDate());
 		}
 	}
 	
@@ -116,7 +116,7 @@ public abstract class DateRangeTypeConverter {
 		public DateRange convert(DateRangeParameter in) {
 			DateTime previousWeek = in.getCurrentDateInUserTz().minusWeeks(1);
 			//6 interval
-			return new DateRange(startOfDay(previousWeek.withDayOfWeek(1)).toDate(),
+			return new DateRange(in.getOperand(), startOfDay(previousWeek.withDayOfWeek(1)).toDate(),
 			        endOfDay(previousWeek.withDayOfWeek(7)).toDate());
 		}
 	}
@@ -127,7 +127,7 @@ public abstract class DateRangeTypeConverter {
 		public DateRange convert(DateRangeParameter in) {
 			DateTime startPreviousMonth = in.getCurrentDateInUserTz().minusMonths(1).withDayOfMonth(1);
 			//6 interval
-			return new DateRange(startOfDay(startPreviousMonth).toDate(),
+			return new DateRange(in.getOperand(), startOfDay(startPreviousMonth).toDate(),
 			        endOfDay(startPreviousMonth.dayOfMonth().withMaximumValue()).toDate());
 		}
 	}
@@ -138,7 +138,7 @@ public abstract class DateRangeTypeConverter {
 		public DateRange convert(DateRangeParameter in) {
 			DateTime startOfCurrentQuarter = quarterStartFor(in.getCurrentDateInUserTz());
 			
-			return new DateRange(startOfDay(startOfCurrentQuarter.minusMonths(3)).toDate(),
+			return new DateRange(in.getOperand(), startOfDay(startOfCurrentQuarter.minusMonths(3)).toDate(),
 			        endOfDay(startOfCurrentQuarter.minusDays(1)).toDate());
 		}
 	}
@@ -148,7 +148,7 @@ public abstract class DateRangeTypeConverter {
 		@Override
 		public DateRange convert(DateRangeParameter in) {
 			DateTime previousYear = in.getCurrentDateInUserTz().minusYears(1);
-			return new DateRange(startOfDay(previousYear.dayOfYear().withMinimumValue()).toDate(),
+			return new DateRange(in.getOperand(), startOfDay(previousYear.dayOfYear().withMinimumValue()).toDate(),
 			        endOfDay(previousYear.dayOfYear().withMaximumValue()).toDate());
 		}
 	}

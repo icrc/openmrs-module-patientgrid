@@ -4,16 +4,24 @@ import org.joda.time.DateTime;
 
 public class DateRangeParameter {
 	
+	private final String operand;
+	
 	private final DateTime fromDateInUserTz;
 	
 	private final DateTime toDateInUserTz;
 	
 	private final DateTime currentDateInUserTz;
 	
-	public DateRangeParameter(DateTime fromDateInUserTz, DateTime toDateInUserTz, DateTime currentDateInUserTz) {
+	public DateRangeParameter(String operand, DateTime fromDateInUserTz, DateTime toDateInUserTz,
+	    DateTime currentDateInUserTz) {
 		this.fromDateInUserTz = fromDateInUserTz;
 		this.toDateInUserTz = toDateInUserTz;
 		this.currentDateInUserTz = currentDateInUserTz;
+		this.operand = operand;
+	}
+	
+	public String getOperand() {
+		return operand;
 	}
 	
 	public DateTime getFromDateInUserTz() {

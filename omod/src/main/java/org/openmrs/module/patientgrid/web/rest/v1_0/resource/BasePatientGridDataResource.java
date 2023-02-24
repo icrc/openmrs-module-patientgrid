@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.reflect.ConstructorUtils;
+import org.openmrs.module.patientgrid.ExtendedDataSet;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.web.rest.BasePatientGridData;
+import org.openmrs.module.patientgrid.web.rest.ReportMetadata;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -24,12 +26,12 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 	
 	/**
 	 * Evaluate the specified {@link PatientGrid} to generate the grid data
-	 * 
+	 *
 	 * @param parent the {@link PatientGrid} to evaluate
 	 * @param context {@link RequestContext} object
 	 * @return the generated grid data
 	 */
-	public abstract SimpleDataSet evaluate(PatientGrid parent, RequestContext context);
+	public abstract ExtendedDataSet evaluate(PatientGrid parent, RequestContext context);
 	
 	/**
 	 * @see DelegatingSubResource#getRepresentationDescription(Representation)
@@ -39,6 +41,7 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("patientGrid", Representation.REF);
 		description.addProperty("report");
+		description.addProperty("reportMetadata");
 		return description;
 	}
 	
@@ -55,26 +58,18 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 	 */
 	@Override
 	public PageableResult doGetAll(PatientGrid parent, RequestContext context) throws ResponseException {
-		SimpleDataSet dataset = evaluate(parent, context);
-		List<Map<String, Object>> report = new ArrayList(dataset.getRows().size());
-		dataset.getRows().stream().forEach(row -> {
+		ExtendedDataSet extendedDataSet = evaluate(parent, context);
+		SimpleDataSet simpleDataSet = extendedDataSet.getSimpleDataSet();
+		List<Map<String, Object>> report = new ArrayList(simpleDataSet.getRows().size());
+		simpleDataSet.getRows().stream().forEach(row -> {
 			report.add(row.getColumnValuesByKey());
 		});
-		
-		ParameterizedType p = (ParameterizedType) getClass().getGenericSuperclass();
-		Class<T> clazz = (Class<T>) p.getActualTypeArguments()[0];
-		T instance;
-		try {
-			Object[] args = new Object[] { parent, report };
-			Class<?>[] argTypes = new Class<?>[] { PatientGrid.class, List.class };
-			instance = ConstructorUtils.invokeConstructor(clazz, args, argTypes);
-		}
-		catch (Exception e) {
-			throw new GenericRestException(e);
-		}
+		T instance = create(new ReportMetadata(extendedDataSet), parent, report);
 		
 		return new NeedsPaging(Collections.singletonList(instance), context);
 	}
+	
+	protected abstract T create(ReportMetadata reportMetadata, PatientGrid patientGrid, List report);
 	
 	/**
 	 * @see DelegatingSubResource#newDelegate()

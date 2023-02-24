@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.patientgrid.ExtendedDataSet;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumnFilter;
@@ -110,7 +111,7 @@ public interface PatientGridService extends OpenmrsService {
 	 */
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
 	@Cacheable(key = CACHE_KEY_EXP, condition = CACHE_CONDITION_EXP, unless = CACHE_UNLESS_EXP)
-	SimpleDataSet evaluate(PatientGrid patientGrid);
+	ExtendedDataSet evaluate(PatientGrid patientGrid);
 	
 	/**
 	 * Evaluates the specified {@link PatientGrid} ignoring any previously cached report data and will
@@ -121,6 +122,6 @@ public interface PatientGridService extends OpenmrsService {
 	 */
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
 	@CachePut(key = CACHE_KEY_EXP, condition = CACHE_CONDITION_EXP, unless = CACHE_UNLESS_EXP)
-	SimpleDataSet evaluateIgnoreCache(PatientGrid patientGrid);
+	ExtendedDataSet evaluateIgnoreCache(PatientGrid patientGrid);
 	
 }

@@ -1,24 +1,22 @@
 package org.openmrs.module.patientgrid.cache;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.openmrs.module.patientgrid.ExtendedDataSet;
 import org.openmrs.module.patientgrid.PatientGridConstants;
+import org.openmrs.module.patientgrid.PatientGridUtils;
+import org.openmrs.module.patientgrid.period.DateRangeConverter;
 import org.openmrs.module.patientgrid.xstream.CustomXstreamSerializer;
-import org.openmrs.module.reporting.dataset.SimpleDataSet;
-import org.openmrs.serialization.OpenmrsSerializer;
 import org.openmrs.serialization.SerializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.support.SimpleValueWrapper;
-
-import javax.imageio.stream.FileImageInputStream;
-import javax.imageio.stream.FileImageOutputStream;
 
 /**
  * Custom implementation of spring's {@link Cache} abstraction backed by a {@link DiskCache}
@@ -61,12 +59,33 @@ public class PatientGridCache implements Cache {
 	@Override
 	public ValueWrapper get(Object key) {
 		ValueWrapper ret = null;
-		SimpleDataSet dataset = get(key, SimpleDataSet.class);
-		if (dataset != null) {
+		ExtendedDataSet dataset = get(key, ExtendedDataSet.class);
+		if (dataset != null && !isObsolete(dataset)) {
 			ret = new SimpleValueWrapper(dataset);
 		}
 		
 		return ret;
+	}
+	
+	boolean isObsolete(ExtendedDataSet dataSet) {
+		if (!dataSet.isLastVersion()) {
+			log.debug("the xml version is not the last one. Force recompute. Read Version: {}. Current Version {]",
+			    dataSet.getXstreamVersion(), ExtendedDataSet.LAST_XSTREAM_VERSION);
+			return true;
+		}
+		String periodOperand = dataSet.getPeriodOperand();
+		if (periodOperand != null) {
+			String usedDateRange = dataSet.getUsedDateRange();
+			DateRangeConverter converter = new DateRangeConverter(PatientGridUtils.getCurrentUserTimeZone());
+			String dateRangeAsString = converter.convert(periodOperand, DateTime.now()).getDateRangeAsString();
+			if (!usedDateRange.equals(dateRangeAsString)) {
+				log.debug("the dateRange used to compute the grid changed. Force recompute. Old: {}. New {}", usedDateRange,
+				    dateRangeAsString);
+				return true;
+			}
+			
+		}
+		return false;
 	}
 	
 	protected void setSerializer(CustomXstreamSerializer serializer) {
@@ -100,6 +119,10 @@ public class PatientGridCache implements Cache {
 		}
 		catch (IOException e) {
 			log.warn("Failed to deserialize cached grid report", e);
+			return null;
+		}
+		if (value != null && !value.getClass().equals(type)) {
+			return null;
 		}
 		
 		return value;

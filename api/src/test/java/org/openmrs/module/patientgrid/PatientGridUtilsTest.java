@@ -73,23 +73,6 @@ public class PatientGridUtilsTest {
 	}
 	
 	@Test
-	public void getCurrentDateInUserTimeZone_shouldReturnDate() throws ParseException {
-		PowerMockito.mockStatic(Context.class);
-		User user = new User();
-		user.setUserProperty("clientTimezone", "Asia/Phnom_Penh");
-		when(Context.getAuthenticatedUser()).thenReturn(user);
-		String currentTime = PatientGridUtils.getCurrentUserTimeZone();
-		
-		assertEquals("Asia/Phnom_Penh", currentTime);
-		
-		DateTime thirtyOne = new DateTime(PatientGridConstants.DATETIME_FORMAT.parse("2023-01-31 14:25:10Z").getTime()); // jan 31 at 21:25 in Asia
-		DateTime theFirst = new DateTime(PatientGridConstants.DATETIME_FORMAT.parse("2023-01-31 17:00:20Z").getTime()); // feb 1 in Asia
-		
-		assertEquals("2023-01-31", PatientGridUtils.getCurrentDateInUserTimeZone(thirtyOne));
-		assertEquals("2023-02-01", PatientGridUtils.getCurrentDateInUserTimeZone(theFirst));
-	}
-	
-	@Test
 	public void getEncounterTypes_shouldReturnTheSetOfEncounterTypesForTheObsColumnsInThePatientGrid() {
 		final PatientGrid patientGrid = new PatientGrid();
 		final EncounterType adultInitial = new EncounterType();

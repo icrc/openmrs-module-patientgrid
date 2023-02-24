@@ -1,16 +1,30 @@
 package org.openmrs.module.patientgrid.period;
 
+import org.joda.time.format.ISODateTimeFormat;
+
 import java.util.Date;
 
 public class DateRange {
 	
-	private Date fromInServerTz;
+	private final String operand;
 	
-	private Date toInServerTz;
+	private final Date fromInServerTz;
 	
-	public DateRange(Date fromInServerTz, Date toInServerTz) {
+	private final Date toInServerTz;
+	
+	public DateRange(String operand, Date fromInServerTz, Date toInServerTz) {
 		this.fromInServerTz = fromInServerTz;
 		this.toInServerTz = toInServerTz;
+		this.operand = operand;
+	}
+	
+	public String getOperand() {
+		return operand;
+	}
+	
+	public String getDateRangeAsString() {
+		return ISODateTimeFormat.date().print(fromInServerTz.getTime()) + "_"
+		        + ISODateTimeFormat.date().print(toInServerTz.getTime());
 	}
 	
 	public Date getToInServerTz() {
