@@ -1,15 +1,5 @@
 package org.openmrs.module.patientgrid.web.rest.v1_0.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.openmrs.module.patientgrid.PatientGridConstants.CACHE_KEY_SEPARATOR;
-import static org.openmrs.module.patientgrid.PatientGridConstants.CACHE_MANAGER_NAME;
-import static org.openmrs.module.patientgrid.PatientGridConstants.CACHE_NAME_GRID_REPORTS;
-import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.PARAM_REFRESH;
-
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGrid;
@@ -22,6 +12,14 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.openmrs.module.patientgrid.PatientGridConstants.*;
+import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.PARAM_REFRESH;
 
 public class PatientGridReportControllerTest extends BasePatientGridRestControllerTest {
 	
@@ -56,6 +54,8 @@ public class PatientGridReportControllerTest extends BasePatientGridRestControll
 		Map report = (Map) ((List) Util.getByPath(result, "results")).get(0);
 		assertEquals(GRID_UUID, Util.getByPath(report, new String[] { "patientGrid", "uuid" }));
 		assertEquals(3, ((List) Util.getByPath(report, "report")).size());
+		assertEquals(4, ((Map) Util.getByPath(report, "reportMetadata")).size());
+		assertEquals(false, Util.getByPath(report, new String[] { "reportMetadata", "truncated" }));
 	}
 	
 	@Test

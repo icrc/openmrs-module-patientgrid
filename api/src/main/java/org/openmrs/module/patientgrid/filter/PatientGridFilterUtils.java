@@ -38,7 +38,7 @@ public class PatientGridFilterUtils {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PatientGridFilterUtils.class);
 	
-	public static CohortDefinition generateCohortDefinition(PatientGrid patientGrid) {
+	public static ObjectWithDateRange<CohortDefinition> generateCohortDefinition(PatientGrid patientGrid) {
 		return generateCohortDefinition(patientGrid, null);
 	}
 	
@@ -49,7 +49,8 @@ public class PatientGridFilterUtils {
 	 * @param patientGrid the {@link PatientGrid} object
 	 * @return the {@link CohortDefinition} object
 	 */
-	public static CohortDefinition generateCohortDefinition(PatientGrid patientGrid, String userTimeZone) {
+	public static ObjectWithDateRange<CohortDefinition> generateCohortDefinition(PatientGrid patientGrid,
+	        String userTimeZone) {
 		if (userTimeZone == null) {
 			userTimeZone = TimeZone.getDefault().getID();
 			LOG.warn("use server timezone {} instead of User Timezone", userTimeZone);
@@ -92,7 +93,7 @@ public class PatientGridFilterUtils {
 			return null;
 		}
 		
-		return createCohortDef(columnAndCohortDefMap, BooleanOperator.AND);
+		return new ObjectWithDateRange<>(createCohortDef(columnAndCohortDefMap, BooleanOperator.AND), periodRange);
 	}
 	
 	/**
@@ -305,12 +306,13 @@ public class PatientGridFilterUtils {
 	 * @return a Cohort of matching patients or null if no filters are found
 	 * @throws EvaluationException
 	 */
-	public static Cohort filterPatients(PatientGrid patientGrid, EvaluationContext context, String userTimeZone)
-	        throws EvaluationException {
+	public static ObjectWithDateRange<Cohort> filterPatients(PatientGrid patientGrid, EvaluationContext context,
+	        String userTimeZone) throws EvaluationException {
 		if (context == null) {
 			context = new EvaluationContextPersistantCache();
 		}
-		CohortDefinition cohortDef = PatientGridFilterUtils.generateCohortDefinition(patientGrid, userTimeZone);
+		ObjectWithDateRange<CohortDefinition> cohortDef = PatientGridFilterUtils.generateCohortDefinition(patientGrid,
+		    userTimeZone);
 		if (cohortDef == null) {
 			return null;
 		}
@@ -320,13 +322,13 @@ public class PatientGridFilterUtils {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		
-		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDef, context);
+		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDef.getObject(), context);
 		
 		stopWatch.stop();
 		
 		LOG.debug("Running filters for patient grid {} completed in {}", patientGrid, stopWatch.toString());
 		
-		return cohort;
+		return new ObjectWithDateRange<Cohort>(cohort, cohortDef.getDateRange());
 	}
 	
 }

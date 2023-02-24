@@ -19,6 +19,7 @@ import org.openmrs.Patient;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.ExtendedDataSet;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.api.PatientGridService;
@@ -31,6 +32,8 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 	
 	@Autowired
 	private PatientGridService service;
+	
+	private final String utcTimeZone = "UTC";
 	
 	@Autowired
 	@Qualifier("patientService")
@@ -49,9 +52,16 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 	@Test
 	public void evaluate_shouldReturnDownloadReportDataForTheSpecifiedPatientGrid() {
 		PatientGrid patientGrid = service.getPatientGrid(1);
+		final String oldTimeZone = System.getProperty("user.timezone");
+		System.setProperty("user.timezone", utcTimeZone);
 		
-		SimpleDataSet dataset = DownloadUtils.evaluate(patientGrid);
+		ExtendedDataSet extendedDataSet = DownloadUtils.evaluate(patientGrid);
+		SimpleDataSet dataset = extendedDataSet.getSimpleDataSet();
 		
+		assertEquals(
+		    "{\"code\":\"customDaysInclusive\",\"fromDate\":\"2022-04-01 00:00:00\",\"toDate\":\"2022-12-31 00:00:00\"}",
+		    extendedDataSet.getPeriodOperand());
+		assertEquals("1648771200000-1672531199999", extendedDataSet.getUsedDateRange());
 		assertEquals(4, dataset.getRows().size());
 		Patient patient = ps.getPatient(2);
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
@@ -150,6 +160,8 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		assertEquals(1, encounters.size());
 		columnUuidAndObsMap = encounters.get(0);
 		assertTrue(columnUuidAndObsMap.isEmpty());
+		
+		System.setProperty("user.timezone", oldTimeZone);
 	}
 	
 	@Test
@@ -174,7 +186,7 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		Context.getCohortService().saveCohort(cohort);
 		patientGrid.setCohort(cohort);
 		
-		SimpleDataSet dataset = DownloadUtils.evaluate(patientGrid);
+		SimpleDataSet dataset = DownloadUtils.evaluate(patientGrid).getSimpleDataSet();
 		
 		assertEquals(2, dataset.getRows().size());
 		Patient patient = ps.getPatient(2);

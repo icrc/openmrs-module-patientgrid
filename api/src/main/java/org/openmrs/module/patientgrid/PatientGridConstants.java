@@ -19,8 +19,9 @@ public class PatientGridConstants {
 	 * default period definition to use if no period given or not supported by the system
 	 */
 	public static final String GP_DEFAULT_PERIOD_RANGE = MODULE_ID + ".defaultPeriod";
+	
 	public static final String GP_MAX_CACHE_FILE_AGE = MODULE_ID + ".maxCacheFileAge";
-
+	
 	public static final String GP_DISK_CACHE_DIR = MODULE_ID + ".cacheDirectory";
 	
 	public static final String CACHE_MANAGER_NAME = "patientGridReportsCacheManager";
@@ -40,7 +41,7 @@ public class PatientGridConstants {
 	
 	public static final String CACHE_CONDITION_EXP = "T(org.openmrs.api.context.Context).getAuthenticatedUser() != null";
 	
-	public static final String CACHE_UNLESS_EXP = "#result.getRows().isEmpty() || T(org.openmrs.api.context.Context).getAuthenticatedUser() == null";
+	public static final String CACHE_UNLESS_EXP = "#result.getSimpleDataSet().getRows().isEmpty() || T(org.openmrs.api.context.Context).getAuthenticatedUser() == null";
 	
 	public static final DateFormat DATETIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssXXX");
 	

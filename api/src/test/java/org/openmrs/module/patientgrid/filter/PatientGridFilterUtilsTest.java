@@ -61,7 +61,8 @@ public class PatientGridFilterUtilsTest {
 		PatientGrid grid = new PatientGrid();
 		grid.addColumn(column);
 		
-		GenderCohortDefinition def = (GenderCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid);
+		GenderCohortDefinition def = (GenderCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid)
+		        .getObject();
 		
 		assertTrue(def.isMaleIncluded());
 		assertFalse(def.isFemaleIncluded());
@@ -76,7 +77,8 @@ public class PatientGridFilterUtilsTest {
 		PatientGrid grid = new PatientGrid();
 		grid.addColumn(column);
 		
-		GenderCohortDefinition def = (GenderCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid);
+		GenderCohortDefinition def = (GenderCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid)
+		        .getObject();
 		
 		assertTrue(def.isFemaleIncluded());
 		assertFalse(def.isMaleIncluded());
@@ -93,7 +95,8 @@ public class PatientGridFilterUtilsTest {
 		PatientGrid grid = new PatientGrid();
 		grid.addColumn(column);
 		
-		GenderCohortDefinition def = (GenderCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid);
+		GenderCohortDefinition def = (GenderCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid)
+		        .getObject();
 		
 		assertTrue(def.isFemaleIncluded());
 		assertTrue(def.isMaleIncluded());
@@ -132,8 +135,8 @@ public class PatientGridFilterUtilsTest {
 		grid.addColumn(column1);
 		grid.addColumn(column2);
 		
-		CompositionCohortDefinition def = (CompositionCohortDefinition) PatientGridFilterUtils
-		        .generateCohortDefinition(grid);
+		CompositionCohortDefinition def = (CompositionCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid)
+		        .getObject();
 		
 		assertEquals(2, def.getSearches().size());
 		assertEquals(genderAtBirth + " " + AND + " " + identifiesAs, def.getCompositionString());
@@ -270,7 +273,7 @@ public class PatientGridFilterUtilsTest {
 		grid.addColumn(column);
 		
 		ObsForLatestEncounterCohortDefinition def = (ObsForLatestEncounterCohortDefinition) PatientGridFilterUtils
-		        .generateCohortDefinition(grid);
+		        .generateCohortDefinition(grid).getObject();
 		
 		assertEquals(encounterType, def.getEncounterType());
 		assertEquals(concept, def.getConcept());
@@ -294,7 +297,7 @@ public class PatientGridFilterUtilsTest {
 		grid.addColumn(column);
 		
 		ObsForLatestEncounterCohortDefinition def = (ObsForLatestEncounterCohortDefinition) PatientGridFilterUtils
-		        .generateCohortDefinition(grid);
+		        .generateCohortDefinition(grid).getObject();
 		
 		assertEquals(encounterType, def.getEncounterType());
 		assertEquals(concept, def.getConcept());
@@ -322,7 +325,7 @@ public class PatientGridFilterUtilsTest {
 		Mockito.when(mockConceptService.getConceptByUuid(conceptUuid)).thenReturn(mockConcept);
 		
 		ObsForLatestEncounterCohortDefinition def = (ObsForLatestEncounterCohortDefinition) PatientGridFilterUtils
-		        .generateCohortDefinition(grid);
+		        .generateCohortDefinition(grid).getObject();
 		
 		assertEquals(encounterType, def.getEncounterType());
 		assertEquals(concept, def.getConcept());
@@ -346,7 +349,7 @@ public class PatientGridFilterUtilsTest {
 		grid.addColumn(column);
 		
 		ObsForLatestEncounterCohortDefinition def = (ObsForLatestEncounterCohortDefinition) PatientGridFilterUtils
-		        .generateCohortDefinition(grid);
+		        .generateCohortDefinition(grid).getObject();
 		
 		assertEquals(encounterType, def.getEncounterType());
 		assertEquals(concept, def.getConcept());
@@ -370,7 +373,7 @@ public class PatientGridFilterUtilsTest {
 		grid.addColumn(column);
 		
 		ObsForLatestEncounterCohortDefinition def = (ObsForLatestEncounterCohortDefinition) PatientGridFilterUtils
-		        .generateCohortDefinition(grid);
+		        .generateCohortDefinition(grid).getObject();
 		
 		assertEquals(encounterType, def.getEncounterType());
 		assertEquals(concept, def.getConcept());
@@ -394,7 +397,7 @@ public class PatientGridFilterUtilsTest {
 		grid.addColumn(column);
 		
 		ObsForLatestEncounterCohortDefinition def = (ObsForLatestEncounterCohortDefinition) PatientGridFilterUtils
-		        .generateCohortDefinition(grid);
+		        .generateCohortDefinition(grid).getObject();
 		
 		assertEquals(encounterType, def.getEncounterType());
 		assertEquals(concept, def.getConcept());
@@ -420,7 +423,7 @@ public class PatientGridFilterUtilsTest {
 		grid.addColumn(column);
 		
 		ObsForLatestEncounterCohortDefinition def = (ObsForLatestEncounterCohortDefinition) PatientGridFilterUtils
-		        .generateCohortDefinition(grid);
+		        .generateCohortDefinition(grid).getObject();
 		
 		assertEquals(encounterType, def.getEncounterType());
 		assertEquals(concept, def.getConcept());
@@ -457,7 +460,8 @@ public class PatientGridFilterUtilsTest {
 		Mockito.when(Context.getLocationService()).thenReturn(mockLocationService);
 		Mockito.when(mockLocationService.getLocationByUuid(locationUuid)).thenReturn(mockLocation);
 		
-		LocationCohortDefinition def = (LocationCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid);
+		LocationCohortDefinition def = (LocationCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid)
+		        .getObject();
 		
 		assertTrue(def.getLocations().contains(mockLocation));
 		assertFalse(def.getCountry());
@@ -479,7 +483,8 @@ public class PatientGridFilterUtilsTest {
 		Mockito.when(mockLocationService.getLocationByUuid(locationUuid1)).thenReturn(mockLocation1);
 		Mockito.when(mockLocationService.getLocationByUuid(locationUuid2)).thenReturn(mockLocation2);
 		
-		LocationCohortDefinition def = (LocationCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid);
+		LocationCohortDefinition def = (LocationCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid)
+		        .getObject();
 		
 		assertTrue(def.getLocations().contains(mockLocation1));
 		assertTrue(def.getLocations().contains(mockLocation2));
@@ -497,7 +502,8 @@ public class PatientGridFilterUtilsTest {
 		Mockito.when(Context.getLocationService()).thenReturn(mockLocationService);
 		Mockito.when(mockLocationService.getLocationByUuid(countryLocationUuid)).thenReturn(mockLocation);
 		
-		LocationCohortDefinition def = (LocationCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid);
+		LocationCohortDefinition def = (LocationCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid)
+		        .getObject();
 		
 		assertTrue(def.getLocations().contains(mockLocation));
 		assertTrue(def.getCountry());
@@ -519,7 +525,8 @@ public class PatientGridFilterUtilsTest {
 		Mockito.when(mockLocationService.getLocationByUuid(countryLocationUuid1)).thenReturn(mockLocation1);
 		Mockito.when(mockLocationService.getLocationByUuid(countryLocationUuid2)).thenReturn(mockLocation2);
 		
-		LocationCohortDefinition def = (LocationCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid);
+		LocationCohortDefinition def = (LocationCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid)
+		        .getObject();
 		
 		assertTrue(def.getLocations().contains(mockLocation1));
 		assertTrue(def.getLocations().contains(mockLocation2));
@@ -536,7 +543,7 @@ public class PatientGridFilterUtilsTest {
 		grid.addColumn(column);
 		
 		AgeRangeAtLatestEncounterCohortDefinition def = (AgeRangeAtLatestEncounterCohortDefinition) PatientGridFilterUtils
-		        .generateCohortDefinition(grid);
+		        .generateCohortDefinition(grid).getObject();
 		
 		assertEquals(encounterType, def.getEncounterType());
 		assertEquals(1, def.getAgeRanges().size());
@@ -559,7 +566,7 @@ public class PatientGridFilterUtilsTest {
 		grid.addColumn(column);
 		
 		AgeRangeAtLatestEncounterCohortDefinition def = (AgeRangeAtLatestEncounterCohortDefinition) PatientGridFilterUtils
-		        .generateCohortDefinition(grid);
+		        .generateCohortDefinition(grid).getObject();
 		
 		assertEquals(encounterType, def.getEncounterType());
 		assertEquals(2, def.getAgeRanges().size());
@@ -590,7 +597,7 @@ public class PatientGridFilterUtilsTest {
 		grid.addColumn(column);
 		
 		AgeRangeAtLatestEncounterCohortDefinition def = (AgeRangeAtLatestEncounterCohortDefinition) PatientGridFilterUtils
-		        .generateCohortDefinition(grid);
+		        .generateCohortDefinition(grid).getObject();
 		
 		assertEquals(encounterType, def.getEncounterType());
 		assertEquals(1, def.getAgeRanges().size());

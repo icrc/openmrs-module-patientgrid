@@ -62,7 +62,7 @@ Defaults to a folder named `.report_cache` in the patientgrid folder in the appl
 
 Specifies the max age (in hour) for cache files containing grid report data. Files older than this value will be deleted (via the task `org.openmrs.module.patientgrid.cache.CleanCacheTask`)  
 
-Defaults to 48h
+Defaults to 120h
 
 ## Age Ranges
 
