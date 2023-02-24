@@ -43,7 +43,7 @@ You will have to generate a token from a Github package (with read access to pac
 
 **Property Name** `patientgrid.defaultPeriod`
 
-Specifies the default period to use if no period defined in the query in order to limit the number of lines.
+Specifies the default period to use if no period defined in the frontend query in order to limit the number of rows.
 By default, the last 30 days (LASTTHIRTYDAYS) will be used.
 Current supported values are defined in the class `DateRangeType`: LASTSEVENDAYS, LASTTHIRTYDAYS, WEEKTODATE, MONTHTODATE,...
 
@@ -57,6 +57,12 @@ Specifies the location of the directory to use to cache grid report data, it can
 name which will be located in the application data directory.
 
 Defaults to a folder named `.report_cache` in the patientgrid folder in the application data directory
+
+**Property Name** `patientgrid.maxCacheFileAge`
+
+Specifies the max age (in hour) for cache files containing grid report data. Files older than this value will be deleted (via the task `org.openmrs.module.patientgrid.cache.CleanCacheTask`)  
+
+Defaults to 48h
 
 ## Age Ranges
 
