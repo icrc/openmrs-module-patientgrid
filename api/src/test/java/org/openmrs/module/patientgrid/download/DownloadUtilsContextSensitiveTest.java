@@ -32,6 +32,8 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 	
 	@Autowired
 	private PatientGridService service;
+
+	private final String utcTimeZone = "UTC";
 	
 	@Autowired
 	@Qualifier("patientService")
@@ -50,6 +52,8 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 	@Test
 	public void evaluate_shouldReturnDownloadReportDataForTheSpecifiedPatientGrid() {
 		PatientGrid patientGrid = service.getPatientGrid(1);
+		final String oldTimeZone = System.getProperty("user.timezone");
+		System.setProperty("user.timezone", utcTimeZone);
 		
 		ExtendedDataSet extendedDataSet = DownloadUtils.evaluate(patientGrid);
 		SimpleDataSet dataset = extendedDataSet.getSimpleDataSet();
@@ -156,6 +160,8 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		assertEquals(1, encounters.size());
 		columnUuidAndObsMap = encounters.get(0);
 		assertTrue(columnUuidAndObsMap.isEmpty());
+
+		System.setProperty("user.timezone", oldTimeZone);
 	}
 	
 	@Test
