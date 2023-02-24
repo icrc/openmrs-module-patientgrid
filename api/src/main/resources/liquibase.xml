@@ -310,7 +310,7 @@
     <changeSet id="${project.parent.artifactId}-202302211655" author="fdeniger">
         <insert tableName="scheduler_task_config">
             <column name="name" value="Clean ReportGrid disk cache folder"/>
-            <column name="description" value="Clean ReportGrid disk cache folder by removing old XML files ( 48h old by default)"/>
+            <column name="description" value="Clean ReportGrid disk cache folder by removing old XML files"/>
             <column name="schedulable_class" value="org.openmrs.module.patientgrid.cache.CleanCacheTask"/>
             <column name="start_time" valueDate="2023-02-20T23:59:59"/>
             <column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss"/>
