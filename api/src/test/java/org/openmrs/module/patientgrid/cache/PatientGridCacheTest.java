@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.ExtendedDataSet;
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.patientgrid.xstream.CustomXstreamSerializer;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
@@ -103,7 +104,7 @@ public class PatientGridCacheTest {
 		//setup
 		final String filename = "test_file";
 		ExtendedDataSet dataSet = new ExtendedDataSet();
-		dataSet.setUsedDateRange("2022-04-01_2022-12-31");
+		dataSet.setUsedDateRange("1648771200000-1672531199999");
 		final String oldTimeZone = System.getProperty("user.timezone");
 		System.setProperty("user.timezone", utcTimeZone);
 		dataSet.setPeriodOperand(

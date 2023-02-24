@@ -32,7 +32,7 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 	
 	@Autowired
 	private PatientGridService service;
-
+	
 	private final String utcTimeZone = "UTC";
 	
 	@Autowired
@@ -160,7 +160,7 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		assertEquals(1, encounters.size());
 		columnUuidAndObsMap = encounters.get(0);
 		assertTrue(columnUuidAndObsMap.isEmpty());
-
+		
 		System.setProperty("user.timezone", oldTimeZone);
 	}
 	
