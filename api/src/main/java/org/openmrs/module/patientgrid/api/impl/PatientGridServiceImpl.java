@@ -133,6 +133,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 			}
 			
 			context.setBaseCohort(cohort);
+			context.setLimit(PatientGridConstants.GP_ROWS_COUNT_LIMIT);
 			SimpleDataSet ds;
 			//if the cohort is empty -> do nothing
 			if (cohort.isEmpty()) {
@@ -142,8 +143,12 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 			}
 			ExtendedDataSet extendedDataSet = new ExtendedDataSet(ds,
 			        cohortWithPeriod == null ? null : cohortWithPeriod.getDateRange());
-			//go on configuration here.
-			
+
+			extendedDataSet.setRowsCountLimit(PatientGridConstants.GP_ROWS_COUNT_LIMIT);
+			extendedDataSet.setInitialRowsCount(cohort.activeMembershipSize());
+			if (PatientGridConstants.GP_ROWS_COUNT_LIMIT < cohort.activeMembershipSize()) {
+				extendedDataSet.setTruncated(true);
+			}
 			stopWatch.stop();
 			
 			log.debug("Report for patient grid {} completed in {}", patientGrid, stopWatch.toString());

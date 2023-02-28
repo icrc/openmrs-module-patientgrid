@@ -49,4 +49,6 @@ public class PatientGridConstants {
 	
 	public static final PatientGridObsConverter OBS_CONVERTER = new PatientGridObsConverter();
 	
+	public static int GP_ROWS_COUNT_LIMIT = 100;
+	
 }
