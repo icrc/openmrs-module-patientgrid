@@ -1,5 +1,6 @@
 package org.openmrs.module.patientgrid.api.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.openmrs.Cohort;
 import org.openmrs.CohortMembership;
@@ -22,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.openmrs.module.patientgrid.PatientGridConstants.GP_MAX_CACHE_FILE_AGE;
+import static org.openmrs.module.patientgrid.PatientGridConstants.GP_ROWS_COUNT_LIMIT;
 
 @Transactional(readOnly = true)
 public class PatientGridServiceImpl extends BaseOpenmrsService implements PatientGridService {
@@ -133,7 +137,20 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 			}
 			
 			context.setBaseCohort(cohort);
-			context.setLimit(PatientGridConstants.GP_ROWS_COUNT_LIMIT);
+			int limit = 100;
+			String rowLimit = Context.getAdministrationService().getGlobalProperty("rowsLimit");
+			if (StringUtils.isNotBlank(rowLimit)) {
+				try {
+					limit = Integer.parseInt(rowLimit);
+				}
+				catch (NumberFormatException e) {
+					log.warn("The row limit '{}' defined in the global property '{}' is not supported", rowLimit,
+					    GP_ROWS_COUNT_LIMIT);
+					throw new RuntimeException(e);
+				}
+			}
+			context.setLimit(limit);
+			
 			SimpleDataSet ds;
 			//if the cohort is empty -> do nothing
 			if (cohort.isEmpty()) {
@@ -143,10 +160,10 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 			}
 			ExtendedDataSet extendedDataSet = new ExtendedDataSet(ds,
 			        cohortWithPeriod == null ? null : cohortWithPeriod.getDateRange());
-
-			extendedDataSet.setRowsCountLimit(PatientGridConstants.GP_ROWS_COUNT_LIMIT);
+			
+			extendedDataSet.setRowsCountLimit(limit);
 			extendedDataSet.setInitialRowsCount(cohort.activeMembershipSize());
-			if (PatientGridConstants.GP_ROWS_COUNT_LIMIT < cohort.activeMembershipSize()) {
+			if (limit < cohort.activeMembershipSize()) {
 				extendedDataSet.setTruncated(true);
 			}
 			stopWatch.stop();
