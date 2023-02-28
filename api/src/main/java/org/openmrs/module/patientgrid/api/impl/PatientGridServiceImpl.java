@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.openmrs.module.patientgrid.PatientGridConstants.GP_MAX_CACHE_FILE_AGE;
 import static org.openmrs.module.patientgrid.PatientGridConstants.GP_ROWS_COUNT_LIMIT;
 
 @Transactional(readOnly = true)
