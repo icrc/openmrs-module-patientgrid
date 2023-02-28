@@ -318,7 +318,7 @@
             <column name="repeat_interval" valueNumeric="21600"/>
             <column name="start_on_startup" valueBoolean="true"/>
             <column name="created_by" valueNumeric="1"/>
-            <column name="date_created" valueDate="CURRENT_TIMESTAMP"/>
+            <column name="date_created" valueDate="2023-02-20T23:00:00"/>
             <column name="uuid" value="9c17b376-1a2b-11e1-a51a-00248140a5ed"/>
         </insert>
     </changeSet>
