@@ -137,7 +137,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 			
 			context.setBaseCohort(cohort);
 			int limit = 100;
-			String rowLimit = Context.getAdministrationService().getGlobalProperty("rowsLimit");
+			String rowLimit = Context.getAdministrationService().getGlobalProperty(GP_ROWS_COUNT_LIMIT);
 			if (StringUtils.isNotBlank(rowLimit)) {
 				try {
 					limit = Integer.parseInt(rowLimit);
