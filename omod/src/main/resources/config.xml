@@ -60,6 +60,12 @@
             Specifies the max age ( in hour) cache files should be kept on disk
         </description>
     </globalProperty>
+    <globalProperty>
+        <property>${project.parent.artifactId}.rowsLimit</property>
+        <description>
+            Specifies the number of records in a patient grid.
+        </description>
+    </globalProperty>
 
 </module>
 

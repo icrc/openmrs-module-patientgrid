@@ -39,6 +39,13 @@ You will have to generate a token from a Github package (with read access to pac
 
 # Global Properties
 
+## Row count limit
+
+**Property Name** `patientgrid.rowsLimit`
+
+Specifies the limit of maximum number of records in a patient grid.
+By default, the limit will be set to 100.
+
 ## Period range
 
 **Property Name** `patientgrid.defaultPeriod`

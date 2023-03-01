@@ -1,30 +1,15 @@
 package org.openmrs.module.patientgrid.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.openmrs.module.patientgrid.PatientGridConstants.CACHE_KEY_SEPARATOR;
-import static org.openmrs.module.patientgrid.PatientGridConstants.CACHE_MANAGER_NAME;
-import static org.openmrs.module.patientgrid.PatientGridConstants.CACHE_NAME_GRID_REPORTS;
-import static org.openmrs.module.patientgrid.PatientGridConstants.COLUMN_UUID;
-import static org.openmrs.module.patientgrid.PatientGridConstants.PRIV_MANAGE_PATIENT_GRIDS;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.Patient;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
@@ -48,6 +33,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.openmrs.module.patientgrid.PatientGridConstants.*;
 
 public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	
@@ -80,8 +74,12 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	@Autowired
 	private ServiceContext serviceContext;
 	
+	@Mock
+	private AdministrationService mockAdminService;
+	
 	@Before
 	public void setup() {
+		
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
 		executeDataSet("entityBasisMaps.xml");
@@ -241,6 +239,34 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(getCache().get(cacheKeyUser2));
 		assertNull(getCache().get(cacheKeyUser3));
 		assertNotNull(getCache().get(cacheKeyOtherGrid));
+	}
+	
+	@Test
+	public void shouldReturnTwoRecordsInAGridWhenLimitIsTwo() {
+		//setup
+		when(mockAdminService.getGlobalProperty(GP_ROWS_COUNT_LIMIT)).thenReturn("2");
+
+		//action
+		ExtendedDataSet dataSet = service.evaluate(service.getPatientGrid(1));
+
+		//assert
+		assertEquals(2, dataSet.getSimpleDataSet().getRows().size());
+		assertEquals(2, dataSet.getRowsCountLimit());
+		assertEquals(3, dataSet.getInitialRowsCount());
+	}
+	
+	@Test
+	public void shouldReturnOneRecordInAGridWhenLimitIsOne() {
+		//setup
+		when(mockAdminService.getGlobalProperty(GP_ROWS_COUNT_LIMIT)).thenReturn("1");
+
+		//action
+	        ExtendedDataSet dataSet = service.evaluate(service.getPatientGrid(1));
+
+		//assert
+		assertEquals(1, dataSet.getSimpleDataSet().getRows().size());
+		assertEquals(1, dataSet.getRowsCountLimit());
+		assertEquals(3, dataSet.getInitialRowsCount());
 	}
 	
 	@Test
@@ -415,9 +441,8 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		Context.logout();
 		assertNull(Context.getAuthenticatedUser());
 		SimpleDataSet expectedDataSet = new SimpleDataSet(null, null);
-		Mockito.when(mockDsds.evaluate(any(DataSetDefinition.class), any(EvaluationContext.class)))
-		        .thenReturn(expectedDataSet);
-		Mockito.when(mockCds.evaluate(any(CohortDefinition.class), any(EvaluationContext.class))).thenReturn(null);
+		when(mockDsds.evaluate(any(DataSetDefinition.class), any(EvaluationContext.class))).thenReturn(expectedDataSet);
+		when(mockCds.evaluate(any(CohortDefinition.class), any(EvaluationContext.class))).thenReturn(null);
 		SimpleDataSet dataSet;
 		Context.addProxyPrivilege(PRIV_MANAGE_PATIENT_GRIDS);
 		serviceContext.setService(DataSetDefinitionService.class, mockDsds);
