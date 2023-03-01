@@ -243,10 +243,15 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	public void shouldReturnTwoRecordsInAGridWhenLimitIsTwo() {
+		//setup
 		final String limit = "2";
 		when(mockAdminService.getGlobalProperty(GP_ROWS_COUNT_LIMIT)).thenReturn(limit);
+
+		//action
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		ExtendedDataSet dataSet = service.evaluate(patientGrid);
+
+		//assert
 		assertEquals(2, dataSet.getSimpleDataSet().getRows().size());
 		assertEquals(2, dataSet.getRowsCountLimit());
 		assertEquals(3, dataSet.getInitialRowsCount());
@@ -254,9 +259,14 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	public void shouldReturnOneRecordInAGridWhenLimitIsOne() {
+		//setup
 		final String limit = "1";
 		when(mockAdminService.getGlobalProperty(GP_ROWS_COUNT_LIMIT)).thenReturn(limit);
+
+		//action
 		PatientGrid patientGrid = service.getPatientGrid(1);
+
+		//assert
 		ExtendedDataSet dataSet = service.evaluate(patientGrid);
 		assertEquals(1, dataSet.getSimpleDataSet().getRows().size());
 		assertEquals(1, dataSet.getRowsCountLimit());
