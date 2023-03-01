@@ -86,6 +86,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		getCache().clear();
 		//We have test that replaces this service with a mock, we need to always put it back
 		serviceContext.setService(DataSetDefinitionService.class, dsds);
+		when(mockAdminService.getGlobalProperty(GP_AGE_RANGES)).thenReturn("0-17:<18yrs,18+");
 	}
 	
 	private Cache getCache() {
@@ -245,10 +246,10 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	public void shouldReturnTwoRecordsInAGridWhenLimitIsTwo() {
 		//setup
 		when(mockAdminService.getGlobalProperty(GP_ROWS_COUNT_LIMIT)).thenReturn("2");
-
+		
 		//action
 		ExtendedDataSet dataSet = service.evaluate(service.getPatientGrid(1));
-
+		
 		//assert
 		assertEquals(2, dataSet.getSimpleDataSet().getRows().size());
 		assertEquals(2, dataSet.getRowsCountLimit());
@@ -259,10 +260,10 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	public void shouldReturnOneRecordInAGridWhenLimitIsOne() {
 		//setup
 		when(mockAdminService.getGlobalProperty(GP_ROWS_COUNT_LIMIT)).thenReturn("1");
-
+		
 		//action
-	        ExtendedDataSet dataSet = service.evaluate(service.getPatientGrid(1));
-
+		ExtendedDataSet dataSet = service.evaluate(service.getPatientGrid(1));
+		
 		//assert
 		assertEquals(1, dataSet.getSimpleDataSet().getRows().size());
 		assertEquals(1, dataSet.getRowsCountLimit());
