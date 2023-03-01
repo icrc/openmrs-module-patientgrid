@@ -1,24 +1,8 @@
 package org.openmrs.module.patientgrid.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.openmrs.module.patientgrid.PatientGridConstants.*;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.openmrs.Cohort;
@@ -35,7 +19,6 @@ import org.openmrs.module.patientgrid.ExtendedDataSet;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
-import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.patientgrid.period.DateRange;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
@@ -46,15 +29,19 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.openmrs.util.OpenmrsUtil;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.openmrs.module.patientgrid.PatientGridConstants.*;
 
 public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	
