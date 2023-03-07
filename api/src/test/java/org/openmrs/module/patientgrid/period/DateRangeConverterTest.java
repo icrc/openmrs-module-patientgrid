@@ -4,18 +4,36 @@ import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.openmrs.api.AdministrationService;
+import org.openmrs.api.context.Context;
+import org.openmrs.messagesource.MessageSourceService;
+import org.openmrs.messagesource.impl.DefaultMessageSourceServiceImpl;
+import org.openmrs.module.patientgrid.cache.DiskCache;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
+import static org.mockito.Mockito.when;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ Context.class })
+@PowerMockIgnore("jdk.internal.reflect.*")
 public class DateRangeConverterTest {
 	
 	//  {"fromDate":"2023-02-13 00:00:00","toDate":"2023-02-14 00:00:00"}
 	
-	private final DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssXXX");
+	private final static DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssXXX");
 	
 	// 7h before
 	private final String asiaTimeZone = "Asia/Phnom_Penh";
@@ -29,11 +47,11 @@ public class DateRangeConverterTest {
 		dateTimeFormat.setTimeZone(TimeZone.getTimeZone(utcTimeZone));
 	}
 	
-	private String createJson(String code, String from, String to) {
+	static String createJson(String code, String from, String to) {
 		return String.format("{\"code\":\"%s\",\"fromDate\":\"%s 00:00:00\",\"toDate\":\"%s 00:00:00\"}", code, from, to);
 	}
 	
-	private String createJson(String code) {
+	static String createJson(String code) {
 		return String.format("{\"code\":\"%s\",\"fromDate\":\"\",\"toDate\":\"\"}", code);
 	}
 	
@@ -50,8 +68,13 @@ public class DateRangeConverterTest {
 		return dateTimeFormat.format(in);
 	}
 	
-	private DateTime createDate(String in) throws ParseException {
+	static DateTime createDate(String in) throws ParseException {
 		return new DateTime(dateTimeFormat.parse(in).getTime());
+	}
+	
+	@Test
+	public void extractDateOnly_shouldReturnDateInLocale() {
+		Assert.assertEquals("2022-01-02", DateRangeConverter.extractDateOnly("2022-01-02 00:00:00"));
 	}
 	
 	@Test
@@ -59,6 +82,28 @@ public class DateRangeConverterTest {
 		
 		DateRangeConverter converter = new DateRangeConverter(frenchTimeZone);
 		Assert.assertEquals(frenchTimeZone, converter.getUserTimeZone().getID());
+	}
+	
+	@Test
+	public void getDisplay_shouldReturnTranslatedString() {
+		PowerMockito.mockStatic(Context.class);
+		MessageSourceService messageSourceService = PowerMockito.mock(MessageSourceService.class);
+		when(Context.getMessageSourceService()).thenReturn(DefaultMessageSourceServiceImpl.getInstance());
+		
+		Assert.assertEquals("Today", DateRangeConverter.getDisplay(createJson("today"), Locale.ENGLISH));
+	}
+	
+	@Test
+	public void getDisplay_shouldReturnTranslatedStringForAllDateRange() {
+		PowerMockito.mockStatic(Context.class);
+		MessageSourceService messageSourceService = PowerMockito.mock(MessageSourceService.class);
+		when(Context.getMessageSourceService()).thenReturn(DefaultMessageSourceServiceImpl.getInstance());
+		
+		Arrays.stream(DateRangeType.values()).forEach(dateRangeType -> {
+			String json = createJson(dateRangeType.name().toLowerCase());
+			Assert.assertNotEquals(dateRangeType.name() + " should be defined in messages.properties", json,
+			    DateRangeConverter.getDisplay(json, Locale.ENGLISH));
+		});
 	}
 	
 	@Test
@@ -90,7 +135,6 @@ public class DateRangeConverterTest {
 		//play
 		final DateRange customDaysInclusive = converter
 		        .convert(createJson("customDaysInclusive", "2023-01-11", "2023-01-12"), null);
-		
 		//verify
 		Assert.assertEquals("2023-01-10 17:00:00Z", formatDate(customDaysInclusive.getFromInServerTz()));
 		Assert.assertEquals("2023-01-12 16:59:59Z", formatDate(customDaysInclusive.getToInServerTz()));
