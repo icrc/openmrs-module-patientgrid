@@ -5,11 +5,16 @@ import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConsta
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumnFilter;
+import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.patientgrid.api.PatientGridService;
+import org.openmrs.module.patientgrid.period.DateRange;
+import org.openmrs.module.patientgrid.period.DateRangeConverter;
+import org.openmrs.module.patientgrid.period.DateRangeParameter;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -106,7 +111,7 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 	
 	@PropertyGetter("display")
 	public String getDisplayString(PatientGridColumnFilter delegate) {
-		return delegate.getName();
+		return delegate.getPatientGridColumn().getDatatype().getDisplayer().getDisplayString(delegate, Context.getLocale());
 	}
 	
 	/**
@@ -270,7 +275,7 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 	
 	/**
 	 * Sanity check to ensure the parent grid and that of the filter column match
-	 * 
+	 *
 	 * @param parentUniqueId the patient grid uuid
 	 * @param uuid filter uuid
 	 */

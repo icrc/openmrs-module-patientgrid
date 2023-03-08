@@ -1,10 +1,9 @@
 package org.openmrs.module.patientgrid.period;
 
-import org.joda.time.format.ISODateTimeFormat;
-import org.openmrs.module.patientgrid.PatientGridConstants;
-import org.openmrs.module.patientgrid.PatientGridUtils;
+import org.openmrs.api.context.Context;
 
 import java.util.Date;
+import java.util.Locale;
 
 public class DateRange {
 	

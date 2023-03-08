@@ -87,13 +87,24 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	}
 	
 	public enum ColumnDatatype {
-		NAME,
-		GENDER,
-		ENC_DATE,
-		ENC_AGE,
-		OBS,
-		DATAFILTER_LOCATION,
-		DATAFILTER_COUNTRY
+		
+		NAME(new Displayer.DefaultFilter()),
+		GENDER(new Displayer.DefaultFilter()),
+		ENC_DATE(new Displayer.DateFilter()),
+		ENC_AGE(new Displayer.DefaultFilter()),
+		OBS(new Displayer.DefaultFilter()),
+		DATAFILTER_LOCATION(new Displayer.DefaultFilter()),
+		DATAFILTER_COUNTRY(new Displayer.DefaultFilter());
+		
+		private final Displayer<PatientGridColumnFilter> displayer;
+		
+		ColumnDatatype(final Displayer<PatientGridColumnFilter> displayer) {
+			this.displayer = displayer;
+		}
+		
+		public Displayer<PatientGridColumnFilter> getDisplayer() {
+			return displayer;
+		}
 	}
 	
 	/**
