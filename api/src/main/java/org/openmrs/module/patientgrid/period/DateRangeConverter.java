@@ -66,14 +66,6 @@ public class DateRangeConverter {
 		
 	}
 	
-	/**
-	 * @param completeDate
-	 * @return
-	 */
-	public static String extractDateOnly(String completeDate) {
-		return StringUtils.substringBefore(completeDate, " ");
-	}
-	
 	public DateTimeZone getUserTimeZone() {
 		return this.userTimeZone;
 	}
@@ -127,28 +119,6 @@ public class DateRangeConverter {
 			throw new APIException("Can't parse TimeRange: " + in);
 		}
 		return rangeType.getConverter().convert(parameter);
-		
-	}
-	
-	public static String getDisplay(String operand, Locale locale) {
-		Map map;
-		try {
-			map = PatientGridUtils.MAPPER.readValue(operand, Map.class);
-		}
-		catch (IOException e) {
-			return operand;
-		}
-		final String type = (String) map.get("code");
-		String fromDate = extractDateOnly((String) map.get("fromDate"));
-		String toDate = extractDateOnly((String) map.get("toDate"));
-		try {
-			String message = Context.getMessageSourceService().getMessage("period." + type.toUpperCase(),
-			    new Object[] { fromDate, toDate }, locale);
-			return StringUtils.defaultIfEmpty(message, operand);
-		}
-		catch (NoSuchMessageException e) {
-			return operand;
-		}
 		
 	}
 }
