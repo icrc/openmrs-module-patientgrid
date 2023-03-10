@@ -1,6 +1,8 @@
 package org.openmrs.module.patientgrid.evaluator;
 
+import org.openmrs.CohortMembership;
 import org.openmrs.Encounter;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
@@ -21,8 +23,6 @@ import java.util.Map;
 @Handler(supports = ObsForLatestEncounterPatientDataDefinition.class, order = 50)
 public class ObsForLatestEncounterPatientDataEvaluator implements PatientDataEvaluator {
 	
-	private static final Logger log = LoggerFactory.getLogger(ObsForLatestEncounterPatientDataEvaluator.class);
-	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
 	        throws EvaluationException {
@@ -30,13 +30,16 @@ public class ObsForLatestEncounterPatientDataEvaluator implements PatientDataEva
 		ObsForLatestEncounterPatientDataDefinition def = (ObsForLatestEncounterPatientDataDefinition) definition;
 		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
 		Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
-		    new MostRecentEncounterPerPatientByTypeFunction(contextPersistantCache, def.getPeriodRange()));
+		    new MostRecentEncounterPerPatientByTypeFunction(contextPersistantCache, def.getPeriodRange(),
+		            def.getLocationCohortDefinition()));
 		
 		Map<Integer, Object> patientIdAndObs = new HashMap(patientIdAndEnc.size());
-		for (Map.Entry<Integer, Object> e : patientIdAndEnc.entrySet()) {
-			Obs obs = PatientGridUtils.getObsByConcept((Encounter) e.getValue(), def.getConcept());
+		for (CohortMembership member : context.getBaseCohort().getMemberships()) {
+			Integer patientId = member.getPatientId();
+			Encounter e = (Encounter) patientIdAndEnc.get(patientId);
+			Obs obs = PatientGridUtils.getObsByConcept(e, def.getConcept());
 			if (obs != null) {
-				patientIdAndObs.put(e.getKey(), obs);
+				patientIdAndObs.put(patientId, obs);
 			}
 		}
 		

@@ -23,9 +23,9 @@ public class EncounterHistorySearchHandlerTest extends RestControllerTestUtils {
 	
 	@Before
 	public void setupBasePatientGridRestControllerTest() {
+		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
-		executeDataSet("entityBasisMaps.xml");
 	}
 	
 	@Test

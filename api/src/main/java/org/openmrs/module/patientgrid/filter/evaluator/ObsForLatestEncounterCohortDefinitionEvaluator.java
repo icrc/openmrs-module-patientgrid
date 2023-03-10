@@ -43,7 +43,7 @@ public class ObsForLatestEncounterCohortDefinitionEvaluator implements CohortDef
 		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) evaluationContext;
 		
 		MostRecentEncounterIdByTypeFunction function = new MostRecentEncounterIdByTypeFunction(sf,
-		        cohortDef.getPeriodRange());
+		        cohortDef.getPeriodRange(), cohortDef.getLocationCohortDefinition());
 		List<Integer> encounterIds = contextPersistantCache.computeListIfAbsent(cohortDef.getEncounterType(), function);
 		
 		Criteria criteria = sf.getCurrentSession().createCriteria(Obs.class, "o");

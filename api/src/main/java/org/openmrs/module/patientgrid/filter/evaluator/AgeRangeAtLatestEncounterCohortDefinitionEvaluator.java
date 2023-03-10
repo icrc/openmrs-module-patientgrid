@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class AgeRangeAtLatestEncounterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	
 	/**
-	 * Will use a the PatientData evaluator
+	 * Will use a PatientData evaluator
 	 * {@link org.openmrs.module.patientgrid.evaluator.AgeAtLatestEncounterPatientDataEvaluator} via
 	 * {@link AgeAtLatestEncounterPatientDataDefinition} to filter the patients ( based on their age and
 	 * if they have an encounter)
@@ -42,6 +42,7 @@ public class AgeRangeAtLatestEncounterCohortDefinitionEvaluator implements Cohor
 		AgeAtLatestEncounterPatientDataDefinition ageDef = new AgeAtLatestEncounterPatientDataDefinition();
 		ageDef.setEncounterType(def.getEncounterType());
 		ageDef.setPeriodRange(def.getPeriodRange());
+		ageDef.setLocationCohortDefinition(def.getLocationCohortDefinition());
 		EvaluatedPatientData data = Context.getService(PatientDataService.class).evaluate(ageDef, evaluationContext);
 		Map<Integer, Age> patientAndAge = (Map) data.getData();
 		Set<Integer> patientIds;

@@ -7,6 +7,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.*;
 import org.openmrs.module.patientgrid.filter.ObjectWithDateRange;
 import org.openmrs.module.patientgrid.filter.PatientGridFilterUtils;
+import org.openmrs.module.patientgrid.filter.definition.LocationCohortDefinition;
 import org.openmrs.module.patientgrid.period.DateRange;
 import org.openmrs.module.patientgrid.period.DateRangeConverter;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
@@ -35,8 +36,9 @@ public class DownloadUtils {
 		stopWatch.start();
 		
 		try {
-			PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, false);
 			String clientTimezone = PatientGridUtils.getCurrentUserTimeZone();
+			PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, false,
+			    clientTimezone);
 			DateRange periodRange = null;
 			for (PatientGridColumn column : patientGrid.getColumns()) {
 				if (ENC_DATE.equals(column.getDatatype())) {
@@ -48,6 +50,7 @@ public class DownloadUtils {
 					break;
 				}
 			}
+			LocationCohortDefinition locationCohortDefinition = PatientGridFilterUtils.extractLocations(patientGrid);
 			
 			final DateRange pr = periodRange;
 			PatientGridUtils.getEncounterTypes(patientGrid).forEach(type -> {
@@ -55,6 +58,7 @@ public class DownloadUtils {
 				encDef.setEncounterType(type);
 				encDef.setPatientGrid(patientGrid);
 				encDef.setPeriodRange(pr);
+				encDef.setLocationCohortDefinition(locationCohortDefinition);
 				dataSetDef.addColumn(type.getUuid(), encDef, (String) null);
 			});
 			

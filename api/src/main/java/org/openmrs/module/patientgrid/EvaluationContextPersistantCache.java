@@ -1,13 +1,17 @@
 package org.openmrs.module.patientgrid;
 
+import org.apache.commons.collections.ComparatorUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.openmrs.Cohort;
+import org.openmrs.CohortMembership;
+import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
+import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class EvaluationContextPersistantCache extends EvaluationContext {
 	
@@ -40,6 +44,21 @@ public class EvaluationContextPersistantCache extends EvaluationContext {
 		
 	}
 	
+	/**
+	 * @param functionClass
+	 * @return all cached data for this function cache.
+	 */
+	public List<Map> getAllCacheData(Class functionClass) {
+		List res = new ArrayList();
+		String prefix = functionClass.getName() + "_";
+		getPersistentCache().entrySet().forEach(entry -> {
+			if (entry.getKey().startsWith(prefix)) {
+				res.add(entry.getValue());
+			}
+		});
+		return res;
+	}
+	
 	public List computeListIfAbsent(EncounterType type, Function<EncounterType, List> function) {
 		return (List) computeIfAbsent(type, function);
 	}
@@ -64,4 +83,41 @@ public class EvaluationContextPersistantCache extends EvaluationContext {
 	public void clearPersistentCache() {
 		persistentCache = null;
 	}
+	
+	public void saveLatestEncDate(Integer patientId, Encounter value) {
+		HashMap<Integer, Date> patientDate = getPatientNewestDate();
+		Date currentDate = patientDate.get(patientId);
+		if (currentDate == null || value.getEncounterDatetime().after(currentDate)) {
+			patientDate.put(patientId, value.getEncounterDatetime());
+		}
+	}
+	
+	private HashMap<Integer, Date> getPatientNewestDate() {
+		HashMap<Integer, Date> patientDate = (HashMap<Integer, Date>) persistentCache.computeIfAbsent("patientDate",
+		    s -> new HashMap<Integer, Date>());
+		return patientDate;
+	}
+	
+	Date getLatestEncounterDate(Integer patientId) {
+		return getPatientNewestDate().get(patientId);
+	}
+	
+	/**
+	 * @param limit the max number of rows. if -1 no limit
+	 */
+	public void limitAndSortCohortBasedOnEncounterDate(int limit) {
+		Cohort baseCohort = getBaseCohort();
+		HashMap<Integer, Date> patientNewestDate = getPatientNewestDate();
+		Cohort cohort = new Cohort();
+		for (CohortMembership member : baseCohort.getMemberships()) {
+			cohort.addMembership(new CohortMembership(member.getPatientId(), patientNewestDate.get(member.getPatientId())));
+		}
+		if (limit > 0 && limit < cohort.size()) {
+			List<CohortMembership> collect = cohort.getMemberships().stream().limit(limit).collect(Collectors.toList());
+			cohort = new Cohort();
+			cohort.setMemberships(collect);
+		}
+		setBaseCohort(cohort);
+	}
+	
 }

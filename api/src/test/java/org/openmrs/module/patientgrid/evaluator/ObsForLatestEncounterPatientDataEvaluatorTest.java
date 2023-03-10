@@ -35,9 +35,9 @@ public class ObsForLatestEncounterPatientDataEvaluatorTest extends BaseModuleCon
 	
 	@Before
 	public void setup() {
+		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
-		executeDataSet("entityBasisMaps.xml");
 	}
 	
 	@Test
@@ -46,9 +46,9 @@ public class ObsForLatestEncounterPatientDataEvaluatorTest extends BaseModuleCon
 		final Integer patientId6 = 6;
 		final Integer patientId8 = 8;
 		EncounterType encounterType = new EncounterType(101);
-		EvaluationContext context = new EvaluationContextPersistantCache();
+		EvaluationContextPersistantCache context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId8)));
-		assertFalse(PatientGridUtils.getEncounters(encounterType, context, true, null).isEmpty());
+		assertFalse(PatientGridUtils.getEncounters(encounterType, context, null, true, null).isEmpty());
 		context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6)));
 		Concept concept = cs.getConcept(5089);

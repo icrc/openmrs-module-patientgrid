@@ -27,6 +27,7 @@ public class DateForLatestEncounterPatientDataEvaluatorTest extends BaseModuleCo
 	
 	@Before
 	public void setup() {
+		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
 	}

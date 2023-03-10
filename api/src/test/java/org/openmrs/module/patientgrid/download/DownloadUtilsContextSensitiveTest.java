@@ -44,9 +44,9 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 	
 	@Before
 	public void setup() {
+		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
-		executeDataSet("entityBasisMaps.xml");
 	}
 	
 	@Test
@@ -125,6 +125,7 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		assertEquals(Double.valueOf(1080), columnUuidAndObsMap.get(cd4ColumnUuid).get("value"));
 		
 		patient = ps.getPatient(7);
+		location = locationService.getLocation(4002);
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
 		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));

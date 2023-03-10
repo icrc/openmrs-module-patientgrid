@@ -10,6 +10,7 @@ import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.patientgrid.filter.PatientGridFilterUtils;
+import org.openmrs.module.patientgrid.filter.definition.LocationCohortDefinition;
 import org.openmrs.module.patientgrid.period.DateRange;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -77,6 +78,7 @@ public class EncounterHistorySearchHandler implements SearchHandler {
 		}
 		final DateRange dateRange = PatientGridFilterUtils.extractPeriodRange(patientGrid,
 		    PatientGridUtils.getCurrentUserTimeZone());
+		final LocationCohortDefinition locationCohortDefinition = PatientGridFilterUtils.extractLocations(patientGrid);
 		
 		EncounterType type = Context.getEncounterService().getEncounterTypeByUuid(encounterTypeUuid);
 		if (type == null) {
@@ -86,12 +88,13 @@ public class EncounterHistorySearchHandler implements SearchHandler {
 		Cohort cohort = new Cohort();
 		Integer patientId = patient.getId();
 		cohort.addMember(patientId);
-		EvaluationContext context = new EvaluationContextPersistantCache();
+		EvaluationContextPersistantCache context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(cohort);
 		
 		try {
 			List<Encounter> encs = new ArrayList();
-			Map<Integer, Object> idAndEncs = PatientGridUtils.getEncounters(type, context, false, dateRange);
+			Map<Integer, Object> idAndEncs = PatientGridUtils.getEncounters(type, context, locationCohortDefinition, false,
+			    dateRange);
 			if (!idAndEncs.isEmpty()) {
 				encs = (List) idAndEncs.get(patientId);
 			}

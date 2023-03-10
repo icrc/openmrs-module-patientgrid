@@ -3,6 +3,7 @@ package org.openmrs.module.patientgrid.download;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
 import org.openmrs.module.patientgrid.ObsPatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.reporting.data.DataUtil;
@@ -25,8 +26,8 @@ public class AllEncountersPatientDataEvaluator implements PatientDataEvaluator {
 	        throws EvaluationException {
 		
 		AllEncountersPatientDataDefinition def = (AllEncountersPatientDataDefinition) definition;
-		Map<Integer, Object> patientIdAndEncs = PatientGridUtils.getEncounters(def.getEncounterType(), context, false,
-		    def.getPeriodRange());
+		Map<Integer, Object> patientIdAndEncs = PatientGridUtils.getEncounters(def.getEncounterType(),
+		    (EvaluationContextPersistantCache) context, def.getLocationCohortDefinition(), false, def.getPeriodRange());
 		Set<ObsPatientGridColumn> obsColumns = def.getPatientGrid().getObsColumns();
 		
 		Map<Integer, Object> patientIdAndEncList = patientIdAndEncs.entrySet().stream()

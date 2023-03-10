@@ -119,9 +119,10 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		stopWatch.start();
 		
 		try {
-			PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, true);
-			EvaluationContextPersistantCache context = new EvaluationContextPersistantCache();
 			final String clientTimezone = PatientGridUtils.getCurrentUserTimeZone();
+			PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, true,
+			    clientTimezone);
+			EvaluationContextPersistantCache context = new EvaluationContextPersistantCache();
 			ObjectWithDateRange<Cohort> cohortWithPeriod = PatientGridFilterUtils.filterPatients(patientGrid, context,
 			    clientTimezone);
 			Cohort cohort = cohortWithPeriod == null ? null : cohortWithPeriod.getObject();
@@ -135,7 +136,6 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 				cohort = mergeCohort(cohort, patientGrid.getCohort());
 			}
 			
-			context.setBaseCohort(cohort);
 			int limit = 100;
 			String rowLimit = Context.getAdministrationService().getGlobalProperty(GP_ROWS_COUNT_LIMIT);
 			if (StringUtils.isNotBlank(rowLimit)) {
@@ -148,7 +148,8 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 					throw new RuntimeException(e);
 				}
 			}
-			context.setLimit(limit);
+			context.setBaseCohort(cohort);
+			context.limitAndSortCohortBasedOnEncounterDate(limit);
 			
 			SimpleDataSet ds;
 			//if the cohort is empty -> do nothing

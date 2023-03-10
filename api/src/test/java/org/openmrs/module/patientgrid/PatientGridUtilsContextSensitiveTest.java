@@ -29,9 +29,9 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 	
 	@Before
 	public void setup() {
+		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
-		executeDataSet("entityBasisMaps.xml");
 	}
 	
 	@Test
@@ -39,9 +39,9 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		Cohort cohort = new Cohort();
 		final Integer patientId = 2;
 		cohort.addMember(patientId);
-		EvaluationContext context = new EvaluationContextPersistantCache();
+		EvaluationContextPersistantCache context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(cohort);
-		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), context, true, null);
+		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), context, null, true, null);
 		assertEquals(1, idsAndEncs.size());
 		assertEquals(2004, ((Encounter) idsAndEncs.get(patientId)).getEncounterId().intValue());
 	}
@@ -51,9 +51,9 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		Cohort cohort = new Cohort();
 		final Integer patientId = 2;
 		cohort.addMember(patientId);
-		EvaluationContext context = new EvaluationContextPersistantCache();
+		EvaluationContextPersistantCache context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(cohort);
-		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), context, false, null);
+		Map<Integer, Object> idsAndEncs = PatientGridUtils.getEncounters(new EncounterType(101), context, null, false, null);
 		assertEquals(1, idsAndEncs.size());
 		List<Encounter> encounters = (List) idsAndEncs.get(patientId);
 		assertEquals(3, encounters.size());
@@ -67,9 +67,9 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		Cohort cohort = new Cohort();
 		final Integer patientId = 8;
 		cohort.addMember(patientId);
-		EvaluationContext context = new EvaluationContextPersistantCache();
+		EvaluationContextPersistantCache context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(cohort);
-		assertTrue(PatientGridUtils.getEncounters(new EncounterType(102), context, true, null).isEmpty());
+		assertTrue(PatientGridUtils.getEncounters(new EncounterType(102), context, null, true, null).isEmpty());
 	}
 	
 }

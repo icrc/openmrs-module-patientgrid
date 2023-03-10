@@ -80,9 +80,9 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	@Before
 	public void setup() {
 		
+		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
-		executeDataSet("entityBasisMaps.xml");
 		getCache().clear();
 		//We have test that replaces this service with a mock, we need to always put it back
 		serviceContext.setService(DataSetDefinitionService.class, dsds);
@@ -243,7 +243,26 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	public void shouldReturnTwoRecordsInAGridWhenLimitIsTwo() {
+	public void shouldReturnThreeRecordsInOrderWhenLimitIsThree() {
+		//setup
+		when(mockAdminService.getGlobalProperty(GP_ROWS_COUNT_LIMIT)).thenReturn("3");
+		
+		//action
+		ExtendedDataSet dataSet = service.evaluate(service.getPatientGrid(1));
+		
+		//assert
+		assertEquals(3, dataSet.getSimpleDataSet().getRows().size());
+		assertEquals(3, dataSet.getRowsCountLimit());
+		assertEquals(3, dataSet.getInitialRowsCount());
+		
+		//the patient should be given in encounter date desc order
+		assertEquals(ps.getPatient(2).getUuid(), dataSet.getSimpleDataSet().getRows().get(0).getColumnValue("uuid"));
+		assertEquals(ps.getPatient(7).getUuid(), dataSet.getSimpleDataSet().getRows().get(1).getColumnValue("uuid"));
+		assertEquals(ps.getPatient(6).getUuid(), dataSet.getSimpleDataSet().getRows().get(2).getColumnValue("uuid"));
+	}
+	
+	@Test
+	public void shouldReturnTwoRecordInAGridWhenLimitIsTwo() {
 		//setup
 		when(mockAdminService.getGlobalProperty(GP_ROWS_COUNT_LIMIT)).thenReturn("2");
 		
@@ -254,20 +273,8 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(2, dataSet.getSimpleDataSet().getRows().size());
 		assertEquals(2, dataSet.getRowsCountLimit());
 		assertEquals(3, dataSet.getInitialRowsCount());
-	}
-	
-	@Test
-	public void shouldReturnOneRecordInAGridWhenLimitIsOne() {
-		//setup
-		when(mockAdminService.getGlobalProperty(GP_ROWS_COUNT_LIMIT)).thenReturn("1");
-		
-		//action
-		ExtendedDataSet dataSet = service.evaluate(service.getPatientGrid(1));
-		
-		//assert
-		assertEquals(1, dataSet.getSimpleDataSet().getRows().size());
-		assertEquals(1, dataSet.getRowsCountLimit());
-		assertEquals(3, dataSet.getInitialRowsCount());
+		assertEquals(ps.getPatient(2).getUuid(), dataSet.getSimpleDataSet().getRows().get(0).getColumnValue("uuid"));
+		assertEquals(ps.getPatient(7).getUuid(), dataSet.getSimpleDataSet().getRows().get(1).getColumnValue("uuid"));
 	}
 	
 	@Test
@@ -334,6 +341,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		civilStatusAnswerConcept = Context.getConceptService().getConcept(6);
 		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
 		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
+		location = locationService.getLocation(4002);
 		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
 		assertEquals(es.getEncounter(2007).getEncounterDatetime(), dataSet.getColumnValue(patient.getId(), "encDate"));

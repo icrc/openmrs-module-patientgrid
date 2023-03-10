@@ -23,6 +23,9 @@ public class AgeRangeAtLatestEncounterCohortDefinition extends BaseCohortDefinit
 	@ConfigurationProperty
 	private DateRange periodRange;
 	
+	@ConfigurationProperty
+	private LocationCohortDefinition locationCohortDefinition;
+	
 	/**
 	 * Gets the encounterType
 	 *
@@ -72,5 +75,13 @@ public class AgeRangeAtLatestEncounterCohortDefinition extends BaseCohortDefinit
 	
 	public void setPeriodRange(DateRange periodRange) {
 		this.periodRange = periodRange;
+	}
+	
+	public LocationCohortDefinition getLocationCohortDefinition() {
+		return locationCohortDefinition;
+	}
+	
+	public void setLocationCohortDefinition(LocationCohortDefinition locationCohortDefinition) {
+		this.locationCohortDefinition = locationCohortDefinition;
 	}
 }

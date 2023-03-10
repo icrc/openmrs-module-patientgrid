@@ -30,7 +30,7 @@ public class AgeAtLatestEncounterPatientDataEvaluator implements PatientDataEval
 		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
 		
 		MostRecentEncounterPerPatientByTypeFunction encounterFct = new MostRecentEncounterPerPatientByTypeFunction(
-		        contextPersistantCache, def.getPeriodRange());
+		        contextPersistantCache, def.getPeriodRange(), def.getLocationCohortDefinition());
 		//will retrieve the map patientid-> Ecounter if not in cache
 		Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
 		    encounterFct);

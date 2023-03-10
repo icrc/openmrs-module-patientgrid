@@ -24,6 +24,7 @@ public class AgeAtLatestEncounterPatientDataEvaluatorTest extends BaseModuleCont
 	
 	@Before
 	public void setup() {
+		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
 	}

@@ -57,12 +57,13 @@ public class PatientGridFilterUtils {
 		}
 		final Map<String, CohortDefinition> columnAndCohortDefMap = new HashMap(patientGrid.getColumns().size());
 		DateRange periodRange = extractPeriodRange(patientGrid, userTimeZone);
+		LocationCohortDefinition locationCohortDefinition = extractLocations(patientGrid);
 		
 		for (PatientGridColumn column : patientGrid.getColumns()) {
 			CohortDefinition cohortDef = null;
 			if (ENC_AGE.equals(column.getDatatype())) {
 				//for age, we will always create a range cohort definition as it's used to filter on the encounter type
-				cohortDef = createAgeRangeCohortDefinition(column, periodRange);
+				cohortDef = createAgeRangeCohortDefinition(column, periodRange, locationCohortDefinition);
 			} else if (!column.getFilters().isEmpty()) {
 				
 				switch (column.getDatatype()) {
@@ -72,9 +73,9 @@ public class PatientGridFilterUtils {
 					case OBS:
 						cohortDef = createObsCohortDefinition(column, periodRange);
 						break;
-					case DATAFILTER_LOCATION:
-					case DATAFILTER_COUNTRY:
-						cohortDef = createLocationCohortDefinition(column, column.getDatatype() == DATAFILTER_COUNTRY);
+					case ENC_LOCATION:
+					case ENC_COUNTRY:
+						//						The filter based on the location/country will be done by the encounter filters.
 						break;
 					case ENC_DATE:
 						break;
@@ -94,6 +95,16 @@ public class PatientGridFilterUtils {
 		}
 		
 		return new ObjectWithDateRange<>(createCohortDef(columnAndCohortDefMap, BooleanOperator.AND), periodRange);
+	}
+	
+	public static LocationCohortDefinition extractLocations(PatientGrid patientGrid) {
+		for (PatientGridColumn column : patientGrid.getColumns()) {
+			if (!column.getFilters().isEmpty()
+			        && (ENC_LOCATION.equals(column.getDatatype()) || ENC_COUNTRY.equals(column.getDatatype()))) {
+				return createLocationCohortDefinition(column, column.getDatatype() == ENC_COUNTRY);
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -142,9 +153,10 @@ public class PatientGridFilterUtils {
 	 * @return AgeRangeAtLatestEncounterCohortDefinition
 	 */
 	private static AgeRangeAtLatestEncounterCohortDefinition createAgeRangeCohortDefinition(PatientGridColumn column,
-	        DateRange periodRange) {
+	        DateRange periodRange, LocationCohortDefinition locationCohortDefinition) {
 		AgeAtEncounterPatientGridColumn ageColumn = (AgeAtEncounterPatientGridColumn) column;
 		AgeRangeAtLatestEncounterCohortDefinition def = new AgeRangeAtLatestEncounterCohortDefinition();
+		def.setLocationCohortDefinition(locationCohortDefinition);
 		def.setEncounterType(ageColumn.getEncounterType());
 		def.setAgeRanges(new ArrayList(column.getFilters().size()));
 		def.setPeriodRange(periodRange);
@@ -267,7 +279,7 @@ public class PatientGridFilterUtils {
 	        BooleanOperator operator) {
 		
 		//If there is one filter, just return its cohort definition otherwise create a composition cohort
-		//definition using OR operator
+		//definition using given operator
 		if (nameAndCohortDefs.size() == 1) {
 			return nameAndCohortDefs.entrySet().iterator().next().getValue();
 		}
@@ -311,8 +323,7 @@ public class PatientGridFilterUtils {
 		if (context == null) {
 			context = new EvaluationContextPersistantCache();
 		}
-		ObjectWithDateRange<CohortDefinition> cohortDef = PatientGridFilterUtils.generateCohortDefinition(patientGrid,
-		    userTimeZone);
+		ObjectWithDateRange<CohortDefinition> cohortDef = generateCohortDefinition(patientGrid, userTimeZone);
 		if (cohortDef == null) {
 			return null;
 		}
@@ -328,7 +339,7 @@ public class PatientGridFilterUtils {
 		
 		LOG.debug("Running filters for patient grid {} completed in {}", patientGrid, stopWatch.toString());
 		
-		return new ObjectWithDateRange<Cohort>(cohort, cohortDef.getDateRange());
+		return new ObjectWithDateRange<>(cohort, cohortDef.getDateRange());
 	}
 	
 }
