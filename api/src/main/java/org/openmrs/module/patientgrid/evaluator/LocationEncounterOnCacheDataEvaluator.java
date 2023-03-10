@@ -22,7 +22,7 @@ import java.util.Map;
  * Will give the location of the most recent encounter for all patients in the cohort
  */
 @Handler(supports = LocationEncounterDataDefinition.class, order = 50)
-public class LocationEncounterDataEvaluator implements PatientDataEvaluator {
+public class LocationEncounterOnCacheDataEvaluator implements PatientDataEvaluator {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DateForLatestEncounterPatientDataEvaluator.class);
 	

@@ -111,7 +111,14 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 	
 	@PropertyGetter("display")
 	public String getDisplayString(PatientGridColumnFilter delegate) {
-		return delegate.getPatientGridColumn().getDatatype().getDisplayer().getDisplayString(delegate, Context.getLocale());
+		try {
+			return delegate.getPatientGridColumn().getDatatype().getDisplayer().getDisplayString(delegate,
+			    Context.getLocale());
+		}
+		catch (Exception e) {
+			log.warn("Can't get display mame for PatientGridColumnFilter uuid" + delegate.getUuid(), e);
+		}
+		return delegate.getName();
 	}
 	
 	/**

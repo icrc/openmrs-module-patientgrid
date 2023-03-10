@@ -5,6 +5,7 @@ import org.openmrs.Cohort;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.*;
+import org.openmrs.module.patientgrid.api.impl.PatientGridServiceImpl;
 import org.openmrs.module.patientgrid.filter.ObjectWithDateRange;
 import org.openmrs.module.patientgrid.filter.PatientGridFilterUtils;
 import org.openmrs.module.patientgrid.filter.definition.LocationCohortDefinition;
@@ -24,77 +25,36 @@ import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.EN
  * Contains utilities to generate the downloadable patient grid report data
  */
 public class DownloadUtils {
-	
-	private static final Logger log = LoggerFactory.getLogger(DownloadUtils.class);
-	
-	private static DataSetDefinitionService dataSetService;
-	
-	public static ExtendedDataSet evaluate(PatientGrid patientGrid) {
-		log.debug("Generating downloadable patient grid report data for patient grid: {}", patientGrid);
-		
-		StopWatch stopWatch = new StopWatch();
-		stopWatch.start();
-		
-		try {
-			String clientTimezone = PatientGridUtils.getCurrentUserTimeZone();
-			PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, false,
-			    clientTimezone);
-			DateRange periodRange = null;
-			for (PatientGridColumn column : patientGrid.getColumns()) {
-				if (ENC_DATE.equals(column.getDatatype())) {
-					if (!column.getFilters().isEmpty()) {
-						for (PatientGridColumnFilter filter : column.getFilters()) {
-							periodRange = new DateRangeConverter(clientTimezone).convert(filter.getOperand());
-						}
-					}
-					break;
-				}
-			}
-			LocationCohortDefinition locationCohortDefinition = PatientGridFilterUtils.extractLocations(patientGrid);
-			
-			final DateRange pr = periodRange;
-			PatientGridUtils.getEncounterTypes(patientGrid).forEach(type -> {
-				AllEncountersPatientDataDefinition encDef = new AllEncountersPatientDataDefinition();
-				encDef.setEncounterType(type);
-				encDef.setPatientGrid(patientGrid);
-				encDef.setPeriodRange(pr);
-				encDef.setLocationCohortDefinition(locationCohortDefinition);
-				dataSetDef.addColumn(type.getUuid(), encDef, (String) null);
-			});
-			
-			EvaluationContext context = new EvaluationContextPersistantCache();
-			ObjectWithDateRange<Cohort> cohortAndDate = PatientGridFilterUtils.filterPatients(patientGrid, context,
-			    clientTimezone);
-			Cohort cohort = cohortAndDate == null ? null : cohortAndDate.getObject();
-			if (cohort == null) {
-				cohort = patientGrid.getCohort();
-			}
-			
-			if (cohort != null && cohort.isEmpty()) {
-				log.info("Cohort is empty, nothing to evaluate");
-				return new ExtendedDataSet(new SimpleDataSet(dataSetDef, context),
-				        cohortAndDate == null ? null : cohortAndDate.getDateRange());
-			}
-			
-			context.setBaseCohort(cohort);
-			if (dataSetService == null) {
-				dataSetService = Context.getService(DataSetDefinitionService.class);
-			}
-			
-			SimpleDataSet dataSet = (SimpleDataSet) dataSetService.evaluate(dataSetDef, context);
-			
-			stopWatch.stop();
-			
-			log.debug("Generating downloadable patient grid report data for patient grid {}  completed in {}", patientGrid,
-			    stopWatch.toString());
-			ExtendedDataSet res = new ExtendedDataSet(dataSet, cohortAndDate.getDateRange());
-			//TODO: go on configuration here
-			return res;
-		}
-		catch (EvaluationException e) {
-			throw new APIException(
-			        "Failed to generate downloadable patient grid report data for patient grid: " + patientGrid, e);
-		}
-	}
-	
+
+  private static final Logger log = LoggerFactory.getLogger(DownloadUtils.class);
+
+  private static DataSetDefinitionService dataSetService;
+
+  public static ExtendedDataSet evaluate(PatientGrid patientGrid) {
+    log.debug("Generating downloadable patient grid report data for patient grid: {}", patientGrid);
+
+
+    try {
+      String clientTimezone = PatientGridUtils.getCurrentUserTimeZone();
+      PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, false,
+          clientTimezone);
+      DateRange periodRange = PatientGridFilterUtils.extractPeriodRange(patientGrid, clientTimezone);
+      LocationCohortDefinition locationCohortDefinition = PatientGridFilterUtils.extractLocations(patientGrid);
+
+      final DateRange pr = periodRange;
+      PatientGridUtils.getEncounterTypes(patientGrid).forEach(type -> {
+        AllEncountersPatientDataDefinition encDef = new AllEncountersPatientDataDefinition();
+        encDef.setEncounterType(type);
+        encDef.setPatientGrid(patientGrid);
+        encDef.setPeriodRange(pr);
+        encDef.setLocationCohortDefinition(locationCohortDefinition);
+        dataSetDef.addColumn(type.getUuid(), encDef, (String) null);
+      });
+      return PatientGridServiceImpl.createExtendedDataSet(patientGrid, clientTimezone, dataSetDef);
+    } catch (EvaluationException e) {
+      throw new APIException(
+          "Failed to generate downloadable patient grid report data for patient grid: " + patientGrid, e);
+    }
+  }
+
 }

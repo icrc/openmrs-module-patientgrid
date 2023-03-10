@@ -1,5 +1,6 @@
 package org.openmrs.module.patientgrid.evaluator;
 
+import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -29,7 +31,11 @@ public class DateForLatestEncounterPatientDataEvaluator implements PatientDataEv
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
 	        throws EvaluationException {
-		
+		Cohort baseCohort = context.getBaseCohort();
+		if (baseCohort != null && baseCohort.isEmpty()) {
+			new EvaluatedPatientData(definition, context);
+		}
+		final Set<Integer> patientIds = baseCohort == null ? null : baseCohort.getMemberIds();
 		DateForLatestEncounterPatientDataDefinition def = (DateForLatestEncounterPatientDataDefinition) definition;
 		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
 		Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
@@ -37,6 +43,7 @@ public class DateForLatestEncounterPatientDataEvaluator implements PatientDataEv
 		            def.getLocationCohortDefinition()));
 		
 		Map<Integer, Object> encIdAndEnc = patientIdAndEnc.values().stream()
+		        .filter(e -> patientIds == null || patientIds.contains(((Encounter) e).getPatient().getPatientId()))
 		        .collect(Collectors.toMap(e -> ((Encounter) e).getId(), Function.identity()));
 		
 		EncounterIdSet encIdSet = new EncounterIdSet(encIdAndEnc.keySet());

@@ -45,12 +45,19 @@ public class DateRangeConverter {
 		catch (IOException e) {
 			return operand;
 		}
-		final String type = (String) map.get("code");
+		String type = (String) map.get("code");
 		String fromDate = extractDateOnly((String) map.get("fromDate"));
 		String toDate = extractDateOnly((String) map.get("toDate"));
 		try {
-			String message = Context.getMessageSourceService().getMessage("period." + type.toUpperCase(),
-			    new Object[] { fromDate, toDate }, locale);
+			String message = null;
+			if (type == null && StringUtils.isNotBlank(fromDate) && StringUtils.isNotBlank(toDate)) {
+				type = DateRangeType.CUSTOMDAYSINCLUSIVE.name();
+			}
+			if (type != null) {
+				message = Context.getMessageSourceService().getMessage("period." + type.toUpperCase(),
+				    new Object[] { fromDate, toDate }, locale);
+			}
+			
 			return StringUtils.defaultIfEmpty(message, operand);
 		}
 		catch (NoSuchMessageException e) {
