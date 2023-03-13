@@ -35,7 +35,8 @@ public class PatientGridDownloadControllerTest extends BasePatientGridRestContro
 		assertEquals(getAllCount(), Util.getResultsSize(result));
 		Map downloadReport = (Map) ((List) Util.getByPath(result, "results")).get(0);
 		assertEquals(GRID_UUID, Util.getByPath(downloadReport, new String[] { "patientGrid", "uuid" }));
-		assertEquals(4, ((List) Util.getByPath(downloadReport, "report")).size());
+		//3 patients in the initial cohort
+		assertEquals(3, ((List) Util.getByPath(downloadReport, "report")).size());
 	}
 	
 	@Override
