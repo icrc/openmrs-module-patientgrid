@@ -16,7 +16,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.module.datafilter.impl.EntityBasisMap;
 import org.openmrs.module.datafilter.impl.api.DataFilterService;
 import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
-import org.openmrs.module.patientgrid.definition.LocationPatientDataDefinition;
+import org.openmrs.module.patientgrid.definition.LocationDataFilterPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -45,7 +45,7 @@ public class LocationPatientDataEvaluatorTest extends BaseModuleContextSensitive
 		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6)));
 		
-		EvaluatedPatientData data = patientDataService.evaluate(new LocationPatientDataDefinition(), context);
+		EvaluatedPatientData data = patientDataService.evaluate(new LocationDataFilterPatientDataDefinition(), context);
 		
 		assertEquals(2, data.getData().size());
 		assertEquals(locationService.getLocation(4000), data.getData().get(patientId2));
@@ -61,7 +61,7 @@ public class LocationPatientDataEvaluatorTest extends BaseModuleContextSensitive
 		assertTrue(dataFilterService.getEntityBasisMaps(patient, Location.class.getName()).isEmpty());
 		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId)));
-		assertTrue(patientDataService.evaluate(new LocationPatientDataDefinition(), context).getData().isEmpty());
+		assertTrue(patientDataService.evaluate(new LocationDataFilterPatientDataDefinition(), context).getData().isEmpty());
 	}
 	
 	@Test
@@ -74,7 +74,7 @@ public class LocationPatientDataEvaluatorTest extends BaseModuleContextSensitive
 		assertTrue(maps.get(0).getDateCreated().before(maps.get(1).getDateCreated()));
 		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId)));
-		LocationPatientDataDefinition d = new LocationPatientDataDefinition();
+		LocationDataFilterPatientDataDefinition d = new LocationDataFilterPatientDataDefinition();
 		
 		EvaluatedPatientData data = patientDataService.evaluate(d, context);
 		
@@ -94,7 +94,7 @@ public class LocationPatientDataEvaluatorTest extends BaseModuleContextSensitive
 		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId)));
 		
-		EvaluatedPatientData data = patientDataService.evaluate(new LocationPatientDataDefinition(), context);
+		EvaluatedPatientData data = patientDataService.evaluate(new LocationDataFilterPatientDataDefinition(), context);
 		
 		assertEquals(1, data.getData().size());
 		assertEquals(locationService.getLocation(4002), data.getData().get(patientId));

@@ -1,7 +1,6 @@
 package org.openmrs.module.patientgrid.evaluator;
 
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
+import org.openmrs.*;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
 import org.openmrs.module.patientgrid.PatientGridUtils;
@@ -17,26 +16,31 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Handler(supports = ObsForLatestEncounterPatientDataDefinition.class, order = 50)
 public class ObsForLatestEncounterPatientDataEvaluator implements PatientDataEvaluator {
 	
-	private static final Logger log = LoggerFactory.getLogger(ObsForLatestEncounterPatientDataEvaluator.class);
-	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
 	        throws EvaluationException {
-		
+		Cohort baseCohort = context.getBaseCohort();
+		if (baseCohort != null && baseCohort.isEmpty()) {
+			new EvaluatedPatientData(definition, context);
+		}
 		ObsForLatestEncounterPatientDataDefinition def = (ObsForLatestEncounterPatientDataDefinition) definition;
 		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
 		Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
-		    new MostRecentEncounterPerPatientByTypeFunction(contextPersistantCache, def.getPeriodRange()));
+		    new MostRecentEncounterPerPatientByTypeFunction(contextPersistantCache, def.getPeriodRange(),
+		            def.getLocationCohortDefinition()));
 		
 		Map<Integer, Object> patientIdAndObs = new HashMap(patientIdAndEnc.size());
-		for (Map.Entry<Integer, Object> e : patientIdAndEnc.entrySet()) {
-			Obs obs = PatientGridUtils.getObsByConcept((Encounter) e.getValue(), def.getConcept());
+		Set<Integer> patients = baseCohort == null ? patientIdAndObs.keySet() : baseCohort.getMemberIds();
+		for (Integer patientId : patients) {
+			Encounter e = (Encounter) patientIdAndEnc.get(patientId);
+			Obs obs = PatientGridUtils.getObsByConcept(e, def.getConcept());
 			if (obs != null) {
-				patientIdAndObs.put(e.getKey(), obs);
+				patientIdAndObs.put(patientId, obs);
 			}
 		}
 		

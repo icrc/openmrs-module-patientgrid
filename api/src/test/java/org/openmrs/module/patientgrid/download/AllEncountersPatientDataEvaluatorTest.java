@@ -36,6 +36,7 @@ public class AllEncountersPatientDataEvaluatorTest extends BaseModuleContextSens
 	
 	@Before
 	public void setup() {
+		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
 	}

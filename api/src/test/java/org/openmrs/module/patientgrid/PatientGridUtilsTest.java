@@ -9,11 +9,9 @@ import static org.mockito.Mockito.when;
 import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.NAME;
 import static org.openmrs.module.patientgrid.PatientGridConstants.GP_AGE_RANGES;
 
-import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -29,10 +27,7 @@ import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeConverter;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeRangeConverter;
 import org.openmrs.module.patientgrid.converter.PatientGridObsConverter;
-import org.openmrs.module.patientgrid.definition.AgeAtLatestEncounterPatientDataDefinition;
-import org.openmrs.module.patientgrid.definition.DateForLatestEncounterPatientDataDefinition;
-import org.openmrs.module.patientgrid.definition.LocationPatientDataDefinition;
-import org.openmrs.module.patientgrid.definition.ObsForLatestEncounterPatientDataDefinition;
+import org.openmrs.module.patientgrid.definition.*;
 import org.openmrs.module.reporting.common.Age.Unit;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -64,6 +59,8 @@ public class PatientGridUtilsTest {
 	@Before
 	public void setup() {
 		Whitebox.setInternalState(PatientGridUtils.class, "ageRangeConverter", (Object) null);
+		PowerMockito.mockStatic(Context.class);
+		when(Context.getAdministrationService()).thenReturn(mockAdminService);
 	}
 	
 	private DataDefinition getDefinition(String columnName, PatientDataSetDefinition def) {
@@ -110,14 +107,12 @@ public class PatientGridUtilsTest {
 		patientGrid.addColumn(new EncounterDatePatientGridColumn(encDate, initial));
 		patientGrid.addColumn(new AgeAtEncounterPatientGridColumn(ageAtEnc, initial));
 		patientGrid.addColumn(new AgeAtEncounterPatientGridColumn(ageCategory, admission, true));
-		patientGrid.addColumn(new PatientGridColumn(structure, ColumnDatatype.DATAFILTER_LOCATION));
-		patientGrid.addColumn(new PatientGridColumn(country, ColumnDatatype.DATAFILTER_COUNTRY));
+		patientGrid.addColumn(new PatientGridColumn(structure, ColumnDatatype.ENC_LOCATION));
+		patientGrid.addColumn(new PatientGridColumn(country, ColumnDatatype.ENC_COUNTRY));
 		patientGrid.addColumn(new ObsPatientGridColumn(admissionType, admissionConcept, admission));
-		PowerMockito.mockStatic(Context.class);
-		when(Context.getAdministrationService()).thenReturn(mockAdminService);
 		when(mockAdminService.getGlobalProperty(PatientGridConstants.GP_AGE_RANGES)).thenReturn("0-17:<18yrs,18+");
 		
-		PatientDataSetDefinition datasetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, true);
+		PatientDataSetDefinition datasetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, true, null);
 		
 		assertEquals(PreferredNameDataDefinition.class, getDefinition(name, datasetDef).getClass());
 		assertEquals(GenderDataDefinition.class, getDefinition(gender, datasetDef).getClass());
@@ -130,11 +125,11 @@ public class PatientGridUtilsTest {
 		assertEquals(1, ageDef.getConverters().size());
 		assertEquals(PatientGridAgeConverter.class, ageDef.getConverters().get(0).getClass());
 		MappedData locationDef = datasetDef.getColumnDefinition(structure).getDataDefinition();
-		assertEquals(LocationPatientDataDefinition.class, locationDef.getParameterizable().getClass());
+		assertEquals(LocationEncounterDataDefinition.class, locationDef.getParameterizable().getClass());
 		assertEquals(1, locationDef.getConverters().size());
 		assertEquals(ObjectFormatter.class, locationDef.getConverters().get(0).getClass());
 		MappedData countryDef = datasetDef.getColumnDefinition(country).getDataDefinition();
-		assertEquals(LocationPatientDataDefinition.class, countryDef.getParameterizable().getClass());
+		assertEquals(LocationEncounterDataDefinition.class, countryDef.getParameterizable().getClass());
 		assertEquals(1, countryDef.getConverters().size());
 		PropertyConverter converter = (PropertyConverter) countryDef.getConverters().get(0);
 		assertEquals("country", converter.getPropertyName());
@@ -176,7 +171,7 @@ public class PatientGridUtilsTest {
 		patientGrid.addColumn(new PatientGridColumn(name, ColumnDatatype.NAME));
 		patientGrid.addColumn(new ObsPatientGridColumn(admissionType, admissionConcept, admission));
 		
-		PatientDataSetDefinition datasetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, false);
+		PatientDataSetDefinition datasetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, false, null);
 		
 		assertNotNull(datasetDef.getColumnDefinition(name));
 		assertNull(datasetDef.getColumnDefinition(admissionType));
@@ -327,9 +322,7 @@ public class PatientGridUtilsTest {
 		expectedException.expect(APIException.class);
 		expectedException.expectMessage(
 		    equalTo("No age ranges defined, please set the value for the global property named: " + GP_AGE_RANGES));
-		PowerMockito.mockStatic(Context.class);
-		when(Context.getAdministrationService()).thenReturn(mockAdminService);
-		PatientGridUtils.createPatientDataSetDefinition(patientGrid, false);
+		PatientGridUtils.createPatientDataSetDefinition(patientGrid, false, null);
 	}
 	
 	@Test
@@ -339,10 +332,8 @@ public class PatientGridUtilsTest {
 		expectedException.expect(APIException.class);
 		expectedException.expectMessage(
 		    equalTo("No age ranges defined, please set the value for the global property named: " + GP_AGE_RANGES));
-		PowerMockito.mockStatic(Context.class);
-		when(Context.getAdministrationService()).thenReturn(mockAdminService);
 		when(mockAdminService.getGlobalProperty(PatientGridConstants.GP_AGE_RANGES)).thenReturn("");
-		PatientGridUtils.createPatientDataSetDefinition(patientGrid, false);
+		PatientGridUtils.createPatientDataSetDefinition(patientGrid, false, null);
 	}
 	
 	@Test
@@ -352,10 +343,8 @@ public class PatientGridUtilsTest {
 		expectedException.expect(APIException.class);
 		expectedException.expectMessage(
 		    equalTo("No age ranges defined, please set the value for the global property named: " + GP_AGE_RANGES));
-		PowerMockito.mockStatic(Context.class);
-		when(Context.getAdministrationService()).thenReturn(mockAdminService);
 		when(mockAdminService.getGlobalProperty(PatientGridConstants.GP_AGE_RANGES)).thenReturn(" ");
-		PatientGridUtils.createPatientDataSetDefinition(patientGrid, false);
+		PatientGridUtils.createPatientDataSetDefinition(patientGrid, false, null);
 	}
 	
 }

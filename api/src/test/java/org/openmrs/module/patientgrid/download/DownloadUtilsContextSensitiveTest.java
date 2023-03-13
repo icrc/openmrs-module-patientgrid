@@ -30,10 +30,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiveTest {
 	
+	private final String utcTimeZone = "UTC";
+	
 	@Autowired
 	private PatientGridService service;
-	
-	private final String utcTimeZone = "UTC";
 	
 	@Autowired
 	@Qualifier("patientService")
@@ -44,25 +44,29 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 	
 	@Before
 	public void setup() {
+		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
-		executeDataSet("entityBasisMaps.xml");
 	}
 	
 	@Test
 	public void evaluate_shouldReturnDownloadReportDataForTheSpecifiedPatientGrid() {
+		//prepare
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		final String oldTimeZone = System.getProperty("user.timezone");
 		System.setProperty("user.timezone", utcTimeZone);
 		
+		//action
 		ExtendedDataSet extendedDataSet = DownloadUtils.evaluate(patientGrid);
 		SimpleDataSet dataset = extendedDataSet.getSimpleDataSet();
 		
+		//assert
 		assertEquals(
 		    "{\"code\":\"customDaysInclusive\",\"fromDate\":\"2022-04-01 00:00:00\",\"toDate\":\"2022-12-31 00:00:00\"}",
 		    extendedDataSet.getPeriodOperand());
 		assertEquals("1648771200000-1672531199999", extendedDataSet.getUsedDateRange());
-		assertEquals(4, dataset.getRows().size());
+		//the cohort should be 4 but as we have a initial cohort with 3 patients ( 2,6,7) only these 3 will be returned.
+		assertEquals(3, dataset.getRows().size());
 		Patient patient = ps.getPatient(2);
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
@@ -125,6 +129,7 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		assertEquals(Double.valueOf(1080), columnUuidAndObsMap.get(cd4ColumnUuid).get("value"));
 		
 		patient = ps.getPatient(7);
+		location = locationService.getLocation(4002);
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
 		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
@@ -148,18 +153,8 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		
 		// a patient with no values
 		patient = ps.getPatient(8);
-		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
-		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
-		assertEquals(patient.getGender(), dataset.getColumnValue(patient.getId(), "gender"));
-		assertNull(dataset.getColumnValue(patient.getId(), "ageAtInitial"));
-		assertNull(dataset.getColumnValue(patient.getId(), "ageCategory"));
-		location = locationService.getLocation(4000);
-		assertEquals(location.getName(), dataset.getColumnValue(patient.getId(), "structure"));
-		assertEquals(location.getCountry(), dataset.getColumnValue(patient.getId(), "country"));
-		encounters = (List) dataset.getColumnValue(patient.getId(), initialEncTypeUuid);
-		assertEquals(1, encounters.size());
-		columnUuidAndObsMap = encounters.get(0);
-		assertTrue(columnUuidAndObsMap.isEmpty());
+		assertNull("the patient 8 is not in the initial cohort and excluded from the dataset",
+		    dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		
 		System.setProperty("user.timezone", oldTimeZone);
 	}

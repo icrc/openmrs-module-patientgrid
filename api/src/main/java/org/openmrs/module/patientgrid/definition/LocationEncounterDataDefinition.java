@@ -4,7 +4,7 @@ import org.openmrs.Location;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 
-public class LocationPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
+public class LocationEncounterDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
 	@Override
 	public Class<?> getDataType() {

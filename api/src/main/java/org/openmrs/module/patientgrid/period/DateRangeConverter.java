@@ -18,14 +18,15 @@ import java.util.TimeZone;
 
 public class DateRangeConverter {
 	
-	private final DateTimeZone userTimeZone;
-	
 	private static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder().append(ISODateTimeFormat.date())
 	        .appendLiteral(' ').append(ISODateTimeFormat.hourMinuteSecond()).toFormatter();
 	
+	private final DateTimeZone userTimeZone;
+	
 	public DateRangeConverter(String userTimeZone) {
 		
-		this.userTimeZone = DateTimeZone.forTimeZone(TimeZone.getTimeZone(userTimeZone));
+		this.userTimeZone = DateTimeZone
+		        .forTimeZone(TimeZone.getTimeZone(userTimeZone == null ? TimeZone.getDefault().getID() : userTimeZone));
 	}
 	
 	/**
@@ -34,6 +35,35 @@ public class DateRangeConverter {
 	 */
 	public static String extractDateOnly(String completeDate) {
 		return StringUtils.substringBefore(completeDate, " ");
+	}
+	
+	public static String getDisplay(String operand, Locale locale) {
+		Map map;
+		try {
+			map = PatientGridUtils.MAPPER.readValue(operand, Map.class);
+		}
+		catch (IOException e) {
+			return operand;
+		}
+		String type = (String) map.get("code");
+		String fromDate = extractDateOnly((String) map.get("fromDate"));
+		String toDate = extractDateOnly((String) map.get("toDate"));
+		try {
+			String message = null;
+			if (type == null && StringUtils.isNotBlank(fromDate) && StringUtils.isNotBlank(toDate)) {
+				type = DateRangeType.CUSTOMDAYSINCLUSIVE.name();
+			}
+			if (type != null) {
+				message = Context.getMessageSourceService().getMessage("period." + type.toUpperCase(),
+				    new Object[] { fromDate, toDate }, locale);
+			}
+			
+			return StringUtils.defaultIfEmpty(message, operand);
+		}
+		catch (NoSuchMessageException e) {
+			return operand;
+		}
+		
 	}
 	
 	public DateTimeZone getUserTimeZone() {
@@ -89,28 +119,6 @@ public class DateRangeConverter {
 			throw new APIException("Can't parse TimeRange: " + in);
 		}
 		return rangeType.getConverter().convert(parameter);
-		
-	}
-	
-	public static String getDisplay(String operand, Locale locale) {
-		Map map;
-		try {
-			map = PatientGridUtils.MAPPER.readValue(operand, Map.class);
-		}
-		catch (IOException e) {
-			return operand;
-		}
-		final String type = (String) map.get("code");
-		String fromDate = extractDateOnly((String) map.get("fromDate"));
-		String toDate = extractDateOnly((String) map.get("toDate"));
-		try {
-			String message = Context.getMessageSourceService().getMessage("period." + type.toUpperCase(),
-			    new Object[] { fromDate, toDate }, locale);
-			return StringUtils.defaultIfEmpty(message, operand);
-		}
-		catch (NoSuchMessageException e) {
-			return operand;
-		}
 		
 	}
 }

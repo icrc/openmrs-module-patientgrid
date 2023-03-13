@@ -322,5 +322,15 @@
             <column name="uuid" value="9c17b376-1a2b-11e1-a51a-00248140a5ed"/>
         </insert>
     </changeSet>
+    <changeSet id="${project.parent.artifactId}-202303091412" author="fdeniger">
+        <update tableName="patientgrid_patient_grid_column">
+            <column name="datatype" value="ENC_COUNTRY" />
+            <where>datatype='DATAFILTER_COUNTRY'</where>
+        </update>
+        <update tableName="patientgrid_patient_grid_column">
+            <column name="datatype" value="ENC_LOCATION" />
+            <where>datatype='DATAFILTER_LOCATION'</where>
+        </update>
+    </changeSet>
 
 </databaseChangeLog>

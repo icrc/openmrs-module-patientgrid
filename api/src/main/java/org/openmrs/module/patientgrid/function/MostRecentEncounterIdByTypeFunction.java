@@ -3,6 +3,7 @@ package org.openmrs.module.patientgrid.function;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.EncounterType;
+import org.openmrs.module.patientgrid.filter.definition.LocationCohortDefinition;
 import org.openmrs.module.patientgrid.period.DateRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,8 @@ public class MostRecentEncounterIdByTypeFunction implements Function<EncounterTy
 	
 	private static final Logger log = LoggerFactory.getLogger(MostRecentEncounterIdByTypeFunction.class);
 	
-	public MostRecentEncounterIdByTypeFunction(SessionFactory sf, DateRange periodRange) {
+	public MostRecentEncounterIdByTypeFunction(SessionFactory sf, DateRange periodRange,
+	    LocationCohortDefinition locationCohortDefinition) {
 		this.sf = sf;
 		this.periodRange = periodRange;
 	}

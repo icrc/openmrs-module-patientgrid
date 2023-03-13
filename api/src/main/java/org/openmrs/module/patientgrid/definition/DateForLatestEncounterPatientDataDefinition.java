@@ -1,6 +1,7 @@
 package org.openmrs.module.patientgrid.definition;
 
 import org.openmrs.EncounterType;
+import org.openmrs.module.patientgrid.filter.definition.LocationCohortDefinition;
 import org.openmrs.module.patientgrid.period.DateRange;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
@@ -13,6 +14,12 @@ public class DateForLatestEncounterPatientDataDefinition extends BaseDataDefinit
 	@ConfigurationProperty
 	private EncounterType encounterType;
 	
+	@ConfigurationProperty
+	private DateRange periodRange;
+	
+	@ConfigurationProperty
+	private LocationCohortDefinition locationCohortDefinition;
+	
 	public DateRange getPeriodRange() {
 		return periodRange;
 	}
@@ -20,9 +27,6 @@ public class DateForLatestEncounterPatientDataDefinition extends BaseDataDefinit
 	public void setPeriodRange(DateRange periodRange) {
 		this.periodRange = periodRange;
 	}
-	
-	@ConfigurationProperty
-	private DateRange periodRange;
 	
 	@Override
 	public Class<?> getDataType() {
@@ -47,4 +51,11 @@ public class DateForLatestEncounterPatientDataDefinition extends BaseDataDefinit
 		this.encounterType = encounterType;
 	}
 	
+	public LocationCohortDefinition getLocationCohortDefinition() {
+		return locationCohortDefinition;
+	}
+	
+	public void setLocationCohortDefinition(LocationCohortDefinition locationCohortDefinition) {
+		this.locationCohortDefinition = locationCohortDefinition;
+	}
 }

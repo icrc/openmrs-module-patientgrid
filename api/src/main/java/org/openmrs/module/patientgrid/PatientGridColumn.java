@@ -93,8 +93,8 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 		ENC_DATE(new Displayer.DateFilter()),
 		ENC_AGE(new Displayer.DefaultFilter()),
 		OBS(new Displayer.DefaultFilter()),
-		DATAFILTER_LOCATION(new Displayer.DefaultFilter()),
-		DATAFILTER_COUNTRY(new Displayer.DefaultFilter());
+		ENC_LOCATION(new Displayer.DefaultFilter()),
+		ENC_COUNTRY(new Displayer.DefaultFilter());
 		
 		private final Displayer<PatientGridColumnFilter> displayer;
 		

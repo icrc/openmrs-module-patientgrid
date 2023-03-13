@@ -29,14 +29,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Handler(supports = LocationCohortDefinition.class, order = 50)
-public class LocationCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+public class LocationDataFilterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	
-	private static final Logger log = LoggerFactory.getLogger(LocationCohortDefinitionEvaluator.class);
+	private static final Logger log = LoggerFactory.getLogger(LocationDataFilterCohortDefinitionEvaluator.class);
 	
 	private SessionFactory sf;
 	
 	@Autowired
-	public LocationCohortDefinitionEvaluator(SessionFactory sf) {
+	public LocationDataFilterCohortDefinitionEvaluator(SessionFactory sf) {
 		this.sf = sf;
 	}
 	

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <dataset>
-    <encounter encounter_id="2001" encounter_type="101" patient_id="2" encounter_datetime="2022-08-08 00:00:00" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="1619d653-393b-4118-9e83-a3715b82d4ac" />
+    <encounter encounter_id="2001" encounter_type="101" patient_id="2" encounter_datetime="2022-08-08 00:00:00" creator="1" date_created="2022-08-08 00:00:00" location_id="4000" voided="0" uuid="1619d653-393b-4118-9e83-a3715b82d4ac" />
     <!-- Different encounter type -->
-    <encounter encounter_id="2002" encounter_type="102" patient_id="2" encounter_datetime="2022-08-08 00:04:00" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="2619d653-393b-4118-9e83-a3715b82d4ac" />
+    <encounter encounter_id="2002" encounter_type="102" patient_id="2" encounter_datetime="2022-08-08 00:04:00" creator="1" date_created="2022-08-08 00:00:00" location_id="4000" voided="0" uuid="2619d653-393b-4118-9e83-a3715b82d4ac" />
     <!-- Voided -->
-    <encounter encounter_id="2003" encounter_type="101" patient_id="2" encounter_datetime="2022-08-08 00:03:00" creator="1" date_created="2022-08-08 00:00:00" voided="1" uuid="3619d653-393b-4118-9e83-a3715b82d4ac" />
-    <encounter encounter_id="2004" encounter_type="101" patient_id="2" encounter_datetime="2022-08-08 00:02:00" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="4619d653-393b-4118-9e83-a3715b82d4ac" />
-    <encounter encounter_id="2005" encounter_type="101" patient_id="2" encounter_datetime="2022-08-08 00:01:00" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="5619d653-393b-4118-9e83-a3715b82d4ac" />
-    <encounter encounter_id="2006" encounter_type="101" patient_id="6" encounter_datetime="2022-05-26 00:00:00" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="6619d653-393b-4118-9e83-a3715b82d4ac" />
-    <encounter encounter_id="2007" encounter_type="101" patient_id="7" encounter_datetime="2022-08-08 00:00:00" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="7619d653-393b-4118-9e83-a3715b82d4ac" />
-    <encounter encounter_id="2008" encounter_type="101" patient_id="8" encounter_datetime="2022-08-08 00:00:00" creator="1" date_created="2022-08-08 00:00:00" voided="0" uuid="8619d653-393b-4118-9e83-a3715b82d4ac" />
-    <encounter encounter_id="2009" encounter_type="102" patient_id="6" encounter_datetime="2022-08-09 00:00:00" creator="1" date_created="2022-08-09 00:00:00" voided="0" uuid="9619d653-393b-4118-9e83-a3715b82d4ac" />
-    <encounter encounter_id="2010" encounter_type="102" patient_id="7" encounter_datetime="2022-08-09 00:00:00" creator="1" date_created="2022-08-09 00:00:00" voided="0" uuid="0619d653-393b-4118-9e83-a3715b82d4ac" />
+    <encounter encounter_id="2003" encounter_type="101" patient_id="2" encounter_datetime="2022-08-08 00:03:00" creator="1" date_created="2022-08-08 00:00:00" location_id="4000" voided="1" uuid="3619d653-393b-4118-9e83-a3715b82d4ac" />
+    <encounter encounter_id="2004" encounter_type="101" patient_id="2" encounter_datetime="2022-08-08 00:02:00" creator="1" date_created="2022-08-08 00:00:00" location_id="4000" voided="0" uuid="4619d653-393b-4118-9e83-a3715b82d4ac" />
+    <encounter encounter_id="2005" encounter_type="101" patient_id="2" encounter_datetime="2022-08-08 00:01:00" creator="1" date_created="2022-08-08 00:00:00" location_id="4000" voided="0" uuid="5619d653-393b-4118-9e83-a3715b82d4ac" />
+    <encounter encounter_id="2006" encounter_type="101" patient_id="6" encounter_datetime="2022-05-26 00:00:00" creator="1" date_created="2022-08-08 00:00:00" location_id="4001" voided="0" uuid="6619d653-393b-4118-9e83-a3715b82d4ac" />
+    <encounter encounter_id="2007" encounter_type="101" patient_id="7" encounter_datetime="2022-08-08 00:00:01" creator="1" date_created="2022-08-08 00:00:00" location_id="4002" voided="0" uuid="7619d653-393b-4118-9e83-a3715b82d4ac" />
+    <encounter encounter_id="2008" encounter_type="101" patient_id="8" encounter_datetime="2022-08-08 00:00:00" creator="1" date_created="2022-08-08 00:00:00" location_id="4000" voided="0" uuid="8619d653-393b-4118-9e83-a3715b82d4ac" />
+    <encounter encounter_id="2009" encounter_type="102" patient_id="6" encounter_datetime="2022-08-09 00:00:00" creator="1" date_created="2022-08-09 00:00:00" location_id="4001" voided="0" uuid="9619d653-393b-4118-9e83-a3715b82d4ac" />
+    <encounter encounter_id="2010" encounter_type="102" patient_id="7" encounter_datetime="2022-08-09 00:00:00" creator="1" date_created="2022-08-09 00:00:00" location_id="4002" voided="0" uuid="0619d653-393b-4118-9e83-a3715b82d4ac" />
 
     <!-- Voided -->
     <obs obs_id="1001" person_id="2" concept_id="5089" encounter_id="2001" obs_datetime="2022-08-08 00:00:00" value_numeric="81" status="FINAL" creator="1" date_created="2022-08-08 00:00:00" voided="1" voided_by="1" date_voided="2022-08-08 00:03:00" void_reason="test reason" uuid="14fb7f47-b80a-4056-9285-bd798be13c63" />

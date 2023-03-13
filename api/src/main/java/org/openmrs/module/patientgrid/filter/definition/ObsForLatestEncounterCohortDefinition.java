@@ -24,6 +24,9 @@ public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition 
 	private EncounterType encounterType;
 	
 	@ConfigurationProperty
+	private LocationCohortDefinition locationCohortDefinition;
+	
+	@ConfigurationProperty
 	private List<Object> values;
 	
 	private DateRange periodRange;
@@ -106,5 +109,13 @@ public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition 
 	
 	public DateRange getPeriodRange() {
 		return periodRange;
+	}
+	
+	public LocationCohortDefinition getLocationCohortDefinition() {
+		return locationCohortDefinition;
+	}
+	
+	public void setLocationCohortDefinition(LocationCohortDefinition locationCohortDefinition) {
+		this.locationCohortDefinition = locationCohortDefinition;
 	}
 }

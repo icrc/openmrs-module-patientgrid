@@ -6,7 +6,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.openmrs.*;
 import org.openmrs.api.APIException;
@@ -451,30 +450,32 @@ public class PatientGridFilterUtilsTest {
 	@Test
 	public void generateCohortDefinition_shouldCreateALocationCohortDefinition() {
 		final String locationUuid = "location-uuid";
-		PatientGridColumn column = new PatientGridColumn("location", ColumnDatatype.DATAFILTER_LOCATION);
+		PatientGridColumn column = new PatientGridColumn("location", ColumnDatatype.ENC_LOCATION);
 		column.addFilter(new PatientGridColumnFilter("equal location", locationUuid));
 		PatientGrid grid = new PatientGrid();
+		grid.addColumn(new AgeAtEncounterPatientGridColumn("age", new EncounterType()));
 		grid.addColumn(column);
 		Location mockLocation = Mockito.mock(Location.class);
 		LocationService mockLocationService = Mockito.mock(LocationService.class);
 		Mockito.when(Context.getLocationService()).thenReturn(mockLocationService);
 		Mockito.when(mockLocationService.getLocationByUuid(locationUuid)).thenReturn(mockLocation);
 		
-		LocationCohortDefinition def = (LocationCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid)
-		        .getObject();
+		AgeRangeAtLatestEncounterCohortDefinition def = (AgeRangeAtLatestEncounterCohortDefinition) PatientGridFilterUtils
+		        .generateCohortDefinition(grid).getObject();
 		
-		assertTrue(def.getLocations().contains(mockLocation));
-		assertFalse(def.getCountry());
+		assertTrue(def.getLocationCohortDefinition().getLocations().contains(mockLocation));
+		assertFalse(def.getLocationCohortDefinition().getCountry());
 	}
 	
 	@Test
 	public void generateCohortDefinition_shouldCreateALocationCohortDefinitionForAColumnWithMultipleFilters() {
 		final String locationUuid1 = "location-uuid1";
 		final String locationUuid2 = "location-uuid2";
-		PatientGridColumn column = new PatientGridColumn("location", ColumnDatatype.DATAFILTER_LOCATION);
+		PatientGridColumn column = new PatientGridColumn("location", ColumnDatatype.ENC_LOCATION);
 		column.addFilter(new PatientGridColumnFilter("equal location1", locationUuid1));
 		column.addFilter(new PatientGridColumnFilter("equal location2", locationUuid2));
 		PatientGrid grid = new PatientGrid();
+		grid.addColumn(new AgeAtEncounterPatientGridColumn("age", new EncounterType()));
 		grid.addColumn(column);
 		Location mockLocation1 = Mockito.mock(Location.class);
 		Location mockLocation2 = Mockito.mock(Location.class);
@@ -483,40 +484,43 @@ public class PatientGridFilterUtilsTest {
 		Mockito.when(mockLocationService.getLocationByUuid(locationUuid1)).thenReturn(mockLocation1);
 		Mockito.when(mockLocationService.getLocationByUuid(locationUuid2)).thenReturn(mockLocation2);
 		
-		LocationCohortDefinition def = (LocationCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid)
-		        .getObject();
+		AgeRangeAtLatestEncounterCohortDefinition def = (AgeRangeAtLatestEncounterCohortDefinition) PatientGridFilterUtils
+		        .generateCohortDefinition(grid).getObject();
 		
-		assertTrue(def.getLocations().contains(mockLocation1));
-		assertTrue(def.getLocations().contains(mockLocation2));
+		assertTrue(def.getLocationCohortDefinition().getLocations().contains(mockLocation1));
+		assertTrue(def.getLocationCohortDefinition().getLocations().contains(mockLocation2));
 	}
 	
 	@Test
 	public void generateCohortDefinition_shouldCreateALocationCohortDefinitionForCountry() {
 		final String countryLocationUuid = "country-location-uuid";
-		PatientGridColumn column = new PatientGridColumn("country", ColumnDatatype.DATAFILTER_COUNTRY);
-		column.addFilter(new PatientGridColumnFilter("equal country", countryLocationUuid));
+		
 		PatientGrid grid = new PatientGrid();
+		grid.addColumn(new AgeAtEncounterPatientGridColumn("age", new EncounterType()));
+		PatientGridColumn column = new PatientGridColumn("country", ColumnDatatype.ENC_COUNTRY);
+		column.addFilter(new PatientGridColumnFilter("equal country", countryLocationUuid));
 		grid.addColumn(column);
 		Location mockLocation = Mockito.mock(Location.class);
 		LocationService mockLocationService = Mockito.mock(LocationService.class);
 		Mockito.when(Context.getLocationService()).thenReturn(mockLocationService);
 		Mockito.when(mockLocationService.getLocationByUuid(countryLocationUuid)).thenReturn(mockLocation);
 		
-		LocationCohortDefinition def = (LocationCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid)
-		        .getObject();
+		AgeRangeAtLatestEncounterCohortDefinition def = (AgeRangeAtLatestEncounterCohortDefinition) PatientGridFilterUtils
+		        .generateCohortDefinition(grid).getObject();
 		
-		assertTrue(def.getLocations().contains(mockLocation));
-		assertTrue(def.getCountry());
+		assertTrue(def.getLocationCohortDefinition().getLocations().contains(mockLocation));
+		assertTrue(def.getLocationCohortDefinition().getCountry());
 	}
 	
 	@Test
 	public void generateCohortDefinition_shouldCreateALocationCohortDefinitionForCountryForColumnWithMultipleFilters() {
 		final String countryLocationUuid1 = "country-location-uuid1";
 		final String countryLocationUuid2 = "country-location-uuid2";
-		PatientGridColumn column = new PatientGridColumn("location", ColumnDatatype.DATAFILTER_COUNTRY);
+		PatientGrid grid = new PatientGrid();
+		grid.addColumn(new AgeAtEncounterPatientGridColumn("age", new EncounterType()));
+		PatientGridColumn column = new PatientGridColumn("location", ColumnDatatype.ENC_COUNTRY);
 		column.addFilter(new PatientGridColumnFilter("equal country1", countryLocationUuid1));
 		column.addFilter(new PatientGridColumnFilter("equal country2", countryLocationUuid2));
-		PatientGrid grid = new PatientGrid();
 		grid.addColumn(column);
 		Location mockLocation1 = Mockito.mock(Location.class);
 		Location mockLocation2 = Mockito.mock(Location.class);
@@ -525,12 +529,13 @@ public class PatientGridFilterUtilsTest {
 		Mockito.when(mockLocationService.getLocationByUuid(countryLocationUuid1)).thenReturn(mockLocation1);
 		Mockito.when(mockLocationService.getLocationByUuid(countryLocationUuid2)).thenReturn(mockLocation2);
 		
-		LocationCohortDefinition def = (LocationCohortDefinition) PatientGridFilterUtils.generateCohortDefinition(grid)
-		        .getObject();
+		//not perfect as the location created a AgeRangeAtLatestEncounterCohortDefinition
+		AgeRangeAtLatestEncounterCohortDefinition def = (AgeRangeAtLatestEncounterCohortDefinition) PatientGridFilterUtils
+		        .generateCohortDefinition(grid).getObject();
 		
-		assertTrue(def.getLocations().contains(mockLocation1));
-		assertTrue(def.getLocations().contains(mockLocation2));
-		assertTrue(def.getCountry());
+		assertTrue(def.getLocationCohortDefinition().getLocations().contains(mockLocation1));
+		assertTrue(def.getLocationCohortDefinition().getLocations().contains(mockLocation2));
+		assertTrue(def.getLocationCohortDefinition().getCountry());
 	}
 	
 	@Test
@@ -633,7 +638,7 @@ public class PatientGridFilterUtilsTest {
 	@Test
 	public void generateCohortDefinition_shouldFailIfNoLocationMatchesTheSpecifiedUuid() {
 		final String countryLocationUuid = "country-location-uuid";
-		PatientGridColumn column = new PatientGridColumn("country", ColumnDatatype.DATAFILTER_COUNTRY);
+		PatientGridColumn column = new PatientGridColumn("country", ColumnDatatype.ENC_COUNTRY);
 		column.addFilter(new PatientGridColumnFilter("equal country", countryLocationUuid));
 		PatientGrid grid = new PatientGrid();
 		grid.addColumn(column);
