@@ -19,6 +19,7 @@ import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -42,19 +43,9 @@ public class DateForLatestEncounterPatientDataEvaluator implements PatientDataEv
 		    new MostRecentEncounterPerPatientByTypeFunction(contextPersistantCache, def.getPeriodRange(),
 		            def.getLocationCohortDefinition()));
 		
-		Map<Integer, Object> encIdAndEnc = patientIdAndEnc.values().stream()
-		        .filter(e -> patientIds == null || patientIds.contains(((Encounter) e).getPatient().getPatientId()))
-		        .collect(Collectors.toMap(e -> ((Encounter) e).getId(), Function.identity()));
-		
-		EncounterIdSet encIdSet = new EncounterIdSet(encIdAndEnc.keySet());
-		EncounterEvaluationContext encContext = new EncounterEvaluationContext(context, encIdSet);
-		Map<Integer, Object> encIdAndDate = Context.getService(EncounterDataService.class)
-		        .evaluate(new EncounterDatetimeDataDefinition(), encContext).getData();
-		
-		Map<Integer, Object> patientIdAndEncDate = new HashMap(encIdAndDate.size());
-		for (Map.Entry<Integer, Object> e : encIdAndDate.entrySet()) {
-			patientIdAndEncDate.put(((Encounter) encIdAndEnc.get(e.getKey())).getPatient().getId(), e.getValue());
-		}
+		Map<Integer, Object> patientIdAndEncDate = patientIdAndEnc.entrySet().stream()
+		        .filter(entry -> patientIds == null || patientIds.contains(entry.getKey())).collect(Collectors
+		                .toMap(entry -> entry.getKey(), entry -> ((Encounter) entry.getValue()).getEncounterDatetime()));
 		
 		EvaluatedPatientData result = new EvaluatedPatientData(definition, context);
 		result.setData(patientIdAndEncDate);

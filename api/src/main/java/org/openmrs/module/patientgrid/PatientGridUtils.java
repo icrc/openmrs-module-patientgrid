@@ -69,7 +69,7 @@ public class PatientGridUtils {
 	public static PatientDataSetDefinition createPatientDataSetDefinition(PatientGrid patientGrid, boolean includeObs,
 	        String currentUserTimeZone) {
 		PatientDataSetDefinition dataSetDef = new PatientDataSetDefinition();
-		dataSetDef.addColumn(PatientGridConstants.COLUMN_UUID, UUID_DATA_DEF, (String) null);
+		dataSetDef.addColumn(COLUMN_UUID, UUID_DATA_DEF, (String) null);
 		LocationCohortDefinition locationCohortDefinition = PatientGridFilterUtils.extractLocations(patientGrid);
 		DateRange dateRange = PatientGridFilterUtils.extractPeriodRange(patientGrid, currentUserTimeZone);
 		

@@ -20,10 +20,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.openmrs.BaseChangeableOpenmrsMetadata;
-import org.openmrs.BaseOpenmrsObject;
-import org.openmrs.Cohort;
-import org.openmrs.User;
+import org.openmrs.*;
 
 @Entity
 @Table(name = "patientgrid_patient_grid")
@@ -185,6 +182,13 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	public Set<ObsPatientGridColumn> getObsColumns() {
 		return getColumns().stream().filter(c -> c.getDatatype() == OBS).map(c -> (ObsPatientGridColumn) c)
 		        .collect(Collectors.toSet());
+	}
+	
+	public EncounterDatePatientGridColumn getDateColumn(EncounterType type) {
+		return getColumns().stream()
+		        .filter(c -> c.getDatatype() == PatientGridColumn.ColumnDatatype.ENC_DATE
+		                && type.equals(((EncounterDatePatientGridColumn) c).getEncounterType()))
+		        .map(c -> (EncounterDatePatientGridColumn) c).findFirst().orElse(null);
 	}
 	
 }
