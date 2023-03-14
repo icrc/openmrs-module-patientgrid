@@ -103,7 +103,7 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		assertEquals(civilStatusConcept.getUuid(),
 		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("uuid"));
 		assertEquals(civilStatusConcept.getDisplayString(),
-		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("display"));
+		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get(PatientGridConstants.PROPERTY_DISPLAY));
 		encounters = (List) dataset.getColumnValue(patient.getId(), followUpEncTypeUuid);
 		assertEquals(1, encounters.size());
 		columnUuidAndObsMap = encounters.get(0);
@@ -129,7 +129,7 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		assertEquals(civilStatusConcept.getUuid(),
 		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("uuid"));
 		assertEquals(civilStatusConcept.getDisplayString(),
-		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("display"));
+		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get(PatientGridConstants.PROPERTY_DISPLAY));
 		encounters = (List) dataset.getColumnValue(patient.getId(), followUpEncTypeUuid);
 		assertEquals(1, encounters.size());
 		columnUuidAndObsMap = encounters.get(0);
@@ -155,7 +155,7 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		assertEquals(civilStatusConcept.getUuid(),
 		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("uuid"));
 		assertEquals(civilStatusConcept.getDisplayString(),
-		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("display"));
+		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get(PatientGridConstants.PROPERTY_DISPLAY));
 		encounters = (List) dataset.getColumnValue(patient.getId(), followUpEncTypeUuid);
 		assertEquals(1, encounters.size());
 		assertTrue(encounters.get(0).isEmpty());

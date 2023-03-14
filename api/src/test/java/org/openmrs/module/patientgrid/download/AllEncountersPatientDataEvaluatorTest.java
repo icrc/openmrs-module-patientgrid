@@ -16,6 +16,7 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
 import org.openmrs.module.patientgrid.PatientGrid;
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
@@ -75,7 +76,7 @@ public class AllEncountersPatientDataEvaluatorTest extends BaseModuleContextSens
 		assertEquals(civilStatusConcept.getUuid(),
 		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("uuid"));
 		assertEquals(civilStatusConcept.getDisplayString(),
-		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("display"));
+		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get(PatientGridConstants.PROPERTY_DISPLAY));
 		
 		encounters = (List) data.getData().get(patientId6);
 		assertEquals(1, encounters.size());
@@ -85,7 +86,7 @@ public class AllEncountersPatientDataEvaluatorTest extends BaseModuleContextSens
 		assertEquals(civilStatusConcept.getUuid(),
 		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("uuid"));
 		assertEquals(civilStatusConcept.getDisplayString(),
-		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("display"));
+		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get(PatientGridConstants.PROPERTY_DISPLAY));
 		
 		encounters = (List) data.getData().get(patientId7);
 		assertEquals(1, encounters.size());
@@ -96,7 +97,7 @@ public class AllEncountersPatientDataEvaluatorTest extends BaseModuleContextSens
 		assertEquals(civilStatusConcept.getUuid(),
 		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("uuid"));
 		assertEquals(civilStatusConcept.getDisplayString(),
-		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("display"));
+		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get(PatientGridConstants.PROPERTY_DISPLAY));
 		
 		encounters = (List) data.getData().get(patientId8);
 		assertEquals(1, encounters.size());

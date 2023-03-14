@@ -5,16 +5,9 @@ import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConsta
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.patientgrid.PatientGrid;
-import org.openmrs.module.patientgrid.PatientGridColumn;
-import org.openmrs.module.patientgrid.PatientGridColumnFilter;
-import org.openmrs.module.patientgrid.PatientGridUtils;
+import org.openmrs.module.patientgrid.*;
 import org.openmrs.module.patientgrid.api.PatientGridService;
-import org.openmrs.module.patientgrid.period.DateRange;
-import org.openmrs.module.patientgrid.period.DateRangeConverter;
-import org.openmrs.module.patientgrid.period.DateRangeParameter;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -43,7 +36,7 @@ import io.swagger.models.properties.StringProperty;
 @SubResource(parent = PatientGridResource.class, path = "filter", supportedClass = PatientGridColumnFilter.class, supportedOpenmrsVersions = {
         SUPPORTED_VERSIONS })
 public class PatientGridColumnFilterResource extends DelegatingSubResource<PatientGridColumnFilter, PatientGrid, PatientGridResource> {
-	
+
 	/**
 	 * @see DelegatingSubResource#getRepresentationDescription(Representation)
 	 */
@@ -52,10 +45,10 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 		if (representation instanceof DefaultRepresentation || representation instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display");
+			description.addProperty(PatientGridConstants.PROPERTY_DISPLAY);
 			description.addRequiredProperty("name");
-			description.addRequiredProperty("column", Representation.REF);
-			description.addRequiredProperty("operand");
+			description.addRequiredProperty(PatientGridConstants.PROPERTY_COLUMN, Representation.REF);
+			description.addRequiredProperty(PatientGridConstants.PROPERTY_OPERAND);
 			description.addSelfLink();
 			if (representation instanceof DefaultRepresentation) {
 				description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -84,8 +77,8 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("name");
-		description.addRequiredProperty("column");
-		description.addRequiredProperty("operand");
+		description.addRequiredProperty(PatientGridConstants.PROPERTY_COLUMN);
+		description.addRequiredProperty(PatientGridConstants.PROPERTY_OPERAND);
 		return description;
 	}
 	
@@ -95,21 +88,21 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = super.getUpdatableProperties();
-		description.removeProperty("column");
+		description.removeProperty(PatientGridConstants.PROPERTY_COLUMN);
 		return description;
 	}
 	
-	@PropertyGetter("column")
+	@PropertyGetter(PatientGridConstants.PROPERTY_COLUMN)
 	public PatientGridColumn getColumn(PatientGridColumnFilter delegate) {
 		return delegate.getPatientGridColumn();
 	}
 	
-	@PropertySetter("column")
+	@PropertySetter(PatientGridConstants.PROPERTY_COLUMN)
 	public void setColumn(PatientGridColumnFilter delegate, PatientGridColumn column) {
 		delegate.setPatientGridColumn(column);
 	}
 	
-	@PropertyGetter("display")
+	@PropertyGetter(PatientGridConstants.PROPERTY_DISPLAY)
 	public String getDisplayString(PatientGridColumnFilter delegate) {
 		try {
 			return delegate.getPatientGridColumn().getDatatype().getDisplayer().getDisplayString(delegate,
@@ -184,7 +177,7 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 	 */
 	@Override
 	public Object create(String parentUniqueId, SimpleObject post, RequestContext context) throws ResponseException {
-		String columnUuid = post.get("column");
+		String columnUuid = post.get(PatientGridConstants.PROPERTY_COLUMN);
 		PatientGridColumnResource columnResource = (PatientGridColumnResource) Context.getService(RestService.class)
 		        .getResourceBySupportedClass(PatientGridColumn.class);
 		PatientGridColumn column = columnResource.getByUniqueId(columnUuid);
@@ -252,8 +245,8 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		model.property("name", new StringProperty());
 		model.property("uuid", new StringProperty());
-		model.property("column", new RefProperty("#/definitions/PatientgridPatientgridColumnGetRef"));
-		model.property("operand", new StringProperty());
+		model.property(PatientGridConstants.PROPERTY_COLUMN, new RefProperty("#/definitions/PatientgridPatientgridColumnGetRef"));
+		model.property(PatientGridConstants.PROPERTY_OPERAND, new StringProperty());
 		return model;
 	}
 	
@@ -264,8 +257,8 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl();
 		model.property("name", new StringProperty().required(true));
-		model.property("column", new StringProperty().required(true).example("uuid"));
-		model.property("operand", new StringProperty());
+		model.property(PatientGridConstants.PROPERTY_COLUMN, new StringProperty().required(true).example("uuid"));
+		model.property(PatientGridConstants.PROPERTY_OPERAND, new StringProperty());
 		return model;
 	}
 	
@@ -276,7 +269,7 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 	public Model getUPDATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl();
 		model.property("name", new StringProperty().required(true));
-		model.property("operand", new StringProperty());
+		model.property(PatientGridConstants.PROPERTY_OPERAND, new StringProperty());
 		return model;
 	}
 	

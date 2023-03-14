@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.openmrs.Form;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest {
@@ -43,7 +44,7 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 		assertEquals(Double.valueOf(82), convertedObs.get("value"));
 		Map encounterData = (Map) convertedObs.get("encounter");
 		assertEquals(obs.getEncounter().getUuid(), encounterData.get("uuid"));
-		assertEquals(obs.getEncounter().getEncounterType().getUuid(), encounterData.get("encounterType"));
+		assertEquals(obs.getEncounter().getEncounterType().getUuid(), encounterData.get(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE));
 		assertEquals(obs.getEncounter().getForm().getUuid(), encounterData.get("form"));
 		assertEquals(formNamespace, convertedObs.get("formFieldNamespace"));
 		assertEquals(formFieldPath, convertedObs.get("formFieldPath"));
@@ -69,7 +70,7 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 		assertEquals(Double.valueOf(82), convertedObs.get("value"));
 		Map encounterData = (Map) convertedObs.get("encounter");
 		assertEquals(obs.getEncounter().getUuid(), encounterData.get("uuid"));
-		assertEquals(obs.getEncounter().getEncounterType().getUuid(), encounterData.get("encounterType"));
+		assertEquals(obs.getEncounter().getEncounterType().getUuid(), encounterData.get(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE));
 		assertNull(encounterData.get("form"));
 	}
 	
@@ -81,7 +82,7 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 		assertEquals(obs.getConcept().getUuid(), convertedObs.get("concept"));
 		Map codedValue = (Map) convertedObs.get("value");
 		assertEquals(obs.getValueCoded().getUuid(), codedValue.get("uuid"));
-		assertEquals(obs.getValueCoded().getDisplayString(), codedValue.get("display"));
+		assertEquals(obs.getValueCoded().getDisplayString(), codedValue.get(PatientGridConstants.PROPERTY_DISPLAY));
 	}
 	
 }

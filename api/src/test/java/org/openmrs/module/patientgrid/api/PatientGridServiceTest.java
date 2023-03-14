@@ -302,7 +302,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		obs = (Map) dataSet.getColumnValue(patient.getId(), "civilStatus");
 		Concept civilStatusAnswerConcept = Context.getConceptService().getConcept(5);
 		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
-		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
+		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get(PROPERTY_DISPLAY));
 		obs = (Map) dataSet.getColumnValue(patient.getId(), "cd4");
 		assertEquals(1060.0, obs.get("value"));
 		Location location = locationService.getLocation(4000);
@@ -320,7 +320,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(72.0, obs.get("value"));
 		obs = (Map) dataSet.getColumnValue(patient.getId(), "civilStatus");
 		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
-		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
+		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get(PROPERTY_DISPLAY));
 		obs = (Map) dataSet.getColumnValue(patient.getId(), "cd4");
 		assertEquals(1080.0, obs.get("value"));
 		location = locationService.getLocation(4001);
@@ -340,7 +340,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		obs = (Map) dataSet.getColumnValue(patient.getId(), "civilStatus");
 		civilStatusAnswerConcept = Context.getConceptService().getConcept(6);
 		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
-		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
+		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get(PROPERTY_DISPLAY));
 		location = locationService.getLocation(4002);
 		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
@@ -501,7 +501,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		Map<String, Object> obs = (Map) dataSet.getColumnValue(patient.getId(), "civilStatus");
 		Concept civilStatusAnswerConcept = Context.getConceptService().getConcept(5);
 		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
-		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get("display"));
+		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get(PROPERTY_DISPLAY));
 		
 	}
 	

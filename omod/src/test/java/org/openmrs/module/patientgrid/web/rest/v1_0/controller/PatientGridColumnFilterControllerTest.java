@@ -15,6 +15,7 @@ import org.junit.rules.ExpectedException;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumnFilter;
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.response.ObjectMismatchException;
@@ -57,8 +58,8 @@ public class PatientGridColumnFilterControllerTest extends BasePatientGridRestCo
 		long initialCount = getAllCount();
 		SimpleObject filter = new SimpleObject();
 		filter.add("name", "male filter");
-		filter.add("column", COLUMN_UUID);
-		filter.add("operand", "M");
+		filter.add(PatientGridConstants.PROPERTY_COLUMN, COLUMN_UUID);
+		filter.add(PatientGridConstants.PROPERTY_OPERAND, "M");
 		
 		handle(newPostRequest(getURI(), filter));
 		
@@ -122,8 +123,8 @@ public class PatientGridColumnFilterControllerTest extends BasePatientGridRestCo
 		final String uri = "patientgrid/" + gridUuid + "/filter";
 		SimpleObject filter = new SimpleObject();
 		filter.add("name", "male filter");
-		filter.add("column", COLUMN_UUID);
-		filter.add("operand", "M");
+		filter.add(PatientGridConstants.PROPERTY_COLUMN, COLUMN_UUID);
+		filter.add(PatientGridConstants.PROPERTY_OPERAND, "M");
 		
 		handle(newPostRequest(uri, filter));
 	}

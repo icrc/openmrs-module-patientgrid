@@ -7,6 +7,7 @@ import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
 import org.openmrs.module.patientgrid.PatientGrid;
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.patientgrid.filter.PatientGridFilterUtils;
@@ -41,7 +42,7 @@ public class EncounterHistorySearchHandler implements SearchHandler {
 	
 	protected static final String PARAM_PATIENT = "patient";
 	
-	protected static final String PARAM_ENC_TYPE = "encounterType";
+	protected static final String PARAM_ENC_TYPE = PatientGridConstants.PROPERTY_ENCOUNTER_TYPE;
 	
 	protected static final String PARAM_PATIENT_GRID_UUID = "patientGridUuid";
 	
