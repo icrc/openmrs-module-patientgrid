@@ -76,7 +76,7 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 	 */
 	@Override
 	public T newDelegate() {
-		throw new ResourceDoesNotSupportOperationException("read-only resource");
+		throw AgeRangeResource.createReadOnlyException();
 	}
 	
 	/**
@@ -84,7 +84,7 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 	 */
 	@Override
 	public T save(T delegate) {
-		throw new ResourceDoesNotSupportOperationException("read-only resource");
+		throw AgeRangeResource.createReadOnlyException();
 	}
 	
 	/**
@@ -108,7 +108,7 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 	 */
 	@Override
 	protected void delete(T delegate, String reason, RequestContext context) throws ResponseException {
-		throw new ResourceDoesNotSupportOperationException("read-only resource");
+		throw AgeRangeResource.createReadOnlyException();
 	}
 	
 	/**
@@ -116,7 +116,7 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 	 */
 	@Override
 	public void purge(T delegate, RequestContext context) throws ResponseException {
-		throw new ResourceDoesNotSupportOperationException("read-only resource");
+		throw AgeRangeResource.createReadOnlyException();
 	}
 	
 }

@@ -2,10 +2,13 @@ package org.openmrs.module.patientgrid.period;
 
 import org.openmrs.api.context.Context;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Locale;
 
-public class DateRange {
+public class DateRange implements Serializable {
+	
+	public static final long serialVersionUID = 1L;
 	
 	private final String operand;
 	

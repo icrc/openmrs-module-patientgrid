@@ -2,6 +2,7 @@ package org.openmrs.module.patientgrid.web.rest.v1_0.resource;
 
 import org.junit.Before;
 import org.openmrs.module.patientgrid.PatientGridColumnFilter;
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,8 @@ public class PatientGridColumnFilterResourceTest extends BaseDelegatingResourceT
 	private void validateRepresentation() {
 		PatientGridColumnFilter column = newObject();
 		assertPropEquals("name", column.getName());
-		assertPropPresent("column");
-		assertPropEquals("operand", column.getOperand());
+		assertPropPresent(PatientGridConstants.PROPERTY_COLUMN);
+		assertPropEquals(PatientGridConstants.PROPERTY_OPERAND, column.getOperand());
 	}
 	
 	@Override

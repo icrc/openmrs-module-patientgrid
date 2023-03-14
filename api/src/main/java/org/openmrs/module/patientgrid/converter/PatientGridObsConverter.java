@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.reporting.data.DataUtil;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObsValueConverter;
@@ -24,7 +25,7 @@ public class PatientGridObsConverter implements DataConverter {
 			if (((Obs) original).getConcept().getDatatype().isCoded()) {
 				Map answerConcept = new HashMap(2);
 				answerConcept.put("uuid", obs.getValueCoded().getUuid());
-				answerConcept.put("display", DataUtil.convertData(obs, OBS_VALUE_CONVERTER));
+				answerConcept.put(PatientGridConstants.PROPERTY_DISPLAY, DataUtil.convertData(obs, OBS_VALUE_CONVERTER));
 				value = answerConcept;
 			} else {
 				value = DataUtil.convertData(obs, OBS_VALUE_CONVERTER);
@@ -36,7 +37,7 @@ public class PatientGridObsConverter implements DataConverter {
 				Encounter encounter = obs.getEncounter();
 				Map encData = new HashMap(3);
 				encData.put("uuid", encounter.getUuid());
-				encData.put("encounterType", encounter.getEncounterType().getUuid());
+				encData.put(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, encounter.getEncounterType().getUuid());
 				if (encounter.getForm() != null) {
 					encData.put("form", encounter.getForm().getUuid());
 				}

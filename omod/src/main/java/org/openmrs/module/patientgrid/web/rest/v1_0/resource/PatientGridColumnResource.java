@@ -11,6 +11,7 @@ import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.patientgrid.PatientGridColumnFilter;
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -35,7 +36,7 @@ import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 
-@SubResource(parent = PatientGridResource.class, path = "column", supportedClass = PatientGridColumn.class, supportedOpenmrsVersions = {
+@SubResource(parent = PatientGridResource.class, path = PatientGridConstants.PROPERTY_COLUMN, supportedClass = PatientGridColumn.class, supportedOpenmrsVersions = {
         SUPPORTED_VERSIONS })
 public class PatientGridColumnResource extends DelegatingSubResource<PatientGridColumn, PatientGrid, PatientGridResource> {
 	
@@ -63,7 +64,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		if (representation instanceof DefaultRepresentation || representation instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display");
+			description.addProperty(PatientGridConstants.PROPERTY_DISPLAY);
 			description.addRequiredProperty("name");
 			description.addProperty("description");
 			description.addRequiredProperty("datatype");
@@ -83,7 +84,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		// Ref Rep, we don't delete to superclass because the call to getResource() fails
 		DelegatingResourceDescription rep = new DelegatingResourceDescription();
 		rep.addProperty("uuid");
-		rep.addProperty("display");
+		rep.addProperty(PatientGridConstants.PROPERTY_DISPLAY);
 		rep.addSelfLink();
 		
 		return rep;
@@ -126,7 +127,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		return description;
 	}
 	
-	@PropertyGetter("display")
+	@PropertyGetter(PatientGridConstants.PROPERTY_DISPLAY)
 	public String getDisplayString(PatientGridColumn delegate) {
 		return delegate.getName();
 	}

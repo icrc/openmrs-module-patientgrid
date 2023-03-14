@@ -51,4 +51,8 @@ public class PatientGridConstants {
 	
 	public static final String GP_ROWS_COUNT_LIMIT = MODULE_ID + ".rowsLimit";
 	
+	public static final String PROPERTY_DISPLAY = "display";
+	public static final String PROPERTY_ENCOUNTER_TYPE = "encounterType";
+	public static final String PROPERTY_COLUMN = "column";
+	public static final String PROPERTY_OPERAND = "operand";
 }

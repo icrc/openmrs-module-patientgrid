@@ -1,5 +1,6 @@
 package org.openmrs.module.patientgrid.web.rest.v1_0.resource;
 
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
@@ -30,7 +31,7 @@ public class AgeRangeResourceTest extends BaseDelegatingResourceTest<AgeRangeRes
 		assertPropEquals("minAge", MIN_AGE);
 		assertPropEquals("maxAge", MAX_AGE);
 		assertPropEquals("label", LABEL);
-		assertPropEquals("display", LABEL);
+		assertPropEquals(PatientGridConstants.PROPERTY_DISPLAY, LABEL);
 	}
 	
 	@Override

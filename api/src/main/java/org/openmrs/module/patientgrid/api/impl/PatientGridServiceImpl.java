@@ -166,6 +166,9 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		if (cohort != null && patientGrid.getCohort() != null) {
 			cohort = mergeCohort(cohort, patientGrid.getCohort());
 		}
+		if (cohort == null) {
+			cohort = new Cohort();
+		}
 		
 		int limit = 100;
 		String rowLimit = Context.getAdministrationService().getGlobalProperty(GP_ROWS_COUNT_LIMIT);

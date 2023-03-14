@@ -23,7 +23,7 @@ import org.springframework.cache.support.SimpleValueWrapper;
  */
 public class PatientGridCache implements Cache {
 	
-	private static final Logger log = LoggerFactory.getLogger(PatientGridCache.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PatientGridCache.class);
 	
 	private DiskCache diskCache;
 	
@@ -69,7 +69,7 @@ public class PatientGridCache implements Cache {
 	
 	boolean isObsolete(ExtendedDataSet dataSet) {
 		if (!dataSet.isLastVersion()) {
-			log.debug("the xml version is not the last one. Force recompute. Read Version: {}. Current Version {]",
+			LOGGER.debug("the xml version is not the last one. Force recompute. Read Version: {}. Current Version {]",
 			    dataSet.getXstreamVersion(), ExtendedDataSet.LAST_XSTREAM_VERSION);
 			return true;
 		}
@@ -79,8 +79,8 @@ public class PatientGridCache implements Cache {
 			DateRangeConverter converter = new DateRangeConverter(PatientGridUtils.getCurrentUserTimeZone());
 			String dateRangeAsString = converter.convert(periodOperand, DateTime.now()).getDateRangeAsString();
 			if (!usedDateRange.equals(dateRangeAsString)) {
-				log.debug("the dateRange used to compute the grid changed. Force recompute. Old: {}. New {}", usedDateRange,
-				    dateRangeAsString);
+				LOGGER.debug("the dateRange used to compute the grid changed. Force recompute. Old: {}. New {}",
+				    usedDateRange, dateRangeAsString);
 				return true;
 			}
 			
@@ -98,7 +98,7 @@ public class PatientGridCache implements Cache {
 				serializer = new CustomXstreamSerializer();
 			}
 			catch (SerializationException e) {
-				log.error("can't create CustomXstreamSerializer");
+				LOGGER.error("can't create CustomXstreamSerializer");
 			}
 		}
 		return serializer;
@@ -114,13 +114,16 @@ public class PatientGridCache implements Cache {
 			return null;
 		}
 		//to show that the file has been used and should not be clean by cleaner task.
-		targetFile.setLastModified(System.currentTimeMillis());
+		boolean lastModified = targetFile.setLastModified(System.currentTimeMillis());
+		if (!lastModified) {
+			LOGGER.warn("unable to update last modified property for file {}", targetFile);
+		}
 		T value = null;
 		try {
 			value = (T) getSerializer().fromXML(targetFile);
 		}
 		catch (IOException e) {
-			log.warn("Failed to deserialize cached grid report", e);
+			LOGGER.warn("Failed to deserialize cached grid report", e);
 			return null;
 		}
 		if (value != null && !value.getClass().equals(type)) {
@@ -145,7 +148,7 @@ public class PatientGridCache implements Cache {
 			
 		}
 		catch (IOException e) {
-			log.warn("Failed to serialize grid report", e);
+			LOGGER.warn("Failed to serialize grid report", e);
 		}
 	}
 	

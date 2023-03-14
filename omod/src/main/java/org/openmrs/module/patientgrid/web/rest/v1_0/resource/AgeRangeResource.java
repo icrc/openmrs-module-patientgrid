@@ -3,6 +3,7 @@ package org.openmrs.module.patientgrid.web.rest.v1_0.resource;
 import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.NAMESPACE;
 import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.SUPPORTED_VERSIONS;
 
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.reporting.common.Age.Unit;
 import org.openmrs.module.reporting.common.AgeRange;
@@ -37,7 +38,7 @@ public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 		description.addProperty("maxAge");
 		description.addProperty("maxAgeUnit");
 		description.addProperty("label");
-		description.addProperty("display");
+		description.addProperty(PatientGridConstants.PROPERTY_DISPLAY);
 		return description;
 	}
 	
@@ -49,7 +50,7 @@ public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 		return new NeedsPaging(PatientGridUtils.getAgeRanges(), context);
 	}
 	
-	@PropertyGetter("display")
+	@PropertyGetter(PatientGridConstants.PROPERTY_DISPLAY)
 	public String getDisplayString(AgeRange delegate) {
 		return delegate.getLabel();
 	}
@@ -65,7 +66,7 @@ public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 		model.property("maxAge", new IntegerProperty());
 		model.property("maxAgeUnit", new EnumProperty(Unit.class));
 		model.property("label", new StringProperty());
-		model.property("display", new StringProperty());
+		model.property(PatientGridConstants.PROPERTY_DISPLAY, new StringProperty());
 		return model;
 	}
 	
@@ -82,7 +83,7 @@ public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 	 */
 	@Override
 	public AgeRange newDelegate() {
-		throw new ResourceDoesNotSupportOperationException("read-only resource");
+		throw createReadOnlyException();
 	}
 	
 	/**
@@ -90,7 +91,11 @@ public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 	 */
 	@Override
 	public AgeRange save(AgeRange ageRange) {
-		throw new ResourceDoesNotSupportOperationException("read-only resource");
+		throw createReadOnlyException();
+	}
+	
+	public static ResourceDoesNotSupportOperationException createReadOnlyException() {
+		return new ResourceDoesNotSupportOperationException("read-only resource");
 	}
 	
 	/**
@@ -98,7 +103,7 @@ public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 	 */
 	@Override
 	protected void delete(AgeRange ageRange, String s, RequestContext requestContext) throws ResponseException {
-		throw new ResourceDoesNotSupportOperationException("read-only resource");
+		throw createReadOnlyException();
 	}
 	
 	/**
@@ -106,7 +111,7 @@ public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 	 */
 	@Override
 	public void purge(AgeRange ageRange, RequestContext requestContext) throws ResponseException {
-		throw new ResourceDoesNotSupportOperationException("read-only resource");
+		throw createReadOnlyException();
 	}
 	
 }
