@@ -5,11 +5,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.openmrs.module.patientgrid.PatientGridConstants.COLUMN_UUID;
+import static org.openmrs.module.patientgrid.PatientGridConstants.DATE_FORMAT;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
@@ -22,6 +23,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.ExtendedDataSet;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.reporting.dataset.SimpleDataSet;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -56,6 +58,9 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		final String oldTimeZone = System.getProperty("user.timezone");
 		System.setProperty("user.timezone", utcTimeZone);
 		
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssXXX");
+		simpleDateFormat.setTimeZone(TimeZone.getTimeZone(utcTimeZone));
+		
 		//action
 		ExtendedDataSet extendedDataSet = DownloadUtils.evaluate(patientGrid);
 		SimpleDataSet dataset = extendedDataSet.getSimpleDataSet();
@@ -84,13 +89,15 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		List<Map<String, Map>> encounters = (List) dataset.getColumnValue(patient.getId(), initialEncTypeUuid);
 		assertEquals(3, encounters.size());
 		Map<String, Map> columnUuidAndObsMap = encounters.get(2);
-		assertEquals(1, columnUuidAndObsMap.size());
+		assertEquals(2, columnUuidAndObsMap.size());
+		assertEquals("2022-08-08", DATE_FORMAT.format(((Date) columnUuidAndObsMap.get("encDate"))));
 		assertEquals(Double.valueOf(82), columnUuidAndObsMap.get(weightColumnUuid).get("value"));
 		columnUuidAndObsMap = encounters.get(1);
-		assertEquals(1, columnUuidAndObsMap.size());
+		assertEquals(2, columnUuidAndObsMap.size());
 		assertEquals(Double.valueOf(85), columnUuidAndObsMap.get(weightColumnUuid).get("value"));
 		columnUuidAndObsMap = encounters.get(0);
-		assertEquals(2, columnUuidAndObsMap.size());
+		assertEquals(3, columnUuidAndObsMap.size());
+		assertEquals("2022-08-08", DATE_FORMAT.format(((Date) columnUuidAndObsMap.get("encDate"))));
 		assertEquals(Double.valueOf(84), columnUuidAndObsMap.get(weightColumnUuid).get("value"));
 		Concept civilStatusConcept = Context.getConceptService().getConcept(5);
 		assertEquals(civilStatusConcept.getUuid(),
@@ -116,7 +123,8 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		encounters = (List) dataset.getColumnValue(patient.getId(), initialEncTypeUuid);
 		assertEquals(1, encounters.size());
 		columnUuidAndObsMap = encounters.get(0);
-		assertEquals(2, columnUuidAndObsMap.size());
+		assertEquals(3, columnUuidAndObsMap.size());
+		assertEquals("2022-05-26", DATE_FORMAT.format(((Date) columnUuidAndObsMap.get("encDate"))));
 		assertEquals(Double.valueOf(72), columnUuidAndObsMap.get(weightColumnUuid).get("value"));
 		assertEquals(civilStatusConcept.getUuid(),
 		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("uuid"));
@@ -140,7 +148,8 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		encounters = (List) dataset.getColumnValue(patient.getId(), initialEncTypeUuid);
 		assertEquals(1, encounters.size());
 		columnUuidAndObsMap = encounters.get(0);
-		assertEquals(2, columnUuidAndObsMap.size());
+		assertEquals(3, columnUuidAndObsMap.size());
+		assertEquals("2022-08-08", DATE_FORMAT.format(((Date) columnUuidAndObsMap.get("encDate"))));
 		assertEquals(Double.valueOf(88), columnUuidAndObsMap.get(weightColumnUuid).get("value"));
 		civilStatusConcept = Context.getConceptService().getConcept(6);
 		assertEquals(civilStatusConcept.getUuid(),

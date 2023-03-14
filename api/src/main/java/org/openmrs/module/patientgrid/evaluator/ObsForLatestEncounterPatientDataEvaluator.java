@@ -35,7 +35,7 @@ public class ObsForLatestEncounterPatientDataEvaluator implements PatientDataEva
 		            def.getLocationCohortDefinition()));
 		
 		Map<Integer, Object> patientIdAndObs = new HashMap(patientIdAndEnc.size());
-		Set<Integer> patients = baseCohort == null ? patientIdAndObs.keySet() : baseCohort.getMemberIds();
+		Set<Integer> patients = baseCohort == null ? patientIdAndEnc.keySet() : baseCohort.getMemberIds();
 		for (Integer patientId : patients) {
 			Encounter e = (Encounter) patientIdAndEnc.get(patientId);
 			Obs obs = PatientGridUtils.getObsByConcept(e, def.getConcept());
