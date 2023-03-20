@@ -6,12 +6,10 @@ import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConsta
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.patientgrid.PatientGrid;
-import org.openmrs.module.patientgrid.PatientGridColumn;
+import org.openmrs.module.patientgrid.*;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
-import org.openmrs.module.patientgrid.PatientGridColumnFilter;
-import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -35,6 +33,7 @@ import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+import org.springframework.context.NoSuchMessageException;
 
 @SubResource(parent = PatientGridResource.class, path = PatientGridConstants.PROPERTY_COLUMN, supportedClass = PatientGridColumn.class, supportedOpenmrsVersions = {
         SUPPORTED_VERSIONS })
@@ -129,7 +128,23 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	
 	@PropertyGetter(PatientGridConstants.PROPERTY_DISPLAY)
 	public String getDisplayString(PatientGridColumn delegate) {
-		return delegate.getName();
+		if (delegate.getDatatype().equals(ColumnDatatype.OBS)) {
+			Concept concept = ((ObsPatientGridColumn) delegate).getConcept();
+			if (concept != null) {
+				return concept.getDisplayString();
+			}
+		}
+		String key = delegate.getDatatype().toString();
+		if (delegate.getDatatype().equals(ColumnDatatype.ENC_AGE)) {
+			Boolean ageRange = ((AgeAtEncounterPatientGridColumn) delegate).getConvertToAgeRange();
+			key = ageRange ? "ENC_AGE_RANGE" : "ENC_AGE";
+		}
+		try {
+			return Context.getMessageSourceService().getMessage("column." + key, null, Context.getLocale());
+		}
+		catch (NoSuchMessageException e) {
+			return delegate.getName();
+		}
 	}
 	
 	/**

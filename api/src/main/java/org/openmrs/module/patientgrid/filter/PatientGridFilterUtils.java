@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -71,7 +72,7 @@ public class PatientGridFilterUtils {
 						cohortDef = createGenderCohortDefinition(column);
 						break;
 					case OBS:
-						cohortDef = createObsCohortDefinition(column, periodRange);
+						cohortDef = createObsCohortDefinition(column, periodRange, locationCohortDefinition);
 						break;
 					case ENC_LOCATION:
 					case ENC_COUNTRY:
@@ -105,6 +106,19 @@ public class PatientGridFilterUtils {
 			}
 		}
 		return null;
+	}
+	
+	public static Set<EncounterType> extractEncounterType(PatientGrid patientGrid) {
+		Set<EncounterType> res = new HashSet<>();
+		if (patientGrid == null) {
+			return res;
+		}
+		for (PatientGridColumn column : patientGrid.getColumns()) {
+			if (column instanceof BaseEncounterTypePatientGridColumn) {
+				res.add(((BaseEncounterTypePatientGridColumn) column).getEncounterType());
+			}
+		}
+		return res;
 	}
 	
 	/**
@@ -209,11 +223,12 @@ public class PatientGridFilterUtils {
 	 * @return ObsForLatestEncounterCohortDefinition
 	 */
 	private static ObsForLatestEncounterCohortDefinition createObsCohortDefinition(PatientGridColumn column,
-	        DateRange periodRange) {
+	        DateRange periodRange, LocationCohortDefinition locationCohortDefinition) {
 		ObsPatientGridColumn obsColumn = (ObsPatientGridColumn) column;
 		ObsForLatestEncounterCohortDefinition obsCohortDef = new ObsForLatestEncounterCohortDefinition();
 		Concept concept = obsColumn.getConcept();
 		obsCohortDef.setConcept(concept);
+		obsCohortDef.setLocationCohortDefinition(locationCohortDefinition);
 		obsCohortDef.setEncounterType(obsColumn.getEncounterType());
 		obsCohortDef.setPeriodRange(periodRange);
 		Class<?> valueType;

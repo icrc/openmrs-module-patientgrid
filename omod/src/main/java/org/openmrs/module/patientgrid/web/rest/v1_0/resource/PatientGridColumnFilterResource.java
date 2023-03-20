@@ -36,7 +36,7 @@ import io.swagger.models.properties.StringProperty;
 @SubResource(parent = PatientGridResource.class, path = "filter", supportedClass = PatientGridColumnFilter.class, supportedOpenmrsVersions = {
         SUPPORTED_VERSIONS })
 public class PatientGridColumnFilterResource extends DelegatingSubResource<PatientGridColumnFilter, PatientGrid, PatientGridResource> {
-
+	
 	/**
 	 * @see DelegatingSubResource#getRepresentationDescription(Representation)
 	 */
@@ -245,7 +245,8 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		model.property("name", new StringProperty());
 		model.property("uuid", new StringProperty());
-		model.property(PatientGridConstants.PROPERTY_COLUMN, new RefProperty("#/definitions/PatientgridPatientgridColumnGetRef"));
+		model.property(PatientGridConstants.PROPERTY_COLUMN,
+		    new RefProperty("#/definitions/PatientgridPatientgridColumnGetRef"));
 		model.property(PatientGridConstants.PROPERTY_OPERAND, new StringProperty());
 		return model;
 	}

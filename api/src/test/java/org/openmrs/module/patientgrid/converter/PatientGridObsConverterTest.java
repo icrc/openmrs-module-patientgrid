@@ -44,7 +44,8 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 		assertEquals(Double.valueOf(82), convertedObs.get("value"));
 		Map encounterData = (Map) convertedObs.get("encounter");
 		assertEquals(obs.getEncounter().getUuid(), encounterData.get("uuid"));
-		assertEquals(obs.getEncounter().getEncounterType().getUuid(), encounterData.get(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE));
+		assertEquals(obs.getEncounter().getEncounterType().getUuid(),
+		    encounterData.get(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE));
 		assertEquals(obs.getEncounter().getForm().getUuid(), encounterData.get("form"));
 		assertEquals(formNamespace, convertedObs.get("formFieldNamespace"));
 		assertEquals(formFieldPath, convertedObs.get("formFieldPath"));
@@ -70,7 +71,8 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 		assertEquals(Double.valueOf(82), convertedObs.get("value"));
 		Map encounterData = (Map) convertedObs.get("encounter");
 		assertEquals(obs.getEncounter().getUuid(), encounterData.get("uuid"));
-		assertEquals(obs.getEncounter().getEncounterType().getUuid(), encounterData.get(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE));
+		assertEquals(obs.getEncounter().getEncounterType().getUuid(),
+		    encounterData.get(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE));
 		assertNull(encounterData.get("form"));
 	}
 	
