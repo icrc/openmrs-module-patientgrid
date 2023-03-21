@@ -1,9 +1,6 @@
 package org.openmrs.module.patientgrid.period;
 
 import org.joda.time.DateTime;
-import org.openmrs.api.context.Context;
-
-import java.util.Locale;
 
 public class DateRangeParameter {
 	

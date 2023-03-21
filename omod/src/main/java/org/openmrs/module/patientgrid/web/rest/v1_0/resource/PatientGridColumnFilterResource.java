@@ -155,7 +155,7 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 	public PageableResult doGetAll(PatientGrid parent, RequestContext context) throws ResponseException {
 		List<PatientGridColumnFilter> filters = new ArrayList();
 		if (parent != null) {
-			parent.getColumns().stream().forEach(c -> c.getFilters().forEach(f -> filters.add(f)));
+			parent.getColumns().stream().forEach(c -> c.getFilters().forEach(filters::add));
 		}
 		
 		return new NeedsPaging(filters, context);

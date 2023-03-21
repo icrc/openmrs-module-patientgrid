@@ -5,7 +5,6 @@ import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
 import org.openmrs.module.patientgrid.PatientGridUtils;
 import org.openmrs.module.patientgrid.filter.definition.LocationCohortDefinition;
 import org.openmrs.module.patientgrid.period.DateRange;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

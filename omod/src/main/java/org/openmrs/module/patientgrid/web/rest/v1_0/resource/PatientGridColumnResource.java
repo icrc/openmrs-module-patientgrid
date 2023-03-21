@@ -65,10 +65,10 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 			description.addProperty("uuid");
 			description.addProperty(PatientGridConstants.PROPERTY_DISPLAY);
 			description.addRequiredProperty("name");
-			description.addProperty("description");
-			description.addRequiredProperty("datatype");
-			description.addProperty("hidden");
-			description.addProperty("filters");
+			description.addProperty(PatientGridConstants.PROP_DESCRIPTION);
+			description.addRequiredProperty(PatientGridConstants.PROP_DATATYPE);
+			description.addProperty(PatientGridConstants.PROP_HIDDEN);
+			description.addProperty(PatientGridConstants.PROP_FILTERS);
 			description.addSelfLink();
 			if (representation instanceof DefaultRepresentation) {
 				description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -89,7 +89,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		return rep;
 	}
 	
-	@PropertySetter("filters")
+	@PropertySetter(PatientGridConstants.PROP_FILTERS)
 	public void setFilters(PatientGridColumn column, PatientGridColumnFilter... filters) {
 		column.getFilters().clear();
 		for (PatientGridColumnFilter filter : filters) {
@@ -109,10 +109,10 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("name");
-		description.addRequiredProperty("datatype");
-		description.addProperty("description");
-		description.addProperty("filters");
-		description.addProperty("hidden");
+		description.addRequiredProperty(PatientGridConstants.PROP_DATATYPE);
+		description.addProperty(PatientGridConstants.PROP_DESCRIPTION);
+		description.addProperty(PatientGridConstants.PROP_FILTERS);
+		description.addProperty(PatientGridConstants.PROP_HIDDEN);
 		return description;
 	}
 	
@@ -122,7 +122,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = super.getUpdatableProperties();
-		description.removeProperty("datatype");
+		description.removeProperty(PatientGridConstants.PROP_DATATYPE);
 		return description;
 	}
 	
@@ -137,7 +137,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		String key = delegate.getDatatype().toString();
 		if (delegate.getDatatype().equals(ColumnDatatype.ENC_AGE)) {
 			Boolean ageRange = ((AgeAtEncounterPatientGridColumn) delegate).getConvertToAgeRange();
-			key = ageRange ? "ENC_AGE_RANGE" : "ENC_AGE";
+			key = Boolean.TRUE.equals(ageRange) ? "ENC_AGE_RANGE" : "ENC_AGE";
 		}
 		try {
 			return Context.getMessageSourceService().getMessage("column." + key, null, Context.getLocale());
@@ -221,10 +221,11 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		model.property("name", new StringProperty());
 		model.property("uuid", new StringProperty());
-		model.property("datatype", new EnumProperty(ColumnDatatype.class));
-		model.property("hidden", new BooleanProperty());
-		model.property("description", new StringProperty());
-		model.property("filters", new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridFilterGet")));
+		model.property(PatientGridConstants.PROP_DATATYPE, new EnumProperty(ColumnDatatype.class));
+		model.property(PatientGridConstants.PROP_HIDDEN, new BooleanProperty());
+		model.property(PatientGridConstants.PROP_DESCRIPTION, new StringProperty());
+		model.property(PatientGridConstants.PROP_FILTERS,
+		    new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridFilterGet")));
 		return model;
 	}
 	
@@ -235,11 +236,12 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl();
 		model.property("name", new StringProperty().required(true));
-		model.property("datatype", new EnumProperty(ColumnDatatype.class).required(true));
-		model.property("hidden", new BooleanProperty()._default(false));
-		model.property("description", new StringProperty());
-		model.property("filters", new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridFilterCreate")));
-		model.required("filters");
+		model.property(PatientGridConstants.PROP_DATATYPE, new EnumProperty(ColumnDatatype.class).required(true));
+		model.property(PatientGridConstants.PROP_HIDDEN, new BooleanProperty()._default(false));
+		model.property(PatientGridConstants.PROP_DESCRIPTION, new StringProperty());
+		model.property(PatientGridConstants.PROP_FILTERS,
+		    new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridFilterCreate")));
+		model.required(PatientGridConstants.PROP_FILTERS);
 		return model;
 	}
 	

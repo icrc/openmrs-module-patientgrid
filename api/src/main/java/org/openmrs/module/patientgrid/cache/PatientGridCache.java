@@ -69,7 +69,7 @@ public class PatientGridCache implements Cache {
 	
 	boolean isObsolete(ExtendedDataSet dataSet) {
 		if (!dataSet.isLastVersion()) {
-			LOGGER.debug("the xml version is not the last one. Force recompute. Read Version: {}. Current Version {]",
+			LOGGER.debug("the xml version is not the last one. Force recompute. Read Version: {}. Current Version {}",
 			    dataSet.getXstreamVersion(), ExtendedDataSet.LAST_XSTREAM_VERSION);
 			return true;
 		}

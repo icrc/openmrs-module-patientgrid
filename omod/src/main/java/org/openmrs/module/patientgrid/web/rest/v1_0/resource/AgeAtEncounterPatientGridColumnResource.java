@@ -54,7 +54,7 @@ public class AgeAtEncounterPatientGridColumnResource extends BaseDelegatingSubcl
 		DelegatingResourceDescription description = getSuperclassResource().getRepresentationDescription(representation);
 		if (representation instanceof DefaultRepresentation || representation instanceof FullRepresentation) {
 			description.addRequiredProperty(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, Representation.REF);
-			description.addProperty("convertToAgeRange");
+			description.addProperty(PatientGridConstants.CONVERT_TO_AGE_RANGE);
 		}
 		
 		return description;
@@ -65,7 +65,7 @@ public class AgeAtEncounterPatientGridColumnResource extends BaseDelegatingSubcl
 		return getSuperclassResource().getDisplayString(delegate);
 	}
 	
-	@PropertySetter("filters")
+	@PropertySetter(PatientGridConstants.PROP_FILTERS)
 	public void setFilters(PatientGridColumn column, PatientGridColumnFilter... filters) {
 		getSuperclassResource().setFilters(column, filters);
 	}
@@ -77,7 +77,7 @@ public class AgeAtEncounterPatientGridColumnResource extends BaseDelegatingSubcl
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = getResource().getCreatableProperties();
 		description.addRequiredProperty(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE);
-		description.addProperty("convertToAgeRange");
+		description.addProperty(PatientGridConstants.CONVERT_TO_AGE_RANGE);
 		return description;
 	}
 	
@@ -88,7 +88,7 @@ public class AgeAtEncounterPatientGridColumnResource extends BaseDelegatingSubcl
 	public Model getGETModel(Representation representation) {
 		ModelImpl model = (ModelImpl) getResource().getGETModel(representation);
 		model.property(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, new RefProperty("#/definitions/EncountertypeGetRef"));
-		model.property("convertToAgeRange", new BooleanProperty());
+		model.property(PatientGridConstants.CONVERT_TO_AGE_RANGE, new BooleanProperty());
 		return model;
 	}
 	
@@ -99,7 +99,7 @@ public class AgeAtEncounterPatientGridColumnResource extends BaseDelegatingSubcl
 	public Model getCREATEModel(Representation representation) {
 		ModelImpl model = (ModelImpl) getResource().getCREATEModel(representation);
 		model.property(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, new StringProperty().required(true).example("uuid"));
-		model.property("convertToAgeRange", new BooleanProperty()._default(false));
+		model.property(PatientGridConstants.CONVERT_TO_AGE_RANGE, new BooleanProperty()._default(false));
 		return model;
 	}
 	

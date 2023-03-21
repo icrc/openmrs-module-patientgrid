@@ -1,12 +1,10 @@
 package org.openmrs.module.patientgrid;
 
-import org.apache.commons.collections.ComparatorUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.openmrs.Cohort;
 import org.openmrs.CohortMembership;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
-import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 import java.util.*;
@@ -76,6 +74,7 @@ public class EvaluationContextPersistantCache extends EvaluationContext {
 		getPersistentCache().put(key, value);
 	}
 	
+	@Override
 	public EvaluationContext shallowCopy() {
 		return new EvaluationContextPersistantCache(this);
 	}
@@ -93,9 +92,7 @@ public class EvaluationContextPersistantCache extends EvaluationContext {
 	}
 	
 	private HashMap<Integer, Date> getPatientNewestDate() {
-		HashMap<Integer, Date> patientDate = (HashMap<Integer, Date>) persistentCache.computeIfAbsent("patientDate",
-		    s -> new HashMap<Integer, Date>());
-		return patientDate;
+		return (HashMap<Integer, Date>) persistentCache.computeIfAbsent("patientDate", s -> new HashMap<Integer, Date>());
 	}
 	
 	Date getLatestEncounterDate(Integer patientId) {

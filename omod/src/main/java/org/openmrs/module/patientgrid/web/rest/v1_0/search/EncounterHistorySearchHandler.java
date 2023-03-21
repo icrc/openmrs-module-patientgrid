@@ -13,7 +13,6 @@ import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.patientgrid.filter.PatientGridFilterUtils;
 import org.openmrs.module.patientgrid.filter.definition.LocationCohortDefinition;
 import org.openmrs.module.patientgrid.period.DateRange;
-import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;

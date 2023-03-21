@@ -6,6 +6,7 @@ import org.openmrs.serialization.SerializationException;
 import org.openmrs.serialization.SimpleXStreamSerializer;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 /**
@@ -13,8 +14,6 @@ import java.nio.file.Files;
  * contain only the data used by the front-end
  */
 public class CustomXstreamSerializer extends SimpleXStreamSerializer {
-	
-	private static final String ENCODING = "UTF-8";
 	
 	private static final int DEFAULT_BUFFER_SIZE = 4 * 8192;
 	
@@ -28,14 +27,16 @@ public class CustomXstreamSerializer extends SimpleXStreamSerializer {
 			throw new IOException("Directory '" + parent + "' could not be created");
 		}
 		try (BufferedWriter writer = new BufferedWriter(
-		        new OutputStreamWriter(Files.newOutputStream(target.toPath()), ENCODING), DEFAULT_BUFFER_SIZE)) {
+		        new OutputStreamWriter(Files.newOutputStream(target.toPath()), StandardCharsets.UTF_8),
+		        DEFAULT_BUFFER_SIZE)) {
 			xstream.toXML(value, writer);
 		}
 	}
 	
 	public Object fromXML(File targetFile) throws IOException {
 		try (final InputStreamReader buffered = new InputStreamReader(
-		        new BufferedInputStream(Files.newInputStream(targetFile.toPath()), DEFAULT_BUFFER_SIZE), ENCODING)) {
+		        new BufferedInputStream(Files.newInputStream(targetFile.toPath()), DEFAULT_BUFFER_SIZE),
+		        StandardCharsets.UTF_8)) {
 			return xstream.fromXML(buffered);
 		}
 	}

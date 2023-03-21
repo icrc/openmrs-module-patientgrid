@@ -12,8 +12,6 @@ import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinitio
 import org.openmrs.module.reporting.data.patient.evaluator.PatientDataEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +20,6 @@ import java.util.stream.Collectors;
 
 @Handler(supports = AgeAtLatestEncounterPatientDataDefinition.class, order = 50)
 public class AgeAtLatestEncounterPatientDataEvaluator implements PatientDataEvaluator {
-	
-	private static final Logger log = LoggerFactory.getLogger(AgeAtLatestEncounterPatientDataEvaluator.class);
 	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
@@ -47,7 +43,7 @@ public class AgeAtLatestEncounterPatientDataEvaluator implements PatientDataEval
 			        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		}
 		
-		PatientAgePerEncounterIdByTypeFunction agePerEncounterIdFct = new PatientAgePerEncounterIdByTypeFunction(context,
+		PatientAgePerEncounterIdByTypeFunction agePerEncounterIdFct = new PatientAgePerEncounterIdByTypeFunction(
 		        patientIdAndEnc);
 		//will retrieve the map encounter id -> age if not in cache
 		Map<Integer, Object> encIdAndAge = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),

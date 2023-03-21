@@ -1,6 +1,8 @@
 package org.openmrs.module.patientgrid.evaluator;
 
-import org.openmrs.*;
+import org.openmrs.Cohort;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.patientgrid.EvaluationContextPersistantCache;
 import org.openmrs.module.patientgrid.PatientGridUtils;
@@ -11,8 +13,6 @@ import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinitio
 import org.openmrs.module.reporting.data.patient.evaluator.PatientDataEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
