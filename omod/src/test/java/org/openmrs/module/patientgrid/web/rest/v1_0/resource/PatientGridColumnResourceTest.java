@@ -25,7 +25,7 @@ public class PatientGridColumnResourceTest extends BaseDelegatingResourceTest<Pa
 	
 	@Override
 	public String getDisplayProperty() {
-		return "name";
+		return "Patient name";
 	}
 	
 	@Override
