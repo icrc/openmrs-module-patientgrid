@@ -185,9 +185,8 @@ public class PatientGridUtils {
 		Map<Integer, Object> results = Context.getService(PatientDataService.class).evaluate(encDef, context).getData();
 		results.entrySet().forEach(entry -> {
 			if (entry.getValue() instanceof List) {
-				((List) entry.getValue()).forEach(encounter -> {
-					context.saveLatestEncDate(entry.getKey(), (Encounter) encounter);
-				});
+				((List) entry.getValue())
+				        .forEach(encounter -> context.saveLatestEncDate(entry.getKey(), (Encounter) encounter));
 			} else {
 				context.saveLatestEncDate(entry.getKey(), (Encounter) entry.getValue());
 			}
@@ -198,8 +197,7 @@ public class PatientGridUtils {
 		stopWatch.stop();
 		
 		if (cohort == null || cohort.size() > 1) {
-			LOG.info("Fetching encounters of type: {}, most recently: {} completed in {}", type, mostRecentOnly,
-			    stopWatch.toString());
+			LOG.info("Fetching encounters of type: {}, most recently: {} completed in {}", type, mostRecentOnly, stopWatch);
 		}
 		
 		return results;
@@ -221,8 +219,6 @@ public class PatientGridUtils {
 			        .filter(o -> !o.getVoided() && o.getObsGroup() == null && o.getConcept().hashCode() == conceptHashcode
 			                && o.getConcept().equals(concept) && !o.hasGroupMembers(true))
 			        .collect(Collectors.toList());
-			//		List<Obs> matches = encounter.getObsAtTopLevel(false).stream()
-			//		        .filter(o -> o.getConcept().equals(concept) && !o.hasGroupMembers(true)).collect(Collectors.toList());
 			
 			if (matches.size() > 1) {
 				LOG.debug("Multi obs answer not yet supported. No data will be returned for " + encounter);

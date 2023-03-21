@@ -24,8 +24,6 @@ import java.util.List;
 @Handler(supports = ObsForLatestEncounterCohortDefinition.class, order = 50)
 public class ObsForLatestEncounterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 	
-	private static final Logger log = LoggerFactory.getLogger(ObsForLatestEncounterCohortDefinitionEvaluator.class);
-	
 	//Unfortunately hibernate's criteria API and HQL don't support joins to a derived table with multiple columns
 	
 	private SessionFactory sf;
@@ -43,7 +41,7 @@ public class ObsForLatestEncounterCohortDefinitionEvaluator implements CohortDef
 		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) evaluationContext;
 		
 		MostRecentEncounterIdByTypeFunction function = new MostRecentEncounterIdByTypeFunction(sf,
-		        cohortDef.getPeriodRange(), cohortDef.getLocationCohortDefinition());
+		        cohortDef.getPeriodRange());
 		List<Integer> encounterIds = contextPersistantCache.computeListIfAbsent(cohortDef.getEncounterType(), function);
 		
 		Criteria criteria = sf.getCurrentSession().createCriteria(Obs.class, "o");

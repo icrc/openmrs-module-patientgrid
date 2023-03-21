@@ -63,7 +63,7 @@ public class EncounterDatePatientGridColumnResource extends BaseDelegatingSubcla
 		return getSuperclassResource().getDisplayString(delegate);
 	}
 	
-	@PropertySetter("filters")
+	@PropertySetter(PatientGridConstants.PROP_FILTERS)
 	public void setFilters(PatientGridColumn column, PatientGridColumnFilter... filters) {
 		getSuperclassResource().setFilters(column, filters);
 	}

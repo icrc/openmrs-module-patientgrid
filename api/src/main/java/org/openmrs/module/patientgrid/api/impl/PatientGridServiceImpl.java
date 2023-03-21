@@ -1,9 +1,7 @@
 package org.openmrs.module.patientgrid.api.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.StopWatch;
-import org.openmrs.Cohort;
-import org.openmrs.CohortMembership;
+import org.openmrs.*;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -20,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,7 +28,7 @@ import static org.openmrs.module.patientgrid.PatientGridConstants.GP_ROWS_COUNT_
 @Transactional(readOnly = true)
 public class PatientGridServiceImpl extends BaseOpenmrsService implements PatientGridService {
 	
-	private static final Logger log = LoggerFactory.getLogger(PatientGridServiceImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PatientGridServiceImpl.class);
 	
 	private PatientGridDAO dao;
 	
@@ -58,99 +57,6 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		
 	}
 	
-	/**
-	 * Sets the dao
-	 *
-	 * @param dao the dao to set
-	 */
-	public void setDao(PatientGridDAO dao) {
-		this.dao = dao;
-	}
-	
-	/**
-	 * @see PatientGridService#getPatientGrid(Integer)
-	 */
-	@Override
-	public PatientGrid getPatientGrid(Integer patientGridId) {
-		return dao.getPatientGrid(patientGridId);
-	}
-	
-	/**
-	 * @see PatientGridService#getPatientGridByUuid(String)
-	 */
-	@Override
-	public PatientGrid getPatientGridByUuid(String uuid) {
-		return dao.getPatientGridByUuid(uuid);
-	}
-	
-	/**
-	 * @see PatientGridService#getPatientGrids(boolean)
-	 */
-	@Override
-	public List<PatientGrid> getPatientGrids(boolean includeRetired) {
-		return dao.getPatientGrids(includeRetired);
-	}
-	
-	/**
-	 * @see PatientGridService#savePatientGrid(PatientGrid)
-	 */
-	@Transactional
-	@Override
-	public PatientGrid savePatientGrid(PatientGrid patientGrid) {
-		return dao.savePatientGrid(patientGrid);
-	}
-	
-	/**
-	 * @see PatientGridService#retirePatientGrid(PatientGrid, String)
-	 */
-	@Transactional
-	@Override
-	public PatientGrid retirePatientGrid(PatientGrid patientGrid, String retireReason) {
-		return Context.getService(PatientGridService.class).savePatientGrid(patientGrid);
-	}
-	
-	/**
-	 * @see PatientGridService#unretirePatientGrid(PatientGrid)
-	 */
-	@Transactional
-	@Override
-	public PatientGrid unretirePatientGrid(PatientGrid patientGrid) {
-		return Context.getService(PatientGridService.class).savePatientGrid(patientGrid);
-	}
-	
-	/**
-	 * @see PatientGridService#getPatientGridColumnByUuid(String)
-	 */
-	@Override
-	public PatientGridColumn getPatientGridColumnByUuid(String uuid) {
-		return dao.getPatientGridColumnByUuid(uuid);
-	}
-	
-	/**
-	 * @see PatientGridService#getPatientGridColumnFilterByUuid(String)
-	 */
-	@Override
-	public PatientGridColumnFilter getPatientGridColumnFilterByUuid(String uuid) {
-		return dao.getPatientGridColumnFilterByUuid(uuid);
-	}
-	
-	/**
-	 * @see PatientGridService#evaluate(PatientGrid)
-	 */
-	public ExtendedDataSet evaluate(PatientGrid patientGrid) {
-		log.debug("Generating report for patient grid: {}", patientGrid);
-		
-		try {
-			final String clientTimezone = PatientGridUtils.getCurrentUserTimeZone();
-			PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, true,
-			    clientTimezone);
-			return createExtendedDataSet(patientGrid, clientTimezone, dataSetDef);
-		}
-		catch (EvaluationException e) {
-			throw new APIException("Failed to evaluate patient grid: " + patientGrid, e);
-		}
-	}
-	
 	public static ExtendedDataSet createExtendedDataSet(PatientGrid patientGrid, String clientTimezone,
 	        PatientDataSetDefinition dataSetDef) throws EvaluationException {
 		EvaluationContextPersistantCache context = new EvaluationContextPersistantCache();
@@ -177,7 +83,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 				limit = Integer.parseInt(rowLimit);
 			}
 			catch (NumberFormatException e) {
-				log.warn("The row limit '{}' defined in the global property '{}' is not supported", rowLimit,
+				LOGGER.warn("The row limit '{}' defined in the global property '{}' is not supported", rowLimit,
 				    GP_ROWS_COUNT_LIMIT);
 				throw new RuntimeException(e);
 			}
@@ -206,10 +112,173 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 	}
 	
 	/**
+	 * Sets the dao
+	 *
+	 * @param dao the dao to set
+	 */
+	public void setDao(PatientGridDAO dao) {
+		this.dao = dao;
+	}
+	
+	/**
+	 * @see PatientGridService#getPatientGrid(Integer)
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public PatientGrid getPatientGrid(Integer patientGridId) {
+		PatientGrid patientGrid = dao.getPatientGrid(patientGridId);
+		if (!canCurrentUserSeePatientGrid(patientGrid)) {
+			throw new APIException("PatientGrid.error.privilege");
+		}
+		return patientGrid;
+	}
+	
+	/**
+	 * @see PatientGridService#getPatientGridByUuid(String)
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public PatientGrid getPatientGridByUuid(String uuid) {
+		PatientGrid patientGrid = dao.getPatientGridByUuid(uuid);
+		if (!canCurrentUserSeePatientGrid(patientGrid)) {
+			throw new APIException("PatientGrid.error.privilege");
+		}
+		return patientGrid;
+	}
+	
+	/**
+	 * @see PatientGridService#getPatientGrids(boolean)
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public List<PatientGrid> getPatientGrids(boolean includeRetired) {
+		List<PatientGrid> patientGrids = dao.getPatientGrids(includeRetired);
+		final User user = Context.getAuthenticatedUser();
+		//Could it happen ?
+		if (user == null) {
+			return new ArrayList<>();
+		}
+		if (user.isSuperUser()) {
+			return patientGrids;
+		}
+		return patientGrids.stream().filter(p -> userCanSeePatientGrid(p, user)).collect(Collectors.toList());
+	}
+	
+	private boolean canCurrentUserSeePatientGrid(PatientGrid patientGrid) {
+		return userCanSeePatientGrid(patientGrid, Context.getAuthenticatedUser());
+	}
+	
+	/**
+	 * @param patientGrid the grid
+	 * @param user the current user
+	 * @return true if current user can see all encounterType and all location used by the grid
+	 */
+	private boolean userCanSeePatientGrid(PatientGrid patientGrid, User user) {
+		if (patientGrid == null) {
+			return true;
+		}
+		Set<EncounterType> encounterTypes = PatientGridFilterUtils.extractEncounterType(patientGrid);
+		boolean cantSeeEncounterTypes = encounterTypes.stream().anyMatch(e -> !userCanSeeEncounterType(e, user));
+		if (cantSeeEncounterTypes) {
+			return false;
+		}
+		return PatientGridFilterUtils.canSeeLocations(patientGrid);
+	}
+	
+	private boolean userCanSeeEncounterType(EncounterType encounterType, User user) {
+		Privilege privilege = encounterType.getViewPrivilege();
+		//If the encounter privilege is null, everyone can see and edit the encounter.
+		if (privilege == null) {
+			return true;
+		}
+		return user.hasPrivilege(privilege.getPrivilege());
+	}
+	
+	/**
+	 * @see PatientGridService#savePatientGrid(PatientGrid)
+	 */
+	@Transactional
+	@Override
+	public PatientGrid savePatientGrid(PatientGrid patientGrid) {
+		if (!canCurrentUserModifyGrid(patientGrid)) {
+			throw new APIException("PatientGrid.error.cantSave");
+		}
+		return dao.savePatientGrid(patientGrid);
+	}
+	
+	private boolean canCurrentUserModifyGrid(PatientGrid patientGrid) {
+		User user = Context.getAuthenticatedUser();
+		return user.isSuperUser() || patientGrid.getOwner() == null || user.equals(patientGrid.getOwner());
+	}
+	
+	/**
+	 * @see PatientGridService#retirePatientGrid(PatientGrid, String)
+	 */
+	@Transactional
+	@Override
+	public PatientGrid retirePatientGrid(PatientGrid patientGrid, String retireReason) {
+		return Context.getService(PatientGridService.class).savePatientGrid(patientGrid);
+	}
+	
+	/**
+	 * @see PatientGridService#unretirePatientGrid(PatientGrid)
+	 */
+	@Transactional
+	@Override
+	public PatientGrid unretirePatientGrid(PatientGrid patientGrid) {
+		return Context.getService(PatientGridService.class).savePatientGrid(patientGrid);
+	}
+	
+	/**
+	 * @see PatientGridService#getPatientGridColumnByUuid(String)
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public PatientGridColumn getPatientGridColumnByUuid(String uuid) {
+		return dao.getPatientGridColumnByUuid(uuid);
+	}
+	
+	/**
+	 * @see PatientGridService#getPatientGridColumnFilterByUuid(String)
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public PatientGridColumnFilter getPatientGridColumnFilterByUuid(String uuid) {
+		return dao.getPatientGridColumnFilterByUuid(uuid);
+	}
+	
+	/**
+	 * @see PatientGridService#evaluate(PatientGrid)
+	 */
+	@Transactional(readOnly = true)
+	public ExtendedDataSet evaluate(PatientGrid patientGrid) {
+		if (patientGrid == null) {
+			return null;
+		}
+		LOGGER.debug("Generating report for patient grid: {}", patientGrid);
+		if (!canCurrentUserSeePatientGrid(patientGrid)) {
+			throw new APIException("PatientGrid.error.privilege");
+		}
+		try {
+			final String clientTimezone = PatientGridUtils.getCurrentUserTimeZone();
+			PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, true,
+			    clientTimezone);
+			return createExtendedDataSet(patientGrid, clientTimezone, dataSetDef);
+		}
+		catch (EvaluationException e) {
+			throw new APIException("PatientGrid.error.cantEvaluate", new Object[] { patientGrid }, e);
+		}
+	}
+	
+	/**
 	 * @see PatientGridService#evaluateIgnoreCache(PatientGrid)
 	 */
 	@Override
+	@Transactional(readOnly = true)
 	public ExtendedDataSet evaluateIgnoreCache(PatientGrid patientGrid) {
+		if (!canCurrentUserSeePatientGrid(patientGrid)) {
+			throw new APIException("PatientGrid.error.privilege");
+		}
 		return evaluate(patientGrid);
 	}
 	

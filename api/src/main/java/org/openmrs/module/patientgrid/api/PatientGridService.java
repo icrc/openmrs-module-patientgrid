@@ -50,7 +50,7 @@ public interface PatientGridService extends OpenmrsService {
 	/**
 	 * Gets the patient grids
 	 *
-	 * @param includeRetired specifies whether retired grids should included or not
+	 * @param includeRetired specifies whether retired grids should be included or not
 	 * @return list of patient grids
 	 */
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)

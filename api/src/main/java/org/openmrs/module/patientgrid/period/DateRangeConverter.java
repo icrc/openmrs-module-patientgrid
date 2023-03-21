@@ -87,8 +87,7 @@ public class DateRangeConverter {
 	private DateRangeType getRangeType(String type) {
 		if (StringUtils.isNotBlank(type)) {
 			try {
-				DateRangeType rangeType = DateRangeType.valueOf(type.toUpperCase());
-				return rangeType;
+				return DateRangeType.valueOf(type.toUpperCase());
 			}
 			catch (IllegalArgumentException e) {
 				return null;

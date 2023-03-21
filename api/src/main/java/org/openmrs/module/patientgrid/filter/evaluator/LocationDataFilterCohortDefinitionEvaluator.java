@@ -55,7 +55,7 @@ public class LocationDataFilterCohortDefinitionEvaluator implements CohortDefini
 			List<String> ids = locationDef.getLocations().stream().map(l -> l.getId().toString()).collect(toList());
 			criteria.add(Restrictions.in("basisIdentifier", ids));
 			List<String> idsAsStrings = criteria.list();
-			patientIds = idsAsStrings.stream().map(id -> Integer.valueOf(id)).collect(toSet());
+			patientIds = idsAsStrings.stream().map(Integer::valueOf).collect(toSet());
 		} else {
 			List<EntityBasisMap> entityBasisMaps = criteria.list();
 			Set<String> locationNames = locationDef.getLocations().stream().map(l -> l.getName().toLowerCase())

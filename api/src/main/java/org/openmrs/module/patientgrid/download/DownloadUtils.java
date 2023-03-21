@@ -9,7 +9,6 @@ import org.openmrs.module.patientgrid.filter.PatientGridFilterUtils;
 import org.openmrs.module.patientgrid.filter.definition.LocationCohortDefinition;
 import org.openmrs.module.patientgrid.period.DateRange;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +18,14 @@ import org.slf4j.LoggerFactory;
  */
 public class DownloadUtils {
 	
-	private static final Logger log = LoggerFactory.getLogger(DownloadUtils.class);
+	/**
+	 * Utility class
+	 */
+	private DownloadUtils() {
+		
+	}
 	
-	private static DataSetDefinitionService dataSetService;
+	private static final Logger log = LoggerFactory.getLogger(DownloadUtils.class);
 	
 	public static ExtendedDataSet evaluate(PatientGrid patientGrid) {
 		log.debug("Generating downloadable patient grid report data for patient grid: {}", patientGrid);

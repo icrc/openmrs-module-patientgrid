@@ -3,6 +3,7 @@ package org.openmrs.module.patientgrid.web.rest.v1_0.resource;
 import org.junit.Before;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGrid;
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
@@ -33,16 +34,16 @@ public class PatientGridResourceTest extends BaseDelegatingResourceTest<PatientG
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
-		assertPropEquals("shared", false);
-		assertPropNotPresent("columns");
+		assertPropEquals(PatientGridConstants.PROP_SHARED, false);
+		assertPropNotPresent(PatientGridConstants.PROP_COLUMNS);
 		assertPropNotPresent("auditInfo");
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
-		assertPropEquals("shared", false);
-		assertPropPresent("columns");
+		assertPropEquals(PatientGridConstants.PROP_SHARED, false);
+		assertPropPresent(PatientGridConstants.PROP_COLUMNS);
 		assertPropPresent("auditInfo");
 	}
 	

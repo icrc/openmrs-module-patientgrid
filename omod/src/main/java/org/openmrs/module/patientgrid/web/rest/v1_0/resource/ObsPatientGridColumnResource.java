@@ -52,7 +52,7 @@ public class ObsPatientGridColumnResource extends BaseDelegatingSubclassHandler<
 	public DelegatingResourceDescription getRepresentationDescription(Representation representation) {
 		DelegatingResourceDescription description = getSuperclassResource().getRepresentationDescription(representation);
 		if (representation instanceof DefaultRepresentation || representation instanceof FullRepresentation) {
-			description.addRequiredProperty("concept", Representation.REF);
+			description.addRequiredProperty(PatientGridConstants.PROP_CONCEPT, Representation.REF);
 			description.addRequiredProperty(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, Representation.REF);
 		}
 		
@@ -64,7 +64,7 @@ public class ObsPatientGridColumnResource extends BaseDelegatingSubclassHandler<
 		return getSuperclassResource().getDisplayString(delegate);
 	}
 	
-	@PropertySetter("filters")
+	@PropertySetter(PatientGridConstants.PROP_FILTERS)
 	public void setFilters(PatientGridColumn column, PatientGridColumnFilter... filters) {
 		getSuperclassResource().setFilters(column, filters);
 	}
@@ -75,7 +75,7 @@ public class ObsPatientGridColumnResource extends BaseDelegatingSubclassHandler<
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = getResource().getCreatableProperties();
-		description.addRequiredProperty("concept");
+		description.addRequiredProperty(PatientGridConstants.PROP_CONCEPT);
 		description.addRequiredProperty(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE);
 		return description;
 	}
@@ -86,7 +86,7 @@ public class ObsPatientGridColumnResource extends BaseDelegatingSubclassHandler<
 	@Override
 	public Model getGETModel(Representation representation) {
 		ModelImpl model = (ModelImpl) getResource().getGETModel(representation);
-		model.property("concept", new RefProperty("#/definitions/ConceptGetRef"));
+		model.property(PatientGridConstants.PROP_CONCEPT, new RefProperty("#/definitions/ConceptGetRef"));
 		model.property(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, new RefProperty("#/definitions/EncountertypeGetRef"));
 		return model;
 	}
@@ -97,7 +97,7 @@ public class ObsPatientGridColumnResource extends BaseDelegatingSubclassHandler<
 	@Override
 	public Model getCREATEModel(Representation representation) {
 		ModelImpl model = (ModelImpl) getResource().getCREATEModel(representation);
-		model.property("concept", new StringProperty().required(true).example("uuid"));
+		model.property(PatientGridConstants.PROP_CONCEPT, new StringProperty().required(true).example("uuid"));
 		model.property(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, new StringProperty().required(true).example("uuid"));
 		return model;
 	}

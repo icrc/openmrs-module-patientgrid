@@ -36,7 +36,7 @@ import io.swagger.models.properties.StringProperty;
 @SubResource(parent = PatientGridResource.class, path = "filter", supportedClass = PatientGridColumnFilter.class, supportedOpenmrsVersions = {
         SUPPORTED_VERSIONS })
 public class PatientGridColumnFilterResource extends DelegatingSubResource<PatientGridColumnFilter, PatientGrid, PatientGridResource> {
-
+	
 	/**
 	 * @see DelegatingSubResource#getRepresentationDescription(Representation)
 	 */
@@ -155,7 +155,7 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 	public PageableResult doGetAll(PatientGrid parent, RequestContext context) throws ResponseException {
 		List<PatientGridColumnFilter> filters = new ArrayList();
 		if (parent != null) {
-			parent.getColumns().stream().forEach(c -> c.getFilters().forEach(f -> filters.add(f)));
+			parent.getColumns().stream().forEach(c -> c.getFilters().forEach(filters::add));
 		}
 		
 		return new NeedsPaging(filters, context);
@@ -245,7 +245,8 @@ public class PatientGridColumnFilterResource extends DelegatingSubResource<Patie
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		model.property("name", new StringProperty());
 		model.property("uuid", new StringProperty());
-		model.property(PatientGridConstants.PROPERTY_COLUMN, new RefProperty("#/definitions/PatientgridPatientgridColumnGetRef"));
+		model.property(PatientGridConstants.PROPERTY_COLUMN,
+		    new RefProperty("#/definitions/PatientgridPatientgridColumnGetRef"));
 		model.property(PatientGridConstants.PROPERTY_OPERAND, new StringProperty());
 		return model;
 	}

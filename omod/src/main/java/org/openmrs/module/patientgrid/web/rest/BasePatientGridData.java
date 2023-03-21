@@ -13,7 +13,7 @@ public abstract class BasePatientGridData {
 	
 	private ReportMetadata reportMetadata;
 	
-	public BasePatientGridData(ReportMetadata reportInfo, PatientGrid patientGrid, List<Map<String, Object>> report) {
+	protected BasePatientGridData(ReportMetadata reportInfo, PatientGrid patientGrid, List<Map<String, Object>> report) {
 		this.patientGrid = patientGrid;
 		this.report = report;
 		this.reportMetadata = reportInfo;

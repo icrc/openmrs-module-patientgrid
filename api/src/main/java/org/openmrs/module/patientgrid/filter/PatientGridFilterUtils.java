@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -71,7 +72,7 @@ public class PatientGridFilterUtils {
 						cohortDef = createGenderCohortDefinition(column);
 						break;
 					case OBS:
-						cohortDef = createObsCohortDefinition(column, periodRange);
+						cohortDef = createObsCohortDefinition(column, periodRange, locationCohortDefinition);
 						break;
 					case ENC_LOCATION:
 					case ENC_COUNTRY:
@@ -105,6 +106,29 @@ public class PatientGridFilterUtils {
 			}
 		}
 		return null;
+	}
+	
+	public static boolean canSeeLocations(PatientGrid patientGrid) {
+		for (PatientGridColumn column : patientGrid.getColumns()) {
+			if (!column.getFilters().isEmpty()
+			        && (ENC_LOCATION.equals(column.getDatatype()) || ENC_COUNTRY.equals(column.getDatatype()))) {
+				return canSeeLocations(column);
+			}
+		}
+		return true;
+	}
+	
+	public static Set<EncounterType> extractEncounterType(PatientGrid patientGrid) {
+		Set<EncounterType> res = new HashSet<>();
+		if (patientGrid == null) {
+			return res;
+		}
+		for (PatientGridColumn column : patientGrid.getColumns()) {
+			if (column instanceof BaseEncounterTypePatientGridColumn) {
+				res.add(((BaseEncounterTypePatientGridColumn) column).getEncounterType());
+			}
+		}
+		return res;
 	}
 	
 	/**
@@ -162,7 +186,7 @@ public class PatientGridFilterUtils {
 		def.setPeriodRange(periodRange);
 		for (PatientGridColumnFilter filter : column.getFilters()) {
 			AgeRange ageRange;
-			if (!ageColumn.getConvertToAgeRange()) {
+			if (Boolean.FALSE.equals(ageColumn.getConvertToAgeRange())) {
 				//TODO support less than 1yr
 				Integer age = PatientGridUtils.convert(filter.getOperand(), Integer.class);
 				ageRange = new AgeRange(age, age);
@@ -202,6 +226,24 @@ public class PatientGridFilterUtils {
 	}
 	
 	/**
+	 * Datafilter will filter the data here and if the current user can't see a location null will be
+	 * returned.
+	 * 
+	 * @param column the column to test
+	 * @return true if all locations can be seen by the current user.
+	 */
+	private static boolean canSeeLocations(PatientGridColumn column) {
+		for (PatientGridColumnFilter filter : column.getFilters()) {
+			Location location = PatientGridUtils.convert(filter.getOperand(), Location.class);
+			if (location == null) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * Creates a {@link ObsForLatestEncounterCohortDefinition} based on the filters for the specified
 	 * {@link PatientGridColumn}
 	 *
@@ -209,11 +251,12 @@ public class PatientGridFilterUtils {
 	 * @return ObsForLatestEncounterCohortDefinition
 	 */
 	private static ObsForLatestEncounterCohortDefinition createObsCohortDefinition(PatientGridColumn column,
-	        DateRange periodRange) {
+	        DateRange periodRange, LocationCohortDefinition locationCohortDefinition) {
 		ObsPatientGridColumn obsColumn = (ObsPatientGridColumn) column;
 		ObsForLatestEncounterCohortDefinition obsCohortDef = new ObsForLatestEncounterCohortDefinition();
 		Concept concept = obsColumn.getConcept();
 		obsCohortDef.setConcept(concept);
+		obsCohortDef.setLocationCohortDefinition(locationCohortDefinition);
 		obsCohortDef.setEncounterType(obsColumn.getEncounterType());
 		obsCohortDef.setPeriodRange(periodRange);
 		Class<?> valueType;
@@ -337,7 +380,7 @@ public class PatientGridFilterUtils {
 		
 		stopWatch.stop();
 		
-		LOG.debug("Running filters for patient grid {} completed in {}", patientGrid, stopWatch.toString());
+		LOG.debug("Running filters for patient grid {} completed in {}", patientGrid, stopWatch);
 		
 		return new ObjectWithDateRange<>(cohort, cohortDef.getDateRange());
 	}

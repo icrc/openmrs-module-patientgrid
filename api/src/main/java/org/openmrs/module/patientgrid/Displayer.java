@@ -5,11 +5,11 @@ import org.openmrs.module.patientgrid.period.DateRangeConverter;
 
 import java.util.Locale;
 
-public abstract class Displayer<T extends Object> {
+public interface Displayer<T extends Object> {
 	
-	public abstract String getDisplayString(T in, Locale locale);
+	public String getDisplayString(T in, Locale locale);
 	
-	public static class DateFilter extends Displayer<PatientGridColumnFilter> {
+	class DateFilter implements Displayer<PatientGridColumnFilter> {
 		
 		@Override
 		public String getDisplayString(PatientGridColumnFilter in, Locale locale) {
@@ -18,7 +18,7 @@ public abstract class Displayer<T extends Object> {
 		}
 	}
 	
-	public static class DefaultFilter extends Displayer<PatientGridColumnFilter> {
+	class DefaultFilter implements Displayer<PatientGridColumnFilter> {
 		
 		@Override
 		public String getDisplayString(PatientGridColumnFilter in, Locale locale) {

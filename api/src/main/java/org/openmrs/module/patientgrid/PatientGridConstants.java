@@ -7,6 +7,19 @@ import java.text.SimpleDateFormat;
 
 public class PatientGridConstants {
 	
+	public static final String PROP_SHARED = "shared";
+	
+	public static final String PROP_COLUMNS = "columns";
+	
+	public static final String CONVERT_TO_AGE_RANGE = "convertToAgeRange";
+	
+	/**
+	 * Utility class
+	 */
+	private PatientGridConstants() {
+		
+	}
+	
 	public static final String MODULE_ID = "patientgrid";
 	
 	public static final String PRIV_MANAGE_PATIENT_GRIDS = "Manage Patient Grids";
@@ -52,7 +65,20 @@ public class PatientGridConstants {
 	public static final String GP_ROWS_COUNT_LIMIT = MODULE_ID + ".rowsLimit";
 	
 	public static final String PROPERTY_DISPLAY = "display";
+	
 	public static final String PROPERTY_ENCOUNTER_TYPE = "encounterType";
+	
 	public static final String PROPERTY_COLUMN = "column";
+	
 	public static final String PROPERTY_OPERAND = "operand";
+	
+	public static final String PROP_CONCEPT = "concept";
+	
+	public static final String PROP_DESCRIPTION = "description";
+	
+	public static final String PROP_DATATYPE = "datatype";
+	
+	public static final String PROP_HIDDEN = "hidden";
+	
+	public static final String PROP_FILTERS = "filters";
 }

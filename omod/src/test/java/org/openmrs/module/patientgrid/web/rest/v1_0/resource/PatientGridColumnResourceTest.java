@@ -2,6 +2,7 @@ package org.openmrs.module.patientgrid.web.rest.v1_0.resource;
 
 import org.junit.Before;
 import org.openmrs.module.patientgrid.PatientGridColumn;
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class PatientGridColumnResourceTest extends BaseDelegatingResourceTest<Pa
 	
 	@Override
 	public String getDisplayProperty() {
-		return "name";
+		return "Patient name";
 	}
 	
 	@Override
@@ -36,9 +37,9 @@ public class PatientGridColumnResourceTest extends BaseDelegatingResourceTest<Pa
 	private void validateRepresentation() {
 		PatientGridColumn column = newObject();
 		assertPropEquals("name", column.getName());
-		assertPropEquals("description", column.getDescription());
-		assertPropEquals("datatype", column.getDatatype());
-		assertPropPresent("filters");
+		assertPropEquals(PatientGridConstants.PROP_DESCRIPTION, column.getDescription());
+		assertPropEquals(PatientGridConstants.PROP_DATATYPE, column.getDatatype());
+		assertPropPresent(PatientGridConstants.PROP_FILTERS);
 	}
 	
 	@Override

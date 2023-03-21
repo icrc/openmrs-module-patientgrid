@@ -1,12 +1,5 @@
 package org.openmrs.module.patientgrid.web.rest.v1_0.resource;
 
-import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.openmrs.module.patientgrid.ExtendedDataSet;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.web.rest.BasePatientGridData;
@@ -18,9 +11,13 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
-import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public abstract class BasePatientGridDataResource<T extends BasePatientGridData> extends DelegatingSubResource<T, PatientGrid, PatientGridResource> {
 	
@@ -61,9 +58,7 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 		ExtendedDataSet extendedDataSet = evaluate(parent, context);
 		SimpleDataSet simpleDataSet = extendedDataSet.getSimpleDataSet();
 		List<Map<String, Object>> report = new ArrayList(simpleDataSet.getRows().size());
-		simpleDataSet.getRows().stream().forEach(row -> {
-			report.add(row.getColumnValuesByKey());
-		});
+		simpleDataSet.getRows().stream().forEach(row -> report.add(row.getColumnValuesByKey()));
 		T instance = create(new ReportMetadata(extendedDataSet), parent, report);
 		
 		return new NeedsPaging(Collections.singletonList(instance), context);

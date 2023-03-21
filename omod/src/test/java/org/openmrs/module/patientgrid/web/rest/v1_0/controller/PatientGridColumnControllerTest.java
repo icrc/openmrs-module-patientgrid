@@ -46,7 +46,7 @@ public class PatientGridColumnControllerTest extends BasePatientGridRestControll
 		SimpleObject column = new SimpleObject();
 		column.add("type", PatientGridConstants.PROPERTY_COLUMN);
 		column.add("name", "nick name");
-		column.add("datatype", ColumnDatatype.NAME);
+		column.add(PatientGridConstants.PROP_DATATYPE, ColumnDatatype.NAME);
 		
 		SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
 		
@@ -61,9 +61,9 @@ public class PatientGridColumnControllerTest extends BasePatientGridRestControll
 		SimpleObject column = new SimpleObject();
 		column.add("type", "obscolumn");
 		column.add("name", "height");
-		column.add("datatype", ColumnDatatype.OBS);
+		column.add(PatientGridConstants.PROP_DATATYPE, ColumnDatatype.OBS);
 		column.add(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, "19218f76-6c39-45f4-8efa-4c5c6c199f50");
-		column.add("concept", "95312123-e0c2-466d-b6b1-cb6e990d0d65");
+		column.add(PatientGridConstants.PROP_CONCEPT, "95312123-e0c2-466d-b6b1-cb6e990d0d65");
 		
 		SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
 		
@@ -78,9 +78,9 @@ public class PatientGridColumnControllerTest extends BasePatientGridRestControll
 		SimpleObject column = new SimpleObject();
 		column.add("type", "agecolumn");
 		column.add("name", "height");
-		column.add("datatype", ColumnDatatype.OBS);
+		column.add(PatientGridConstants.PROP_DATATYPE, ColumnDatatype.OBS);
 		column.add(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, "19218f76-6c39-45f4-8efa-4c5c6c199f50");
-		column.add("convertToAgeRange", true);
+		column.add(PatientGridConstants.CONVERT_TO_AGE_RANGE, true);
 		
 		SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
 		
@@ -95,7 +95,7 @@ public class PatientGridColumnControllerTest extends BasePatientGridRestControll
 		SimpleObject column = new SimpleObject();
 		column.add("type", "encounterdatecolumn");
 		column.add("name", "encDate");
-		column.add("datatype", ColumnDatatype.ENC_DATE);
+		column.add(PatientGridConstants.PROP_DATATYPE, ColumnDatatype.ENC_DATE);
 		column.add(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, "19218f76-6c39-45f4-8efa-4c5c6c199f50");
 		
 		SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
@@ -125,7 +125,7 @@ public class PatientGridColumnControllerTest extends BasePatientGridRestControll
 		filter.add("name", "equal 12");
 		filter.add(PatientGridConstants.PROPERTY_OPERAND, "12");
 		SimpleObject payload = new SimpleObject();
-		payload.add("filters", new SimpleObject[] { filter });
+		payload.add(PatientGridConstants.PROP_FILTERS, new SimpleObject[] { filter });
 		
 		handle(newPostRequest(getURI() + "/" + getUuid(), payload));
 		

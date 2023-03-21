@@ -6,6 +6,7 @@ import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConsta
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGrid;
 import org.openmrs.module.patientgrid.PatientGridColumn;
+import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.module.patientgrid.api.PatientGridService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
@@ -30,6 +31,8 @@ import io.swagger.models.properties.RefProperty;
         SUPPORTED_VERSIONS })
 public class PatientGridResource extends MetadataDelegatingCrudResource<PatientGrid> {
 	
+	private static final String PROP_OWNER = "owner";
+	
 	/**
 	 * @see MetadataDelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
@@ -41,10 +44,10 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 		}
 		
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			description.addProperty("owner", Representation.REF);
-			description.addProperty("shared");
+			description.addProperty(PROP_OWNER, Representation.REF);
+			description.addProperty(PatientGridConstants.PROP_SHARED);
 			if (rep instanceof FullRepresentation) {
-				description.addRequiredProperty("columns", Representation.DEFAULT);
+				description.addRequiredProperty(PatientGridConstants.PROP_COLUMNS, Representation.DEFAULT);
 				description.addProperty("auditInfo");
 			}
 		}
@@ -58,13 +61,13 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = super.getCreatableProperties();
-		description.addRequiredProperty("columns");
-		description.addProperty("owner");
-		description.addProperty("shared");
+		description.addRequiredProperty(PatientGridConstants.PROP_COLUMNS);
+		description.addProperty(PROP_OWNER);
+		description.addProperty(PatientGridConstants.PROP_SHARED);
 		return description;
 	}
 	
-	@PropertySetter("columns")
+	@PropertySetter(PatientGridConstants.PROP_COLUMNS)
 	public void setColumns(PatientGrid instance, PatientGridColumn... columns) {
 		for (PatientGridColumn column : columns) {
 			instance.addColumn(column);
@@ -98,6 +101,7 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 	/**
 	 * @see MetadataDelegatingCrudResource#doGetAll(RequestContext)
 	 */
+	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
 		return new NeedsPaging(Context.getService(PatientGridService.class).getPatientGrids(context.getIncludeAll()),
 		        context);
@@ -110,10 +114,10 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model.property("owner", new RefProperty("#/definitions/UserGetRef"));
-			model.property("shared", new BooleanProperty());
+			model.property(PROP_OWNER, new RefProperty("#/definitions/UserGetRef"));
+			model.property(PatientGridConstants.PROP_SHARED, new BooleanProperty());
 			if (rep instanceof FullRepresentation) {
-				model.property("columns",
+				model.property(PatientGridConstants.PROP_COLUMNS,
 				    new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridColumnGet")));
 			}
 		}
@@ -128,10 +132,11 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		model.required("name");
-		model.property("columns", new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridColumnCreate")));
-		model.required("columns");
-		model.property("owner", new RefProperty("#/definitions/UserGetRef"));
-		model.property("shared", new BooleanProperty()._default(false));
+		model.property(PatientGridConstants.PROP_COLUMNS,
+		    new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridColumnCreate")));
+		model.required(PatientGridConstants.PROP_COLUMNS);
+		model.property(PROP_OWNER, new RefProperty("#/definitions/UserGetRef"));
+		model.property(PatientGridConstants.PROP_SHARED, new BooleanProperty()._default(false));
 		return model;
 	}
 	

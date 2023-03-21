@@ -1,22 +1,19 @@
 package org.openmrs.module.patientgrid.cache;
 
-import static org.openmrs.module.patientgrid.PatientGridConstants.DEFAULT_DISK_CACHE_DIR_NAME;
-import static org.openmrs.module.patientgrid.PatientGridConstants.GP_DISK_CACHE_DIR;
-import static org.openmrs.module.patientgrid.PatientGridConstants.MODULE_ID;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.Hours;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+
+import static org.openmrs.module.patientgrid.PatientGridConstants.*;
 
 /**
  * Custom cache implementation that uses a directory to store cache entries in files, each entry in
@@ -46,7 +43,7 @@ public class DiskCache {
 	
 	private static class DiskCacheHolder {
 		
-		private final static DiskCache INSTANCE = new DiskCache();
+		private static final DiskCache INSTANCE = new DiskCache();
 		
 	}
 	

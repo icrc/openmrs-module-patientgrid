@@ -24,7 +24,7 @@ import java.util.Map;
 @Handler(supports = LocationEncounterDataDefinition.class, order = 50)
 public class LocationEncounterOnCacheDataEvaluator implements PatientDataEvaluator {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(DateForLatestEncounterPatientDataEvaluator.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LocationEncounterOnCacheDataEvaluator.class);
 	
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)

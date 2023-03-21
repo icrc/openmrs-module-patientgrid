@@ -16,7 +16,7 @@ public abstract class BaseEncounterTypePatientGridColumn extends PatientGridColu
 	@JoinColumn(name = "encounter_type_id", nullable = false)
 	private EncounterType encounterType;
 	
-	public BaseEncounterTypePatientGridColumn(String name, ColumnDatatype datatype, EncounterType encounterType) {
+	protected BaseEncounterTypePatientGridColumn(String name, ColumnDatatype datatype, EncounterType encounterType) {
 		super(name, datatype);
 		this.encounterType = encounterType;
 	}
