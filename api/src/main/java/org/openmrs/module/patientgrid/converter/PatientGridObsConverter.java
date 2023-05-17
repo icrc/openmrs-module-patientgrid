@@ -67,15 +67,15 @@ public class PatientGridObsConverter implements DataConverter {
 				formFieldNamespace = o.getFormFieldNamespace();
 				firstObs = o;
 			} else if (!formFieldNamespace.equals(o.getFormFieldNamespace())) {
-				LOG.error("can convert list of obs as obs {} and obs {} don't have the same FormFieldNamespace {}",
+				LOG.error("can convert list of obs as obs {} and obs {} don't have the same FormNamespaceAndPath {}",
 				    firstObs.getUuid(), o.getUuid(), formFieldNamespace);
-				throw new IllegalAccessError("obs must be have the same FormFieldNamespace");
+				throw new IllegalAccessError("obs must be have the same getFormFieldNamespace");
 			}
-			
+
 		}
 		return formFieldNamespace;
 	}
-	
+
 	private String getFormFieldPath(Collection<Obs> obs) {
 		String formFieldPath = null;
 		Obs firstObs = null;
@@ -86,17 +86,17 @@ public class PatientGridObsConverter implements DataConverter {
 			} else if (!formFieldPath.equals(o.getFormFieldPath())) {
 				LOG.error("can convert list of obs as obs {} and obs {} don't have the same FormFieldPath {}",
 				    firstObs.getUuid(), o.getUuid(), formFieldPath);
-				throw new IllegalAccessError("obs must be have the same FormFieldPath");
+//				throw new IllegalAccessError("obs must be have the same FormFieldPath");
 			}
-			
+
 		}
 		return formFieldPath;
 	}
-	
+
 	public Object convertOne(final Obs original) {
 		return convert(Collections.singleton(original));
 	}
-	
+
 	@Override
 	public Object convert(final Object original) {
 		if (CollectionUtils.isNotEmpty((Collection) original)) {
@@ -112,7 +112,7 @@ public class PatientGridObsConverter implements DataConverter {
 			if (obsList.size() == 1) {
 				value = DataUtil.convertData(obsList.iterator().next(), OBS_VALUE_CONVERTER);
 			} else {
-				value = obsList.stream().map(o -> DataUtil.convertData(o, OBS_VALUE_CONVERTER).toString())
+				value = obsList.stream().map(o -> DataUtil.convertData(o, OBS_VALUE_CONVERTER).toString()).sorted()
 				        .collect(Collectors.joining(VALUE_DELIMITER));
 			}
 			if (concept.getDatatype().isCoded()) {
@@ -122,7 +122,7 @@ public class PatientGridObsConverter implements DataConverter {
 				answerConcept.put(PatientGridConstants.PROPERTY_DISPLAY, value);
 				value = answerConcept;
 			}
-			
+
 			obsData.put("value", value);
 			Encounter encounter = getEncounter(obsList);
 			if (encounter != null) {
@@ -134,10 +134,10 @@ public class PatientGridObsConverter implements DataConverter {
 				}
 				obsData.put("encounter", encData);
 			}
-			
+
 			obsData.put("formFieldNamespace", getFormFieldNamespace(obsList));
 			obsData.put("formFieldPath", getFormFieldPath(obsList));
-			
+
 			return obsData;
 		}
 		

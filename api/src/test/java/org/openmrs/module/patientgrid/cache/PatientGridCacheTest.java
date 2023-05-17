@@ -64,7 +64,7 @@ public class PatientGridCacheTest {
 	public void get_shouldReturnTheDeserializedDataSet() throws Exception {
 		final String filename = "test_file";
 		ExtendedDataSet dataSet = new ExtendedDataSet();
-		when(mockOpenmrsSerializer.fromXML(anyObject())).thenReturn(dataSet);
+		when(mockOpenmrsSerializer.fromXML(org.mockito.Matchers.anyObject())).thenReturn(dataSet);
 		
 		assertEquals(dataSet, cache.get(filename, ExtendedDataSet.class));
 	}
@@ -78,7 +78,7 @@ public class PatientGridCacheTest {
 		assertFalse(dataSet.isLastVersion());
 		
 		//action
-		when(mockOpenmrsSerializer.fromXML(anyObject())).thenReturn(dataSet);
+		when(mockOpenmrsSerializer.fromXML(org.mockito.Matchers.anyObject())).thenReturn(dataSet);
 		
 		//assert
 		assertNull(cache.get(filename));
@@ -93,7 +93,7 @@ public class PatientGridCacheTest {
 		dataSet.setPeriodOperand("{\"code\":\"LASTTHIRTYDAYS\"}");
 		
 		//action
-		when(mockOpenmrsSerializer.fromXML(anyObject())).thenReturn(dataSet);
+		when(mockOpenmrsSerializer.fromXML(org.mockito.Matchers.anyObject())).thenReturn(dataSet);
 		
 		//assert
 		assertNull(cache.get(filename));
@@ -111,7 +111,7 @@ public class PatientGridCacheTest {
 		    "{\"code\":\"customDaysInclusive\",\"fromDate\":\"2022-04-01 00:00:00\",\"toDate\":\"2022-12-31 00:00:00\"}");
 		
 		//action
-		when(mockOpenmrsSerializer.fromXML(anyObject())).thenReturn(dataSet);
+		when(mockOpenmrsSerializer.fromXML(org.mockito.Matchers.anyObject())).thenReturn(dataSet);
 		
 		//assert
 		assertSame(dataSet, cache.get(filename).get());

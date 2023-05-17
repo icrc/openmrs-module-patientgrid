@@ -35,10 +35,6 @@
             <artifactId>reporting-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>datafilter-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.openmrs.web</groupId>
             <artifactId>openmrs-web</artifactId>
             <version>${openmrsPlatformVersion}</version>
