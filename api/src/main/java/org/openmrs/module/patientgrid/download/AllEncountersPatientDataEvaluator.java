@@ -1,5 +1,6 @@
 package org.openmrs.module.patientgrid.download;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -43,8 +44,8 @@ public class AllEncountersPatientDataEvaluator implements PatientDataEvaluator {
 			        patientEncs.stream().forEach(encounter -> {
 				        Map<String, Object> columnUuidAndObsMap = new HashMap(obsColumns.size());
 				        obsColumns.stream().forEach(column -> {
-					        Obs obs = PatientGridUtils.getObsByConcept(encounter, column.getConcept());
-					        if (obs != null) {
+					        List<Obs> obs = PatientGridUtils.getObsByConcept(encounter, column.getConcept());
+					        if (CollectionUtils.isNotEmpty(obs)) {
 						        columnUuidAndObsMap.put(column.getUuid(), DataUtil.convertData(obs, OBS_CONVERTER));
 					        }
 				        });

@@ -38,7 +38,7 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 		obs.setFormField(formNamespace, formFieldPath);
 		Form form = Context.getFormService().getForm(1);
 		obs.getEncounter().setForm(form);
-		Map convertedObs = (Map) converter.convert(obs);
+		Map convertedObs = (Map) converter.convertOne(obs);
 		assertEquals(obs.getUuid(), convertedObs.get("uuid"));
 		assertEquals(obs.getConcept().getUuid(), convertedObs.get(PatientGridConstants.PROP_CONCEPT));
 		assertEquals(Double.valueOf(82), convertedObs.get("value"));
@@ -55,7 +55,7 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 	public void shouldCovertAnEncounterLessObs() {
 		Obs obs = Context.getObsService().getObs(1002);
 		obs.setEncounter(null);
-		Map convertedObs = (Map) converter.convert(obs);
+		Map convertedObs = (Map) converter.convertOne(obs);
 		assertEquals(obs.getUuid(), convertedObs.get("uuid"));
 		assertEquals(obs.getConcept().getUuid(), convertedObs.get(PatientGridConstants.PROP_CONCEPT));
 		assertEquals(Double.valueOf(82), convertedObs.get("value"));
@@ -65,7 +65,7 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void shouldCovertAnFormLessObs() {
 		Obs obs = Context.getObsService().getObs(1002);
-		Map convertedObs = (Map) converter.convert(obs);
+		Map convertedObs = (Map) converter.convertOne(obs);
 		assertEquals(obs.getUuid(), convertedObs.get("uuid"));
 		assertEquals(obs.getConcept().getUuid(), convertedObs.get(PatientGridConstants.PROP_CONCEPT));
 		assertEquals(Double.valueOf(82), convertedObs.get("value"));
@@ -79,7 +79,7 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void shouldIncludeTheAnswerConceptUuidForAnObsWithACodedValue() {
 		Obs obs = Context.getObsService().getObs(1008);
-		Map convertedObs = (Map) converter.convert(obs);
+		Map convertedObs = (Map) converter.convertOne(obs);
 		assertEquals(obs.getUuid(), convertedObs.get("uuid"));
 		assertEquals(obs.getConcept().getUuid(), convertedObs.get(PatientGridConstants.PROP_CONCEPT));
 		Map codedValue = (Map) convertedObs.get("value");

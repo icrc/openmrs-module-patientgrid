@@ -15,6 +15,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,7 +39,7 @@ public class ObsForLatestEncounterPatientDataEvaluator implements PatientDataEva
 		Set<Integer> patients = baseCohort == null ? patientIdAndEnc.keySet() : baseCohort.getMemberIds();
 		for (Integer patientId : patients) {
 			Encounter e = (Encounter) patientIdAndEnc.get(patientId);
-			Obs obs = PatientGridUtils.getObsByConcept(e, def.getConcept());
+			List<Obs> obs = PatientGridUtils.getObsByConcept(e, def.getConcept());
 			if (obs != null) {
 				patientIdAndObs.put(patientId, obs);
 			}

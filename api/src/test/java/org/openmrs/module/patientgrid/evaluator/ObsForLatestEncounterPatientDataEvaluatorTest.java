@@ -17,6 +17,8 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.List;
+
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
@@ -58,8 +60,8 @@ public class ObsForLatestEncounterPatientDataEvaluatorTest extends BaseModuleCon
 		
 		EvaluatedPatientData data = patientDataService.evaluate(obsDef, context);
 		assertEquals(2, data.getData().size());
-		assertEquals(os.getObs(1004), data.getData().get(patientId2));
-		assertEquals(os.getObs(1006), data.getData().get(patientId6));
+		assertEquals(os.getObs(1004), ((List) data.getData().get(patientId2)).get(0));
+		assertEquals(os.getObs(1006), ((List) data.getData().get(patientId6)).get(0));
 		assertNull(data.getData().get(patientId8));
 	}
 	

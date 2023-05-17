@@ -1,17 +1,5 @@
 package org.openmrs.module.patientgrid;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.NAME;
-import static org.openmrs.module.patientgrid.PatientGridConstants.GP_AGE_RANGES;
-
-import java.util.List;
-import java.util.Set;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -19,7 +7,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Obs;
 import org.openmrs.api.APIException;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
@@ -27,7 +18,10 @@ import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeConverter;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeRangeConverter;
 import org.openmrs.module.patientgrid.converter.PatientGridObsConverter;
-import org.openmrs.module.patientgrid.definition.*;
+import org.openmrs.module.patientgrid.definition.AgeAtLatestEncounterPatientDataDefinition;
+import org.openmrs.module.patientgrid.definition.DateForLatestEncounterPatientDataDefinition;
+import org.openmrs.module.patientgrid.definition.LocationEncounterDataDefinition;
+import org.openmrs.module.patientgrid.definition.ObsForLatestEncounterPatientDataDefinition;
 import org.openmrs.module.reporting.common.Age.Unit;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -44,6 +38,15 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
+
+import java.util.List;
+import java.util.Set;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
+import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.NAME;
+import static org.openmrs.module.patientgrid.PatientGridConstants.GP_AGE_RANGES;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Context.class)
@@ -247,7 +250,9 @@ public class PatientGridUtilsTest {
 		encounter.addObs(obs2);
 		Concept concept = new Concept();
 		concept.setUuid(conceptUuid);
-		assertEquals(obs2, PatientGridUtils.getObsByConcept(encounter, concept));
+		List<Obs> obsByConcept = PatientGridUtils.getObsByConcept(encounter, concept);
+		assertEquals(1, obsByConcept.size());
+		assertEquals(obs2, obsByConcept.get(0));
 	}
 	
 	@Test

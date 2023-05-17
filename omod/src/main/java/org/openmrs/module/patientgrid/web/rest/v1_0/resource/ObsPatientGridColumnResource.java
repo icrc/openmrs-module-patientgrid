@@ -1,7 +1,9 @@
 package org.openmrs.module.patientgrid.web.rest.v1_0.resource;
 
-import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.SUPPORTED_VERSIONS;
-
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.ObsPatientGridColumn;
 import org.openmrs.module.patientgrid.PatientGridColumn;
@@ -21,10 +23,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.SUPPORTED_VERSIONS;
 
 @SubClassHandler(supportedClass = ObsPatientGridColumn.class, supportedOpenmrsVersions = { SUPPORTED_VERSIONS })
 public class ObsPatientGridColumnResource extends BaseDelegatingSubclassHandler<PatientGridColumn, ObsPatientGridColumn> implements DelegatingSubclassHandler<PatientGridColumn, ObsPatientGridColumn> {

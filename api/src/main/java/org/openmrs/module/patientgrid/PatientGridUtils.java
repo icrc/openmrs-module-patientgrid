@@ -1,6 +1,7 @@
 package org.openmrs.module.patientgrid;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.openmrs.*;
@@ -211,21 +212,19 @@ public class PatientGridUtils {
 	 * @param concept the question concept to match
 	 * @return Observation if match is found otherwise null
 	 */
-	public static Obs getObsByConcept(Encounter encounter, Concept concept) {
+	public static List<Obs> getObsByConcept(Encounter encounter, Concept concept) {
 		Set<Obs> obs = encounter.getObs();
-		if (obs != null && concept != null) {
+		if (CollectionUtils.isNotEmpty(obs) && concept != null) {
 			int conceptHashcode = concept.hashCode();
 			List<Obs> matches = obs.stream()
 			        .filter(o -> !o.getVoided() && o.getObsGroup() == null && o.getConcept().hashCode() == conceptHashcode
 			                && o.getConcept().equals(concept) && !o.hasGroupMembers(true))
 			        .collect(Collectors.toList());
-			
-			if (matches.size() > 1) {
-				LOG.debug("Multi obs answer not yet supported. No data will be returned for " + encounter);
-			}
-			
-			if (matches.size() == 1) {
-				return matches.get(0);
+			if (matches.size() >= 1) {
+				if (matches.size() > 1) {
+					LOG.debug("Multi obs answer for encounter {}", encounter);
+				}
+				return matches;
 			}
 		}
 		return null;

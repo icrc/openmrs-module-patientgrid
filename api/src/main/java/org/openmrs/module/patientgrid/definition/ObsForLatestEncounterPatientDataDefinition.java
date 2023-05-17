@@ -9,6 +9,8 @@ import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
+import java.util.List;
+
 public class ObsForLatestEncounterPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 	
 	@ConfigurationProperty
@@ -33,7 +35,7 @@ public class ObsForLatestEncounterPatientDataDefinition extends BaseDataDefiniti
 	
 	@Override
 	public Class<?> getDataType() {
-		return Obs.class;
+		return List.class;
 	}
 	
 	/**
