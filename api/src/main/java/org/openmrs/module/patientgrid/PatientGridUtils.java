@@ -73,6 +73,7 @@ public class PatientGridUtils {
 		dataSetDef.addColumn(COLUMN_UUID, UUID_DATA_DEF, (String) null);
 		LocationCohortDefinition locationCohortDefinition = PatientGridFilterUtils.extractLocations(patientGrid);
 		DateRange dateRange = PatientGridFilterUtils.extractPeriodRange(patientGrid, currentUserTimeZone);
+
 		
 		for (PatientGridColumn columnDef : patientGrid.getColumns()) {
 			if (!includeObs && columnDef.getDatatype() == ColumnDatatype.OBS) {
@@ -122,6 +123,7 @@ public class PatientGridUtils {
 					obsDataDef.setEncounterType(obsColumn.getEncounterType());
 					obsDataDef.setLocationCohortDefinition(locationCohortDefinition);
 					obsDataDef.setPeriodRange(dateRange);
+					obsDataDef.setColumnName(columnDef.getName());
 					dataSetDef.addColumn(columnDef.getName(), obsDataDef, (String) null, OBS_CONVERTER);
 					break;
 				case ENC_LOCATION:
@@ -216,10 +218,8 @@ public class PatientGridUtils {
 		Set<Obs> obs = encounter.getObs();
 		if (CollectionUtils.isNotEmpty(obs) && concept != null) {
 			int conceptHashcode = concept.hashCode();
-			List<Obs> matches = obs.stream()
-			        .filter(o -> !o.getVoided() && o.getConcept().hashCode() == conceptHashcode
-			                && o.getConcept().equals(concept) && !o.hasGroupMembers(true))
-			        .collect(Collectors.toList());
+			List<Obs> matches = obs.stream().filter(o -> !o.getVoided() && o.getConcept().hashCode() == conceptHashcode
+			        && o.getConcept().equals(concept) && !o.hasGroupMembers(true)).collect(Collectors.toList());
 			if (matches.size() >= 1) {
 				if (matches.size() > 1) {
 					LOG.debug("Multi obs answer for encounter {}", encounter);

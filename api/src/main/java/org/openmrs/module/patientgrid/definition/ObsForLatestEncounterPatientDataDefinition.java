@@ -25,6 +25,9 @@ public class ObsForLatestEncounterPatientDataDefinition extends BaseDataDefiniti
 	@ConfigurationProperty
 	private LocationCohortDefinition locationCohortDefinition;
 	
+	@ConfigurationProperty
+	private String columnName;
+	
 	public DateRange getPeriodRange() {
 		return periodRange;
 	}
@@ -80,5 +83,13 @@ public class ObsForLatestEncounterPatientDataDefinition extends BaseDataDefiniti
 	
 	public void setLocationCohortDefinition(LocationCohortDefinition locationCohortDefinition) {
 		this.locationCohortDefinition = locationCohortDefinition;
+	}
+	
+	public void setColumnName(String columnName) {
+		this.columnName = columnName;
+	}
+	
+	public String getColumnName() {
+		return columnName;
 	}
 }
