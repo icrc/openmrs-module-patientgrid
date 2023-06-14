@@ -190,18 +190,22 @@ public class PatientGridUtilsTest {
 	}
 	
 	@Test
-	public void getObsByConcept_shouldExcludeObsGroupings() {
+	public void getObsByConcept_shouldNotExcludeObsGroupings() {
 		final String conceptUuid = "test-uuid";
+		final String groupConceptUuid = "test-group-uuid";
 		Encounter encounter = new Encounter();
 		Concept obsConcept = new Concept();
+		Concept obsGroupConcept = new Concept();
 		obsConcept.setUuid(conceptUuid);
+		obsGroupConcept.setUuid(groupConceptUuid);
 		Obs obs = new Obs();
+		Obs obsGroup = new Obs();
 		obs.setConcept(obsConcept);
-		obs.addGroupMember(new Obs());
+		obsGroup.setConcept(obsGroupConcept);
+		obsGroup.addGroupMember(obs);
 		encounter.addObs(obs);
-		Concept concept = new Concept();
-		concept.setUuid(conceptUuid);
-		assertNull(PatientGridUtils.getObsByConcept(encounter, concept));
+		encounter.addObs(obsGroup);
+		assertEquals(obs, PatientGridUtils.getObsByConcept(encounter, obsConcept));
 	}
 	
 	@Test
