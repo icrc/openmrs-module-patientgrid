@@ -216,7 +216,7 @@ public class PatientGridUtils {
 		if (obs != null && concept != null) {
 			int conceptHashcode = concept.hashCode();
 			List<Obs> matches = obs.stream()
-			        .filter(o -> !o.getVoided() && o.getObsGroup() == null && o.getConcept().hashCode() == conceptHashcode
+			        .filter(o -> !o.getVoided() && o.getConcept().hashCode() == conceptHashcode
 			                && o.getConcept().equals(concept) && !o.hasGroupMembers(true))
 			        .collect(Collectors.toList());
 			
