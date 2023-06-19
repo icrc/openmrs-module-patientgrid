@@ -205,7 +205,7 @@ public class PatientGridUtilsTest {
 		obsGroup.addGroupMember(obs);
 		encounter.addObs(obs);
 		encounter.addObs(obsGroup);
-		assertEquals(obs, PatientGridUtils.getObsByConcept(encounter, obsConcept));
+		assertEquals(obs, PatientGridUtils.getObsByConcept(encounter, obsConcept).get(0));
 	}
 	
 	@Test

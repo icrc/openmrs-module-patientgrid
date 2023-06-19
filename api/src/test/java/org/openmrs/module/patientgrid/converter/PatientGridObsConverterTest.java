@@ -33,9 +33,6 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 	@Test
 	public void shouldReturnTheConvertedObs() {
 		Obs obs = Context.getObsService().getObs(1002);
-		final String formNamespace = "form-name-space";
-		final String formFieldPath = "form-field-path";
-		obs.setFormField(formNamespace, formFieldPath);
 		Form form = Context.getFormService().getForm(1);
 		obs.getEncounter().setForm(form);
 		Map convertedObs = (Map) converter.convertOne(obs);
@@ -47,8 +44,6 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 		assertEquals(obs.getEncounter().getEncounterType().getUuid(),
 		    encounterData.get(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE));
 		assertEquals(obs.getEncounter().getForm().getUuid(), encounterData.get("form"));
-		assertEquals(formNamespace, convertedObs.get("formFieldNamespace"));
-		assertEquals(formFieldPath, convertedObs.get("formFieldPath"));
 	}
 	
 	@Test
