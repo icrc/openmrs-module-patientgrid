@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.converter.PropertyConverter;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
@@ -48,6 +49,9 @@ public class PatientGridUtils {
 	private static final LocationEncounterDataDefinition LOCATION_DATA_DEF = new LocationEncounterDataDefinition();
 	
 	private static final PreferredNameDataDefinition NAME_DATA_DEF = new PreferredNameDataDefinition();
+	
+	private static final PatientIdentifierDataDefinition LEGACY_ID_DATA_DEF = new PatientIdentifierDataDefinition(
+	        "Legacy Id", Context.getPatientService().getPatientIdentifierType(2));
 	
 	private static final GenderDataDefinition GENDER_DATA_DEF = new GenderDataDefinition();
 	
@@ -81,6 +85,9 @@ public class PatientGridUtils {
 			switch (columnDef.getDatatype()) {
 				case NAME:
 					dataSetDef.addColumn(columnDef.getName(), NAME_DATA_DEF, (String) null, OBJECT_CONVERTER);
+					break;
+				case LEGACY_ID:
+					dataSetDef.addColumn(columnDef.getName(), LEGACY_ID_DATA_DEF, (String) null, OBJECT_CONVERTER);
 					break;
 				case GENDER:
 					dataSetDef.addColumn(columnDef.getName(), GENDER_DATA_DEF, (String) null);
