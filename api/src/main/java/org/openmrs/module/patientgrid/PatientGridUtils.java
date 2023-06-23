@@ -45,12 +45,13 @@ public class PatientGridUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(PatientGridUtils.class);
 	
 	private static final DataConverter COUNTRY_CONVERTER = new PropertyConverter(String.class, "country");
-
-	private static final String PATIENT_ID_UUID_PROPERTY_NAME =  "patientGrid.PatientIdUuid";
+	
+	private static final String PATIENT_ID_UUID_PROPERTY_NAME = "patientGrid.PatientIdUuid";
+	
 	private static final LocationEncounterDataDefinition LOCATION_DATA_DEF = new LocationEncounterDataDefinition();
 	
 	private static final PreferredNameDataDefinition NAME_DATA_DEF = new PreferredNameDataDefinition();
-
+	
 	private static final GenderDataDefinition GENDER_DATA_DEF = new GenderDataDefinition();
 	
 	private static final PersonUuidDataDefinition UUID_DATA_DEF = new PersonUuidDataDefinition();
@@ -85,13 +86,14 @@ public class PatientGridUtils {
 					dataSetDef.addColumn(columnDef.getName(), NAME_DATA_DEF, (String) null, OBJECT_CONVERTER);
 					break;
 				case PATIENT_ID:
-					String patientIdUuid = Context.getAdministrationService().getGlobalProperty(PATIENT_ID_UUID_PROPERTY_NAME);
+					String patientIdUuid = Context.getAdministrationService()
+					        .getGlobalProperty(PATIENT_ID_UUID_PROPERTY_NAME);
 					PatientIdentifierDataDefinition patientIdDataDef = null;
-					if (StringUtils.isEmpty(patientIdUuid)){
+					if (StringUtils.isEmpty(patientIdUuid)) {
 						patientIdDataDef = new PatientIdentifierDataDefinition();
-					}else{
-						patientIdDataDef = new PatientIdentifierDataDefinition(
-								"Patient Id", Context.getPatientService().getPatientIdentifierTypeByUuid(patientIdUuid));
+					} else {
+						patientIdDataDef = new PatientIdentifierDataDefinition("Patient Id",
+						        Context.getPatientService().getPatientIdentifierTypeByUuid(patientIdUuid));
 					}
 					dataSetDef.addColumn(columnDef.getName(), patientIdDataDef, (String) null, OBJECT_CONVERTER);
 					break;
