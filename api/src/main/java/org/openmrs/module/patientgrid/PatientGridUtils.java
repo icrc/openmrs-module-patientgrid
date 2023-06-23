@@ -45,14 +45,12 @@ public class PatientGridUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(PatientGridUtils.class);
 	
 	private static final DataConverter COUNTRY_CONVERTER = new PropertyConverter(String.class, "country");
-	
+
+	private static final String PATIENT_ID_UUID_PROPERTY_NAME =  "patientGridPatientIdUuid";
 	private static final LocationEncounterDataDefinition LOCATION_DATA_DEF = new LocationEncounterDataDefinition();
 	
 	private static final PreferredNameDataDefinition NAME_DATA_DEF = new PreferredNameDataDefinition();
-	
-	private static final PatientIdentifierDataDefinition LEGACY_ID_DATA_DEF = new PatientIdentifierDataDefinition(
-	        "Legacy Id", Context.getPatientService().getPatientIdentifierTypeByUuid("8d79403a-c2cc-11de-8d13-0010c6dffd0f"));
-	
+
 	private static final GenderDataDefinition GENDER_DATA_DEF = new GenderDataDefinition();
 	
 	private static final PersonUuidDataDefinition UUID_DATA_DEF = new PersonUuidDataDefinition();
@@ -86,8 +84,16 @@ public class PatientGridUtils {
 				case NAME:
 					dataSetDef.addColumn(columnDef.getName(), NAME_DATA_DEF, (String) null, OBJECT_CONVERTER);
 					break;
-				case LEGACY_ID:
-					dataSetDef.addColumn(columnDef.getName(), LEGACY_ID_DATA_DEF, (String) null, OBJECT_CONVERTER);
+				case PATIENT_ID:
+					String patientIdUuid = Context.getAdministrationService().getGlobalProperty(PATIENT_ID_UUID_PROPERTY_NAME);
+					PatientIdentifierDataDefinition patientIdDataDef = null;
+					if (StringUtils.isEmpty(patientIdUuid)){
+						patientIdDataDef = new PatientIdentifierDataDefinition();
+					}else{
+						patientIdDataDef = new PatientIdentifierDataDefinition(
+								"Patient Id", Context.getPatientService().getPatientIdentifierTypeByUuid(patientIdUuid));
+					}
+					dataSetDef.addColumn(columnDef.getName(), patientIdDataDef, (String) null, OBJECT_CONVERTER);
 					break;
 				case GENDER:
 					dataSetDef.addColumn(columnDef.getName(), GENDER_DATA_DEF, (String) null);
@@ -222,10 +228,8 @@ public class PatientGridUtils {
 		Set<Obs> obs = encounter.getObs();
 		if (obs != null && concept != null) {
 			int conceptHashcode = concept.hashCode();
-			List<Obs> matches = obs.stream()
-			        .filter(o -> !o.getVoided() && o.getConcept().hashCode() == conceptHashcode
-			                && o.getConcept().equals(concept) && !o.hasGroupMembers(true))
-			        .collect(Collectors.toList());
+			List<Obs> matches = obs.stream().filter(o -> !o.getVoided() && o.getConcept().hashCode() == conceptHashcode
+			        && o.getConcept().equals(concept) && !o.hasGroupMembers(true)).collect(Collectors.toList());
 			
 			if (matches.size() > 1) {
 				LOG.debug("Multi obs answer not yet supported. No data will be returned for " + encounter);
