@@ -46,7 +46,7 @@ public class PatientGridUtils {
 	
 	private static final DataConverter COUNTRY_CONVERTER = new PropertyConverter(String.class, "country");
 
-	private static final String PATIENT_ID_UUID_PROPERTY_NAME =  "patientGridPatientIdUuid";
+	private static final String PATIENT_ID_UUID_PROPERTY_NAME =  "patientGrid.PatientIdUuid";
 	private static final LocationEncounterDataDefinition LOCATION_DATA_DEF = new LocationEncounterDataDefinition();
 	
 	private static final PreferredNameDataDefinition NAME_DATA_DEF = new PreferredNameDataDefinition();
