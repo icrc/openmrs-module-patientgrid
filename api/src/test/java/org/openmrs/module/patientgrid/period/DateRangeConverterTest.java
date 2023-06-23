@@ -28,7 +28,7 @@ import java.util.TimeZone;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Context.class })
+@PrepareForTest(Context.class)
 @PowerMockIgnore("jdk.internal.reflect.*")
 public class DateRangeConverterTest {
 	
