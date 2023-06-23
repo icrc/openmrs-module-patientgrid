@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.openmrs.*;
 import org.openmrs.api.APIException;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeConverter;
@@ -53,13 +54,17 @@ public class PatientGridUtilsTest {
 	@Mock
 	private AdministrationService mockAdminService;
 	
+	@Mock
+	private PatientService mockPatientService;
+	
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 	
 	@Before
 	public void setup() {
-		Whitebox.setInternalState(PatientGridUtils.class, "ageRangeConverter", (Object) null);
 		PowerMockito.mockStatic(Context.class);
+		when(Context.getPatientService()).thenReturn(mockPatientService);
+		Whitebox.setInternalState(PatientGridUtils.class, "ageRangeConverter", (Object) null);
 		when(Context.getAdministrationService()).thenReturn(mockAdminService);
 	}
 	

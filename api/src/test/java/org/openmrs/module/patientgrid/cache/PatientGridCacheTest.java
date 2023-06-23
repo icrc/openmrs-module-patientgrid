@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.ExtendedDataSet;
 import org.openmrs.module.patientgrid.PatientGridConstants;
@@ -36,6 +37,9 @@ public class PatientGridCacheTest {
 	private final String utcTimeZone = "UTC";
 	
 	@Mock
+	private PatientService mockPatientService;
+	
+	@Mock
 	private CustomXstreamSerializer mockOpenmrsSerializer;
 	
 	private final PatientGridCache cache = new PatientGridCache();
@@ -47,6 +51,7 @@ public class PatientGridCacheTest {
 	@Before
 	public void setup() throws Exception {
 		PowerMockito.mockStatic(Context.class);
+		when(Context.getPatientService()).thenReturn(mockPatientService);
 		PowerMockito.mockStatic(PatientGridUtils.class);
 		Whitebox.setInternalState(cache, DiskCache.class, mockDiskCache);
 		cache.setSerializer(mockOpenmrsSerializer);

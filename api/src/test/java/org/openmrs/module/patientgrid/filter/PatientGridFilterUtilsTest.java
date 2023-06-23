@@ -12,6 +12,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.LocationService;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.*;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
@@ -50,6 +51,8 @@ public class PatientGridFilterUtilsTest {
 		PowerMockito.mockStatic(Context.class);
 		AdministrationService mockAdminService = PowerMockito.mock(AdministrationService.class);
 		when(Context.getAdministrationService()).thenReturn(mockAdminService);
+		PatientService mockPatientService = PowerMockito.mock(PatientService.class);
+		when(Context.getPatientService()).thenReturn(mockPatientService);
 	}
 	
 	@Test

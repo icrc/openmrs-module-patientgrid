@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.messagesource.impl.DefaultMessageSourceServiceImpl;
@@ -44,6 +45,9 @@ public class DateRangeConverterTest {
 	
 	@Before
 	public void prepareFormatter() {
+		PowerMockito.mockStatic(Context.class);
+		PatientService mockPatientService = PowerMockito.mock(PatientService.class);
+		when(Context.getPatientService()).thenReturn(mockPatientService);
 		dateTimeFormat.setTimeZone(TimeZone.getTimeZone(utcTimeZone));
 	}
 	

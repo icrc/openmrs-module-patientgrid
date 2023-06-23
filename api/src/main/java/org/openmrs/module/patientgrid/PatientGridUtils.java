@@ -51,7 +51,7 @@ public class PatientGridUtils {
 	private static final PreferredNameDataDefinition NAME_DATA_DEF = new PreferredNameDataDefinition();
 	
 	private static final PatientIdentifierDataDefinition LEGACY_ID_DATA_DEF = new PatientIdentifierDataDefinition(
-	        "Legacy Id", Context.getPatientService().getPatientIdentifierType(2));
+	        "Legacy Id", Context.getPatientService().getPatientIdentifierTypeByUuid("8d79403a-c2cc-11de-8d13-0010c6dffd0f"));
 	
 	private static final GenderDataDefinition GENDER_DATA_DEF = new GenderDataDefinition();
 	
