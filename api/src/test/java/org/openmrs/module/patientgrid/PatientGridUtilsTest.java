@@ -36,6 +36,7 @@ import org.openmrs.module.reporting.data.JoinDataDefinition;
 import org.openmrs.module.reporting.data.MappedData;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.converter.PropertyConverter;
+import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
@@ -97,6 +98,7 @@ public class PatientGridUtilsTest {
 	public void createPatientDataSetDefinition_shouldCreateAPatientDataSetDefinitionForTheGrid() {
 		final String gender = "gender";
 		final String name = "name";
+		final String patientId = "patientId";
 		final String encDate = "encDate";
 		final String ageAtEnc = "ageAtEnc";
 		final String ageCategory = "ageCategory";
@@ -108,6 +110,7 @@ public class PatientGridUtilsTest {
 		final String country = "country";
 		PatientGrid patientGrid = new PatientGrid();
 		patientGrid.addColumn(new PatientGridColumn(name, ColumnDatatype.NAME));
+		patientGrid.addColumn(new PatientGridColumn(patientId, ColumnDatatype.PATIENT_ID));
 		patientGrid.addColumn(new PatientGridColumn(gender, ColumnDatatype.GENDER));
 		patientGrid.addColumn(new EncounterDatePatientGridColumn(encDate, initial));
 		patientGrid.addColumn(new AgeAtEncounterPatientGridColumn(ageAtEnc, initial));
@@ -120,6 +123,8 @@ public class PatientGridUtilsTest {
 		PatientDataSetDefinition datasetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, true, null);
 		
 		assertEquals(PreferredNameDataDefinition.class, getDefinition(name, datasetDef).getClass());
+		MappedData patientIdDef = datasetDef.getColumnDefinition(patientId).getDataDefinition();
+		assertEquals(PatientIdentifierDataDefinition.class, patientIdDef.getParameterizable().getClass());
 		assertEquals(GenderDataDefinition.class, getDefinition(gender, datasetDef).getClass());
 		DateForLatestEncounterPatientDataDefinition dateDef = (DateForLatestEncounterPatientDataDefinition) datasetDef
 		        .getColumnDefinition(encDate).getDataDefinition().getParameterizable();
