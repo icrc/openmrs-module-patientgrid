@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.converter.PropertyConverter;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
@@ -44,6 +45,8 @@ public class PatientGridUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(PatientGridUtils.class);
 	
 	private static final DataConverter COUNTRY_CONVERTER = new PropertyConverter(String.class, "country");
+	
+	private static final String PATIENT_ID_UUID_PROPERTY_NAME = "patientGrid.PatientIdUuid";
 	
 	private static final LocationEncounterDataDefinition LOCATION_DATA_DEF = new LocationEncounterDataDefinition();
 	
@@ -81,6 +84,18 @@ public class PatientGridUtils {
 			switch (columnDef.getDatatype()) {
 				case NAME:
 					dataSetDef.addColumn(columnDef.getName(), NAME_DATA_DEF, (String) null, OBJECT_CONVERTER);
+					break;
+				case PATIENT_ID:
+					String patientIdUuid = Context.getAdministrationService()
+					        .getGlobalProperty(PATIENT_ID_UUID_PROPERTY_NAME);
+					PatientIdentifierDataDefinition patientIdDataDef = null;
+					if (StringUtils.isEmpty(patientIdUuid)) {
+						patientIdDataDef = new PatientIdentifierDataDefinition();
+					} else {
+						patientIdDataDef = new PatientIdentifierDataDefinition("Patient Id",
+						        Context.getPatientService().getPatientIdentifierTypeByUuid(patientIdUuid));
+					}
+					dataSetDef.addColumn(columnDef.getName(), patientIdDataDef, (String) null, OBJECT_CONVERTER);
 					break;
 				case GENDER:
 					dataSetDef.addColumn(columnDef.getName(), GENDER_DATA_DEF, (String) null);
@@ -215,10 +230,8 @@ public class PatientGridUtils {
 		Set<Obs> obs = encounter.getObs();
 		if (obs != null && concept != null) {
 			int conceptHashcode = concept.hashCode();
-			List<Obs> matches = obs.stream()
-			        .filter(o -> !o.getVoided() && o.getConcept().hashCode() == conceptHashcode
-			                && o.getConcept().equals(concept) && !o.hasGroupMembers(true))
-			        .collect(Collectors.toList());
+			List<Obs> matches = obs.stream().filter(o -> !o.getVoided() && o.getConcept().hashCode() == conceptHashcode
+			        && o.getConcept().equals(concept) && !o.hasGroupMembers(true)).collect(Collectors.toList());
 			
 			if (matches.size() > 1) {
 				LOG.debug("Multi obs answer not yet supported. No data will be returned for " + encounter);
