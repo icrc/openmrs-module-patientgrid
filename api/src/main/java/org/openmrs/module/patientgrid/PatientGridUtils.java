@@ -46,7 +46,9 @@ public class PatientGridUtils {
 	
 	private static final DataConverter COUNTRY_CONVERTER = new PropertyConverter(String.class, "country");
 	
-	private static final String PATIENT_ID_UUID_PROPERTY_NAME = "patientGrid.PatientIdUuid";
+	private static final String PATIENT_ID_01_UUID_PROPERTY_NAME = "patientGrid.PatientId01Uuid";
+	
+	private static final String PATIENT_ID_02_UUID_PROPERTY_NAME = "patientGrid.PatientId02Uuid";
 	
 	private static final LocationEncounterDataDefinition LOCATION_DATA_DEF = new LocationEncounterDataDefinition();
 	
@@ -85,17 +87,29 @@ public class PatientGridUtils {
 				case NAME:
 					dataSetDef.addColumn(columnDef.getName(), NAME_DATA_DEF, (String) null, OBJECT_CONVERTER);
 					break;
-				case PATIENT_ID:
-					String patientIdUuid = Context.getAdministrationService()
-					        .getGlobalProperty(PATIENT_ID_UUID_PROPERTY_NAME);
-					PatientIdentifierDataDefinition patientIdDataDef = null;
-					if (StringUtils.isEmpty(patientIdUuid)) {
-						patientIdDataDef = new PatientIdentifierDataDefinition();
+				case PATIENT_ID_01:
+					String patientId01Uuid = Context.getAdministrationService()
+					        .getGlobalProperty(PATIENT_ID_01_UUID_PROPERTY_NAME);
+					PatientIdentifierDataDefinition patientId01DataDef = null;
+					if (StringUtils.isEmpty(patientId01Uuid)) {
+						patientId01DataDef = new PatientIdentifierDataDefinition();
 					} else {
-						patientIdDataDef = new PatientIdentifierDataDefinition("Patient Id",
-						        Context.getPatientService().getPatientIdentifierTypeByUuid(patientIdUuid));
+						patientId01DataDef = new PatientIdentifierDataDefinition("Patient Id 01",
+						        Context.getPatientService().getPatientIdentifierTypeByUuid(patientId01Uuid));
 					}
-					dataSetDef.addColumn(columnDef.getName(), patientIdDataDef, (String) null, OBJECT_CONVERTER);
+					dataSetDef.addColumn(columnDef.getName(), patientId01DataDef, (String) null, OBJECT_CONVERTER);
+					break;
+				case PATIENT_ID_02:
+					String patientId02Uuid = Context.getAdministrationService()
+					        .getGlobalProperty(PATIENT_ID_02_UUID_PROPERTY_NAME);
+					PatientIdentifierDataDefinition patientId02DataDef = null;
+					if (StringUtils.isEmpty(patientId02Uuid)) {
+						patientId02DataDef = new PatientIdentifierDataDefinition();
+					} else {
+						patientId02DataDef = new PatientIdentifierDataDefinition("Patient Id 02",
+						        Context.getPatientService().getPatientIdentifierTypeByUuid(patientId02Uuid));
+					}
+					dataSetDef.addColumn(columnDef.getName(), patientId02DataDef, (String) null, OBJECT_CONVERTER);
 					break;
 				case GENDER:
 					dataSetDef.addColumn(columnDef.getName(), GENDER_DATA_DEF, (String) null);

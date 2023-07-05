@@ -89,7 +89,8 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public enum ColumnDatatype {
 		
 		NAME(new Displayer.DefaultFilter()),
-		PATIENT_ID(new Displayer.DefaultFilter()),
+		PATIENT_ID_01(new Displayer.DefaultFilter()),
+		PATIENT_ID_02(new Displayer.DefaultFilter()),
 		GENDER(new Displayer.DefaultFilter()),
 		ENC_DATE(new Displayer.DateFilter()),
 		ENC_AGE(new Displayer.DefaultFilter()),
