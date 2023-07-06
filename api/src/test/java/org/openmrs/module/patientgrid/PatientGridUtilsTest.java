@@ -98,7 +98,8 @@ public class PatientGridUtilsTest {
 	public void createPatientDataSetDefinition_shouldCreateAPatientDataSetDefinitionForTheGrid() {
 		final String gender = "gender";
 		final String name = "name";
-		final String patientId = "patientId";
+		final String patientId01 = "patientId01";
+		final String patientId02 = "patientId02";
 		final String encDate = "encDate";
 		final String ageAtEnc = "ageAtEnc";
 		final String ageCategory = "ageCategory";
@@ -110,7 +111,8 @@ public class PatientGridUtilsTest {
 		final String country = "country";
 		PatientGrid patientGrid = new PatientGrid();
 		patientGrid.addColumn(new PatientGridColumn(name, ColumnDatatype.NAME));
-		patientGrid.addColumn(new PatientGridColumn(patientId, ColumnDatatype.PATIENT_ID));
+		patientGrid.addColumn(new PatientGridColumn(patientId01, ColumnDatatype.PATIENT_ID_01));
+		patientGrid.addColumn(new PatientGridColumn(patientId02, ColumnDatatype.PATIENT_ID_02));
 		patientGrid.addColumn(new PatientGridColumn(gender, ColumnDatatype.GENDER));
 		patientGrid.addColumn(new EncounterDatePatientGridColumn(encDate, initial));
 		patientGrid.addColumn(new AgeAtEncounterPatientGridColumn(ageAtEnc, initial));
@@ -123,8 +125,10 @@ public class PatientGridUtilsTest {
 		PatientDataSetDefinition datasetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, true, null);
 		
 		assertEquals(PreferredNameDataDefinition.class, getDefinition(name, datasetDef).getClass());
-		MappedData patientIdDef = datasetDef.getColumnDefinition(patientId).getDataDefinition();
-		assertEquals(PatientIdentifierDataDefinition.class, patientIdDef.getParameterizable().getClass());
+		MappedData patientId01Def = datasetDef.getColumnDefinition(patientId01).getDataDefinition();
+		assertEquals(PatientIdentifierDataDefinition.class, patientId01Def.getParameterizable().getClass());
+		MappedData patientId02Def = datasetDef.getColumnDefinition(patientId02).getDataDefinition();
+		assertEquals(PatientIdentifierDataDefinition.class, patientId02Def.getParameterizable().getClass());
 		assertEquals(GenderDataDefinition.class, getDefinition(gender, datasetDef).getClass());
 		DateForLatestEncounterPatientDataDefinition dateDef = (DateForLatestEncounterPatientDataDefinition) datasetDef
 		        .getColumnDefinition(encDate).getDataDefinition().getParameterizable();
