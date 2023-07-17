@@ -35,4 +35,11 @@ public class DateRange implements Serializable {
 		return fromInServerTz;
 	}
 	
+	public long getTimeRange() {
+		return toInServerTz.getTime() - fromInServerTz.getTime();
+	}
+	
+	public boolean isWiderRangeThan(DateRange other) {
+		return this.getTimeRange() > other.getTimeRange();
+	}
 }

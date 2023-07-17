@@ -27,6 +27,9 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype.*;
@@ -38,6 +41,8 @@ import static org.openmrs.module.patientgrid.PatientGridConstants.GP_DEFAULT_PER
 public class PatientGridFilterUtils {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PatientGridFilterUtils.class);
+	
+	private static final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 	
 	public static ObjectWithDateRange<CohortDefinition> generateCohortDefinition(PatientGrid patientGrid) {
 		return generateCohortDefinition(patientGrid, null);
@@ -142,7 +147,22 @@ public class PatientGridFilterUtils {
 			if (ENC_DATE.equals(column.getDatatype())) {
 				if (!column.getFilters().isEmpty()) {
 					for (PatientGridColumnFilter filter : column.getFilters()) {
-						periodRange = new DateRangeConverter(userTimeZone).convert(filter.getOperand());
+						DateRange newPeriodRange;
+						if (isValidDate(filter.getOperand())) {
+							// Operand is a date meaning that period will encompass a single date
+							try {
+								Date date = new SimpleDateFormat(DATE_PATTERN).parse(filter.getOperand());
+								newPeriodRange = new DateRange(null, date, date);
+							}
+							catch (ParseException pe) {
+								throw new APIException("Failed to convert " + filter.getOperand() + " to a date", pe);
+							}
+						} else {
+							newPeriodRange = new DateRangeConverter(userTimeZone).convert(filter.getOperand());
+						}
+						if (periodRange == null || periodRange.isWiderRangeThan(newPeriodRange)) {
+							periodRange = newPeriodRange;
+						}
 					}
 				}
 				break;
@@ -385,4 +405,15 @@ public class PatientGridFilterUtils {
 		return new ObjectWithDateRange<>(cohort, cohortDef.getDateRange());
 	}
 	
+	private static boolean isValidDate(String dateStr) {
+		DateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+		sdf.setLenient(false);
+		try {
+			sdf.parse(dateStr);
+		}
+		catch (ParseException e) {
+			return false;
+		}
+		return true;
+	}
 }
