@@ -11,6 +11,7 @@ import org.openmrs.module.patientgrid.function.MostRecentEncounterPerPatientByTy
 import org.openmrs.module.reporting.data.patient.EvaluatedPatientData;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.evaluator.PatientDataEvaluator;
+import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumnDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 
@@ -38,7 +39,8 @@ public class ObsForLatestEncounterPatientDataEvaluator implements PatientDataEva
 		Set<Integer> patients = baseCohort == null ? patientIdAndEnc.keySet() : baseCohort.getMemberIds();
 		for (Integer patientId : patients) {
 			Encounter e = (Encounter) patientIdAndEnc.get(patientId);
-			Obs obs = PatientGridUtils.getObsByConcept(e, def.getConcept());
+			Obs obs = PatientGridUtils.getObsByConcept(e, def.getConcept(),
+			    (RowPerObjectColumnDefinition) context.getContextValues().get("columnDefinitions"));
 			if (obs != null) {
 				patientIdAndObs.put(patientId, obs);
 			}
