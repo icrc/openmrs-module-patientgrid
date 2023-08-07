@@ -265,14 +265,14 @@ public class PatientGridUtils {
 			if (matches.size() > 1) {
 				String questionId = columnDefinition.getName().substring(columnDefinition.getName().lastIndexOf("--") + 2);
 				matches = matches.stream().filter(
-				    o -> o.getFormFieldPath().substring(o.getFormFieldPath().lastIndexOf("~") + 1).equals(questionId))
+				    o -> extractQuestionIdFromFormFieldPath(o.getFormFieldPath()).equals(questionId))
 				        .collect(Collectors.toList());
 				if (matches.size() > 1) {
 
 					String obsQuestionId = matches.stream()
 							.map(o -> {
 								String formFieldPath = o.getFormFieldPath();
-								return formFieldPath != null ? formFieldPath.substring(formFieldPath.lastIndexOf("~") + 1) : null;
+								return formFieldPath != null ? extractQuestionIdFromFormFieldPath(formFieldPath) : null;
 							})
 							.findFirst()
 							.orElse(null);
@@ -428,6 +428,6 @@ public class PatientGridUtils {
 	}
 
 	private static String extractQuestionIdFromFormFieldPath(String formFieldPath) {
-		return formFieldPath.substring(formFieldPath.lastIndexOf("~") + 1);
+		return formFieldPath.split("~")[0];
 	}
 }
