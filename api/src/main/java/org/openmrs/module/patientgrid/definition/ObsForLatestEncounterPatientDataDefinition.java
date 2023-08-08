@@ -23,6 +23,9 @@ public class ObsForLatestEncounterPatientDataDefinition extends BaseDataDefiniti
 	@ConfigurationProperty
 	private LocationCohortDefinition locationCohortDefinition;
 	
+	@ConfigurationProperty
+	private String questionId;
+	
 	public DateRange getPeriodRange() {
 		return periodRange;
 	}
@@ -78,5 +81,13 @@ public class ObsForLatestEncounterPatientDataDefinition extends BaseDataDefiniti
 	
 	public void setLocationCohortDefinition(LocationCohortDefinition locationCohortDefinition) {
 		this.locationCohortDefinition = locationCohortDefinition;
+	}
+	
+	public String getQuestionId() {
+		return questionId;
+	}
+	
+	public void setQuestionId(String questionId) {
+		this.questionId = questionId;
 	}
 }

@@ -39,8 +39,7 @@ public class ObsForLatestEncounterPatientDataEvaluator implements PatientDataEva
 		Set<Integer> patients = baseCohort == null ? patientIdAndEnc.keySet() : baseCohort.getMemberIds();
 		for (Integer patientId : patients) {
 			Encounter e = (Encounter) patientIdAndEnc.get(patientId);
-			Obs obs = PatientGridUtils.getObsByConcept(e, def.getConcept(),
-			    (RowPerObjectColumnDefinition) context.getContextValues().get("columnDefinitions"));
+			Obs obs = PatientGridUtils.getObsByConcept(e, def.getConcept(), def.getQuestionId());
 			if (obs != null) {
 				patientIdAndObs.put(patientId, obs);
 			}
