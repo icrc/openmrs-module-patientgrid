@@ -149,6 +149,7 @@ public class PatientGridUtils {
 					ObsForLatestEncounterPatientDataDefinition obsDataDef = new ObsForLatestEncounterPatientDataDefinition();
 					obsDataDef.setConcept(obsColumn.getConcept());
 					obsDataDef.setEncounterType(obsColumn.getEncounterType());
+					obsDataDef.setQuestionId(obsColumn.getName().substring(obsColumn.getName().lastIndexOf("--") + 2));
 					obsDataDef.setLocationCohortDefinition(locationCohortDefinition);
 					obsDataDef.setPeriodRange(dateRange);
 					dataSetDef.addColumn(columnDef.getName(), obsDataDef, (String) null, OBS_CONVERTER);
@@ -232,7 +233,7 @@ public class PatientGridUtils {
 		
 		return results;
 	}
-
+	
 	/**
 	 * Gets the observation from the specified encounter with a question concept that matches the
 	 * specified concept ignoring obs groupings and voided obs.
@@ -251,11 +252,11 @@ public class PatientGridUtils {
 	 *
 	 * @param encounter the encounter containing the obs to search
 	 * @param concept the question concept to match
-	 * @param columnDefinition the definition of the patient grid column being processed
+	 * @param questionId the form question identifier for the column being processed
 	 * @return Observation if match is found otherwise null
 	 */
-	public static Obs getObsByConcept(Encounter encounter, Concept concept, RowPerObjectColumnDefinition columnDefinition) {
-
+	public static Obs getObsByConcept(Encounter encounter, Concept concept, String questionId) {
+		
 		Set<Obs> obs = encounter.getObs();
 		if (obs != null && concept != null) {
 			int conceptHashcode = concept.hashCode();
@@ -263,41 +264,39 @@ public class PatientGridUtils {
 			        && o.getConcept().equals(concept) && !o.hasGroupMembers(true)).collect(Collectors.toList());
 			
 			if (matches.size() > 1) {
-				String questionId = columnDefinition.getName().substring(columnDefinition.getName().lastIndexOf("--") + 2);
-				matches = matches.stream().filter(
-				    o -> o.getFormFieldPath().substring(o.getFormFieldPath().lastIndexOf("~") + 1).equals(questionId))
+				matches = matches.stream()
+				        .filter(o -> extractQuestionIdFromFormFieldPath(o.getFormFieldPath()).equals(questionId))
 				        .collect(Collectors.toList());
 				if (matches.size() > 1) {
-
-					String obsQuestionId = matches.stream()
-							.map(o -> {
-								String formFieldPath = o.getFormFieldPath();
-								return formFieldPath != null ? formFieldPath.substring(formFieldPath.lastIndexOf("~") + 1) : null;
-							})
-							.findFirst()
-							.orElse(null);
-
+					
+					String obsQuestionId = matches.stream().map(o -> {
+						String formFieldPath = o.getFormFieldPath();
+						return formFieldPath != null ? extractQuestionIdFromFormFieldPath(formFieldPath) : null;
+					}).findFirst().orElse(null);
+					
 					boolean allObsQuestionIdMatch = matches.stream().allMatch(o -> {
 						String formFieldPath = o.getFormFieldPath();
-						return formFieldPath != null && extractQuestionIdFromFormFieldPath(obsQuestionId).equals( extractQuestionIdFromFormFieldPath(formFieldPath));
+						return formFieldPath != null && extractQuestionIdFromFormFieldPath(obsQuestionId)
+						        .equals(extractQuestionIdFromFormFieldPath(formFieldPath));
 					});
-
+					
 					if (allObsQuestionIdMatch) {
 						// TODO: This is not the prettiest way of handling multi obs answers. Method should be reviewed to return all obs and the concatenation should be delegated to an above layer.
-
+						
 						// Workaround for multi obs answers: Create a dummy text obs containing the concatenated answers display text
 						Obs obsConcat = Obs.newInstance(matches.get(0));
 						ConceptDatatype datatype = new ConceptDatatype();
 						datatype.setUuid(ConceptDatatype.TEXT_UUID);
 						obsConcat.getConcept().setDatatype(datatype);
 						obsConcat.setValueCoded(null);
-						String valueTextConcat =  matches.stream().map(match -> match.getValueCoded().getDisplayString()).collect(Collectors.joining(", "));
+						String valueTextConcat = matches.stream().map(match -> match.getValueCoded().getDisplayString())
+						        .collect(Collectors.joining(", "));
 						obsConcat.setValueText(valueTextConcat);
 						return obsConcat;
 					}
 				}
 			}
-
+			
 			if (matches.size() == 1) {
 				return matches.get(0);
 			}
@@ -426,8 +425,8 @@ public class PatientGridUtils {
 		}
 		return userTimeZone;
 	}
-
+	
 	private static String extractQuestionIdFromFormFieldPath(String formFieldPath) {
-		return formFieldPath.substring(formFieldPath.lastIndexOf("~") + 1);
+		return formFieldPath.split("~")[0];
 	}
 }
