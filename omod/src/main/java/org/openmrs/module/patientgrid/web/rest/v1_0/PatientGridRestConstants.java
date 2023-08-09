@@ -11,7 +11,7 @@ public final class PatientGridRestConstants {
 	
 	public static final String NAMESPACE = RestConstants.VERSION_1 + "/" + PatientGridConstants.MODULE_ID;
 	
-	public static final String SUPPORTED_VERSIONS = "2.3.* - 2.5.*";
+	public static final String SUPPORTED_VERSIONS = "2.3.* - 9.*";
 	
 	public static final String PARAM_REFRESH = "refresh";
 	
