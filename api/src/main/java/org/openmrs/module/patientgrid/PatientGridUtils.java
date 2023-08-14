@@ -265,7 +265,7 @@ public class PatientGridUtils {
 			
 			if (matches.size() > 1) {
 				matches = matches.stream()
-				        .filter(o -> extractQuestionIdFromFormFieldPath(o.getFormFieldPath()).equals(questionId))
+				        .filter(o -> o.getFormFieldPath()!=null && extractQuestionIdFromFormFieldPath(o.getFormFieldPath()).equals(questionId))
 				        .collect(Collectors.toList());
 				if (matches.size() > 1) {
 					
