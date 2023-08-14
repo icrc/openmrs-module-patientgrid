@@ -427,6 +427,6 @@ public class PatientGridUtils {
 	}
 	
 	private static String extractQuestionIdFromFormFieldPath(String formFieldPath) {
-		return formFieldPath.split("~")[0];
+		return formFieldPath==null?null:formFieldPath.split("~")[0];
 	}
 }
