@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.openmrs.module.patientgrid.PatientGridConstants.*;
@@ -256,7 +257,10 @@ public class PatientGridUtils {
 	 * @return Observation if match is found otherwise null
 	 */
 	public static Obs getObsByConcept(Encounter encounter, Concept concept, String questionId) {
-		
+		//creating regex condition to verify if the nameSpacePath is up-to date with format (newer form)
+		String patternNamespaceAndPath = "^.+~\\d+$";
+		Pattern regexPatternNamespaceAndPath = Pattern.compile(patternNamespaceAndPath);
+
 		Set<Obs> obs = encounter.getObs();
 		if (obs != null && concept != null) {
 			int conceptHashcode = concept.hashCode();
@@ -298,7 +302,15 @@ public class PatientGridUtils {
 			}
 			
 			if (matches.size() == 1) {
-				return matches.get(0);
+				boolean isMatch = regexPatternNamespaceAndPath.matcher(matches.get(0).getFormFieldPath()).matches();
+
+				if(isMatch)
+					if(extractQuestionIdFromFormFieldPath(matches.get(0).getFormFieldPath()).equals(questionId)) //Check if the match we have is coherent with the questionId we are currently looking, making sure we are passing the value to the correct concept.
+						return matches.get(0);
+					else
+						return null;
+				else
+					return matches.get(0);
 			}
 		}
 		return null;
