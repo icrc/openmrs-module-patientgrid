@@ -260,7 +260,7 @@ public class PatientGridUtils {
 		//creating regex condition to verify if the nameSpacePath is up-to date with format (newer form)
 		String patternNamespaceAndPath = "^.+~\\d+$";
 		Pattern regexPatternNamespaceAndPath = Pattern.compile(patternNamespaceAndPath);
-
+		
 		Set<Obs> obs = encounter.getObs();
 		if (obs != null && concept != null) {
 			int conceptHashcode = concept.hashCode();
@@ -269,7 +269,8 @@ public class PatientGridUtils {
 			
 			if (matches.size() > 1) {
 				matches = matches.stream()
-				        .filter(o -> o.getFormFieldPath()!=null && extractQuestionIdFromFormFieldPath(o.getFormFieldPath()).equals(questionId))
+				        .filter(o -> o.getFormFieldPath() != null
+				                && extractQuestionIdFromFormFieldPath(o.getFormFieldPath()).equals(questionId))
 				        .collect(Collectors.toList());
 				if (matches.size() > 1) {
 					
@@ -302,15 +303,15 @@ public class PatientGridUtils {
 			}
 			
 			if (matches.size() == 1) {
-				boolean isMatch = regexPatternNamespaceAndPath.matcher(matches.get(0).getFormFieldPath()).matches();
-
-				if(isMatch)
-					if(extractQuestionIdFromFormFieldPath(matches.get(0).getFormFieldPath()).equals(questionId)) //Check if the match we have is coherent with the questionId we are currently looking, making sure we are passing the value to the correct concept.
-						return matches.get(0);
-					else
-						return null;
-				else
-					return matches.get(0);
+				Obs match = matches.get(0);
+				boolean shouldCheckQuestionId = questionId != null && match.getFormFieldPath() != null
+				        && regexPatternNamespaceAndPath.matcher(match.getFormFieldPath()).matches();
+				
+				if (shouldCheckQuestionId && !extractQuestionIdFromFormFieldPath(match.getFormFieldPath()).equals(questionId)) { //Check if the match we have is coherent with the questionId we are currently looking, making sure we are passing the value to the correct concept.
+					return null;
+				} else {
+					return match;
+				}
 			}
 		}
 		return null;
@@ -439,6 +440,6 @@ public class PatientGridUtils {
 	}
 	
 	private static String extractQuestionIdFromFormFieldPath(String formFieldPath) {
-		return formFieldPath==null?null:formFieldPath.split("~")[0];
+		return formFieldPath == null ? null : formFieldPath.split("~")[0];
 	}
 }
