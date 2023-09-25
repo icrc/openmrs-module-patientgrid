@@ -294,8 +294,17 @@ public class PatientGridUtils {
 						datatype.setUuid(ConceptDatatype.TEXT_UUID);
 						obsConcat.getConcept().setDatatype(datatype);
 						obsConcat.setValueCoded(null);
-						String valueTextConcat = matches.stream().map(match -> match.getValueCoded().getDisplayString())
-						        .collect(Collectors.joining(", "));
+						String valueTextConcat = matches.stream().map(match -> {
+							if (match.getValueCoded() != null) {
+								return match.getValueCoded().getDisplayString();
+							} else if (match.getValueText() != null) {
+								return match.getValueText();
+							} else if (match.getValueNumeric() != null) {
+								return match.getValueNumeric().toString();
+							} else {
+								return "";
+							}
+						}).filter(value -> !value.isEmpty()).collect(Collectors.joining(", "));
 						obsConcat.setValueText(valueTextConcat);
 						return obsConcat;
 					}
@@ -307,7 +316,8 @@ public class PatientGridUtils {
 				boolean shouldCheckQuestionId = questionId != null && match.getFormFieldPath() != null
 				        && regexPatternNamespaceAndPath.matcher(match.getFormFieldPath()).matches();
 				
-				if (shouldCheckQuestionId && !extractQuestionIdFromFormFieldPath(match.getFormFieldPath()).equals(questionId)) { //Check if the match we have is coherent with the questionId we are currently looking, making sure we are passing the value to the correct concept.
+				if (shouldCheckQuestionId
+				        && !extractQuestionIdFromFormFieldPath(match.getFormFieldPath()).equals(questionId)) { //Check if the match we have is coherent with the questionId we are currently looking, making sure we are passing the value to the correct concept.
 					return null;
 				} else {
 					return match;
