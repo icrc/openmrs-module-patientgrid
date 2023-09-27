@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.openmrs.*;
 import org.openmrs.api.APIException;
+import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.patientgrid.PatientGridColumn.ColumnDatatype;
 import org.openmrs.module.patientgrid.converter.PatientGridAgeConverter;
@@ -441,7 +442,9 @@ public class PatientGridUtils {
 	}
 	
 	public static String getCurrentUserTimeZone() {
-		String userTimeZone = Context.getAuthenticatedUser().getUserProperty("clientTimezone");
+		String userTimeZone = Context.getUserService().getUserByUuid(Context.getAuthenticatedUser().getUuid())
+		        .getUserProperty("clientTimezone");
+		
 		if (userTimeZone == null) {
 			userTimeZone = TimeZone.getDefault().getID();
 			LOG.warn("use server timezone {} instead of User Timezone", userTimeZone);
