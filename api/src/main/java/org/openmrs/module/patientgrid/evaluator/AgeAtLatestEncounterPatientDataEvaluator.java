@@ -21,45 +21,45 @@ import java.util.stream.Collectors;
 @Handler(supports = AgeAtLatestEncounterPatientDataDefinition.class, order = 50)
 public class AgeAtLatestEncounterPatientDataEvaluator implements PatientDataEvaluator {
 
-	@Override
-	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
-	        throws EvaluationException {
-		Cohort baseCohort = context.getBaseCohort();
-		if (baseCohort != null && baseCohort.isEmpty()) {
-			new EvaluatedPatientData(definition, context);
-		}
-		AgeAtLatestEncounterPatientDataDefinition def = (AgeAtLatestEncounterPatientDataDefinition) definition;
-		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
+  @Override
+  public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
+      throws EvaluationException {
+    Cohort baseCohort = context.getBaseCohort();
+    if (baseCohort != null && baseCohort.isEmpty()) {
+      new EvaluatedPatientData(definition, context);
+    }
+    AgeAtLatestEncounterPatientDataDefinition def = (AgeAtLatestEncounterPatientDataDefinition) definition;
+    EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
 
-		MostRecentEncounterPerPatientByTypeFunction encounterFct = new MostRecentEncounterPerPatientByTypeFunction(
-		        contextPersistantCache, def.getPeriodRange(), def.getLocationCohortDefinition());
-		//will retrieve the map patientid-> Ecounter if not in cache
-		Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
-		    encounterFct);
-		//if a baseCohort is present, we filter on it:
-		if (baseCohort != null) {
-			Set<Integer> patientIds = baseCohort.getMemberIds();
-			patientIdAndEnc = patientIdAndEnc.entrySet().stream().filter(entry -> patientIds.contains(entry.getKey()))
-			        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-		}
+    MostRecentEncounterPerPatientByTypeFunction encounterFct = new MostRecentEncounterPerPatientByTypeFunction(
+        contextPersistantCache, def.getPeriodRange(), def.getLocationCohortDefinition());
+    //will retrieve the map patientid-> Ecounter if not in cache
+    Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
+        encounterFct);
+    //if a baseCohort is present, we filter on it:
+    if (baseCohort != null) {
+      Set<Integer> patientIds = baseCohort.getMemberIds();
+      patientIdAndEnc = patientIdAndEnc.entrySet().stream().filter(entry -> patientIds.contains(entry.getKey()))
+          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
 
-		PatientAgePerEncounterIdByTypeFunction agePerEncounterIdFct = new PatientAgePerEncounterIdByTypeFunction(
-		        patientIdAndEnc);
-		//will retrieve the map encounter id -> age if not in cache
-		Map<Integer, Object> encIdAndAge = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
-		    agePerEncounterIdFct);
+    PatientAgePerEncounterIdByTypeFunction agePerEncounterIdFct = new PatientAgePerEncounterIdByTypeFunction(
+        patientIdAndEnc);
+    //will retrieve the map encounter id -> age if not in cache
+    Map<Integer, Object> encIdAndAge = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
+        agePerEncounterIdFct);
 
-		//transform these 2 maps in patient id -> age
-		Map<Integer, Object> patientIdAndAge = new HashMap<>();
-		patientIdAndEnc.entrySet().forEach(e -> {
-			Integer patientId = e.getKey();
-			Encounter en = (Encounter) e.getValue();
-			patientIdAndAge.put(patientId, encIdAndAge.get(en.getId()));
-		});
-		EvaluatedPatientData result = new EvaluatedPatientData(definition, context);
-		result.setData(patientIdAndAge);
+    //transform these 2 maps in patient id -> age
+    Map<Integer, Object> patientIdAndAge = new HashMap<>();
+    patientIdAndEnc.entrySet().forEach(e -> {
+      Integer patientId = e.getKey();
+      Encounter en = (Encounter) e.getValue();
+      patientIdAndAge.put(patientId, encIdAndAge.get(en.getId()));
+    });
+    EvaluatedPatientData result = new EvaluatedPatientData(definition, context);
+    result.setData(patientIdAndAge);
 
-		return result;
-	}
+    return result;
+  }
 
 }

@@ -8,33 +8,33 @@ import org.openmrs.module.reporting.data.converter.DataConverter;
  */
 public class PatientGridAgeConverter implements DataConverter {
 
-	/**
-	 * @see DataConverter#convert(Object)
-	 */
-	@Override
-	public Object convert(Object original) {
-		if (original != null) {
-			Age age = (Age) original;
-			return age.getFullYears();
-		}
+  /**
+   * @see DataConverter#convert(Object)
+   */
+  @Override
+  public Object convert(Object original) {
+    if (original != null) {
+      Age age = (Age) original;
+      return age.getFullYears();
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	/**
-	 * @see DataConverter#getInputDataType()
-	 */
-	@Override
-	public Class<?> getInputDataType() {
-		return Age.class;
-	}
+  /**
+   * @see DataConverter#getInputDataType()
+   */
+  @Override
+  public Class<?> getInputDataType() {
+    return Age.class;
+  }
 
-	/**
-	 * @see DataConverter#getDataType()
-	 */
-	@Override
-	public Class<?> getDataType() {
-		return Integer.class;
-	}
+  /**
+   * @see DataConverter#getDataType()
+   */
+  @Override
+  public Class<?> getDataType() {
+    return Integer.class;
+  }
 
 }

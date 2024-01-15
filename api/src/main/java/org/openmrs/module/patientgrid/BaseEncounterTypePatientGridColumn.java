@@ -12,31 +12,31 @@ import org.openmrs.EncounterType;
 @MappedSuperclass
 public abstract class BaseEncounterTypePatientGridColumn extends PatientGridColumn {
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "encounter_type_id", nullable = false)
-	private EncounterType encounterType;
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "encounter_type_id", nullable = false)
+  private EncounterType encounterType;
 
-	protected BaseEncounterTypePatientGridColumn(String name, ColumnDatatype datatype, EncounterType encounterType) {
-		super(name, datatype);
-		this.encounterType = encounterType;
-	}
+  protected BaseEncounterTypePatientGridColumn(String name, ColumnDatatype datatype, EncounterType encounterType) {
+    super(name, datatype);
+    this.encounterType = encounterType;
+  }
 
-	/**
-	 * Gets the encounterType
-	 *
-	 * @return the encounterType
-	 */
-	public EncounterType getEncounterType() {
-		return encounterType;
-	}
+  /**
+   * Gets the encounterType
+   *
+   * @return the encounterType
+   */
+  public EncounterType getEncounterType() {
+    return encounterType;
+  }
 
-	/**
-	 * Sets the encounterType
-	 *
-	 * @param encounterType the encounterType to set
-	 */
-	public void setEncounterType(EncounterType encounterType) {
-		this.encounterType = encounterType;
-	}
+  /**
+   * Sets the encounterType
+   *
+   * @param encounterType the encounterType to set
+   */
+  public void setEncounterType(EncounterType encounterType) {
+    this.encounterType = encounterType;
+  }
 
 }

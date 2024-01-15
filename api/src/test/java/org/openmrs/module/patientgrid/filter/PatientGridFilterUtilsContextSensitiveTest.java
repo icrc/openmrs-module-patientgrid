@@ -22,67 +22,67 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 public class PatientGridFilterUtilsContextSensitiveTest extends BaseModuleContextSensitiveTest {
 
-	@Autowired
-	private PatientGridService service;
+  @Autowired
+  private PatientGridService service;
 
-	@Autowired
-	@Qualifier("patientService")
-	private PatientService patientService;
+  @Autowired
+  @Qualifier("patientService")
+  private PatientService patientService;
 
-	@Before
-	public void setup() {
-		executeDataSet("entityBasisMaps.xml");
-		executeDataSet("patientGrids.xml");
-		executeDataSet("patientGridsTestData.xml");
-	}
+  @Before
+  public void setup() {
+    executeDataSet("entityBasisMaps.xml");
+    executeDataSet("patientGrids.xml");
+    executeDataSet("patientGridsTestData.xml");
+  }
 
-	@Test
-	public void filterPatients_shouldReturnACohortOfPatientsMatchingTheColumnFilters() throws Exception {
-		final Integer patientId2 = 2;
-		final Integer patientId6 = 6;
-		final Integer patientId7 = 7;//Female
-		//The filters are for male and (married or single) patients
-		PatientGrid patientGrid = service.getPatientGrid(2);
-		boolean hasFilteredColumns = false;
-		for (PatientGridColumn column : patientGrid.getColumns()) {
-			if (!column.getFilters().isEmpty()) {
-				hasFilteredColumns = true;
-				break;
-			}
-		}
-		assertTrue(hasFilteredColumns);
-		assertTrue(patientGrid.getCohort().getActiveMemberships().isEmpty());
-		Cohort cohort = new Cohort(Arrays.asList(patientId2, patientId6, patientId7));
-		cohort.setName("test");
-		cohort.setDescription("test");
-		Context.getCohortService().saveCohort(cohort);
-		patientGrid.setCohort(cohort);
+  @Test
+  public void filterPatients_shouldReturnACohortOfPatientsMatchingTheColumnFilters() throws Exception {
+    final Integer patientId2 = 2;
+    final Integer patientId6 = 6;
+    final Integer patientId7 = 7;//Female
+    //The filters are for male and (married or single) patients
+    PatientGrid patientGrid = service.getPatientGrid(2);
+    boolean hasFilteredColumns = false;
+    for (PatientGridColumn column : patientGrid.getColumns()) {
+      if (!column.getFilters().isEmpty()) {
+        hasFilteredColumns = true;
+        break;
+      }
+    }
+    assertTrue(hasFilteredColumns);
+    assertTrue(patientGrid.getCohort().getActiveMemberships().isEmpty());
+    Cohort cohort = new Cohort(Arrays.asList(patientId2, patientId6, patientId7));
+    cohort.setName("test");
+    cohort.setDescription("test");
+    Context.getCohortService().saveCohort(cohort);
+    patientGrid.setCohort(cohort);
 
-		ObjectWithDateRange<Cohort> filteredCohort = PatientGridFilterUtils.filterPatients(patientGrid, null, null);
+    ObjectWithDateRange<Cohort> filteredCohort = PatientGridFilterUtils.filterPatients(patientGrid, null, null);
 
-		assertEquals(2, filteredCohort.getObject().size());
-		assertNotNull(filteredCohort.getObject().getActiveMembership(patientService.getPatient(patientId2)));
-		assertNotNull(filteredCohort.getObject().getActiveMembership(patientService.getPatient(patientId6)));
+    assertEquals(2, filteredCohort.getObject().size());
+    assertNotNull(filteredCohort.getObject().getActiveMembership(patientService.getPatient(patientId2)));
+    assertNotNull(filteredCohort.getObject().getActiveMembership(patientService.getPatient(patientId6)));
 
-		assertEquals(
-		    "{\"code\":\"customDaysInclusive\",\"fromDate\":\"2022-04-01 00:00:00\",\"toDate\":\"2022-12-31 00:00:00\"}",
-		    filteredCohort.getDateRange().getOperand());
-	}
+    assertEquals(
+        "{\"code\":\"customDaysInclusive\",\"fromDate\":\"2022-04-01 00:00:00\",\"toDate\":\"2022-12-31 00:00:00\"}",
+        filteredCohort.getDateRange().getOperand());
+  }
 
-	@Test
-	public void filterPatients_shouldNotReturnNullIfNoFiltersAreFoundAsFilterOnEncounterTypeByDefault() throws Exception {
-		PatientGrid patientGrid = service.getPatientGrid(1);
-		boolean hasFilteredColumns = false;
-		for (PatientGridColumn column : patientGrid.getColumns()) {
-			if (!column.getFilters().isEmpty()) {
-				hasFilteredColumns = true;
-				break;
-			}
-		}
-		assertTrue(hasFilteredColumns);
+  @Test
+  public void filterPatients_shouldNotReturnNullIfNoFiltersAreFoundAsFilterOnEncounterTypeByDefault() throws Exception {
+    PatientGrid patientGrid = service.getPatientGrid(1);
+    boolean hasFilteredColumns = false;
+    for (PatientGridColumn column : patientGrid.getColumns()) {
+      if (!column.getFilters().isEmpty()) {
+        hasFilteredColumns = true;
+        break;
+      }
+    }
+    assertTrue(hasFilteredColumns);
 
-		Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, null, null).getObject();
-		assertEquals(4, cohort.getMemberships().size());
-	}
+    Cohort cohort = PatientGridFilterUtils.filterPatients(patientGrid, null, null).getObject();
+    assertEquals(4, cohort.getMemberships().size());
+  }
 
 }

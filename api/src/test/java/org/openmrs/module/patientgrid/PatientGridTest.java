@@ -9,17 +9,17 @@ import org.slf4j.LoggerFactory;
 
 public class PatientGridTest {
 
-	@Test
-	public void getObsColumns_shouldGetAllTheObsColumnsInTheGrid() {
-		final PatientGrid patientGrid = new PatientGrid();
-		final PatientGridColumn weightColumn = new ObsPatientGridColumn();
-		final PatientGridColumn heightColumn = new ObsPatientGridColumn();
-		patientGrid.addColumn(new PatientGridColumn(null, NAME));
-		patientGrid.addColumn(weightColumn);
-		patientGrid.addColumn(heightColumn);
-		Assert.assertEquals(2, patientGrid.getObsColumns().size());
-		Assert.assertTrue(patientGrid.getObsColumns().contains(weightColumn));
-		Assert.assertTrue(patientGrid.getObsColumns().contains(heightColumn));
-	}
+  @Test
+  public void getObsColumns_shouldGetAllTheObsColumnsInTheGrid() {
+    final PatientGrid patientGrid = new PatientGrid();
+    final PatientGridColumn weightColumn = new ObsPatientGridColumn();
+    final PatientGridColumn heightColumn = new ObsPatientGridColumn();
+    patientGrid.addColumn(new PatientGridColumn(null, NAME));
+    patientGrid.addColumn(weightColumn);
+    patientGrid.addColumn(heightColumn);
+    Assert.assertEquals(2, patientGrid.getObsColumns().size());
+    Assert.assertTrue(patientGrid.getObsColumns().contains(weightColumn));
+    Assert.assertTrue(patientGrid.getObsColumns().contains(heightColumn));
+  }
 
 }

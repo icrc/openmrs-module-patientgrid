@@ -24,38 +24,38 @@ import java.util.List;
 @Handler(supports = ObsForLatestEncounterCohortDefinition.class, order = 50)
 public class ObsForLatestEncounterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
-	//Unfortunately hibernate's criteria API and HQL don't support joins to a derived table with multiple columns
+  //Unfortunately hibernate's criteria API and HQL don't support joins to a derived table with multiple columns
 
-	private SessionFactory sf;
+  private SessionFactory sf;
 
-	@Autowired
-	public ObsForLatestEncounterCohortDefinitionEvaluator(SessionFactory sf) {
-		this.sf = sf;
-	}
+  @Autowired
+  public ObsForLatestEncounterCohortDefinitionEvaluator(SessionFactory sf) {
+    this.sf = sf;
+  }
 
-	@Override
-	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext evaluationContext)
-	        throws EvaluationException {
+  @Override
+  public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext evaluationContext)
+      throws EvaluationException {
 
-		ObsForLatestEncounterCohortDefinition cohortDef = (ObsForLatestEncounterCohortDefinition) cohortDefinition;
-		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) evaluationContext;
+    ObsForLatestEncounterCohortDefinition cohortDef = (ObsForLatestEncounterCohortDefinition) cohortDefinition;
+    EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) evaluationContext;
 
-		MostRecentEncounterIdByTypeFunction function = new MostRecentEncounterIdByTypeFunction(sf,
-		        cohortDef.getPeriodRange());
-		List<Integer> encounterIds = contextPersistantCache.computeListIfAbsent(cohortDef.getEncounterType(), function);
+    MostRecentEncounterIdByTypeFunction function = new MostRecentEncounterIdByTypeFunction(sf,
+        cohortDef.getPeriodRange());
+    List<Integer> encounterIds = contextPersistantCache.computeListIfAbsent(cohortDef.getEncounterType(), function);
 
-		Criteria criteria = sf.getCurrentSession().createCriteria(Obs.class, "o");
-		criteria.createCriteria("person", "p");
-		criteria.setProjection(Projections.property("p.personId"));
-		criteria.add(Restrictions.eq("o.concept", cohortDef.getConcept()));
-		criteria.add(Restrictions.eq("o.voided", false));
-		//TODO value text should be case insensitive
-		criteria.add(Restrictions.in("o." + cohortDef.getPropertyName(), cohortDef.getValues()));
+    Criteria criteria = sf.getCurrentSession().createCriteria(Obs.class, "o");
+    criteria.createCriteria("person", "p");
+    criteria.setProjection(Projections.property("p.personId"));
+    criteria.add(Restrictions.eq("o.concept", cohortDef.getConcept()));
+    criteria.add(Restrictions.eq("o.voided", false));
+    //TODO value text should be case insensitive
+    criteria.add(Restrictions.in("o." + cohortDef.getPropertyName(), cohortDef.getValues()));
 
-		criteria.createCriteria("encounter", "e");
-		criteria.add(Restrictions.in("e.encounterId", encounterIds));
+    criteria.createCriteria("encounter", "e");
+    criteria.add(Restrictions.in("e.encounterId", encounterIds));
 
-		return new EvaluatedCohort(new Cohort(criteria.list()), cohortDefinition, evaluationContext);
-	}
+    return new EvaluatedCohort(new Cohort(criteria.list()), cohortDefinition, evaluationContext);
+  }
 
 }

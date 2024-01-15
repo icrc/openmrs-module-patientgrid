@@ -21,33 +21,33 @@ import java.util.Set;
 @Handler(supports = ObsForLatestEncounterPatientDataDefinition.class, order = 50)
 public class ObsForLatestEncounterPatientDataEvaluator implements PatientDataEvaluator {
 
-	@Override
-	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
-	        throws EvaluationException {
-		Cohort baseCohort = context.getBaseCohort();
-		if (baseCohort != null && baseCohort.isEmpty()) {
-			new EvaluatedPatientData(definition, context);
-		}
-		ObsForLatestEncounterPatientDataDefinition def = (ObsForLatestEncounterPatientDataDefinition) definition;
-		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
-		Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
-		    new MostRecentEncounterPerPatientByTypeFunction(contextPersistantCache, def.getPeriodRange(),
-		            def.getLocationCohortDefinition()));
+  @Override
+  public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
+      throws EvaluationException {
+    Cohort baseCohort = context.getBaseCohort();
+    if (baseCohort != null && baseCohort.isEmpty()) {
+      new EvaluatedPatientData(definition, context);
+    }
+    ObsForLatestEncounterPatientDataDefinition def = (ObsForLatestEncounterPatientDataDefinition) definition;
+    EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
+    Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
+        new MostRecentEncounterPerPatientByTypeFunction(contextPersistantCache, def.getPeriodRange(),
+            def.getLocationCohortDefinition()));
 
-		Map<Integer, Object> patientIdAndObs = new HashMap(patientIdAndEnc.size());
-		Set<Integer> patients = baseCohort == null ? patientIdAndEnc.keySet() : baseCohort.getMemberIds();
-		for (Integer patientId : patients) {
-			Encounter e = (Encounter) patientIdAndEnc.get(patientId);
-			Obs obs = PatientGridUtils.getObsByConcept(e, def.getConcept(), def.getQuestionId());
-			if (obs != null) {
-				patientIdAndObs.put(patientId, obs);
-			}
-		}
+    Map<Integer, Object> patientIdAndObs = new HashMap(patientIdAndEnc.size());
+    Set<Integer> patients = baseCohort == null ? patientIdAndEnc.keySet() : baseCohort.getMemberIds();
+    for (Integer patientId : patients) {
+      Encounter e = (Encounter) patientIdAndEnc.get(patientId);
+      Obs obs = PatientGridUtils.getObsByConcept(e, def.getConcept(), def.getQuestionId());
+      if (obs != null) {
+        patientIdAndObs.put(patientId, obs);
+      }
+    }
 
-		EvaluatedPatientData result = new EvaluatedPatientData(definition, context);
-		result.setData(patientIdAndObs);
+    EvaluatedPatientData result = new EvaluatedPatientData(definition, context);
+    result.setData(patientIdAndObs);
 
-		return result;
-	}
+    return result;
+  }
 
 }

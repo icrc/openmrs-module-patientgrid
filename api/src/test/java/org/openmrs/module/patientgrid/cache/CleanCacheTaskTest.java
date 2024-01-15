@@ -16,28 +16,28 @@ import static org.mockito.Mockito.when;
 import static org.openmrs.module.patientgrid.PatientGridConstants.GP_MAX_CACHE_FILE_AGE;
 
 @RunWith(SafePowerMockRunner.class)
-@PrepareForTest({ DiskCache.class, Context.class })
+@PrepareForTest({DiskCache.class, Context.class})
 @PowerMockIgnore("jdk.internal.reflect.*")
 public class CleanCacheTaskTest {
 
-	@Test
-	public void execute_shouldCalldeleteCacheFileOlderThanMethod() {
-		//setup
-		PowerMockito.mockStatic(Context.class);
-		AdministrationService mockAdminService = PowerMockito.mock(AdministrationService.class);
-		when(mockAdminService.getGlobalProperty(GP_MAX_CACHE_FILE_AGE, null)).thenReturn("32");
-		when(Context.getAdministrationService()).thenReturn(mockAdminService);
+  @Test
+  public void execute_shouldCalldeleteCacheFileOlderThanMethod() {
+    //setup
+    PowerMockito.mockStatic(Context.class);
+    AdministrationService mockAdminService = PowerMockito.mock(AdministrationService.class);
+    when(mockAdminService.getGlobalProperty(GP_MAX_CACHE_FILE_AGE, null)).thenReturn("32");
+    when(Context.getAdministrationService()).thenReturn(mockAdminService);
 
-		PowerMockito.mockStatic(DiskCache.class);
-		DiskCache mockCache = PowerMockito.mock(DiskCache.class);
-		when(DiskCache.getInstance()).thenReturn(mockCache);
+    PowerMockito.mockStatic(DiskCache.class);
+    DiskCache mockCache = PowerMockito.mock(DiskCache.class);
+    when(DiskCache.getInstance()).thenReturn(mockCache);
 
-		//action
-		new CleanCacheTask().execute();
+    //action
+    new CleanCacheTask().execute();
 
-		//assert
-		Mockito.verify(mockCache).deleteCacheFileOlderThan(32);
+    //assert
+    Mockito.verify(mockCache).deleteCacheFileOlderThan(32);
 
-	}
+  }
 
 }

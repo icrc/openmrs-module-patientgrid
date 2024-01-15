@@ -16,23 +16,23 @@ import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConsta
 import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.SUPPORTED_VERSIONS;
 
 @SubResource(parent = PatientGridResource.class, path = "report", supportedClass = PatientGridReport.class, supportedOpenmrsVersions = {
-        SUPPORTED_VERSIONS })
+    SUPPORTED_VERSIONS})
 public class PatientGridReportResource extends BasePatientGridDataResource<PatientGridReport> {
 
-	/**
-	 * @see BasePatientGridDataResource#evaluate(PatientGrid, RequestContext)
-	 */
-	@Override
-	public ExtendedDataSet evaluate(PatientGrid parent, RequestContext context) throws ResponseException {
-		if (Boolean.valueOf(context.getParameter(PARAM_REFRESH))) {
-			return Context.getService(PatientGridService.class).evaluateIgnoreCache(parent);
-		} else {
-			return Context.getService(PatientGridService.class).evaluate(parent);
-		}
-	}
+  /**
+   * @see BasePatientGridDataResource#evaluate(PatientGrid, RequestContext)
+   */
+  @Override
+  public ExtendedDataSet evaluate(PatientGrid parent, RequestContext context) throws ResponseException {
+    if (Boolean.valueOf(context.getParameter(PARAM_REFRESH))) {
+      return Context.getService(PatientGridService.class).evaluateIgnoreCache(parent);
+    } else {
+      return Context.getService(PatientGridService.class).evaluate(parent);
+    }
+  }
 
-	@Override
-	protected PatientGridReport create(ReportMetadata reportMetadata, PatientGrid patientGrid, List report) {
-		return new PatientGridReport(reportMetadata, patientGrid, report);
-	}
+  @Override
+  protected PatientGridReport create(ReportMetadata reportMetadata, PatientGrid patientGrid, List report) {
+    return new PatientGridReport(reportMetadata, patientGrid, report);
+  }
 }

@@ -23,48 +23,48 @@ import static org.openmrs.module.patientgrid.PatientGridConstants.OBS_CONVERTER;
 @Handler(supports = AllEncountersPatientDataDefinition.class, order = 50)
 public class AllEncountersPatientDataEvaluator implements PatientDataEvaluator {
 
-	@Override
-	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
-	        throws EvaluationException {
-		Cohort baseCohort = context.getBaseCohort();
-		if (baseCohort != null && baseCohort.isEmpty()) {
-			new EvaluatedPatientData(definition, context);
-		}
-		AllEncountersPatientDataDefinition def = (AllEncountersPatientDataDefinition) definition;
-		Map<Integer, Object> patientIdAndEncs = PatientGridUtils.getEncounters(def.getEncounterType(),
-		    (EvaluationContextPersistantCache) context, def.getLocationCohortDefinition(), false, def.getPeriodRange());
-		Set<ObsPatientGridColumn> obsColumns = def.getPatientGrid().getObsColumns();
+  @Override
+  public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
+      throws EvaluationException {
+    Cohort baseCohort = context.getBaseCohort();
+    if (baseCohort != null && baseCohort.isEmpty()) {
+      new EvaluatedPatientData(definition, context);
+    }
+    AllEncountersPatientDataDefinition def = (AllEncountersPatientDataDefinition) definition;
+    Map<Integer, Object> patientIdAndEncs = PatientGridUtils.getEncounters(def.getEncounterType(),
+        (EvaluationContextPersistantCache) context, def.getLocationCohortDefinition(), false, def.getPeriodRange());
+    Set<ObsPatientGridColumn> obsColumns = def.getPatientGrid().getObsColumns();
 
-		Set<Integer> patients = baseCohort == null ? patientIdAndEncs.keySet() : baseCohort.getMemberIds();
-		Map<Integer, Object> patientIdAndEncList = patients.stream()
-		        .collect(Collectors.toMap(patientId -> patientId, patientId -> {
-			        List<Map<String, Object>> encounters = new ArrayList(patientIdAndEncs.size());
-			        List<Encounter> patientEncs = (List) patientIdAndEncs.get(patientId);
-			        patientEncs.stream().forEach(encounter -> {
-				        Map<String, Object> columnUuidAndObsMap = new HashMap(obsColumns.size());
-				        obsColumns.stream().forEach(column -> {
-					        Obs obs = PatientGridUtils.getObsByConcept(encounter, column.getConcept());
-					        if (obs != null) {
-						        columnUuidAndObsMap.put(column.getUuid(), DataUtil.convertData(obs, OBS_CONVERTER));
-					        }
-				        });
-				        EncounterDatePatientGridColumn dateColumn = def.getPatientGrid()
-				                .getDateColumn(def.getEncounterType());
+    Set<Integer> patients = baseCohort == null ? patientIdAndEncs.keySet() : baseCohort.getMemberIds();
+    Map<Integer, Object> patientIdAndEncList = patients.stream()
+        .collect(Collectors.toMap(patientId -> patientId, patientId -> {
+          List<Map<String, Object>> encounters = new ArrayList(patientIdAndEncs.size());
+          List<Encounter> patientEncs = (List) patientIdAndEncs.get(patientId);
+          patientEncs.stream().forEach(encounter -> {
+            Map<String, Object> columnUuidAndObsMap = new HashMap(obsColumns.size());
+            obsColumns.stream().forEach(column -> {
+              Obs obs = PatientGridUtils.getObsByConcept(encounter, column.getConcept());
+              if (obs != null) {
+                columnUuidAndObsMap.put(column.getUuid(), DataUtil.convertData(obs, OBS_CONVERTER));
+              }
+            });
+            EncounterDatePatientGridColumn dateColumn = def.getPatientGrid()
+                .getDateColumn(def.getEncounterType());
 
-				        if (dateColumn != null) {
-					        columnUuidAndObsMap.put(dateColumn.getName(), encounter.getEncounterDatetime());
-				        }
-				        encounters.add(columnUuidAndObsMap);
+            if (dateColumn != null) {
+              columnUuidAndObsMap.put(dateColumn.getName(), encounter.getEncounterDatetime());
+            }
+            encounters.add(columnUuidAndObsMap);
 
-			        });
+          });
 
-			        return encounters;
-		        }));
+          return encounters;
+        }));
 
-		EvaluatedPatientData result = new EvaluatedPatientData(definition, context);
-		result.setData(patientIdAndEncList);
+    EvaluatedPatientData result = new EvaluatedPatientData(definition, context);
+    result.setData(patientIdAndEncList);
 
-		return result;
-	}
+    return result;
+  }
 
 }

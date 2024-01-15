@@ -19,28 +19,28 @@ import java.util.stream.Collectors;
 @Handler(supports = DateForLatestEncounterPatientDataDefinition.class, order = 50)
 public class DateForLatestEncounterPatientDataEvaluator implements PatientDataEvaluator {
 
-	@Override
-	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
-	        throws EvaluationException {
-		Cohort baseCohort = context.getBaseCohort();
-		if (baseCohort != null && baseCohort.isEmpty()) {
-			new EvaluatedPatientData(definition, context);
-		}
-		final Set<Integer> patientIds = baseCohort == null ? null : baseCohort.getMemberIds();
-		DateForLatestEncounterPatientDataDefinition def = (DateForLatestEncounterPatientDataDefinition) definition;
-		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
-		Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
-		    new MostRecentEncounterPerPatientByTypeFunction(contextPersistantCache, def.getPeriodRange(),
-		            def.getLocationCohortDefinition()));
+  @Override
+  public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
+      throws EvaluationException {
+    Cohort baseCohort = context.getBaseCohort();
+    if (baseCohort != null && baseCohort.isEmpty()) {
+      new EvaluatedPatientData(definition, context);
+    }
+    final Set<Integer> patientIds = baseCohort == null ? null : baseCohort.getMemberIds();
+    DateForLatestEncounterPatientDataDefinition def = (DateForLatestEncounterPatientDataDefinition) definition;
+    EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
+    Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
+        new MostRecentEncounterPerPatientByTypeFunction(contextPersistantCache, def.getPeriodRange(),
+            def.getLocationCohortDefinition()));
 
-		Map<Integer, Object> patientIdAndEncDate = patientIdAndEnc.entrySet().stream()
-		        .filter(entry -> patientIds == null || patientIds.contains(entry.getKey())).collect(
-		            Collectors.toMap(Map.Entry::getKey, entry -> ((Encounter) entry.getValue()).getEncounterDatetime()));
+    Map<Integer, Object> patientIdAndEncDate = patientIdAndEnc.entrySet().stream()
+        .filter(entry -> patientIds == null || patientIds.contains(entry.getKey())).collect(
+            Collectors.toMap(Map.Entry::getKey, entry -> ((Encounter) entry.getValue()).getEncounterDatetime()));
 
-		EvaluatedPatientData result = new EvaluatedPatientData(definition, context);
-		result.setData(patientIdAndEncDate);
+    EvaluatedPatientData result = new EvaluatedPatientData(definition, context);
+    result.setData(patientIdAndEncDate);
 
-		return result;
-	}
+    return result;
+  }
 
 }

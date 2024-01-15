@@ -13,56 +13,56 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class PatientGridReportResourceTest extends BaseDelegatingResourceTest<PatientGridReportResource, PatientGridReport> {
 
-	private static String GRID_UUID = "1d6c993e-c2cc-11de-8d13-0010c6dffd0a";
+  private static String GRID_UUID = "1d6c993e-c2cc-11de-8d13-0010c6dffd0a";
 
-	@Autowired
-	private PatientGridService service;
+  @Autowired
+  private PatientGridService service;
 
-	@Before
-	public void setup() {
-		executeDataSet("patientGrids.xml");
-	}
+  @Before
+  public void setup() {
+    executeDataSet("patientGrids.xml");
+  }
 
-	@Override
-	public PatientGridReport newObject() {
-		PatientGrid patientGrid = service.getPatientGridByUuid(GRID_UUID);
-		ExtendedDataSet dataSet = new ExtendedDataSet();
-		dataSet.setUsedDateRange("periodUsedStartEndDate");
-		dataSet.setTruncated(true);
-		dataSet.setInitialRowsCount(1000);
-		dataSet.setRowsCountLimit(100);
-		return new PatientGridReport(new ReportMetadata(dataSet), patientGrid, new ArrayList());
-	}
+  @Override
+  public PatientGridReport newObject() {
+    PatientGrid patientGrid = service.getPatientGridByUuid(GRID_UUID);
+    ExtendedDataSet dataSet = new ExtendedDataSet();
+    dataSet.setUsedDateRange("periodUsedStartEndDate");
+    dataSet.setTruncated(true);
+    dataSet.setInitialRowsCount(1000);
+    dataSet.setRowsCountLimit(100);
+    return new PatientGridReport(new ReportMetadata(dataSet), patientGrid, new ArrayList());
+  }
 
-	@Override
-	public String getDisplayProperty() {
-		return null;
-	}
+  @Override
+  public String getDisplayProperty() {
+    return null;
+  }
 
-	@Override
-	public String getUuidProperty() {
-		return null;
-	}
+  @Override
+  public String getUuidProperty() {
+    return null;
+  }
 
-	private void validateRepresentation() {
-		assertPropPresent("patientGrid");
-		assertPropPresent("report");
-		assertPropPresent("reportMetadata");
-	}
+  private void validateRepresentation() {
+    assertPropPresent("patientGrid");
+    assertPropPresent("report");
+    assertPropPresent("reportMetadata");
+  }
 
-	@Override
-	public void validateRefRepresentation() {
-		validateRepresentation();
-	}
+  @Override
+  public void validateRefRepresentation() {
+    validateRepresentation();
+  }
 
-	@Override
-	public void validateDefaultRepresentation() {
-		validateRepresentation();
-	}
+  @Override
+  public void validateDefaultRepresentation() {
+    validateRepresentation();
+  }
 
-	@Override
-	public void validateFullRepresentation() {
-		validateRepresentation();
-	}
+  @Override
+  public void validateFullRepresentation() {
+    validateRepresentation();
+  }
 
 }

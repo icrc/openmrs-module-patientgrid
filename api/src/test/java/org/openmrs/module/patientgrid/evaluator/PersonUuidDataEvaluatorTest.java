@@ -17,25 +17,25 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 public class PersonUuidDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
-	@Autowired
-	private PersonDataService personDataService;
+  @Autowired
+  private PersonDataService personDataService;
 
-	@Autowired
-	@Qualifier("personService")
-	private PersonService personService;
+  @Autowired
+  @Qualifier("personService")
+  private PersonService personService;
 
-	@Test
-	public void evaluate_shouldReturnThePatientUuid() throws Exception {
-		final Integer patientId2 = 2;
-		final Integer patientId6 = 6;
-		EvaluationContext context = new EvaluationContextPersistantCache();
-		context.setBaseCohort(new Cohort(asList(patientId2, patientId6)));
+  @Test
+  public void evaluate_shouldReturnThePatientUuid() throws Exception {
+    final Integer patientId2 = 2;
+    final Integer patientId6 = 6;
+    EvaluationContext context = new EvaluationContextPersistantCache();
+    context.setBaseCohort(new Cohort(asList(patientId2, patientId6)));
 
-		EvaluatedPersonData data = personDataService.evaluate(new PersonUuidDataDefinition(), context);
+    EvaluatedPersonData data = personDataService.evaluate(new PersonUuidDataDefinition(), context);
 
-		assertEquals(2, data.getData().size());
-		assertEquals(personService.getPerson(patientId2).getUuid(), data.getData().get(patientId2));
-		assertEquals(personService.getPerson(patientId6).getUuid(), data.getData().get(patientId6));
-	}
+    assertEquals(2, data.getData().size());
+    assertEquals(personService.getPerson(patientId2).getUuid(), data.getData().get(patientId2));
+    assertEquals(personService.getPerson(patientId6).getUuid(), data.getData().get(patientId6));
+  }
 
 }

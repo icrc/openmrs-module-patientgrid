@@ -6,9 +6,9 @@ import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinitio
 
 public class LocationEncounterDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
 
-	@Override
-	public Class<?> getDataType() {
-		return Location.class;
-	}
+  @Override
+  public Class<?> getDataType() {
+    return Location.class;
+  }
 
 }

@@ -26,169 +26,169 @@ import org.openmrs.*;
 @Table(name = "patientgrid_patient_grid")
 public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "patient_grid_id")
-	private Integer patientGridId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "patient_grid_id")
+  private Integer patientGridId;
 
-	@Access(AccessType.FIELD)
-	@OneToMany(mappedBy = "patientGrid", orphanRemoval = true, cascade = CascadeType.ALL)
-	private Set<PatientGridColumn> columns;
+  @Access(AccessType.FIELD)
+  @OneToMany(mappedBy = "patientGrid", orphanRemoval = true, cascade = CascadeType.ALL)
+  private Set<PatientGridColumn> columns;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User owner;
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User owner;
 
-	@NotNull
-	@Column(name = "is_shared", nullable = false)
-	private Boolean shared = false;
+  @NotNull
+  @Column(name = "is_shared", nullable = false)
+  private Boolean shared = false;
 
-	@ManyToOne
-	@JoinColumn(name = "cohort_id")
-	private Cohort cohort;
+  @ManyToOne
+  @JoinColumn(name = "cohort_id")
+  private Cohort cohort;
 
-	/**
-	 * @see BaseOpenmrsObject#getId()
-	 */
-	@Override
-	public Integer getId() {
-		return getPatientGridId();
-	}
+  /**
+   * @see BaseOpenmrsObject#getId()
+   */
+  @Override
+  public Integer getId() {
+    return getPatientGridId();
+  }
 
-	/**
-	 * @see BaseOpenmrsObject#setId(Integer)
-	 */
-	@Override
-	public void setId(Integer id) {
-		setPatientGridId(id);
-	}
+  /**
+   * @see BaseOpenmrsObject#setId(Integer)
+   */
+  @Override
+  public void setId(Integer id) {
+    setPatientGridId(id);
+  }
 
-	/**
-	 * Gets the patientGridId
-	 *
-	 * @return the patientGridId
-	 */
-	public Integer getPatientGridId() {
-		return patientGridId;
-	}
+  /**
+   * Gets the patientGridId
+   *
+   * @return the patientGridId
+   */
+  public Integer getPatientGridId() {
+    return patientGridId;
+  }
 
-	/**
-	 * Sets the patientGridId
-	 *
-	 * @param patientGridId the patientGridId to set
-	 */
-	public void setPatientGridId(Integer patientGridId) {
-		this.patientGridId = patientGridId;
-	}
+  /**
+   * Sets the patientGridId
+   *
+   * @param patientGridId the patientGridId to set
+   */
+  public void setPatientGridId(Integer patientGridId) {
+    this.patientGridId = patientGridId;
+  }
 
-	/**
-	 * Gets the columns
-	 *
-	 * @return the columns
-	 */
-	public Set<PatientGridColumn> getColumns() {
-		if (columns == null) {
-			columns = new LinkedHashSet();
-		}
+  /**
+   * Gets the columns
+   *
+   * @return the columns
+   */
+  public Set<PatientGridColumn> getColumns() {
+    if (columns == null) {
+      columns = new LinkedHashSet();
+    }
 
-		return columns;
-	}
+    return columns;
+  }
 
-	/**
-	 * Adds a column to the list of columns for this grid
-	 *
-	 * @param column the column to add
-	 */
-	public void addColumn(PatientGridColumn column) {
-		column.setPatientGrid(this);
-		getColumns().add(column);
-	}
+  /**
+   * Adds a column to the list of columns for this grid
+   *
+   * @param column the column to add
+   */
+  public void addColumn(PatientGridColumn column) {
+    column.setPatientGrid(this);
+    getColumns().add(column);
+  }
 
-	/**
-	 * Removes a column from the list of columns for this grid
-	 *
-	 * @param column the column to remove
-	 * @return true if the column was found and removed otherwise false
-	 */
-	public boolean removeColumn(PatientGridColumn column) {
-		if (column != null) {
-			return getColumns().remove(column);
-		}
+  /**
+   * Removes a column from the list of columns for this grid
+   *
+   * @param column the column to remove
+   * @return true if the column was found and removed otherwise false
+   */
+  public boolean removeColumn(PatientGridColumn column) {
+    if (column != null) {
+      return getColumns().remove(column);
+    }
 
-		return false;
-	}
+    return false;
+  }
 
-	/**
-	 * Gets the owner
-	 *
-	 * @return the owner
-	 */
-	public User getOwner() {
-		return owner;
-	}
+  /**
+   * Gets the owner
+   *
+   * @return the owner
+   */
+  public User getOwner() {
+    return owner;
+  }
 
-	/**
-	 * Sets the owner
-	 *
-	 * @param owner the owner to set
-	 */
-	public void setOwner(User owner) {
-		this.owner = owner;
-	}
+  /**
+   * Sets the owner
+   *
+   * @param owner the owner to set
+   */
+  public void setOwner(User owner) {
+    this.owner = owner;
+  }
 
-	/**
-	 * Gets the shared
-	 *
-	 * @return the shared
-	 */
-	public Boolean getShared() {
-		return shared;
-	}
+  /**
+   * Gets the shared
+   *
+   * @return the shared
+   */
+  public Boolean getShared() {
+    return shared;
+  }
 
-	/**
-	 * Sets the shared
-	 *
-	 * @param shared the shared to set
-	 */
-	public void setShared(Boolean shared) {
-		this.shared = shared;
-	}
+  /**
+   * Sets the shared
+   *
+   * @param shared the shared to set
+   */
+  public void setShared(Boolean shared) {
+    this.shared = shared;
+  }
 
-	/**
-	 * Gets the cohort
-	 *
-	 * @return the cohort
-	 */
-	public Cohort getCohort() {
-		return cohort;
-	}
+  /**
+   * Gets the cohort
+   *
+   * @return the cohort
+   */
+  public Cohort getCohort() {
+    return cohort;
+  }
 
-	/**
-	 * Sets the cohort
-	 *
-	 * @param cohort the cohort to set
-	 */
-	public void setCohort(Cohort cohort) {
-		this.cohort = cohort;
-	}
+  /**
+   * Sets the cohort
+   *
+   * @param cohort the cohort to set
+   */
+  public void setCohort(Cohort cohort) {
+    this.cohort = cohort;
+  }
 
-	/**
-	 * Gets all obs columns in this grid
-	 *
-	 * @return set of {@link ObsPatientGridColumn} objects
-	 */
-	public Set<ObsPatientGridColumn> getObsColumns() {
-		return getColumns().stream().filter(c -> c.getDatatype() == OBS).map(c -> (ObsPatientGridColumn) c)
-		        .collect(Collectors.toSet());
-	}
+  /**
+   * Gets all obs columns in this grid
+   *
+   * @return set of {@link ObsPatientGridColumn} objects
+   */
+  public Set<ObsPatientGridColumn> getObsColumns() {
+    return getColumns().stream().filter(c -> c.getDatatype() == OBS).map(c -> (ObsPatientGridColumn) c)
+        .collect(Collectors.toSet());
+  }
 
-	public EncounterDatePatientGridColumn getDateColumn(EncounterType type) {
-		return getColumns().stream()
-		        .filter(c -> c.getDatatype() == PatientGridColumn.ColumnDatatype.ENC_DATE
-		                && type.equals(((EncounterDatePatientGridColumn) c).getEncounterType()))
-		        .map(c -> (EncounterDatePatientGridColumn) c).findFirst().orElse(null);
-	}
+  public EncounterDatePatientGridColumn getDateColumn(EncounterType type) {
+    return getColumns().stream()
+        .filter(c -> c.getDatatype() == PatientGridColumn.ColumnDatatype.ENC_DATE
+            && type.equals(((EncounterDatePatientGridColumn) c).getEncounterType()))
+        .map(c -> (EncounterDatePatientGridColumn) c).findFirst().orElse(null);
+  }
 
 }

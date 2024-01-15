@@ -22,88 +22,86 @@ import static org.openmrs.module.patientgrid.PatientGridConstants.*;
  */
 public class DiskCache {
 
-	private static final Logger log = LoggerFactory.getLogger(DiskCache.class);
+  private static final Logger log = LoggerFactory.getLogger(DiskCache.class);
 
-	private File cacheDirectory;
+  private File cacheDirectory;
 
-	public void deleteCacheFileOlderThan(int maxAgeInHour) {
-		log.debug("start cleaning cache folder and remove files created {}h before", maxAgeInHour);
-		final long maxLastModified = DateTime.now().minusHours(maxAgeInHour).getMillis();
-		Arrays.stream(getCacheDirectory().listFiles()).forEach(file -> {
-			if (file.lastModified() < maxLastModified) {
-				boolean deleted = file.delete();
-				if (!deleted) {
-					log.warn("Impossible to delete the cache file {}", file.getAbsolutePath());
-				} else {
-					log.info("Delete with success the cache file {}", file.getAbsolutePath());
-				}
-			}
-		});
-	}
+  public void deleteCacheFileOlderThan(int maxAgeInHour) {
+    log.debug("start cleaning cache folder and remove files created {}h before", maxAgeInHour);
+    final long maxLastModified = DateTime.now().minusHours(maxAgeInHour).getMillis();
+    Arrays.stream(getCacheDirectory().listFiles()).forEach(file -> {
+      if (file.lastModified() < maxLastModified) {
+        boolean deleted = file.delete();
+        if (!deleted) {
+          log.warn("Impossible to delete the cache file {}", file.getAbsolutePath());
+        } else {
+          log.info("Delete with success the cache file {}", file.getAbsolutePath());
+        }
+      }
+    });
+  }
 
-	private static class DiskCacheHolder {
+  private static class DiskCacheHolder {
 
-		private static final DiskCache INSTANCE = new DiskCache();
+    private static final DiskCache INSTANCE = new DiskCache();
 
-	}
+  }
 
-	public static DiskCache getInstance() {
-		return DiskCacheHolder.INSTANCE;
-	}
+  public static DiskCache getInstance() {
+    return DiskCacheHolder.INSTANCE;
+  }
 
-	protected File getCacheDirectory() {
-		if (cacheDirectory == null) {
-			log.info("Initializing disk cache");
+  protected File getCacheDirectory() {
+    if (cacheDirectory == null) {
+      log.info("Initializing disk cache");
 
-			String dir = Context.getAdministrationService().getGlobalProperty(GP_DISK_CACHE_DIR);
-			if (StringUtils.isBlank(dir)) {
-				File parent = OpenmrsUtil.getDirectoryInApplicationDataDirectory(MODULE_ID);
-				cacheDirectory = new File(parent, DEFAULT_DISK_CACHE_DIR_NAME);
-			} else {
-				cacheDirectory = OpenmrsUtil.getDirectoryInApplicationDataDirectory(dir);
-			}
+      String dir = Context.getAdministrationService().getGlobalProperty(GP_DISK_CACHE_DIR);
+      if (StringUtils.isBlank(dir)) {
+        File parent = OpenmrsUtil.getDirectoryInApplicationDataDirectory(MODULE_ID);
+        cacheDirectory = new File(parent, DEFAULT_DISK_CACHE_DIR_NAME);
+      } else {
+        cacheDirectory = OpenmrsUtil.getDirectoryInApplicationDataDirectory(dir);
+      }
 
-			if (!cacheDirectory.exists()) {
-				log.info("Creating grid report cache directory at {}", cacheDirectory);
+      if (!cacheDirectory.exists()) {
+        log.info("Creating grid report cache directory at {}", cacheDirectory);
 
-				if (!cacheDirectory.mkdirs()) {
-					throw new APIException("Failed to create grid report cache directory at " + cacheDirectory);
-				}
-			}
-		}
+        if (!cacheDirectory.mkdirs()) {
+          throw new APIException("Failed to create grid report cache directory at " + cacheDirectory);
+        }
+      }
+    }
 
-		return cacheDirectory;
-	}
+    return cacheDirectory;
+  }
 
-	private boolean hasFile(String filename) {
-		File file = new File(getCacheDirectory(), filename);
-		return file.exists() && file.isFile();
-	}
+  private boolean hasFile(String filename) {
+    File file = new File(getCacheDirectory(), filename);
+    return file.exists() && file.isFile();
+  }
 
-	public File getFile(String filename) {
-		return new File(getCacheDirectory(), filename);
-	}
+  public File getFile(String filename) {
+    return new File(getCacheDirectory(), filename);
+  }
 
-	public void deleteFile(String filename) {
-		if (!hasFile(filename)) {
-			return;
-		}
+  public void deleteFile(String filename) {
+    if (!hasFile(filename)) {
+      return;
+    }
 
-		try {
-			FileUtils.forceDelete(new File(getCacheDirectory(), filename));
-		}
-		catch (IOException e) {
-			throw new APIException("Failed to delete file", e);
-		}
-	}
+    try {
+      FileUtils.forceDelete(new File(getCacheDirectory(), filename));
+    } catch (IOException e) {
+      throw new APIException("Failed to delete file", e);
+    }
+  }
 
-	public void deleteAllFiles() {
-		try {
-			FileUtils.deleteDirectory(getCacheDirectory());
-		}
-		catch (IOException e) {
-			throw new APIException("Failed to delete directory for the disk cache", e);
-		}
-	}
+  public void deleteAllFiles() {
+    try {
+      FileUtils.deleteDirectory(getCacheDirectory());
+    } catch (IOException e) {
+      throw new APIException("Failed to delete directory for the disk cache", e);
+    }
+  }
 
 }

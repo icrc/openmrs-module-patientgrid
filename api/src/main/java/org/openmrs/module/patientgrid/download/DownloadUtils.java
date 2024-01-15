@@ -18,40 +18,39 @@ import org.slf4j.LoggerFactory;
  */
 public class DownloadUtils {
 
-	/**
-	 * Utility class
-	 */
-	private DownloadUtils() {
+  /**
+   * Utility class
+   */
+  private DownloadUtils() {
 
-	}
+  }
 
-	private static final Logger log = LoggerFactory.getLogger(DownloadUtils.class);
+  private static final Logger log = LoggerFactory.getLogger(DownloadUtils.class);
 
-	public static ExtendedDataSet evaluate(PatientGrid patientGrid) {
-		log.debug("Generating downloadable patient grid report data for patient grid: {}", patientGrid);
+  public static ExtendedDataSet evaluate(PatientGrid patientGrid) {
+    log.debug("Generating downloadable patient grid report data for patient grid: {}", patientGrid);
 
-		try {
-			String clientTimezone = PatientGridUtils.getCurrentUserTimeZone();
-			PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, false,
-			    clientTimezone);
-			DateRange periodRange = PatientGridFilterUtils.extractPeriodRange(patientGrid, clientTimezone);
-			LocationCohortDefinition locationCohortDefinition = PatientGridFilterUtils.extractLocations(patientGrid);
+    try {
+      String clientTimezone = PatientGridUtils.getCurrentUserTimeZone();
+      PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, false,
+          clientTimezone);
+      DateRange periodRange = PatientGridFilterUtils.extractPeriodRange(patientGrid, clientTimezone);
+      LocationCohortDefinition locationCohortDefinition = PatientGridFilterUtils.extractLocations(patientGrid);
 
-			final DateRange pr = periodRange;
-			PatientGridUtils.getEncounterTypes(patientGrid).forEach(type -> {
-				AllEncountersPatientDataDefinition encDef = new AllEncountersPatientDataDefinition();
-				encDef.setEncounterType(type);
-				encDef.setPatientGrid(patientGrid);
-				encDef.setPeriodRange(pr);
-				encDef.setLocationCohortDefinition(locationCohortDefinition);
-				dataSetDef.addColumn(type.getUuid(), encDef, (String) null);
-			});
-			return PatientGridServiceImpl.createExtendedDataSet(patientGrid, clientTimezone, dataSetDef);
-		}
-		catch (EvaluationException e) {
-			throw new APIException(
-			        "Failed to generate downloadable patient grid report data for patient grid: " + patientGrid, e);
-		}
-	}
+      final DateRange pr = periodRange;
+      PatientGridUtils.getEncounterTypes(patientGrid).forEach(type -> {
+        AllEncountersPatientDataDefinition encDef = new AllEncountersPatientDataDefinition();
+        encDef.setEncounterType(type);
+        encDef.setPatientGrid(patientGrid);
+        encDef.setPeriodRange(pr);
+        encDef.setLocationCohortDefinition(locationCohortDefinition);
+        dataSetDef.addColumn(type.getUuid(), encDef, (String) null);
+      });
+      return PatientGridServiceImpl.createExtendedDataSet(patientGrid, clientTimezone, dataSetDef);
+    } catch (EvaluationException e) {
+      throw new APIException(
+          "Failed to generate downloadable patient grid report data for patient grid: " + patientGrid, e);
+    }
+  }
 
 }

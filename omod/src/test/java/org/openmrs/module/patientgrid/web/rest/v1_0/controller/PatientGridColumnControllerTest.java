@@ -18,155 +18,155 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class PatientGridColumnControllerTest extends BasePatientGridRestControllerTest {
 
-	private static String GRID_UUID = "1d6c993e-c2cc-11de-8d13-0010c6dffd0a";
+  private static String GRID_UUID = "1d6c993e-c2cc-11de-8d13-0010c6dffd0a";
 
-	private static String COLUMN_UUID = "1e6c993e-c2cc-11de-8d13-0010c6dffd0b";
+  private static String COLUMN_UUID = "1e6c993e-c2cc-11de-8d13-0010c6dffd0b";
 
-	@Autowired
-	private PatientGridService service;
+  @Autowired
+  private PatientGridService service;
 
-	@Override
-	public String getURI() {
-		return "patientgrid/" + GRID_UUID + "/column";
-	}
+  @Override
+  public String getURI() {
+    return "patientgrid/" + GRID_UUID + "/column";
+  }
 
-	@Override
-	public String getUuid() {
-		return COLUMN_UUID;
-	}
+  @Override
+  public String getUuid() {
+    return COLUMN_UUID;
+  }
 
-	@Override
-	public long getAllCount() {
-		return service.getPatientGridByUuid(GRID_UUID).getColumns().size();
-	}
+  @Override
+  public long getAllCount() {
+    return service.getPatientGridByUuid(GRID_UUID).getColumns().size();
+  }
 
-	//@Test
-	public void shouldAddANewColumnToThePatientGrid() throws Exception {
-		long initialCount = getAllCount();
-		SimpleObject column = new SimpleObject();
-		column.add("type", PatientGridConstants.PROPERTY_COLUMN);
-		column.add("name", "nick name");
-		column.add(PatientGridConstants.PROP_DATATYPE, ColumnDatatype.NAME);
+  //@Test
+  public void shouldAddANewColumnToThePatientGrid() throws Exception {
+    long initialCount = getAllCount();
+    SimpleObject column = new SimpleObject();
+    column.add("type", PatientGridConstants.PROPERTY_COLUMN);
+    column.add("name", "nick name");
+    column.add(PatientGridConstants.PROP_DATATYPE, ColumnDatatype.NAME);
 
-		SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
+    SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
 
-		assertEquals(++initialCount, getAllCount());
-		PatientGridColumn saveColumn = service.getPatientGridColumnByUuid(Util.getByPath(result, "uuid").toString());
-		assertEquals(PatientGridColumn.class, saveColumn.getClass());
-	}
+    assertEquals(++initialCount, getAllCount());
+    PatientGridColumn saveColumn = service.getPatientGridColumnByUuid(Util.getByPath(result, "uuid").toString());
+    assertEquals(PatientGridColumn.class, saveColumn.getClass());
+  }
 
-	//@Test
-	public void shouldAddANewObsColumnToThePatientGrid() throws Exception {
-		long initialCount = getAllCount();
-		SimpleObject column = new SimpleObject();
-		column.add("type", "obscolumn");
-		column.add("name", "height");
-		column.add(PatientGridConstants.PROP_DATATYPE, ColumnDatatype.OBS);
-		column.add(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, "19218f76-6c39-45f4-8efa-4c5c6c199f50");
-		column.add(PatientGridConstants.PROP_CONCEPT, "95312123-e0c2-466d-b6b1-cb6e990d0d65");
+  //@Test
+  public void shouldAddANewObsColumnToThePatientGrid() throws Exception {
+    long initialCount = getAllCount();
+    SimpleObject column = new SimpleObject();
+    column.add("type", "obscolumn");
+    column.add("name", "height");
+    column.add(PatientGridConstants.PROP_DATATYPE, ColumnDatatype.OBS);
+    column.add(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, "19218f76-6c39-45f4-8efa-4c5c6c199f50");
+    column.add(PatientGridConstants.PROP_CONCEPT, "95312123-e0c2-466d-b6b1-cb6e990d0d65");
 
-		SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
+    SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
 
-		assertEquals(++initialCount, getAllCount());
-		PatientGridColumn savedColumn = service.getPatientGridColumnByUuid(Util.getByPath(result, "uuid").toString());
-		assertEquals(ObsPatientGridColumn.class, savedColumn.getClass());
-	}
+    assertEquals(++initialCount, getAllCount());
+    PatientGridColumn savedColumn = service.getPatientGridColumnByUuid(Util.getByPath(result, "uuid").toString());
+    assertEquals(ObsPatientGridColumn.class, savedColumn.getClass());
+  }
 
-	//@Test
-	public void shouldAddANewAgeColumnToThePatientGrid() throws Exception {
-		long initialCount = getAllCount();
-		SimpleObject column = new SimpleObject();
-		column.add("type", "agecolumn");
-		column.add("name", "height");
-		column.add(PatientGridConstants.PROP_DATATYPE, ColumnDatatype.OBS);
-		column.add(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, "19218f76-6c39-45f4-8efa-4c5c6c199f50");
-		column.add(PatientGridConstants.CONVERT_TO_AGE_RANGE, true);
+  //@Test
+  public void shouldAddANewAgeColumnToThePatientGrid() throws Exception {
+    long initialCount = getAllCount();
+    SimpleObject column = new SimpleObject();
+    column.add("type", "agecolumn");
+    column.add("name", "height");
+    column.add(PatientGridConstants.PROP_DATATYPE, ColumnDatatype.OBS);
+    column.add(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, "19218f76-6c39-45f4-8efa-4c5c6c199f50");
+    column.add(PatientGridConstants.CONVERT_TO_AGE_RANGE, true);
 
-		SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
+    SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
 
-		assertEquals(++initialCount, getAllCount());
-		PatientGridColumn savedColumn = service.getPatientGridColumnByUuid(Util.getByPath(result, "uuid").toString());
-		assertEquals(AgeAtEncounterPatientGridColumn.class, savedColumn.getClass());
-	}
+    assertEquals(++initialCount, getAllCount());
+    PatientGridColumn savedColumn = service.getPatientGridColumnByUuid(Util.getByPath(result, "uuid").toString());
+    assertEquals(AgeAtEncounterPatientGridColumn.class, savedColumn.getClass());
+  }
 
-	//@Test
-	public void shouldAddANewEncounterDateColumnToThePatientGrid() throws Exception {
-		long initialCount = getAllCount();
-		SimpleObject column = new SimpleObject();
-		column.add("type", "encounterdatecolumn");
-		column.add("name", "encDate");
-		column.add(PatientGridConstants.PROP_DATATYPE, ColumnDatatype.ENC_DATE);
-		column.add(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, "19218f76-6c39-45f4-8efa-4c5c6c199f50");
+  //@Test
+  public void shouldAddANewEncounterDateColumnToThePatientGrid() throws Exception {
+    long initialCount = getAllCount();
+    SimpleObject column = new SimpleObject();
+    column.add("type", "encounterdatecolumn");
+    column.add("name", "encDate");
+    column.add(PatientGridConstants.PROP_DATATYPE, ColumnDatatype.ENC_DATE);
+    column.add(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, "19218f76-6c39-45f4-8efa-4c5c6c199f50");
 
-		SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
+    SimpleObject result = deserialize(handle(newPostRequest(getURI(), column)));
 
-		assertEquals(++initialCount, getAllCount());
-		PatientGridColumn savedColumn = service.getPatientGridColumnByUuid(Util.getByPath(result, "uuid").toString());
-		assertEquals(AgeAtEncounterPatientGridColumn.class, savedColumn.getClass());
-	}
+    assertEquals(++initialCount, getAllCount());
+    PatientGridColumn savedColumn = service.getPatientGridColumnByUuid(Util.getByPath(result, "uuid").toString());
+    assertEquals(AgeAtEncounterPatientGridColumn.class, savedColumn.getClass());
+  }
 
-	@Test
-	public void shouldUpdateAnExistingPatientGridColumn() throws Exception {
-		long initialCount = getAllCount();
-		final String newName = "New Name";
-		assertNotEquals(newName, service.getPatientGridColumnByUuid(COLUMN_UUID).getName());
-		final String json = "{ \"name\":\"" + newName + "\" }";
+  @Test
+  public void shouldUpdateAnExistingPatientGridColumn() throws Exception {
+    long initialCount = getAllCount();
+    final String newName = "New Name";
+    assertNotEquals(newName, service.getPatientGridColumnByUuid(COLUMN_UUID).getName());
+    final String json = "{ \"name\":\"" + newName + "\" }";
 
-		handle(newPostRequest(getURI() + "/" + getUuid(), json));
+    handle(newPostRequest(getURI() + "/" + getUuid(), json));
 
-		assertEquals(newName, service.getPatientGridColumnByUuid(COLUMN_UUID).getName());
-		assertEquals(initialCount, getAllCount());
-	}
+    assertEquals(newName, service.getPatientGridColumnByUuid(COLUMN_UUID).getName());
+    assertEquals(initialCount, getAllCount());
+  }
 
-	@Test
-	public void shouldAddAFilterToAnExistingColumn() throws Exception {
-		long initialFilterCount = service.getPatientGridColumnByUuid(COLUMN_UUID).getFilters().size();
-		SimpleObject filter = new SimpleObject();
-		filter.add("name", "equal 12");
-		filter.add(PatientGridConstants.PROPERTY_OPERAND, "12");
-		SimpleObject payload = new SimpleObject();
-		payload.add(PatientGridConstants.PROP_FILTERS, new SimpleObject[] { filter });
+  @Test
+  public void shouldAddAFilterToAnExistingColumn() throws Exception {
+    long initialFilterCount = service.getPatientGridColumnByUuid(COLUMN_UUID).getFilters().size();
+    SimpleObject filter = new SimpleObject();
+    filter.add("name", "equal 12");
+    filter.add(PatientGridConstants.PROPERTY_OPERAND, "12");
+    SimpleObject payload = new SimpleObject();
+    payload.add(PatientGridConstants.PROP_FILTERS, new SimpleObject[]{filter});
 
-		handle(newPostRequest(getURI() + "/" + getUuid(), payload));
+    handle(newPostRequest(getURI() + "/" + getUuid(), payload));
 
-		assertEquals(++initialFilterCount, service.getPatientGridColumnByUuid(COLUMN_UUID).getFilters().size());
-	}
+    assertEquals(++initialFilterCount, service.getPatientGridColumnByUuid(COLUMN_UUID).getFilters().size());
+  }
 
-	@Test
-	public void shouldUpdateAnExistingObsColumn() throws Exception {
-		long initialCount = getAllCount();
-		final String newName = "New Name";
-		final String uuid = "4e6c993e-c2cc-11de-8d13-0010c6dffd0b";
-		ObsPatientGridColumn column = (ObsPatientGridColumn) service.getPatientGridColumnByUuid(uuid);
-		assertNotEquals(newName, column.getName());
-		final String json = "{ \"name\":\"" + newName + "\" }";
+  @Test
+  public void shouldUpdateAnExistingObsColumn() throws Exception {
+    long initialCount = getAllCount();
+    final String newName = "New Name";
+    final String uuid = "4e6c993e-c2cc-11de-8d13-0010c6dffd0b";
+    ObsPatientGridColumn column = (ObsPatientGridColumn) service.getPatientGridColumnByUuid(uuid);
+    assertNotEquals(newName, column.getName());
+    final String json = "{ \"name\":\"" + newName + "\" }";
 
-		handle(newPostRequest(getURI() + "/" + uuid, json));
+    handle(newPostRequest(getURI() + "/" + uuid, json));
 
-		assertEquals(newName, service.getPatientGridColumnByUuid(uuid).getName());
-		assertEquals(initialCount, getAllCount());
-	}
+    assertEquals(newName, service.getPatientGridColumnByUuid(uuid).getName());
+    assertEquals(initialCount, getAllCount());
+  }
 
-	@Test
-	public void shouldRemoveAnExistingColumnFromTheGridForADeleteRequest() throws Exception {
-		long initialCount = getAllCount();
-		assertNotNull(service.getPatientGridColumnByUuid(COLUMN_UUID));
+  @Test
+  public void shouldRemoveAnExistingColumnFromTheGridForADeleteRequest() throws Exception {
+    long initialCount = getAllCount();
+    assertNotNull(service.getPatientGridColumnByUuid(COLUMN_UUID));
 
-		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "test")));
+    handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "test")));
 
-		assertNull(service.getPatientGridColumnByUuid(COLUMN_UUID));
-		assertEquals(--initialCount, getAllCount());
-	}
+    assertNull(service.getPatientGridColumnByUuid(COLUMN_UUID));
+    assertEquals(--initialCount, getAllCount());
+  }
 
-	@Test
-	public void shouldRemoveAnExistingColumnFromTheGridForAPurgeRequest() throws Exception {
-		long initialCount = getAllCount();
-		assertNotNull(service.getPatientGridColumnByUuid(COLUMN_UUID));
+  @Test
+  public void shouldRemoveAnExistingColumnFromTheGridForAPurgeRequest() throws Exception {
+    long initialCount = getAllCount();
+    assertNotNull(service.getPatientGridColumnByUuid(COLUMN_UUID));
 
-		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
+    handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
 
-		assertNull(service.getPatientGridColumnByUuid(COLUMN_UUID));
-		assertEquals(--initialCount, getAllCount());
-	}
+    assertNull(service.getPatientGridColumnByUuid(COLUMN_UUID));
+    assertEquals(--initialCount, getAllCount());
+  }
 
 }

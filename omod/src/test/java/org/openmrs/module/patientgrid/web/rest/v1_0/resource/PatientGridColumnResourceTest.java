@@ -9,49 +9,49 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class PatientGridColumnResourceTest extends BaseDelegatingResourceTest<PatientGridColumnResource, PatientGridColumn> {
 
-	private static String COLUMN_UUID = "1e6c993e-c2cc-11de-8d13-0010c6dffd0b";
+  private static String COLUMN_UUID = "1e6c993e-c2cc-11de-8d13-0010c6dffd0b";
 
-	@Autowired
-	private PatientGridService service;
+  @Autowired
+  private PatientGridService service;
 
-	@Before
-	public void setupBasePatientGridRestControllerTest() {
-		executeDataSet("patientGrids.xml");
-	}
+  @Before
+  public void setupBasePatientGridRestControllerTest() {
+    executeDataSet("patientGrids.xml");
+  }
 
-	@Override
-	public PatientGridColumn newObject() {
-		return service.getPatientGridColumnByUuid(COLUMN_UUID);
-	}
+  @Override
+  public PatientGridColumn newObject() {
+    return service.getPatientGridColumnByUuid(COLUMN_UUID);
+  }
 
-	@Override
-	public String getDisplayProperty() {
-		return "Patient name";
-	}
+  @Override
+  public String getDisplayProperty() {
+    return "Patient name";
+  }
 
-	@Override
-	public String getUuidProperty() {
-		return COLUMN_UUID;
-	}
+  @Override
+  public String getUuidProperty() {
+    return COLUMN_UUID;
+  }
 
-	private void validateRepresentation() {
-		PatientGridColumn column = newObject();
-		assertPropEquals("name", column.getName());
-		assertPropEquals(PatientGridConstants.PROP_DESCRIPTION, column.getDescription());
-		assertPropEquals(PatientGridConstants.PROP_DATATYPE, column.getDatatype());
-		assertPropPresent(PatientGridConstants.PROP_FILTERS);
-	}
+  private void validateRepresentation() {
+    PatientGridColumn column = newObject();
+    assertPropEquals("name", column.getName());
+    assertPropEquals(PatientGridConstants.PROP_DESCRIPTION, column.getDescription());
+    assertPropEquals(PatientGridConstants.PROP_DATATYPE, column.getDatatype());
+    assertPropPresent(PatientGridConstants.PROP_FILTERS);
+  }
 
-	@Override
-	public void validateDefaultRepresentation() throws Exception {
-		super.validateDefaultRepresentation();
-		validateRepresentation();
-	}
+  @Override
+  public void validateDefaultRepresentation() throws Exception {
+    super.validateDefaultRepresentation();
+    validateRepresentation();
+  }
 
-	@Override
-	public void validateFullRepresentation() throws Exception {
-		super.validateFullRepresentation();
-		validateRepresentation();
-	}
+  @Override
+  public void validateFullRepresentation() throws Exception {
+    super.validateFullRepresentation();
+    validateRepresentation();
+  }
 
 }

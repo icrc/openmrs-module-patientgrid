@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class PatientGridCachingConfig {
 
-	@Bean(name = PatientGridConstants.CACHE_MANAGER_NAME)
-	public CacheManager cacheManager() {
-		return new PatientGridCacheManager();
-	}
+  @Bean(name = PatientGridConstants.CACHE_MANAGER_NAME)
+  public CacheManager cacheManager() {
+    return new PatientGridCacheManager();
+  }
 
 }

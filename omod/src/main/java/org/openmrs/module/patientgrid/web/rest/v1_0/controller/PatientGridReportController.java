@@ -24,31 +24,31 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class PatientGridReportController extends BaseRestController {
 
-	@Autowired
-	private RestService restService;
+  @Autowired
+  private RestService restService;
 
-	@Autowired
-	private BaseUriSetup baseUriSetup;
+  @Autowired
+  private BaseUriSetup baseUriSetup;
 
-	/**
-	 * @param patientGridUuid the uuid of the patient grid
-	 * @param request {@link HttpServletRequest} object
-	 * @param response {@link HttpServletResponse} object
-	 * @return SimpleObject
-	 * @throws ResponseException
-	 */
-	@RequestMapping(value = "/rest/" + NAMESPACE + "/patientgrid/{patientGridUuid}/report", method = GET)
-	@ResponseBody
-	public SimpleObject evaluate(@PathVariable("patientGridUuid") String patientGridUuid, HttpServletRequest request,
-	        HttpServletResponse response) throws ResponseException {
+  /**
+   * @param patientGridUuid the uuid of the patient grid
+   * @param request         {@link HttpServletRequest} object
+   * @param response        {@link HttpServletResponse} object
+   * @return SimpleObject
+   * @throws ResponseException
+   */
+  @RequestMapping(value = "/rest/" + NAMESPACE + "/patientgrid/{patientGridUuid}/report", method = GET)
+  @ResponseBody
+  public SimpleObject evaluate(@PathVariable("patientGridUuid") String patientGridUuid, HttpServletRequest request,
+                               HttpServletResponse response) throws ResponseException {
 
-		baseUriSetup.setup(request);
+    baseUriSetup.setup(request);
 
-		RequestContext context = RestUtil.getRequestContext(request, response);
+    RequestContext context = RestUtil.getRequestContext(request, response);
 
-		SubResource resource = (SubResource) restService.getResourceBySupportedClass(PatientGridReport.class);
+    SubResource resource = (SubResource) restService.getResourceBySupportedClass(PatientGridReport.class);
 
-		return resource.getAll(patientGridUuid, context);
-	}
+    return resource.getAll(patientGridUuid, context);
+  }
 
 }
