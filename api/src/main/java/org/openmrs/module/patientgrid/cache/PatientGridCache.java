@@ -22,21 +22,21 @@ import org.springframework.cache.support.SimpleValueWrapper;
  * Custom implementation of spring's {@link Cache} abstraction backed by a {@link DiskCache}
  */
 public class PatientGridCache implements Cache {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(PatientGridCache.class);
-	
+
 	private DiskCache diskCache;
-	
+
 	private CustomXstreamSerializer serializer;
-	
+
 	private DiskCache getDiskCache() {
 		if (diskCache == null) {
 			diskCache = DiskCache.getInstance();
 		}
-		
+
 		return diskCache;
 	}
-	
+
 	/**
 	 * @see Cache#getName()
 	 */
@@ -44,7 +44,7 @@ public class PatientGridCache implements Cache {
 	public String getName() {
 		return PatientGridConstants.CACHE_NAME_GRID_REPORTS;
 	}
-	
+
 	/**
 	 * @see Cache#getNativeCache()
 	 */
@@ -52,7 +52,7 @@ public class PatientGridCache implements Cache {
 	public Object getNativeCache() {
 		return getDiskCache();
 	}
-	
+
 	/**
 	 * @see Cache#get(Object)
 	 */
@@ -63,10 +63,10 @@ public class PatientGridCache implements Cache {
 		if (dataset != null && !isObsolete(dataset)) {
 			ret = new SimpleValueWrapper(dataset);
 		}
-		
+
 		return ret;
 	}
-	
+
 	boolean isObsolete(ExtendedDataSet dataSet) {
 		if (!dataSet.isLastVersion()) {
 			LOGGER.debug("the xml version is not the last one. Force recompute. Read Version: {}. Current Version {}",
@@ -83,15 +83,15 @@ public class PatientGridCache implements Cache {
 				    usedDateRange, dateRangeAsString);
 				return true;
 			}
-			
+
 		}
 		return false;
 	}
-	
+
 	protected void setSerializer(CustomXstreamSerializer serializer) {
 		this.serializer = serializer;
 	}
-	
+
 	protected CustomXstreamSerializer getSerializer() {
 		if (serializer == null) {
 			try {
@@ -103,7 +103,7 @@ public class PatientGridCache implements Cache {
 		}
 		return serializer;
 	}
-	
+
 	/**
 	 * @see Cache#get(Object, Class)
 	 */
@@ -129,10 +129,10 @@ public class PatientGridCache implements Cache {
 		if (value != null && !value.getClass().equals(type)) {
 			return null;
 		}
-		
+
 		return value;
 	}
-	
+
 	/**
 	 * @see Cache#put(Object, Object)
 	 */
@@ -142,16 +142,16 @@ public class PatientGridCache implements Cache {
 			return;
 		}
 		File targetFile = getDiskCache().getFile(key.toString());
-		
+
 		try {
 			getSerializer().toXML(value, targetFile);
-			
+
 		}
 		catch (IOException e) {
 			LOGGER.warn("Failed to serialize grid report", e);
 		}
 	}
-	
+
 	/**
 	 * @see Cache#putIfAbsent(Object, Object)
 	 */
@@ -162,10 +162,10 @@ public class PatientGridCache implements Cache {
 			put(key, value);
 			return null;
 		}
-		
+
 		return existingValue;
 	}
-	
+
 	/**
 	 * @see Cache#evict(Object)
 	 */
@@ -177,10 +177,10 @@ public class PatientGridCache implements Cache {
 			String[] files = getDiskCache().getCacheDirectory().list((dir, name) -> name.startsWith(key.toString()));
 			filenames = Arrays.asList(files);
 		}
-		
+
 		filenames.stream().forEach(filename -> getDiskCache().deleteFile(filename));
 	}
-	
+
 	/**
 	 * @see Cache#clear()
 	 */
@@ -188,5 +188,5 @@ public class PatientGridCache implements Cache {
 	public void clear() {
 		getDiskCache().deleteAllFiles();
 	}
-	
+
 }

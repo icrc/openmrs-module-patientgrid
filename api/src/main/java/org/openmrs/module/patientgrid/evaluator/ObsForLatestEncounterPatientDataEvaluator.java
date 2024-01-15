@@ -20,7 +20,7 @@ import java.util.Set;
 
 @Handler(supports = ObsForLatestEncounterPatientDataDefinition.class, order = 50)
 public class ObsForLatestEncounterPatientDataEvaluator implements PatientDataEvaluator {
-	
+
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
 	        throws EvaluationException {
@@ -33,7 +33,7 @@ public class ObsForLatestEncounterPatientDataEvaluator implements PatientDataEva
 		Map<Integer, Object> patientIdAndEnc = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
 		    new MostRecentEncounterPerPatientByTypeFunction(contextPersistantCache, def.getPeriodRange(),
 		            def.getLocationCohortDefinition()));
-		
+
 		Map<Integer, Object> patientIdAndObs = new HashMap(patientIdAndEnc.size());
 		Set<Integer> patients = baseCohort == null ? patientIdAndEnc.keySet() : baseCohort.getMemberIds();
 		for (Integer patientId : patients) {
@@ -43,11 +43,11 @@ public class ObsForLatestEncounterPatientDataEvaluator implements PatientDataEva
 				patientIdAndObs.put(patientId, obs);
 			}
 		}
-		
+
 		EvaluatedPatientData result = new EvaluatedPatientData(definition, context);
 		result.setData(patientIdAndObs);
-		
+
 		return result;
 	}
-	
+
 }

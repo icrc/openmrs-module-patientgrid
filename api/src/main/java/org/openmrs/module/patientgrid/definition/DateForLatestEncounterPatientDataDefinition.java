@@ -10,29 +10,29 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import java.util.Date;
 
 public class DateForLatestEncounterPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
-	
+
 	@ConfigurationProperty
 	private EncounterType encounterType;
-	
+
 	@ConfigurationProperty
 	private DateRange periodRange;
-	
+
 	@ConfigurationProperty
 	private LocationCohortDefinition locationCohortDefinition;
-	
+
 	public DateRange getPeriodRange() {
 		return periodRange;
 	}
-	
+
 	public void setPeriodRange(DateRange periodRange) {
 		this.periodRange = periodRange;
 	}
-	
+
 	@Override
 	public Class<?> getDataType() {
 		return Date.class;
 	}
-	
+
 	/**
 	 * Gets the encounterType
 	 *
@@ -41,7 +41,7 @@ public class DateForLatestEncounterPatientDataDefinition extends BaseDataDefinit
 	public EncounterType getEncounterType() {
 		return encounterType;
 	}
-	
+
 	/**
 	 * Sets the encounterType
 	 *
@@ -50,11 +50,11 @@ public class DateForLatestEncounterPatientDataDefinition extends BaseDataDefinit
 	public void setEncounterType(EncounterType encounterType) {
 		this.encounterType = encounterType;
 	}
-	
+
 	public LocationCohortDefinition getLocationCohortDefinition() {
 		return locationCohortDefinition;
 	}
-	
+
 	public void setLocationCohortDefinition(LocationCohortDefinition locationCohortDefinition) {
 		this.locationCohortDefinition = locationCohortDefinition;
 	}

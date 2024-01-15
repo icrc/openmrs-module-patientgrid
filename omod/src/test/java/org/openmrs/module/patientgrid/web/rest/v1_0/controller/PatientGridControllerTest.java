@@ -19,33 +19,33 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class PatientGridControllerTest extends BasePatientGridRestControllerTest {
-	
+
 	private static String TEST_UUID = "1d6c993e-c2cc-11de-8d13-0010c6dffd0a";
-	
+
 	@Autowired
 	private PatientGridService service;
-	
+
 	@Override
 	public String getURI() {
 		return "patientgrid";
 	}
-	
+
 	@Override
 	public String getUuid() {
 		return TEST_UUID;
 	}
-	
+
 	@Override
 	public long getAllCount() {
 		return service.getPatientGrids(false).size();
 	}
-	
+
 	@Test
 	public void shouldReturnAllPatientGridsIfIncludeAllIsSetToTrue() throws Exception {
 		Parameter includeAll = new Parameter(REQUEST_PROPERTY_FOR_INCLUDE_ALL, "true");
 		assertEquals(getAllCount() + 1, Util.getResultsSize(deserialize(handle(newGetRequest(getURI(), includeAll)))));
 	}
-	
+
 	@Test
 	public void shouldCreateANewPatientGrid() throws Exception {
 		long initialCount = getAllCount();
@@ -90,32 +90,32 @@ public class PatientGridControllerTest extends BasePatientGridRestControllerTest
 		AgeAtEncounterPatientGridColumn ageGridColumn = (AgeAtEncounterPatientGridColumn) columns.next();
 		assertEquals(1, ageGridColumn.getFilters().size());
 	}
-	
+
 	@Test
 	public void shouldUpdateAnExistingPatientGrid() throws Exception {
 		long initialCount = getAllCount();
 		final String newName = "My Other List";
 		assertNotEquals(newName, service.getPatientGridByUuid(TEST_UUID).getName());
 		final String json = "{ \"name\":\"" + newName + "\" }";
-		
+
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
-		
+
 		assertEquals(newName, service.getPatientGridByUuid(TEST_UUID).getName());
 		assertEquals(initialCount, getAllCount());
 	}
-	
+
 	@Test
 	public void shouldVoidAnExistingPatientGrid() throws Exception {
 		PatientGrid grid = service.getPatientGridByUuid(TEST_UUID);
 		assertFalse(grid.getRetired());
 		assertNull(grid.getRetireReason());
 		final String reason = "testing";
-		
+
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", reason)));
-		
+
 		grid = service.getPatientGridByUuid(TEST_UUID);
 		assertTrue(service.getPatientGridByUuid(TEST_UUID).getRetired());
 		assertEquals(reason, grid.getRetireReason());
 	}
-	
+
 }

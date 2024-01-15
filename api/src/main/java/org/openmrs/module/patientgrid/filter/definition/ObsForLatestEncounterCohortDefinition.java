@@ -13,24 +13,24 @@ import java.util.List;
  * question concept and values in their most recent encounter of a specific type.
  */
 public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition {
-	
+
 	@ConfigurationProperty
 	private String propertyName;
-	
+
 	@ConfigurationProperty
 	private Concept concept;
-	
+
 	@ConfigurationProperty
 	private EncounterType encounterType;
-	
+
 	@ConfigurationProperty
 	private LocationCohortDefinition locationCohortDefinition;
-	
+
 	@ConfigurationProperty
 	private List<Object> values;
-	
+
 	private DateRange periodRange;
-	
+
 	/**
 	 * Gets the propertyName
 	 *
@@ -39,7 +39,7 @@ public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition 
 	public String getPropertyName() {
 		return propertyName;
 	}
-	
+
 	/**
 	 * Sets the propertyName
 	 *
@@ -48,7 +48,7 @@ public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition 
 	public void setPropertyName(String propertyName) {
 		this.propertyName = propertyName;
 	}
-	
+
 	/**
 	 * Gets the concept
 	 *
@@ -57,7 +57,7 @@ public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition 
 	public Concept getConcept() {
 		return concept;
 	}
-	
+
 	/**
 	 * Sets the concept
 	 *
@@ -66,7 +66,7 @@ public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition 
 	public void setConcept(Concept concept) {
 		this.concept = concept;
 	}
-	
+
 	/**
 	 * Gets the encounterType
 	 *
@@ -75,7 +75,7 @@ public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition 
 	public EncounterType getEncounterType() {
 		return encounterType;
 	}
-	
+
 	/**
 	 * Sets the encounterType
 	 *
@@ -84,7 +84,7 @@ public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition 
 	public void setEncounterType(EncounterType encounterType) {
 		this.encounterType = encounterType;
 	}
-	
+
 	/**
 	 * Gets the values
 	 *
@@ -93,7 +93,7 @@ public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition 
 	public List<Object> getValues() {
 		return values;
 	}
-	
+
 	/**
 	 * Sets the values
 	 *
@@ -102,19 +102,19 @@ public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition 
 	public void setValues(List<Object> values) {
 		this.values = values;
 	}
-	
+
 	public void setPeriodRange(DateRange periodRange) {
 		this.periodRange = periodRange;
 	}
-	
+
 	public DateRange getPeriodRange() {
 		return periodRange;
 	}
-	
+
 	public LocationCohortDefinition getLocationCohortDefinition() {
 		return locationCohortDefinition;
 	}
-	
+
 	public void setLocationCohortDefinition(LocationCohortDefinition locationCohortDefinition) {
 		this.locationCohortDefinition = locationCohortDefinition;
 	}

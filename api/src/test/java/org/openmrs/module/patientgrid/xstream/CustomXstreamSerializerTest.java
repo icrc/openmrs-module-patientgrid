@@ -18,18 +18,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CustomXstreamSerializerTest {
-	
+
 	private CustomXstreamSerializer customXstreamSerializer;
-	
+
 	String columnName = "column_1";
-	
+
 	String columnValue = "Full test with accent like é à and specific chars like *";
-	
+
 	@Before
 	public void setUp() throws Exception {
 		customXstreamSerializer = new CustomXstreamSerializer();
 	}
-	
+
 	private <T> T marshallUnMarshall(Object in, Class<T> type) {
 		try {
 			String serialize = customXstreamSerializer.serialize(in);
@@ -40,34 +40,34 @@ public class CustomXstreamSerializerTest {
 		}
 		return null;
 	}
-	
+
 	@Test
 	public void serializeSimpleDataSet_shouldOnlyKeepTheFieldidToRowMap() {
 		//setup
 		SimpleDataSet dataset = createData();
-		
+
 		//action
 		SimpleDataSet afterSerialization = marshallUnMarshall(dataset, SimpleDataSet.class);
-		
+
 		//assertions
 		checkReadData(afterSerialization);
 	}
-	
+
 	private SimpleDataSet createData() {
 		SimpleDataSet dataset = getEmptyDataSet();
 		DataSetRow row = new DataSetRow();
 		DataSetColumn column = new DataSetColumn();
-		
+
 		column.setName(columnName);
 		column.setDataType(String.class);
 		Map<DataSetColumn, Object> values = new HashMap<>();
-		
+
 		values.put(column, columnValue);
 		row.setColumnValues(values);
 		dataset.addRow(row);
 		return dataset;
 	}
-	
+
 	private void checkReadData(SimpleDataSet afterSerialization) {
 		Assert.assertNotNull(afterSerialization);
 		Assert.assertNull(afterSerialization.getContext());
@@ -80,29 +80,29 @@ public class CustomXstreamSerializerTest {
 		Object readColumnValue = values.get(new DataSetColumn(columnName, columnName, String.class));
 		Assert.assertEquals(columnValue, readColumnValue);
 	}
-	
+
 	@Test
 	public void serializeSimpleDataSet_checkSaveToXmlFile() throws IOException {
 		//setup
 		SimpleDataSet dataset = createData();
-		
+
 		File target = File.createTempFile("test", ".xml");
 		target.deleteOnExit();
 		customXstreamSerializer.toXML(dataset, target);
-		
+
 		Assert.assertTrue(target.exists());
 		//action
 		SimpleDataSet afterSerialization = (SimpleDataSet) customXstreamSerializer.fromXML(target);
 		//assertions
 		checkReadData(afterSerialization);
-		
+
 		Assert.assertTrue(target.delete());
 	}
-	
+
 	private SimpleDataSet getEmptyDataSet() {
 		SimpleDataSet dataset = new SimpleDataSet(new PatientDataSetDefinition(), Mockito.mock(EvaluationContext.class));
 		dataset.setSortCriteria(new SortCriteria());
 		return dataset;
 	}
-	
+
 }

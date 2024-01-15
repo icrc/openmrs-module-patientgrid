@@ -14,13 +14,13 @@ import java.nio.file.Files;
  * contain only the data used by the front-end
  */
 public class CustomXstreamSerializer extends SimpleXStreamSerializer {
-	
+
 	private static final int DEFAULT_BUFFER_SIZE = 4 * 8192;
-	
+
 	public CustomXstreamSerializer() throws SerializationException {
 		init();
 	}
-	
+
 	public void toXML(Object value, File target) throws IOException {
 		File parent = target.getParentFile();
 		if (parent != null && !parent.mkdirs() && !parent.isDirectory()) {
@@ -32,7 +32,7 @@ public class CustomXstreamSerializer extends SimpleXStreamSerializer {
 			xstream.toXML(value, writer);
 		}
 	}
-	
+
 	public Object fromXML(File targetFile) throws IOException {
 		try (final InputStreamReader buffered = new InputStreamReader(
 		        new BufferedInputStream(Files.newInputStream(targetFile.toPath()), DEFAULT_BUFFER_SIZE),
@@ -40,7 +40,7 @@ public class CustomXstreamSerializer extends SimpleXStreamSerializer {
 			return xstream.fromXML(buffered);
 		}
 	}
-	
+
 	private void init() {
 		//serialize only the field idToRowMap
 		xstream.omitField(SimpleDataSet.class, "definition");

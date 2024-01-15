@@ -28,7 +28,7 @@ import org.springframework.cache.annotation.Cacheable;
  */
 @CacheConfig(cacheManager = CACHE_MANAGER_NAME, cacheNames = CACHE_NAME_GRID_REPORTS)
 public interface PatientGridService extends OpenmrsService {
-	
+
 	/**
 	 * Gets a patient grid that matches the specified id
 	 *
@@ -37,7 +37,7 @@ public interface PatientGridService extends OpenmrsService {
 	 */
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
 	PatientGrid getPatientGrid(Integer patientGridId);
-	
+
 	/**
 	 * Gets a patient grid that matches the specified uuid
 	 *
@@ -46,7 +46,7 @@ public interface PatientGridService extends OpenmrsService {
 	 */
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
 	PatientGrid getPatientGridByUuid(String uuid);
-	
+
 	/**
 	 * Gets the patient grids
 	 *
@@ -55,17 +55,17 @@ public interface PatientGridService extends OpenmrsService {
 	 */
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
 	List<PatientGrid> getPatientGrids(boolean includeRetired);
-	
+
 	/**
 	 * Saves the {@link PatientGrid} object
-	 * 
+	 *
 	 * @param patientGrid
 	 * @return the saved patient grid
 	 */
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
 	@CacheEvict(key = CACHE_EVICT_KEY_EXP, condition = CACHE_EVICT_CONDITION_EXP, beforeInvocation = true)
 	PatientGrid savePatientGrid(PatientGrid patientGrid);
-	
+
 	/**
 	 * Marks the specified patient grid as retired
 	 *
@@ -75,7 +75,7 @@ public interface PatientGridService extends OpenmrsService {
 	 */
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
 	PatientGrid retirePatientGrid(PatientGrid patientGrid, String retireReason);
-	
+
 	/**
 	 * Marks the specified patient grid as not retired
 	 *
@@ -84,7 +84,7 @@ public interface PatientGridService extends OpenmrsService {
 	 */
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
 	PatientGrid unretirePatientGrid(PatientGrid patientGrid);
-	
+
 	/**
 	 * Gets a patient grid column that matches the specified uuid
 	 *
@@ -93,7 +93,7 @@ public interface PatientGridService extends OpenmrsService {
 	 */
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
 	PatientGridColumn getPatientGridColumnByUuid(String uuid);
-	
+
 	/**
 	 * Gets a patient grid column filter that matches the specified uuid
 	 *
@@ -102,7 +102,7 @@ public interface PatientGridService extends OpenmrsService {
 	 */
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
 	PatientGridColumnFilter getPatientGridColumnFilterByUuid(String uuid);
-	
+
 	/**
 	 * Evaluates the specified {@link PatientGrid}
 	 *
@@ -112,7 +112,7 @@ public interface PatientGridService extends OpenmrsService {
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
 	@Cacheable(key = CACHE_KEY_EXP, condition = CACHE_CONDITION_EXP, unless = CACHE_UNLESS_EXP)
 	ExtendedDataSet evaluate(PatientGrid patientGrid);
-	
+
 	/**
 	 * Evaluates the specified {@link PatientGrid} ignoring any previously cached report data and will
 	 * update the cache with the latest report data.
@@ -123,5 +123,5 @@ public interface PatientGridService extends OpenmrsService {
 	@Authorized(PRIV_MANAGE_PATIENT_GRIDS)
 	@CachePut(key = CACHE_KEY_EXP, condition = CACHE_CONDITION_EXP, unless = CACHE_UNLESS_EXP)
 	ExtendedDataSet evaluateIgnoreCache(PatientGrid patientGrid);
-	
+
 }

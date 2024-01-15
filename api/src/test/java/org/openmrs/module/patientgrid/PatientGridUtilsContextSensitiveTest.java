@@ -19,21 +19,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensitiveTest {
-	
+
 	@Autowired
 	private PatientGridService service;
-	
+
 	@Autowired
 	@Qualifier("encounterService")
 	private EncounterService es;
-	
+
 	@Before
 	public void setup() {
 		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
 	}
-	
+
 	@Test
 	public void getEncounters_shouldReturnTheMostRecentEncounterOfTheSpecifiedTypeForAPatient() throws Exception {
 		Cohort cohort = new Cohort();
@@ -45,7 +45,7 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		assertEquals(1, idsAndEncs.size());
 		assertEquals(2004, ((Encounter) idsAndEncs.get(patientId)).getEncounterId().intValue());
 	}
-	
+
 	@Test
 	public void getEncounters_shouldReturnAllEncountersOfTheSpecifiedTypeForAPatient() throws Exception {
 		Cohort cohort = new Cohort();
@@ -61,7 +61,7 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		assertEquals(2005, encounters.get(1).getEncounterId().intValue());
 		assertEquals(2001, encounters.get(2).getEncounterId().intValue());
 	}
-	
+
 	@Test
 	public void getEncounters_shouldReturnAnEmptyListIfThePatientHasNoMatchingEncounters() throws Exception {
 		Cohort cohort = new Cohort();
@@ -71,5 +71,5 @@ public class PatientGridUtilsContextSensitiveTest extends BaseModuleContextSensi
 		context.setBaseCohort(cohort);
 		assertTrue(PatientGridUtils.getEncounters(new EncounterType(102), context, null, true, null).isEmpty());
 	}
-	
+
 }

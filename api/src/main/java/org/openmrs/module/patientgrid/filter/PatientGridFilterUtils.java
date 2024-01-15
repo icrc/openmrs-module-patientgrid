@@ -39,15 +39,15 @@ import static org.openmrs.module.patientgrid.PatientGridConstants.GP_DEFAULT_PER
  * Contains patient grid filter utility methods
  */
 public class PatientGridFilterUtils {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(PatientGridFilterUtils.class);
-	
+
 	private static final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-	
+
 	public static ObjectWithDateRange<CohortDefinition> generateCohortDefinition(PatientGrid patientGrid) {
 		return generateCohortDefinition(patientGrid, null);
 	}
-	
+
 	/**
 	 * Utility method that generates a {@link CohortDefinition} based on the column filters of the
 	 * specified {@link PatientGrid}
@@ -64,14 +64,14 @@ public class PatientGridFilterUtils {
 		final Map<String, CohortDefinition> columnAndCohortDefMap = new HashMap(patientGrid.getColumns().size());
 		DateRange periodRange = extractPeriodRange(patientGrid, userTimeZone);
 		LocationCohortDefinition locationCohortDefinition = extractLocations(patientGrid);
-		
+
 		for (PatientGridColumn column : patientGrid.getColumns()) {
 			CohortDefinition cohortDef = null;
 			if (ENC_AGE.equals(column.getDatatype())) {
 				//for age, we will always create a range cohort definition as it's used to filter on the encounter type
 				cohortDef = createAgeRangeCohortDefinition(column, periodRange, locationCohortDefinition);
 			} else if (!column.getFilters().isEmpty()) {
-				
+
 				switch (column.getDatatype()) {
 					case GENDER:
 						cohortDef = createGenderCohortDefinition(column);
@@ -93,16 +93,16 @@ public class PatientGridFilterUtils {
 				columnAndCohortDefMap.put(column.getName(), cohortDef);
 			}
 		}
-		
+
 		if (columnAndCohortDefMap.isEmpty()) {
 			LOG.debug("No filters to apply to patient grid {}", patientGrid);
-			
+
 			return null;
 		}
-		
+
 		return new ObjectWithDateRange<>(createCohortDef(columnAndCohortDefMap, BooleanOperator.AND), periodRange);
 	}
-	
+
 	public static LocationCohortDefinition extractLocations(PatientGrid patientGrid) {
 		for (PatientGridColumn column : patientGrid.getColumns()) {
 			if (!column.getFilters().isEmpty()
@@ -112,7 +112,7 @@ public class PatientGridFilterUtils {
 		}
 		return null;
 	}
-	
+
 	public static boolean canSeeLocations(PatientGrid patientGrid) {
 		for (PatientGridColumn column : patientGrid.getColumns()) {
 			if (!column.getFilters().isEmpty()
@@ -122,7 +122,7 @@ public class PatientGridFilterUtils {
 		}
 		return true;
 	}
-	
+
 	public static Set<EncounterType> extractEncounterType(PatientGrid patientGrid) {
 		Set<EncounterType> res = new HashSet<>();
 		if (patientGrid == null) {
@@ -135,7 +135,7 @@ public class PatientGridFilterUtils {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * @param patientGrid
 	 * @param userTimeZone
@@ -184,11 +184,11 @@ public class PatientGridFilterUtils {
 				operand = String.format("{\"code\":\"%s\"}", systemDefaultCode);
 				periodRange = new DateRangeConverter(userTimeZone).convert(operand);
 			}
-			
+
 		}
 		return periodRange;
 	}
-	
+
 	/**
 	 * Creates a {@link AgeRangeAtLatestEncounterCohortDefinition} based on the filters for the
 	 * specified {@link PatientGridColumn}
@@ -213,13 +213,13 @@ public class PatientGridFilterUtils {
 			} else {
 				ageRange = PatientGridUtils.convert(filter.getOperand(), AgeRange.class);
 			}
-			
+
 			def.getAgeRanges().add(ageRange);
 		}
-		
+
 		return def;
 	}
-	
+
 	/**
 	 * Creates a {@link LocationCohortDefinition} based on the filters for the specified
 	 * {@link PatientGridColumn}
@@ -238,17 +238,17 @@ public class PatientGridFilterUtils {
 			if (location == null) {
 				throw new APIException("No location found with uuid: " + filter.getOperand());
 			}
-			
+
 			def.getLocations().add(location);
 		}
-		
+
 		return def;
 	}
-	
+
 	/**
 	 * Datafilter will filter the data here and if the current user can't see a location null will be
 	 * returned.
-	 * 
+	 *
 	 * @param column the column to test
 	 * @return true if all locations can be seen by the current user.
 	 */
@@ -259,10 +259,10 @@ public class PatientGridFilterUtils {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Creates a {@link ObsForLatestEncounterCohortDefinition} based on the filters for the specified
 	 * {@link PatientGridColumn}
@@ -298,7 +298,7 @@ public class PatientGridFilterUtils {
 		} else {
 			throw new APIException("Don't know how to filter obs data of datatype: " + concept.getDatatype());
 		}
-		
+
 		obsCohortDef.setValues(new ArrayList(column.getFilters().size()));
 		for (PatientGridColumnFilter filter : column.getFilters()) {
 			Object value = filter.getOperand();
@@ -308,13 +308,13 @@ public class PatientGridFilterUtils {
 					throw new APIException("No concept found with uuid: " + filter.getOperand());
 				}
 			}
-			
+
 			obsCohortDef.getValues().add(value);
 		}
-		
+
 		return obsCohortDef;
 	}
-	
+
 	/**
 	 * Creates a {@link GenderCohortDefinition} based on the filters for the specified
 	 * {@link PatientGridColumn}
@@ -334,36 +334,36 @@ public class PatientGridFilterUtils {
 				throw new APIException("Gender filter only supports M or F values as operands");
 			}
 		}
-		
+
 		return cohortDef;
 	}
-	
+
 	private static CohortDefinition createCohortDef(Map<String, CohortDefinition> nameAndCohortDefs,
 	        BooleanOperator operator) {
-		
+
 		//If there is one filter, just return its cohort definition otherwise create a composition cohort
 		//definition using given operator
 		if (nameAndCohortDefs.size() == 1) {
 			return nameAndCohortDefs.entrySet().iterator().next().getValue();
 		}
-		
+
 		CompositionCohortDefinition cohortDef = new CompositionCohortDefinition();
 		List<String> disjunctions = new ArrayList(nameAndCohortDefs.size());
 		for (Map.Entry<String, CohortDefinition> entry : nameAndCohortDefs.entrySet()) {
 			cohortDef.addSearch(entry.getKey(), Mapped.noMappings(entry.getValue()));
 			disjunctions.add(entry.getKey());
 		}
-		
+
 		final String compositionString = StringUtils.join(disjunctions, " " + operator + " ");
 		if (operator == BooleanOperator.AND) {
 			LOG.debug("CohortDefinition compositionString for all filters -> {}", compositionString);
 		}
-		
+
 		cohortDef.setCompositionString(compositionString);
-		
+
 		return cohortDef;
 	}
-	
+
 	/**
 	 * Evaluates any filters found on the columns on the specified {@link PatientGrid} and returns the
 	 * matching patients How it works:
@@ -390,21 +390,21 @@ public class PatientGridFilterUtils {
 		if (cohortDef == null) {
 			return null;
 		}
-		
+
 		LOG.debug("Filtering patients for patient grid {}", patientGrid);
-		
+
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		
+
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDef.getObject(), context);
-		
+
 		stopWatch.stop();
-		
+
 		LOG.debug("Running filters for patient grid {} completed in {}", patientGrid, stopWatch);
-		
+
 		return new ObjectWithDateRange<>(cohort, cohortDef.getDateRange());
 	}
-	
+
 	private static boolean isValidDate(String dateStr) {
 		DateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
 		sdf.setLenient(false);

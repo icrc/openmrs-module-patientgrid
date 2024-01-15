@@ -30,25 +30,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Handler(supports = LocationCohortDefinition.class, order = 50)
 public class LocationDataFilterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(LocationDataFilterCohortDefinitionEvaluator.class);
-	
+
 	private SessionFactory sf;
-	
+
 	@Autowired
 	public LocationDataFilterCohortDefinitionEvaluator(SessionFactory sf) {
 		this.sf = sf;
 	}
-	
+
 	@Override
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext evaluationContext)
 	        throws EvaluationException {
-		
+
 		LocationCohortDefinition locationDef = (LocationCohortDefinition) cohortDefinition;
 		Criteria criteria = sf.getCurrentSession().createCriteria(EntityBasisMap.class);
 		criteria.add(Restrictions.eq("entityType", Patient.class.getName()));
 		criteria.add(Restrictions.eq("basisType", Location.class.getName()));
-		
+
 		Set<Integer> patientIds;
 		if (!locationDef.getCountry()) {
 			criteria.setProjection(Projections.property("entityIdentifier"));
@@ -69,16 +69,16 @@ public class LocationDataFilterCohortDefinitionEvaluator implements CohortDefini
 					log.warn("No location found with id: {}", locationId);
 					continue;
 				}
-				
+
 				if (location.getCountry() == null || !locationNames.contains(location.getCountry().toLowerCase())) {
 					continue;
 				}
-				
+
 				patientIds.add(Integer.valueOf(map.getEntityIdentifier()));
 			}
 		}
-		
+
 		return new EvaluatedCohort(new Cohort(patientIds), cohortDefinition, evaluationContext);
 	}
-	
+
 }

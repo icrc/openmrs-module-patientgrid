@@ -11,9 +11,9 @@ import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObsValueConverter;
 
 public class PatientGridObsConverter implements DataConverter {
-	
+
 	private static final ObsValueConverter OBS_VALUE_CONVERTER = new ObsValueConverter();
-	
+
 	@Override
 	public Object convert(Object original) {
 		if (original != null) {
@@ -30,9 +30,9 @@ public class PatientGridObsConverter implements DataConverter {
 			} else {
 				value = DataUtil.convertData(obs, OBS_VALUE_CONVERTER);
 			}
-			
+
 			obsData.put("value", value);
-			
+
 			if (obs.getEncounter() != null) {
 				Encounter encounter = obs.getEncounter();
 				Map encData = new HashMap(3);
@@ -43,24 +43,24 @@ public class PatientGridObsConverter implements DataConverter {
 				}
 				obsData.put("encounter", encData);
 			}
-			
+
 			obsData.put("formFieldNamespace", obs.getFormFieldNamespace());
 			obsData.put("formFieldPath", obs.getFormFieldPath());
-			
+
 			return obsData;
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
 	public Class<?> getInputDataType() {
 		return Obs.class;
 	}
-	
+
 	@Override
 	public Class<?> getDataType() {
 		return Map.class;
 	}
-	
+
 }

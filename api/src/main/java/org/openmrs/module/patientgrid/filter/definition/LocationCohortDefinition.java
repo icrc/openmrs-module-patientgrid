@@ -10,13 +10,13 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
  * Custom CohortDefinition for getting a cohort of patients associated to specific locations
  */
 public class LocationCohortDefinition extends BaseCohortDefinition {
-	
+
 	@ConfigurationProperty
 	private List<Location> locations;
-	
+
 	@ConfigurationProperty
 	private boolean country = false;
-	
+
 	/**
 	 * Gets the locations
 	 *
@@ -25,7 +25,7 @@ public class LocationCohortDefinition extends BaseCohortDefinition {
 	public List<Location> getLocations() {
 		return locations;
 	}
-	
+
 	/**
 	 * Sets the locations
 	 *
@@ -34,7 +34,7 @@ public class LocationCohortDefinition extends BaseCohortDefinition {
 	public void setLocations(List<Location> locations) {
 		this.locations = locations;
 	}
-	
+
 	/**
 	 * Gets the country
 	 *
@@ -43,7 +43,7 @@ public class LocationCohortDefinition extends BaseCohortDefinition {
 	public boolean getCountry() {
 		return country;
 	}
-	
+
 	/**
 	 * Sets the country
 	 *
@@ -52,5 +52,5 @@ public class LocationCohortDefinition extends BaseCohortDefinition {
 	public void setCountry(boolean country) {
 		this.country = country;
 	}
-	
+
 }

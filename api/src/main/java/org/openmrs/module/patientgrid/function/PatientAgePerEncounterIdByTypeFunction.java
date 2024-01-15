@@ -14,22 +14,22 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class PatientAgePerEncounterIdByTypeFunction implements Function<EncounterType, Map> {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(PatientAgePerEncounterIdByTypeFunction.class);
-	
+
 	private final Map<Integer, Object> patientIdAndEnc;
-	
+
 	public PatientAgePerEncounterIdByTypeFunction(Map<Integer, Object> patientIdAndEnc) {
 		this.patientIdAndEnc = patientIdAndEnc;
 	}
-	
+
 	/**
 	 * @param encounterType the function argument
 	 * @return encounterId -> Age
 	 */
 	@Override
 	public Map apply(EncounterType encounterType) {
-		
+
 		log.debug("Loading patient ages at most recent encounters of type: {}", encounterType);
 		BirthdateToAgeConverter converter = new BirthdateToAgeConverter();
 		Map<Integer, Object> agePerEncounterId = new HashMap<>();

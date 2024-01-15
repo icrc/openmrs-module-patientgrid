@@ -12,20 +12,20 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class EvaluationContextPersistantCache extends EvaluationContext {
-	
+
 	/**
 	 * Must be initialize at startup to be shared with child context.
 	 */
 	private transient Map<String, Object> persistentCache = new HashMap<>();
-	
+
 	public EvaluationContextPersistantCache() {
 	}
-	
+
 	public EvaluationContextPersistantCache(EvaluationContextPersistantCache evaluationContextPersistantCache) {
 		super(evaluationContextPersistantCache);
 		persistentCache = evaluationContextPersistantCache.persistentCache;
 	}
-	
+
 	public Object computeIfAbsent(EncounterType type, Function<EncounterType, ?> function) {
 		String key = function.getClass().getName() + "_" + type.getName();
 		Object res = getFromPersistentCache(key);
@@ -34,14 +34,14 @@ public class EvaluationContextPersistantCache extends EvaluationContext {
 			addToPersistentCache(key, res);
 		}
 		return res;
-		
+
 	}
-	
+
 	public Map computeMapIfAbsent(EncounterType type, Function<EncounterType, Map> function) {
 		return (Map) computeIfAbsent(type, function);
-		
+
 	}
-	
+
 	/**
 	 * @param functionClass
 	 * @return all cached data for this function cache.
@@ -56,33 +56,33 @@ public class EvaluationContextPersistantCache extends EvaluationContext {
 		});
 		return res;
 	}
-	
+
 	public List computeListIfAbsent(EncounterType type, Function<EncounterType, List> function) {
 		return (List) computeIfAbsent(type, function);
 	}
-	
+
 	@JsonIgnore
 	private Map<String, Object> getPersistentCache() {
 		return persistentCache;
 	}
-	
+
 	public Object getFromPersistentCache(String key) {
 		return getPersistentCache().get(key);
 	}
-	
+
 	public void addToPersistentCache(String key, Object value) {
 		getPersistentCache().put(key, value);
 	}
-	
+
 	@Override
 	public EvaluationContext shallowCopy() {
 		return new EvaluationContextPersistantCache(this);
 	}
-	
+
 	public void clearPersistentCache() {
 		persistentCache = null;
 	}
-	
+
 	public void saveLatestEncDate(Integer patientId, Encounter value) {
 		HashMap<Integer, Date> patientDate = getPatientNewestDate();
 		Date currentDate = patientDate.get(patientId);
@@ -90,15 +90,15 @@ public class EvaluationContextPersistantCache extends EvaluationContext {
 			patientDate.put(patientId, value.getEncounterDatetime());
 		}
 	}
-	
+
 	private HashMap<Integer, Date> getPatientNewestDate() {
 		return (HashMap<Integer, Date>) persistentCache.computeIfAbsent("patientDate", s -> new HashMap<Integer, Date>());
 	}
-	
+
 	Date getLatestEncounterDate(Integer patientId) {
 		return getPatientNewestDate().get(patientId);
 	}
-	
+
 	/**
 	 * @param limit the max number of rows. if -1 no limit
 	 */
@@ -116,5 +116,5 @@ public class EvaluationContextPersistantCache extends EvaluationContext {
 		}
 		setBaseCohort(cohort);
 	}
-	
+
 }

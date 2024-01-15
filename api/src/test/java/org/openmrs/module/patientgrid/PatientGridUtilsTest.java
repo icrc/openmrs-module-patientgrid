@@ -47,20 +47,20 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-@RunWith(PowerMockRunner.class)
+@RunWith(SafePowerMockRunner.class)
 @PrepareForTest(Context.class)
 @PowerMockIgnore("jdk.internal.reflect.*")
 public class PatientGridUtilsTest {
-	
+
 	@Mock
 	private AdministrationService mockAdminService;
-	
+
 	@Mock
 	private PatientService mockPatientService;
-	
+
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
-	
+
 	@Before
 	public void setup() {
 		PowerMockito.mockStatic(Context.class);
@@ -68,13 +68,13 @@ public class PatientGridUtilsTest {
 		Whitebox.setInternalState(PatientGridUtils.class, "ageRangeConverter", (Object) null);
 		when(Context.getAdministrationService()).thenReturn(mockAdminService);
 	}
-	
+
 	private DataDefinition getDefinition(String columnName, PatientDataSetDefinition def) {
 		JoinDataDefinition nameDef = (JoinDataDefinition) ((Mapped) def.getColumnDefinition(columnName).getDataDefinition())
 		        .getParameterizable();
 		return nameDef.getJoinedDefinition();
 	}
-	
+
 	@Test
 	public void getEncounterTypes_shouldReturnTheSetOfEncounterTypesForTheObsColumnsInThePatientGrid() {
 		final PatientGrid patientGrid = new PatientGrid();
@@ -87,13 +87,13 @@ public class PatientGridUtilsTest {
 		patientGrid.addColumn(weightColumn);
 		patientGrid.addColumn(maritalStatusColumn);
 		patientGrid.addColumn(heightColumn);
-		
+
 		Set<EncounterType> types = PatientGridUtils.getEncounterTypes(patientGrid);
 		assertEquals(2, types.size());
 		assertTrue(types.contains(adultInitial));
 		assertTrue(types.contains(adultReturn));
 	}
-	
+
 	@Test
 	public void createPatientDataSetDefinition_shouldCreateAPatientDataSetDefinitionForTheGrid() {
 		final String gender = "gender";
@@ -121,9 +121,9 @@ public class PatientGridUtilsTest {
 		patientGrid.addColumn(new PatientGridColumn(country, ColumnDatatype.ENC_COUNTRY));
 		patientGrid.addColumn(new ObsPatientGridColumn(admissionType, admissionConcept, admission));
 		when(mockAdminService.getGlobalProperty(PatientGridConstants.GP_AGE_RANGES)).thenReturn("0-17:<18yrs,18+");
-		
+
 		PatientDataSetDefinition datasetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, true, null);
-		
+
 		assertEquals(PreferredNameDataDefinition.class, getDefinition(name, datasetDef).getClass());
 		MappedData patientId01Def = datasetDef.getColumnDefinition(patientId01).getDataDefinition();
 		assertEquals(PatientIdentifierDataDefinition.class, patientId01Def.getParameterizable().getClass());
@@ -159,7 +159,7 @@ public class PatientGridUtilsTest {
 		assertEquals(17, ageRange.getMaxAge().intValue());
 		assertEquals(Unit.YEARS, ageRange.getMaxAgeUnit());
 		assertEquals("<18yrs", ageRange.getLabel());
-		
+
 		ageRange = ageRanges.get(1);
 		assertEquals(18, ageRange.getMinAge().intValue());
 		assertEquals(Unit.YEARS, ageRange.getMinAgeUnit());
@@ -174,7 +174,7 @@ public class PatientGridUtilsTest {
 		assertEquals(1, mappedObsDef.getConverters().size());
 		assertEquals(PatientGridObsConverter.class, mappedObsDef.getConverters().get(0).getClass());
 	}
-	
+
 	@Test
 	public void createPatientDataSetDefinition_shouldExcludeObsDataIfIncludeObsIsSetToTrue() {
 		final String name = "name";
@@ -184,13 +184,13 @@ public class PatientGridUtilsTest {
 		PatientGrid patientGrid = new PatientGrid();
 		patientGrid.addColumn(new PatientGridColumn(name, ColumnDatatype.NAME));
 		patientGrid.addColumn(new ObsPatientGridColumn(admissionType, admissionConcept, admission));
-		
+
 		PatientDataSetDefinition datasetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, false, null);
-		
+
 		assertNotNull(datasetDef.getColumnDefinition(name));
 		assertNull(datasetDef.getColumnDefinition(admissionType));
 	}
-	
+
 	@Test
 	public void getObsByConcept_shouldReturnNullIfNoMatchIsFound() {
 		Encounter encounter = new Encounter();
@@ -199,7 +199,7 @@ public class PatientGridUtilsTest {
 		encounter.addObs(obs);
 		assertNull(PatientGridUtils.getObsByConcept(encounter, new Concept()));
 	}
-	
+
 	@Test
 	public void getObsByConcept_shouldNotExcludeObsGroupings() {
 		final String conceptUuid = "test-uuid";
@@ -218,7 +218,7 @@ public class PatientGridUtilsTest {
 		encounter.addObs(obsGroup);
 		assertEquals(obs, PatientGridUtils.getObsByConcept(encounter, obsConcept));
 	}
-	
+
 	@Test
 	public void getObsByConcept_shouldExcludeObsGroupingsEvenIfTheMembersAreVoided() {
 		final String conceptUuid = "test-uuid";
@@ -235,7 +235,7 @@ public class PatientGridUtilsTest {
 		concept.setUuid(conceptUuid);
 		assertNull(PatientGridUtils.getObsByConcept(encounter, concept));
 	}
-	
+
 	@Test
 	public void getObsByConcept_shouldExcludeVoidedObs() {
 		final String conceptUuid = "test-uuid";
@@ -250,7 +250,7 @@ public class PatientGridUtilsTest {
 		concept.setUuid(conceptUuid);
 		assertNull(PatientGridUtils.getObsByConcept(encounter, concept));
 	}
-	
+
 	@Test
 	public void getObsByConcept_shouldReturnTheObsWithAQuestionMatchingTheSpecifiedConcept() {
 		final String conceptUuid = "test-uuid";
@@ -267,7 +267,7 @@ public class PatientGridUtilsTest {
 		concept.setUuid(conceptUuid);
 		assertEquals(obs2, PatientGridUtils.getObsByConcept(encounter, concept));
 	}
-	
+
 	@Test
 	@Ignore
 	public void getObsByConcept_shouldFailIfMultipleMatchesAreFound() {
@@ -291,7 +291,7 @@ public class PatientGridUtilsTest {
 		    equalTo("Found multiple obs with question concept " + concept + " for encounter " + encounter));
 		PatientGridUtils.getObsByConcept(encounter, concept);
 	}
-	
+
 	@Test
 	public void parseAgeRangeString_shouldGenerateAListOfAgeRangesByParsingTheSpecifiedString() {
 		final String str = "0-18:<18,19-29:Youth,30-39, 40-54:Middle Aged,55+";
@@ -303,28 +303,28 @@ public class PatientGridUtilsTest {
 		assertEquals(18, ageRange.getMaxAge().intValue());
 		assertEquals(Unit.YEARS, ageRange.getMaxAgeUnit());
 		assertEquals("<18", ageRange.getLabel());
-		
+
 		ageRange = ageRanges.get(1);
 		assertEquals(19, ageRange.getMinAge().intValue());
 		assertEquals(Unit.YEARS, ageRange.getMinAgeUnit());
 		assertEquals(29, ageRange.getMaxAge().intValue());
 		assertEquals(Unit.YEARS, ageRange.getMaxAgeUnit());
 		assertEquals("Youth", ageRange.getLabel());
-		
+
 		ageRange = ageRanges.get(2);
 		assertEquals(30, ageRange.getMinAge().intValue());
 		assertEquals(Unit.YEARS, ageRange.getMinAgeUnit());
 		assertEquals(39, ageRange.getMaxAge().intValue());
 		assertEquals(Unit.YEARS, ageRange.getMaxAgeUnit());
 		assertEquals("30-39", ageRange.getLabel());
-		
+
 		ageRange = ageRanges.get(3);
 		assertEquals(40, ageRange.getMinAge().intValue());
 		assertEquals(Unit.YEARS, ageRange.getMinAgeUnit());
 		assertEquals(54, ageRange.getMaxAge().intValue());
 		assertEquals(Unit.YEARS, ageRange.getMaxAgeUnit());
 		assertEquals("Middle Aged", ageRange.getLabel());
-		
+
 		ageRange = ageRanges.get(4);
 		assertEquals(55, ageRange.getMinAge().intValue());
 		assertEquals(Unit.YEARS, ageRange.getMinAgeUnit());
@@ -332,7 +332,7 @@ public class PatientGridUtilsTest {
 		assertNull(ageRange.getMaxAgeUnit());
 		assertEquals("55+", ageRange.getLabel());
 	}
-	
+
 	@Test
 	public void createPatientDataSetDefinition_shouldFailIfTheGlobalPropertyValueForAgeRangesIsNotSet() {
 		PatientGrid patientGrid = new PatientGrid();
@@ -342,7 +342,7 @@ public class PatientGridUtilsTest {
 		    equalTo("No age ranges defined, please set the value for the global property named: " + GP_AGE_RANGES));
 		PatientGridUtils.createPatientDataSetDefinition(patientGrid, false, null);
 	}
-	
+
 	@Test
 	public void createPatientDataSetDefinition_shouldFailIfTheGlobalPropertyValueForAgeRangesIsBlank() {
 		PatientGrid patientGrid = new PatientGrid();
@@ -353,7 +353,7 @@ public class PatientGridUtilsTest {
 		when(mockAdminService.getGlobalProperty(PatientGridConstants.GP_AGE_RANGES)).thenReturn("");
 		PatientGridUtils.createPatientDataSetDefinition(patientGrid, false, null);
 	}
-	
+
 	@Test
 	public void createPatientDataSetDefinition_shouldFailIfTheGlobalPropertyValueForAgeRangesIsAnEmptyString() {
 		PatientGrid patientGrid = new PatientGrid();
@@ -364,5 +364,5 @@ public class PatientGridUtilsTest {
 		when(mockAdminService.getGlobalProperty(PatientGridConstants.GP_AGE_RANGES)).thenReturn(" ");
 		PatientGridUtils.createPatientDataSetDefinition(patientGrid, false, null);
 	}
-	
+
 }

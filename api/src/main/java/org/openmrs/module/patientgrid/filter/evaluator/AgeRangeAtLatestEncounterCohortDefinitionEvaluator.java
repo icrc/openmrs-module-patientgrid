@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Handler(supports = AgeRangeAtLatestEncounterCohortDefinition.class, order = 50)
 public class AgeRangeAtLatestEncounterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
-	
+
 	/**
 	 * Will use a PatientData evaluator
 	 * {@link org.openmrs.module.patientgrid.evaluator.AgeAtLatestEncounterPatientDataEvaluator} via
@@ -37,7 +37,7 @@ public class AgeRangeAtLatestEncounterCohortDefinitionEvaluator implements Cohor
 	@Override
 	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext evaluationContext)
 	        throws EvaluationException {
-		
+
 		AgeRangeAtLatestEncounterCohortDefinition def = (AgeRangeAtLatestEncounterCohortDefinition) cohortDefinition;
 		AgeAtLatestEncounterPatientDataDefinition ageDef = new AgeAtLatestEncounterPatientDataDefinition();
 		ageDef.setEncounterType(def.getEncounterType());
@@ -55,11 +55,11 @@ public class AgeRangeAtLatestEncounterCohortDefinitionEvaluator implements Cohor
 						return true;
 					}
 				}
-				
+
 				return false;
 			}).map(Map.Entry::getKey).collect(Collectors.toSet());
 		}
 		return new EvaluatedCohort(new Cohort(patientIds), cohortDefinition, evaluationContext);
 	}
-	
+
 }

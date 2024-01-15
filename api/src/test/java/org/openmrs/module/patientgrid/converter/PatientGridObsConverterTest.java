@@ -15,21 +15,21 @@ import org.openmrs.module.patientgrid.PatientGridConstants;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest {
-	
+
 	private PatientGridObsConverter converter = new PatientGridObsConverter();
-	
+
 	@Before
 	public void setup() {
 		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
 	}
-	
+
 	@Test
 	public void shouldReturnNullForANullObs() {
 		Assert.assertNull(converter.convert(null));
 	}
-	
+
 	@Test
 	public void shouldReturnTheConvertedObs() {
 		Obs obs = Context.getObsService().getObs(1002);
@@ -50,7 +50,7 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 		assertEquals(formNamespace, convertedObs.get("formFieldNamespace"));
 		assertEquals(formFieldPath, convertedObs.get("formFieldPath"));
 	}
-	
+
 	@Test
 	public void shouldCovertAnEncounterLessObs() {
 		Obs obs = Context.getObsService().getObs(1002);
@@ -61,7 +61,7 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 		assertEquals(Double.valueOf(82), convertedObs.get("value"));
 		assertNull(convertedObs.get("encounter"));
 	}
-	
+
 	@Test
 	public void shouldCovertAnFormLessObs() {
 		Obs obs = Context.getObsService().getObs(1002);
@@ -75,7 +75,7 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 		    encounterData.get(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE));
 		assertNull(encounterData.get("form"));
 	}
-	
+
 	@Test
 	public void shouldIncludeTheAnswerConceptUuidForAnObsWithACodedValue() {
 		Obs obs = Context.getObsService().getObs(1008);
@@ -86,5 +86,5 @@ public class PatientGridObsConverterTest extends BaseModuleContextSensitiveTest 
 		assertEquals(obs.getValueCoded().getUuid(), codedValue.get("uuid"));
 		assertEquals(obs.getValueCoded().getDisplayString(), codedValue.get(PatientGridConstants.PROPERTY_DISPLAY));
 	}
-	
+
 }

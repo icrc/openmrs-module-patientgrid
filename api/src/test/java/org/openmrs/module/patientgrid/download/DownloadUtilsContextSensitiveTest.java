@@ -31,40 +31,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiveTest {
-	
+
 	private final String utcTimeZone = "UTC";
-	
+
 	@Autowired
 	private PatientGridService service;
-	
+
 	@Autowired
 	@Qualifier("patientService")
 	private PatientService ps;
-	
+
 	@Autowired
 	private LocationService locationService;
-	
+
 	@Before
 	public void setup() {
 		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
 	}
-	
+
 	@Test
 	public void evaluate_shouldReturnDownloadReportDataForTheSpecifiedPatientGrid() {
 		//prepare
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		final String oldTimeZone = System.getProperty("user.timezone");
 		System.setProperty("user.timezone", utcTimeZone);
-		
+
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssXXX");
 		simpleDateFormat.setTimeZone(TimeZone.getTimeZone(utcTimeZone));
-		
+
 		//action
 		ExtendedDataSet extendedDataSet = DownloadUtils.evaluate(patientGrid);
 		SimpleDataSet dataset = extendedDataSet.getSimpleDataSet();
-		
+
 		//assert
 		assertEquals(
 		    "{\"code\":\"customDaysInclusive\",\"fromDate\":\"2022-04-01 00:00:00\",\"toDate\":\"2022-12-31 00:00:00\"}",
@@ -110,7 +110,7 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		assertEquals(2, columnUuidAndObsMap.size());
 		assertEquals(Double.valueOf(83), columnUuidAndObsMap.get(weightColumnUuid).get("value"));
 		assertEquals(Double.valueOf(1060), columnUuidAndObsMap.get(cd4ColumnUuid).get("value"));
-		
+
 		patient = ps.getPatient(6);
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataset.getColumnValue(patient.getId(), "name"));
@@ -135,7 +135,7 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		columnUuidAndObsMap = encounters.get(0);
 		assertEquals(1, columnUuidAndObsMap.size());
 		assertEquals(Double.valueOf(1080), columnUuidAndObsMap.get(cd4ColumnUuid).get("value"));
-		
+
 		patient = ps.getPatient(7);
 		location = locationService.getLocation(4002);
 		assertEquals(patient.getUuid(), dataset.getColumnValue(patient.getId(), COLUMN_UUID));
@@ -159,15 +159,15 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		encounters = (List) dataset.getColumnValue(patient.getId(), followUpEncTypeUuid);
 		assertEquals(1, encounters.size());
 		assertTrue(encounters.get(0).isEmpty());
-		
+
 		// a patient with no values
 		patient = ps.getPatient(8);
 		assertNull("the patient 8 is not in the initial cohort and excluded from the dataset",
 		    dataset.getColumnValue(patient.getId(), COLUMN_UUID));
-		
+
 		System.setProperty("user.timezone", oldTimeZone);
 	}
-	
+
 	@Test
 	public void evaluate_shouldFiltersPatientsWhenGeneratingDownloadReport() {
 		final Integer patientId2 = 2;
@@ -189,9 +189,9 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		cohort.setDescription("test");
 		Context.getCohortService().saveCohort(cohort);
 		patientGrid.setCohort(cohort);
-		
+
 		SimpleDataSet dataset = DownloadUtils.evaluate(patientGrid).getSimpleDataSet();
-		
+
 		assertEquals(2, dataset.getRows().size());
 		Patient patient = ps.getPatient(2);
 		assertNotNull(dataset.getColumnValue(patient.getPatientId(), COLUMN_UUID));
@@ -200,5 +200,5 @@ public class DownloadUtilsContextSensitiveTest extends BaseModuleContextSensitiv
 		patient = ps.getPatient(7);
 		assertNull(dataset.getColumnValue(patient.getPatientId(), COLUMN_UUID));
 	}
-	
+
 }

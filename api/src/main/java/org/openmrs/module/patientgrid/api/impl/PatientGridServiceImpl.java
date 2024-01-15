@@ -27,11 +27,11 @@ import static org.openmrs.module.patientgrid.PatientGridConstants.GP_ROWS_COUNT_
 
 @Transactional(readOnly = true)
 public class PatientGridServiceImpl extends BaseOpenmrsService implements PatientGridService {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(PatientGridServiceImpl.class);
-	
+
 	private PatientGridDAO dao;
-	
+
 	/**
 	 * Normally we should use {@link #mergeCohort(Cohort, Cohort)} but it compares also the date of the
 	 * {@link CohortMembership}. In our case, we just want to compare the patientIds.
@@ -54,9 +54,9 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 			        .collect(Collectors.toSet()));
 		}
 		return initCohort;
-		
+
 	}
-	
+
 	public static ExtendedDataSet createExtendedDataSet(PatientGrid patientGrid, String clientTimezone,
 	        PatientDataSetDefinition dataSetDef) throws EvaluationException {
 		EvaluationContextPersistantCache context = new EvaluationContextPersistantCache();
@@ -75,7 +75,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		if (cohort == null) {
 			cohort = new Cohort();
 		}
-		
+
 		int limit = 100;
 		String rowLimit = Context.getAdministrationService().getGlobalProperty(GP_ROWS_COUNT_LIMIT);
 		if (StringUtils.isNotBlank(rowLimit)) {
@@ -91,7 +91,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		int initCohortSize = cohort.getMemberships().size();
 		context.setBaseCohort(cohort);
 		context.limitAndSortCohortBasedOnEncounterDate(limit);
-		
+
 		SimpleDataSet ds;
 		//if the cohort is empty -> do nothing
 		if (cohort.isEmpty()) {
@@ -101,7 +101,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		}
 		ExtendedDataSet extendedDataSet = new ExtendedDataSet(ds,
 		        cohortWithPeriod == null ? null : cohortWithPeriod.getDateRange());
-		
+
 		extendedDataSet.setRowsCountLimit(limit);
 		extendedDataSet.setInitialRowsCount(initCohortSize);
 		if (limit < initCohortSize) {
@@ -110,7 +110,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		context.clearPersistentCache();
 		return extendedDataSet;
 	}
-	
+
 	/**
 	 * Sets the dao
 	 *
@@ -119,7 +119,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 	public void setDao(PatientGridDAO dao) {
 		this.dao = dao;
 	}
-	
+
 	/**
 	 * @see PatientGridService#getPatientGrid(Integer)
 	 */
@@ -132,7 +132,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		}
 		return patientGrid;
 	}
-	
+
 	/**
 	 * @see PatientGridService#getPatientGridByUuid(String)
 	 */
@@ -145,7 +145,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		}
 		return patientGrid;
 	}
-	
+
 	/**
 	 * @see PatientGridService#getPatientGrids(boolean)
 	 */
@@ -163,11 +163,11 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		}
 		return patientGrids.stream().filter(p -> userCanSeePatientGrid(p, user)).collect(Collectors.toList());
 	}
-	
+
 	private boolean canCurrentUserSeePatientGrid(PatientGrid patientGrid) {
 		return userCanSeePatientGrid(patientGrid, Context.getAuthenticatedUser());
 	}
-	
+
 	/**
 	 * @param patientGrid the grid
 	 * @param user the current user
@@ -184,7 +184,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		}
 		return PatientGridFilterUtils.canSeeLocations(patientGrid);
 	}
-	
+
 	private boolean userCanSeeEncounterType(EncounterType encounterType, User user) {
 		Privilege privilege = encounterType.getViewPrivilege();
 		//If the encounter privilege is null, everyone can see and edit the encounter.
@@ -193,7 +193,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		}
 		return user.hasPrivilege(privilege.getPrivilege());
 	}
-	
+
 	/**
 	 * @see PatientGridService#savePatientGrid(PatientGrid)
 	 */
@@ -205,12 +205,12 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		}
 		return dao.savePatientGrid(patientGrid);
 	}
-	
+
 	private boolean canCurrentUserModifyGrid(PatientGrid patientGrid) {
 		User user = Context.getAuthenticatedUser();
 		return user.isSuperUser() || patientGrid.getOwner() == null || user.equals(patientGrid.getOwner());
 	}
-	
+
 	/**
 	 * @see PatientGridService#retirePatientGrid(PatientGrid, String)
 	 */
@@ -219,7 +219,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 	public PatientGrid retirePatientGrid(PatientGrid patientGrid, String retireReason) {
 		return Context.getService(PatientGridService.class).savePatientGrid(patientGrid);
 	}
-	
+
 	/**
 	 * @see PatientGridService#unretirePatientGrid(PatientGrid)
 	 */
@@ -228,7 +228,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 	public PatientGrid unretirePatientGrid(PatientGrid patientGrid) {
 		return Context.getService(PatientGridService.class).savePatientGrid(patientGrid);
 	}
-	
+
 	/**
 	 * @see PatientGridService#getPatientGridColumnByUuid(String)
 	 */
@@ -237,7 +237,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 	public PatientGridColumn getPatientGridColumnByUuid(String uuid) {
 		return dao.getPatientGridColumnByUuid(uuid);
 	}
-	
+
 	/**
 	 * @see PatientGridService#getPatientGridColumnFilterByUuid(String)
 	 */
@@ -246,7 +246,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 	public PatientGridColumnFilter getPatientGridColumnFilterByUuid(String uuid) {
 		return dao.getPatientGridColumnFilterByUuid(uuid);
 	}
-	
+
 	/**
 	 * @see PatientGridService#evaluate(PatientGrid)
 	 */
@@ -269,7 +269,7 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 			throw new APIException("PatientGrid.error.cantEvaluate", new Object[] { patientGrid }, e);
 		}
 	}
-	
+
 	/**
 	 * @see PatientGridService#evaluateIgnoreCache(PatientGrid)
 	 */
@@ -281,5 +281,5 @@ public class PatientGridServiceImpl extends BaseOpenmrsService implements Patien
 		}
 		return evaluate(patientGrid);
 	}
-	
+
 }

@@ -42,31 +42,31 @@ import static org.openmrs.module.patientgrid.PatientGridConstants.*;
 import static org.openmrs.module.reporting.common.Age.Unit.YEARS;
 
 public class PatientGridUtils {
-	
+
 	public static final ObjectMapper MAPPER = new ObjectMapper();
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(PatientGridUtils.class);
-	
+
 	private static final DataConverter COUNTRY_CONVERTER = new PropertyConverter(String.class, "country");
-	
+
 	private static final String PATIENT_ID_01_UUID_PROPERTY_NAME = "patientGrid.PatientId01Uuid";
-	
+
 	private static final String PATIENT_ID_02_UUID_PROPERTY_NAME = "patientGrid.PatientId02Uuid";
-	
+
 	private static final LocationEncounterDataDefinition LOCATION_DATA_DEF = new LocationEncounterDataDefinition();
-	
+
 	private static final PreferredNameDataDefinition NAME_DATA_DEF = new PreferredNameDataDefinition();
-	
+
 	private static final GenderDataDefinition GENDER_DATA_DEF = new GenderDataDefinition();
-	
+
 	private static final PersonUuidDataDefinition UUID_DATA_DEF = new PersonUuidDataDefinition();
-	
+
 	private static final DataConverter OBJECT_CONVERTER = new ObjectFormatter();
-	
+
 	private static final DataConverter AGE_CONVERTER = new PatientGridAgeConverter();
-	
+
 	private static PatientGridAgeRangeConverter ageRangeConverter;
-	
+
 	/**
 	 * Create a {@link PatientDataSetDefinition} instance from the specified {@link PatientGrid} object
 	 *
@@ -80,12 +80,12 @@ public class PatientGridUtils {
 		dataSetDef.addColumn(COLUMN_UUID, UUID_DATA_DEF, (String) null);
 		LocationCohortDefinition locationCohortDefinition = PatientGridFilterUtils.extractLocations(patientGrid);
 		DateRange dateRange = PatientGridFilterUtils.extractPeriodRange(patientGrid, currentUserTimeZone);
-		
+
 		for (PatientGridColumn columnDef : patientGrid.getColumns()) {
 			if (!includeObs && columnDef.getDatatype() == ColumnDatatype.OBS) {
 				continue;
 			}
-			
+
 			switch (columnDef.getDatatype()) {
 				case NAME:
 					dataSetDef.addColumn(columnDef.getName(), NAME_DATA_DEF, (String) null, OBJECT_CONVERTER);
@@ -139,12 +139,12 @@ public class PatientGridUtils {
 							ageRangeConverter = new PatientGridAgeRangeConverter();
 							getAgeRanges().forEach(r -> ageRangeConverter.addAgeRange(r));
 						}
-						
+
 						dataSetDef.addColumn(columnDef.getName(), ageDef, (String) null, ageRangeConverter);
 					} else {
 						dataSetDef.addColumn(columnDef.getName(), ageDef, (String) null, AGE_CONVERTER);
 					}
-					
+
 					break;
 				case OBS:
 					ObsPatientGridColumn obsColumn = (ObsPatientGridColumn) columnDef;
@@ -166,10 +166,10 @@ public class PatientGridUtils {
 					throw new APIException("Don't know how to handle column type: " + columnDef.getDatatype());
 			}
 		}
-		
+
 		return dataSetDef;
 	}
-	
+
 	/**
 	 * Fetches the encounters for the specified cohort of patients matching the given encounter type.
 	 *
@@ -186,16 +186,16 @@ public class PatientGridUtils {
 		if (context != null) {
 			cohort = context.getBaseCohort();
 		}
-		
+
 		if (cohort == null || cohort.size() > 1) {
 			LOG.info("Fetching encounters of type:{}, most recently: {}", type, mostRecentOnly);
 		}
-		
+
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		
+
 		EncountersForPatientDataDefinition encDef = new EncountersForPatientDataDefinition();
-		
+
 		if (periodRange != null) {
 			encDef.setOnOrAfter(periodRange.getFromInServerTz());
 			encDef.setOnOrBefore(periodRange.getToInServerTz());
@@ -209,12 +209,12 @@ public class PatientGridUtils {
 				encDef.setLocationList(locationCohortDefinition.getLocations());
 			}
 		}
-		
+
 		encDef.setTypes(Collections.singletonList(type));
 		if (mostRecentOnly) {
 			encDef.setWhich(TimeQualifier.LAST);
 		}
-		
+
 		Map<Integer, Object> results = Context.getService(PatientDataService.class).evaluate(encDef, context).getData();
 		results.entrySet().forEach(entry -> {
 			if (entry.getValue() instanceof List) {
@@ -226,16 +226,16 @@ public class PatientGridUtils {
 		});
 		//sort from newer to older. Warn LocationEncounterDataEvaluator is expecting this order to get the newer.
 		EncounterComparator.sortListOfEncounters(results);
-		
+
 		stopWatch.stop();
-		
+
 		if (cohort == null || cohort.size() > 1) {
 			LOG.info("Fetching encounters of type: {}, most recently: {} completed in {}", type, mostRecentOnly, stopWatch);
 		}
-		
+
 		return results;
 	}
-	
+
 	/**
 	 * Gets the observation from the specified encounter with a question concept that matches the
 	 * specified concept ignoring obs groupings and voided obs.
@@ -247,7 +247,7 @@ public class PatientGridUtils {
 	public static Obs getObsByConcept(Encounter encounter, Concept concept) {
 		return getObsByConcept(encounter, concept, null);
 	}
-	
+
 	/**
 	 * Gets the observation from the specified encounter with a question concept that matches the
 	 * specified concept ignoring obs groupings and voided obs.
@@ -261,34 +261,34 @@ public class PatientGridUtils {
 		//creating regex condition to verify if the nameSpacePath is up-to date with format (newer form)
 		String patternNamespaceAndPath = "^.+~\\d+$";
 		Pattern regexPatternNamespaceAndPath = Pattern.compile(patternNamespaceAndPath);
-		
+
 		Set<Obs> obs = encounter.getObs();
 		if (obs != null && concept != null) {
 			int conceptHashcode = concept.hashCode();
 			List<Obs> matches = obs.stream().filter(o -> !o.getVoided() && o.getConcept().hashCode() == conceptHashcode
 			        && o.getConcept().equals(concept) && !o.hasGroupMembers(true)).collect(Collectors.toList());
-			
+
 			if (matches.size() > 1) {
 				matches = matches.stream()
 				        .filter(o -> o.getFormFieldPath() != null
 				                && extractQuestionIdFromFormFieldPath(o.getFormFieldPath()).equals(questionId))
 				        .collect(Collectors.toList());
 				if (matches.size() > 1) {
-					
+
 					String obsQuestionId = matches.stream().map(o -> {
 						String formFieldPath = o.getFormFieldPath();
 						return formFieldPath != null ? extractQuestionIdFromFormFieldPath(formFieldPath) : null;
 					}).findFirst().orElse(null);
-					
+
 					boolean allObsQuestionIdMatch = matches.stream().allMatch(o -> {
 						String formFieldPath = o.getFormFieldPath();
 						return formFieldPath != null && extractQuestionIdFromFormFieldPath(obsQuestionId)
 						        .equals(extractQuestionIdFromFormFieldPath(formFieldPath));
 					});
-					
+
 					if (allObsQuestionIdMatch) {
 						// TODO: This is not the prettiest way of handling multi obs answers. Method should be reviewed to return all obs and the concatenation should be delegated to an above layer.
-						
+
 						// Workaround for multi obs answers: Create a dummy text obs containing the concatenated answers display text
 						Obs obsConcat = Obs.newInstance(matches.get(0));
 						ConceptDatatype datatype = new ConceptDatatype();
@@ -311,12 +311,12 @@ public class PatientGridUtils {
 					}
 				}
 			}
-			
+
 			if (matches.size() == 1) {
 				Obs match = matches.get(0);
 				boolean shouldCheckQuestionId = questionId != null && match.getFormFieldPath() != null
 				        && regexPatternNamespaceAndPath.matcher(match.getFormFieldPath()).matches();
-				
+
 				if (shouldCheckQuestionId
 				        && !extractQuestionIdFromFormFieldPath(match.getFormFieldPath()).equals(questionId)) { //Check if the match we have is coherent with the questionId we are currently looking, making sure we are passing the value to the correct concept.
 					return null;
@@ -327,7 +327,7 @@ public class PatientGridUtils {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Parses the specified age range string to generate a list of {@link AgeRange} objects
 	 *
@@ -349,7 +349,7 @@ public class PatientGridUtils {
 					range = rangeAndLabel[0].trim();
 					label = rangeAndLabel[1].trim();
 				}
-				
+
 				String[] minAndMax = range.split("-");
 				Integer min = Integer.parseInt(minAndMax[0]);
 				Integer max = Integer.parseInt(minAndMax[1]);
@@ -358,10 +358,10 @@ public class PatientGridUtils {
 				ageRanges.add(new AgeRange(ageRanges.get(i - 1).getMaxAge() + 1, YEARS, null, null, ranges[i].trim()));
 			}
 		}
-		
+
 		return ageRanges;
 	}
-	
+
 	/**
 	 * Gets the list of age ranges
 	 *
@@ -374,16 +374,16 @@ public class PatientGridUtils {
 			throw new APIException(
 			        "No age ranges defined, please set the value for the global property named: " + GP_AGE_RANGES);
 		}
-		
+
 		return parseAgeRangeString(ageRange);
 	}
-	
+
 	private static AgeRange extractFromAgeRangeName(String value) {
 		List<AgeRange> ageRanges = getAgeRanges();
 		Optional<AgeRange> first = ageRanges.stream().filter(ageRange -> ageRange.getLabel().equals(value)).findFirst();
 		return first.isPresent() ? first.get() : null;
 	}
-	
+
 	/**
 	 * Gets all encounter types defined on all ObsPatientGridColumns in the specified
 	 * {@link PatientGrid}
@@ -394,7 +394,7 @@ public class PatientGridUtils {
 	public static Set<EncounterType> getEncounterTypes(PatientGrid patientGrid) {
 		return patientGrid.getObsColumns().stream().map(c -> c.getEncounterType()).collect(Collectors.toSet());
 	}
-	
+
 	/**
 	 * Converts the specified string to the specified type
 	 *
@@ -437,21 +437,21 @@ public class PatientGridUtils {
 		} else {
 			throw new APIException("Don't know how to convert operand value to type: " + clazz.getName());
 		}
-		
+
 		return (T) ret;
 	}
-	
+
 	public static String getCurrentUserTimeZone() {
 		String userTimeZone = Context.getUserService().getUserByUuid(Context.getAuthenticatedUser().getUuid())
 		        .getUserProperty("clientTimezone");
-		
+
 		if (userTimeZone == null) {
 			userTimeZone = TimeZone.getDefault().getID();
 			LOG.warn("use server timezone {} instead of User Timezone", userTimeZone);
 		}
 		return userTimeZone;
 	}
-	
+
 	private static String extractQuestionIdFromFormFieldPath(String formFieldPath) {
 		return formFieldPath == null ? null : formFieldPath.split("~")[0];
 	}

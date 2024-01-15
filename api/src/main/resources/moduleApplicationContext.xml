@@ -5,26 +5,27 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   		    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean name="patientGridDAO" class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernatePatientGridDAO">
+    <bean name="patientGridDAO"
+          class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernatePatientGridDAO">
         <property name="sessionFactory">
-            <ref bean="sessionFactory" />
+            <ref bean="sessionFactory"/>
         </property>
     </bean>
 
     <bean name="patientGridService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
-            <ref bean="transactionManager" />
+            <ref bean="transactionManager"/>
         </property>
         <property name="target">
             <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.PatientGridServiceImpl">
-                <property name="dao" ref="patientGridDAO" />
+                <property name="dao" ref="patientGridDAO"/>
             </bean>
         </property>
         <property name="preInterceptors">
-            <ref bean="serviceInterceptors" />
+            <ref bean="serviceInterceptors"/>
         </property>
         <property name="transactionAttributeSource">
-            <ref bean="transactionAttributeSource" />
+            <ref bean="transactionAttributeSource"/>
         </property>
     </bean>
 
@@ -32,7 +33,7 @@
         <property name="moduleService">
             <list>
                 <value>${project.parent.groupId}.${project.parent.artifactId}.api.PatientGridService</value>
-                <ref bean="patientGridService" />
+                <ref bean="patientGridService"/>
             </list>
         </property>
     </bean>

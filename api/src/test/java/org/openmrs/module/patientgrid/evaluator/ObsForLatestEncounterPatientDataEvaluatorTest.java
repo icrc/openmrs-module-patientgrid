@@ -21,25 +21,25 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
 public class ObsForLatestEncounterPatientDataEvaluatorTest extends BaseModuleContextSensitiveTest {
-	
+
 	@Autowired
 	private PatientDataService patientDataService;
-	
+
 	@Autowired
 	@Qualifier("conceptService")
 	private ConceptService cs;
-	
+
 	@Autowired
 	@Qualifier("obsService")
 	private ObsService os;
-	
+
 	@Before
 	public void setup() {
 		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
 	}
-	
+
 	@Test
 	public void evaluate_shouldReturnTheObsForTheMostRecentEncounters() throws Exception {
 		final Integer patientId2 = 2;
@@ -55,12 +55,12 @@ public class ObsForLatestEncounterPatientDataEvaluatorTest extends BaseModuleCon
 		ObsForLatestEncounterPatientDataDefinition obsDef = new ObsForLatestEncounterPatientDataDefinition();
 		obsDef.setEncounterType(encounterType);
 		obsDef.setConcept(concept);
-		
+
 		EvaluatedPatientData data = patientDataService.evaluate(obsDef, context);
 		assertEquals(2, data.getData().size());
 		assertEquals(os.getObs(1004), data.getData().get(patientId2));
 		assertEquals(os.getObs(1006), data.getData().get(patientId6));
 		assertNull(data.getData().get(patientId8));
 	}
-	
+
 }

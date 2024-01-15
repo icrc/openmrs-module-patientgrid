@@ -21,11 +21,11 @@ import static org.openmrs.module.patientgrid.PatientGridConstants.*;
  * contents.
  */
 public class DiskCache {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(DiskCache.class);
-	
+
 	private File cacheDirectory;
-	
+
 	public void deleteCacheFileOlderThan(int maxAgeInHour) {
 		log.debug("start cleaning cache folder and remove files created {}h before", maxAgeInHour);
 		final long maxLastModified = DateTime.now().minusHours(maxAgeInHour).getMillis();
@@ -40,21 +40,21 @@ public class DiskCache {
 			}
 		});
 	}
-	
+
 	private static class DiskCacheHolder {
-		
+
 		private static final DiskCache INSTANCE = new DiskCache();
-		
+
 	}
-	
+
 	public static DiskCache getInstance() {
 		return DiskCacheHolder.INSTANCE;
 	}
-	
+
 	protected File getCacheDirectory() {
 		if (cacheDirectory == null) {
 			log.info("Initializing disk cache");
-			
+
 			String dir = Context.getAdministrationService().getGlobalProperty(GP_DISK_CACHE_DIR);
 			if (StringUtils.isBlank(dir)) {
 				File parent = OpenmrsUtil.getDirectoryInApplicationDataDirectory(MODULE_ID);
@@ -62,33 +62,33 @@ public class DiskCache {
 			} else {
 				cacheDirectory = OpenmrsUtil.getDirectoryInApplicationDataDirectory(dir);
 			}
-			
+
 			if (!cacheDirectory.exists()) {
 				log.info("Creating grid report cache directory at {}", cacheDirectory);
-				
+
 				if (!cacheDirectory.mkdirs()) {
 					throw new APIException("Failed to create grid report cache directory at " + cacheDirectory);
 				}
 			}
 		}
-		
+
 		return cacheDirectory;
 	}
-	
+
 	private boolean hasFile(String filename) {
 		File file = new File(getCacheDirectory(), filename);
 		return file.exists() && file.isFile();
 	}
-	
+
 	public File getFile(String filename) {
 		return new File(getCacheDirectory(), filename);
 	}
-	
+
 	public void deleteFile(String filename) {
 		if (!hasFile(filename)) {
 			return;
 		}
-		
+
 		try {
 			FileUtils.forceDelete(new File(getCacheDirectory(), filename));
 		}
@@ -96,7 +96,7 @@ public class DiskCache {
 			throw new APIException("Failed to delete file", e);
 		}
 	}
-	
+
 	public void deleteAllFiles() {
 		try {
 			FileUtils.deleteDirectory(getCacheDirectory());
@@ -105,5 +105,5 @@ public class DiskCache {
 			throw new APIException("Failed to delete directory for the disk cache", e);
 		}
 	}
-	
+
 }

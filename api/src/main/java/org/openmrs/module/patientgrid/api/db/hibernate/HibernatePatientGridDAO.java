@@ -12,9 +12,9 @@ import org.openmrs.module.patientgrid.PatientGridColumnFilter;
 import org.openmrs.module.patientgrid.api.db.PatientGridDAO;
 
 public class HibernatePatientGridDAO implements PatientGridDAO {
-	
+
 	private SessionFactory sessionFactory;
-	
+
 	/**
 	 * Sets the sessionFactory
 	 *
@@ -23,11 +23,11 @@ public class HibernatePatientGridDAO implements PatientGridDAO {
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
-	
+
 	private Session getCurrentSession() {
 		return sessionFactory.getCurrentSession();
 	}
-	
+
 	/**
 	 * @see PatientGridDAO#getPatientGrid(Integer)
 	 */
@@ -35,7 +35,7 @@ public class HibernatePatientGridDAO implements PatientGridDAO {
 	public PatientGrid getPatientGrid(Integer patientGridId) {
 		return (PatientGrid) getCurrentSession().get(PatientGrid.class, patientGridId);
 	}
-	
+
 	/**
 	 * @see PatientGridDAO#getPatientGridByUuid(String)
 	 */
@@ -44,7 +44,7 @@ public class HibernatePatientGridDAO implements PatientGridDAO {
 		return (PatientGrid) getCurrentSession().createCriteria(PatientGrid.class).add(Restrictions.eq("uuid", uuid))
 		        .uniqueResult();
 	}
-	
+
 	/**
 	 * @see PatientGridDAO#getPatientGrids(boolean)
 	 */
@@ -54,10 +54,10 @@ public class HibernatePatientGridDAO implements PatientGridDAO {
 		if (!includeRetired) {
 			criteria.add(Restrictions.eq("retired", false));
 		}
-		
+
 		return criteria.list();
 	}
-	
+
 	/**
 	 * @see PatientGridDAO#savePatientGrid(PatientGrid)
 	 */
@@ -66,7 +66,7 @@ public class HibernatePatientGridDAO implements PatientGridDAO {
 		getCurrentSession().save(patientGrid);
 		return patientGrid;
 	}
-	
+
 	/**
 	 * @see PatientGridDAO#getPatientGridColumnByUuid(String)
 	 */
@@ -75,7 +75,7 @@ public class HibernatePatientGridDAO implements PatientGridDAO {
 		return (PatientGridColumn) getCurrentSession().createCriteria(PatientGridColumn.class)
 		        .add(Restrictions.eq("uuid", uuid)).uniqueResult();
 	}
-	
+
 	/**
 	 * @see PatientGridDAO#getPatientGridColumnFilterByUuid(String)
 	 */
@@ -84,5 +84,5 @@ public class HibernatePatientGridDAO implements PatientGridDAO {
 		return (PatientGridColumnFilter) getCurrentSession().createCriteria(PatientGridColumnFilter.class)
 		        .add(Restrictions.eq("uuid", uuid)).uniqueResult();
 	}
-	
+
 }

@@ -31,63 +31,63 @@ import org.openmrs.User;
 @Table(name = "patientgrid_patient_grid_column")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "patient_grid_column_id")
 	private Integer patientGridColumnId;
-	
+
 	@NotNull
 	@Column(nullable = false)
 	private String name;
-	
+
 	@Column
 	private String description;
-	
+
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "patient_grid_id", nullable = false)
 	private PatientGrid patientGrid;
-	
+
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(name = PatientGridConstants.PROP_DATATYPE, nullable = false, updatable = false, length = 50)
 	private ColumnDatatype datatype;
-	
+
 	@NotNull
 	@Column(name = "is_hidden", nullable = false)
 	private Boolean hidden = false;
-	
+
 	@Access(AccessType.FIELD)
 	@OneToMany(mappedBy = "patientGridColumn", orphanRemoval = true, cascade = CascadeType.ALL)
 	private Set<PatientGridColumnFilter> filters;
-	
+
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "creator", nullable = false, updatable = false)
 	private User creator;
-	
+
 	@NotNull
 	@Column(name = "date_created", nullable = false, updatable = false)
 	private Date dateCreated;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "changed_by")
 	private User changedBy;
-	
+
 	@Column(name = "date_changed")
 	private Date dateChanged;
-	
+
 	public PatientGridColumn() {
 	}
-	
+
 	public PatientGridColumn(String name, ColumnDatatype datatype) {
 		this.name = name;
 		this.datatype = datatype;
 	}
-	
+
 	public enum ColumnDatatype {
-		
+
 		NAME(new Displayer.DefaultFilter()),
 		PATIENT_ID_01(new Displayer.DefaultFilter()),
 		PATIENT_ID_02(new Displayer.DefaultFilter()),
@@ -97,18 +97,18 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 		OBS(new Displayer.DefaultFilter()),
 		ENC_LOCATION(new Displayer.DefaultFilter()),
 		ENC_COUNTRY(new Displayer.DefaultFilter());
-		
+
 		private final Displayer<PatientGridColumnFilter> displayer;
-		
+
 		ColumnDatatype(final Displayer<PatientGridColumnFilter> displayer) {
 			this.displayer = displayer;
 		}
-		
+
 		public Displayer<PatientGridColumnFilter> getDisplayer() {
 			return displayer;
 		}
 	}
-	
+
 	/**
 	 * @see BaseOpenmrsObject#getId()
 	 */
@@ -116,7 +116,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public Integer getId() {
 		return getPatientGridColumnId();
 	}
-	
+
 	/**
 	 * @see BaseOpenmrsObject#setId(Integer)
 	 */
@@ -124,7 +124,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public void setId(Integer id) {
 		setPatientGridColumnId(id);
 	}
-	
+
 	/**
 	 * Gets the name
 	 *
@@ -133,7 +133,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * Sets the name
 	 *
@@ -142,7 +142,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Gets the description
 	 *
@@ -151,7 +151,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public String getDescription() {
 		return description;
 	}
-	
+
 	/**
 	 * Sets the description
 	 *
@@ -160,7 +160,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	/**
 	 * Gets the patientGridColumnId
 	 *
@@ -169,7 +169,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public Integer getPatientGridColumnId() {
 		return patientGridColumnId;
 	}
-	
+
 	/**
 	 * Sets the patientGridColumnId
 	 *
@@ -178,7 +178,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public void setPatientGridColumnId(Integer patientGridColumnId) {
 		this.patientGridColumnId = patientGridColumnId;
 	}
-	
+
 	/**
 	 * Gets the patientGrid
 	 *
@@ -187,7 +187,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public PatientGrid getPatientGrid() {
 		return patientGrid;
 	}
-	
+
 	/**
 	 * Sets the patientGrid
 	 *
@@ -196,7 +196,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public void setPatientGrid(PatientGrid patientGrid) {
 		this.patientGrid = patientGrid;
 	}
-	
+
 	/**
 	 * Gets the datatype
 	 *
@@ -205,7 +205,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public ColumnDatatype getDatatype() {
 		return datatype;
 	}
-	
+
 	/**
 	 * Sets the datatype
 	 *
@@ -214,7 +214,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public void setDatatype(ColumnDatatype datatype) {
 		this.datatype = datatype;
 	}
-	
+
 	/**
 	 * Gets the hidden
 	 *
@@ -223,7 +223,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public Boolean getHidden() {
 		return hidden;
 	}
-	
+
 	/**
 	 * Sets the hidden
 	 *
@@ -232,7 +232,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public void setHidden(Boolean hidden) {
 		this.hidden = hidden;
 	}
-	
+
 	/**
 	 * Gets the filters
 	 *
@@ -242,10 +242,10 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 		if (filters == null) {
 			filters = new LinkedHashSet();
 		}
-		
+
 		return filters;
 	}
-	
+
 	/**
 	 * Adds a filter to the list of filter definitions for this column
 	 *
@@ -255,7 +255,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 		filter.setPatientGridColumn(this);
 		getFilters().add(filter);
 	}
-	
+
 	/**
 	 * Removes a filter from the list of filters for this column
 	 *
@@ -266,10 +266,10 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 		if (filter != null) {
 			return getFilters().remove(filter);
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * @see Auditable#getCreator()
 	 */
@@ -277,7 +277,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public User getCreator() {
 		return creator;
 	}
-	
+
 	/**
 	 * @see Auditable#setCreator(User)
 	 */
@@ -285,7 +285,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public void setCreator(User creator) {
 		this.creator = creator;
 	}
-	
+
 	/**
 	 * @see Auditable#getDateCreated()
 	 */
@@ -293,7 +293,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public Date getDateCreated() {
 		return dateCreated;
 	}
-	
+
 	/**
 	 * @see Auditable#setDateCreated(Date)
 	 */
@@ -301,7 +301,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
 	}
-	
+
 	/**
 	 * @see Auditable#getChangedBy()
 	 */
@@ -309,7 +309,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public User getChangedBy() {
 		return changedBy;
 	}
-	
+
 	/**
 	 * @see Auditable#setChangedBy(User)
 	 */
@@ -317,7 +317,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public void setChangedBy(User changedBy) {
 		this.changedBy = changedBy;
 	}
-	
+
 	/**
 	 * @see Auditable#getDateChanged()
 	 */
@@ -325,7 +325,7 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public Date getDateChanged() {
 		return dateChanged;
 	}
-	
+
 	/**
 	 * @see Auditable#setDateChanged(Date)
 	 */
@@ -333,5 +333,5 @@ public class PatientGridColumn extends BaseOpenmrsObject implements Auditable, S
 	public void setDateChanged(Date dateChanged) {
 		this.dateChanged = dateChanged;
 	}
-	
+
 }

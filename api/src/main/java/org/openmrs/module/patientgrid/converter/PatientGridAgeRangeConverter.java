@@ -7,7 +7,7 @@ import org.openmrs.module.reporting.data.converter.AgeRangeConverter;
  * converter
  */
 public class PatientGridAgeRangeConverter extends AgeRangeConverter {
-	
+
 	/**
 	 * @see AgeRangeConverter#convert(Object)
 	 */
@@ -16,8 +16,8 @@ public class PatientGridAgeRangeConverter extends AgeRangeConverter {
 		if (original != null) {
 			return super.convert(original);
 		}
-		
+
 		return null;
 	}
-	
+
 }

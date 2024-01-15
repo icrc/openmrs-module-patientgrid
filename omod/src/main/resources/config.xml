@@ -2,19 +2,19 @@
 
 <module configVersion="1.2">
 
-	<!-- Module Properties -->
-	<id>${project.parent.artifactId}</id>
-	<name>${project.parent.name}</name>
-	<version>${project.parent.version}</version>
-	<package>${project.parent.groupId}.${project.parent.artifactId}</package>
-	<author>ICRC</author>
-	<description>${project.parent.description}</description>
-	<updateURL>https://modules.openmrs.org/modules/download/${project.parent.artifactId}/update.rdf</updateURL>
-	<require_version>${openmrsPlatformVersion}</require_version>
-	<!-- / Module Properties -->
-	
-	<!-- Module Activator -->
-	<activator>${project.parent.groupId}.${project.parent.artifactId}.PatientGridActivator</activator>
+    <!-- Module Properties -->
+    <id>${project.parent.artifactId}</id>
+    <name>${project.parent.name}</name>
+    <version>${project.parent.version}</version>
+    <package>${project.parent.groupId}.${project.parent.artifactId}</package>
+    <author>ICRC</author>
+    <description>${project.parent.description}</description>
+    <updateURL>https://modules.openmrs.org/modules/download/${project.parent.artifactId}/update.rdf</updateURL>
+    <require_version>${openmrsPlatformVersion}</require_version>
+    <!-- / Module Properties -->
+
+    <!-- Module Activator -->
+    <activator>${project.parent.groupId}.${project.parent.artifactId}.PatientGridActivator</activator>
 
     <!-- Required Modules -->
     <require_modules>
@@ -29,7 +29,7 @@
         <name>Manage Patient Grids</name>
         <description>Allows a user to view and manage patient grids</description>
     </privilege>
-    
+
     <!-- Global properties -->
     <globalProperty>
         <property>${project.parent.artifactId}.age.ranges</property>
@@ -50,8 +50,9 @@
     <globalProperty>
         <property>${project.parent.artifactId}.defaultPeriod</property>
         <description>
-            Specifies the default Period to apply to filter encounters / patients if the frontend doesn't specify it. By default, it
-          will use the last 30 days
+            Specifies the default Period to apply to filter encounters / patients if the frontend doesn't specify it. By
+            default, it
+            will use the last 30 days
         </description>
     </globalProperty>
     <globalProperty>

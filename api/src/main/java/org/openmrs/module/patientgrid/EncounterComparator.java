@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class EncounterComparator implements Comparator<Encounter> {
-	
+
 	@Override
 	public int compare(Encounter o1, Encounter o2) {
 		if (o1 == o2) {
@@ -25,7 +25,7 @@ public class EncounterComparator implements Comparator<Encounter> {
 		}
 		return o1.getEncounterDatetime().compareTo(o2.getEncounterDatetime());
 	}
-	
+
 	public static void sortListOfEncounters(Map<Integer, Object> encounterLists) {
 		Comparator<Encounter> comparator = new EncounterComparator().reversed();
 		encounterLists.values().forEach(o -> {

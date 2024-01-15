@@ -22,7 +22,7 @@ import static org.openmrs.module.patientgrid.PatientGridConstants.OBS_CONVERTER;
 
 @Handler(supports = AllEncountersPatientDataDefinition.class, order = 50)
 public class AllEncountersPatientDataEvaluator implements PatientDataEvaluator {
-	
+
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
 	        throws EvaluationException {
@@ -34,7 +34,7 @@ public class AllEncountersPatientDataEvaluator implements PatientDataEvaluator {
 		Map<Integer, Object> patientIdAndEncs = PatientGridUtils.getEncounters(def.getEncounterType(),
 		    (EvaluationContextPersistantCache) context, def.getLocationCohortDefinition(), false, def.getPeriodRange());
 		Set<ObsPatientGridColumn> obsColumns = def.getPatientGrid().getObsColumns();
-		
+
 		Set<Integer> patients = baseCohort == null ? patientIdAndEncs.keySet() : baseCohort.getMemberIds();
 		Map<Integer, Object> patientIdAndEncList = patients.stream()
 		        .collect(Collectors.toMap(patientId -> patientId, patientId -> {
@@ -50,21 +50,21 @@ public class AllEncountersPatientDataEvaluator implements PatientDataEvaluator {
 				        });
 				        EncounterDatePatientGridColumn dateColumn = def.getPatientGrid()
 				                .getDateColumn(def.getEncounterType());
-				        
+
 				        if (dateColumn != null) {
 					        columnUuidAndObsMap.put(dateColumn.getName(), encounter.getEncounterDatetime());
 				        }
 				        encounters.add(columnUuidAndObsMap);
-				        
+
 			        });
-			        
+
 			        return encounters;
 		        }));
-		
+
 		EvaluatedPatientData result = new EvaluatedPatientData(definition, context);
 		result.setData(patientIdAndEncList);
-		
+
 		return result;
 	}
-	
+
 }

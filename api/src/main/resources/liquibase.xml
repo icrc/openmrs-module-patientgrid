@@ -13,34 +13,34 @@
     <changeSet id="${project.parent.artifactId}-202207291100" author="wluyima">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="patientgrid_patient_grid" />
+                <tableExists tableName="patientgrid_patient_grid"/>
             </not>
         </preConditions>
         <comment>Add patientgrid_patient_grid table</comment>
         <createTable tableName="patientgrid_patient_grid">
-            <column name="patient_grid_id" type="int" autoIncrement="true" >
-                <constraints primaryKey="true" nullable="false" unique="true" />
+            <column name="patient_grid_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
             <column name="name" type="varchar(255)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
-            <column name="description" type="varchar(255)" />
-            <column name="user_id" type="int" />
-            <column name="cohort_id" type="int" />
-            <column name="creator" type="int" />
+            <column name="description" type="varchar(255)"/>
+            <column name="user_id" type="int"/>
+            <column name="cohort_id" type="int"/>
+            <column name="creator" type="int"/>
             <column name="date_created" type="datetime">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
-            <column name="changed_by" type="int" />
-            <column name="date_changed" type="datetime" />
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
             <column name="retired" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
-            <column name="retired_by" type="int" />
-            <column name="retire_reason" type="varchar(255)" />
-            <column name="date_retired" type="datetime" />
+            <column name="retired_by" type="int"/>
+            <column name="retire_reason" type="varchar(255)"/>
+            <column name="date_retired" type="datetime"/>
             <column name="uuid" type="varchar(38)">
-                <constraints nullable="false" unique="true" />
+                <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
 
@@ -48,62 +48,62 @@
                                  baseTableName="patientgrid_patient_grid"
                                  baseColumnNames="user_id"
                                  referencedTableName="users"
-                                 referencedColumnNames="user_id" />
+                                 referencedColumnNames="user_id"/>
 
         <addForeignKeyConstraint constraintName="patient_grid_cohort_fk"
                                  baseTableName="patientgrid_patient_grid"
                                  baseColumnNames="cohort_id"
                                  referencedTableName="cohort"
-                                 referencedColumnNames="cohort_id" />
+                                 referencedColumnNames="cohort_id"/>
 
         <addForeignKeyConstraint constraintName="patient_grid_creator"
                                  baseTableName="patientgrid_patient_grid"
                                  baseColumnNames="creator"
                                  referencedTableName="users"
-                                 referencedColumnNames="user_id" />
+                                 referencedColumnNames="user_id"/>
 
         <addForeignKeyConstraint constraintName="patient_grid_retired_by"
                                  baseTableName="patientgrid_patient_grid"
                                  baseColumnNames="retired_by"
                                  referencedTableName="users"
-                                 referencedColumnNames="user_id" />
+                                 referencedColumnNames="user_id"/>
 
         <addForeignKeyConstraint constraintName="patient_grid_changed_by"
                                  baseTableName="patientgrid_patient_grid"
                                  baseColumnNames="changed_by"
                                  referencedTableName="users"
-                                 referencedColumnNames="user_id" />
+                                 referencedColumnNames="user_id"/>
     </changeSet>
 
     <changeSet id="${project.parent.artifactId}-202207291111" author="wluyima">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="patientgrid_patient_grid_column" />
+                <tableExists tableName="patientgrid_patient_grid_column"/>
             </not>
         </preConditions>
         <comment>Add patientgrid_patient_grid_column table</comment>
         <createTable tableName="patientgrid_patient_grid_column">
-            <column name="patient_grid_column_id" type="int" autoIncrement="true" >
-                <constraints primaryKey="true" nullable="false" unique="true" />
+            <column name="patient_grid_column_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
             <column name="name" type="varchar(255)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
-            <column name="description" type="varchar(255)" />
+            <column name="description" type="varchar(255)"/>
             <column name="patient_grid_id" type="int">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
             <column name="datatype" type="varchar(50)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
-            <column name="creator" type="int" />
+            <column name="creator" type="int"/>
             <column name="date_created" type="datetime">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
-            <column name="changed_by" type="int" />
-            <column name="date_changed" type="datetime" />
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
             <column name="uuid" type="varchar(38)">
-                <constraints nullable="false" unique="true" />
+                <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
 
@@ -111,37 +111,37 @@
                                  baseTableName="patientgrid_patient_grid_column"
                                  baseColumnNames="patient_grid_id"
                                  referencedTableName="patientgrid_patient_grid"
-                                 referencedColumnNames="patient_grid_id" />
+                                 referencedColumnNames="patient_grid_id"/>
 
         <addForeignKeyConstraint constraintName="patient_grid_column_creator"
                                  baseTableName="patientgrid_patient_grid_column"
                                  baseColumnNames="creator"
                                  referencedTableName="users"
-                                 referencedColumnNames="user_id" />
+                                 referencedColumnNames="user_id"/>
 
         <addForeignKeyConstraint constraintName="patient_grid_column_changed_by"
                                  baseTableName="patientgrid_patient_grid_column"
                                  baseColumnNames="changed_by"
                                  referencedTableName="users"
-                                 referencedColumnNames="user_id" />
+                                 referencedColumnNames="user_id"/>
     </changeSet>
 
     <changeSet id="${project.parent.artifactId}-202207291112" author="wluyima">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="patientgrid_obs_patient_grid_column" />
+                <tableExists tableName="patientgrid_obs_patient_grid_column"/>
             </not>
         </preConditions>
         <comment>Add patientgrid_obs_patient_grid_column table</comment>
         <createTable tableName="patientgrid_obs_patient_grid_column">
-            <column name="patient_grid_column_id" type="int" autoIncrement="true" >
-                <constraints primaryKey="true" nullable="false" unique="true" />
+            <column name="patient_grid_column_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
             <column name="concept_id" type="int">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
             <column name="encounter_type_id" type="int">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
         </createTable>
 
@@ -149,37 +149,37 @@
                                  baseTableName="patientgrid_obs_patient_grid_column"
                                  baseColumnNames="patient_grid_column_id"
                                  referencedTableName="patientgrid_patient_grid_column"
-                                 referencedColumnNames="patient_grid_column_id" />
+                                 referencedColumnNames="patient_grid_column_id"/>
 
         <addForeignKeyConstraint constraintName="obs_patient_grid_column_concept_fk"
                                  baseTableName="patientgrid_obs_patient_grid_column"
                                  baseColumnNames="concept_id"
                                  referencedTableName="concept"
-                                 referencedColumnNames="concept_id" />
+                                 referencedColumnNames="concept_id"/>
 
         <addForeignKeyConstraint constraintName="obs_column_encounter_type_fk"
                                  baseTableName="patientgrid_obs_patient_grid_column"
                                  baseColumnNames="encounter_type_id"
                                  referencedTableName="encounter_type"
-                                 referencedColumnNames="encounter_type_id" />
+                                 referencedColumnNames="encounter_type_id"/>
     </changeSet>
 
     <changeSet id="${project.parent.artifactId}-202208190900" author="wluyima">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="patientgrid_enc_age_patient_grid_column" />
+                <tableExists tableName="patientgrid_enc_age_patient_grid_column"/>
             </not>
         </preConditions>
         <comment>Add patientgrid_enc_age_patient_grid_column table</comment>
         <createTable tableName="patientgrid_enc_age_patient_grid_column">
-            <column name="patient_grid_column_id" type="int" autoIncrement="true" >
-                <constraints primaryKey="true" nullable="false" unique="true" />
+            <column name="patient_grid_column_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
             <column name="encounter_type_id" type="int">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
             <column name="convert_to_age_range" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
         </createTable>
 
@@ -187,46 +187,46 @@
                                  baseTableName="patientgrid_enc_age_patient_grid_column"
                                  baseColumnNames="patient_grid_column_id"
                                  referencedTableName="patientgrid_patient_grid_column"
-                                 referencedColumnNames="patient_grid_column_id" />
+                                 referencedColumnNames="patient_grid_column_id"/>
 
         <addForeignKeyConstraint constraintName="age_column_encounter_type_fk"
                                  baseTableName="patientgrid_enc_age_patient_grid_column"
                                  baseColumnNames="encounter_type_id"
                                  referencedTableName="encounter_type"
-                                 referencedColumnNames="encounter_type_id" />
+                                 referencedColumnNames="encounter_type_id"/>
     </changeSet>
 
     <changeSet id="${project.parent.artifactId}-202209011620" author="wluyima">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="patientgrid_patient_grid_column_filter" />
+                <tableExists tableName="patientgrid_patient_grid_column_filter"/>
             </not>
         </preConditions>
         <comment>Add patientgrid_patient_grid_column_filter table</comment>
         <createTable tableName="patientgrid_patient_grid_column_filter">
-            <column name="patient_grid_column_filter_id" type="int" autoIncrement="true" >
-                <constraints primaryKey="true" nullable="false" unique="true" />
+            <column name="patient_grid_column_filter_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
             <column name="name" type="varchar(255)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
             <column name="patient_grid_column_id" type="int">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
             <column name="operator" type="varchar(50)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
             <column name="operand" type="varchar(255)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
-            <column name="creator" type="int" />
+            <column name="creator" type="int"/>
             <column name="date_created" type="datetime">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
-            <column name="changed_by" type="int" />
-            <column name="date_changed" type="datetime" />
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime"/>
             <column name="uuid" type="varchar(38)">
-                <constraints nullable="false" unique="true" />
+                <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
 
@@ -234,34 +234,34 @@
                                  baseTableName="patientgrid_patient_grid_column_filter"
                                  baseColumnNames="patient_grid_column_id"
                                  referencedTableName="patientgrid_patient_grid_column"
-                                 referencedColumnNames="patient_grid_column_id" />
+                                 referencedColumnNames="patient_grid_column_id"/>
 
         <addForeignKeyConstraint constraintName="patient_grid_column_filter_creator"
                                  baseTableName="patientgrid_patient_grid_column_filter"
                                  baseColumnNames="creator"
                                  referencedTableName="users"
-                                 referencedColumnNames="user_id" />
+                                 referencedColumnNames="user_id"/>
 
         <addForeignKeyConstraint constraintName="patient_grid_column_filter_changed_by"
                                  baseTableName="patientgrid_patient_grid_column_filter"
                                  baseColumnNames="changed_by"
                                  referencedTableName="users"
-                                 referencedColumnNames="user_id" />
+                                 referencedColumnNames="user_id"/>
     </changeSet>
 
     <changeSet id="${project.parent.artifactId}-202210051515" author="wluyima">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="patientgrid_enc_date_patient_grid_column" />
+                <tableExists tableName="patientgrid_enc_date_patient_grid_column"/>
             </not>
         </preConditions>
         <comment>Add patientgrid_enc_date_patient_grid_column table</comment>
         <createTable tableName="patientgrid_enc_date_patient_grid_column">
-            <column name="patient_grid_column_id" type="int" autoIncrement="true" >
-                <constraints primaryKey="true" nullable="false" unique="true" />
+            <column name="patient_grid_column_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
             <column name="encounter_type_id" type="int">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
         </createTable>
 
@@ -269,26 +269,26 @@
                                  baseTableName="patientgrid_enc_date_patient_grid_column"
                                  baseColumnNames="patient_grid_column_id"
                                  referencedTableName="patientgrid_patient_grid_column"
-                                 referencedColumnNames="patient_grid_column_id" />
+                                 referencedColumnNames="patient_grid_column_id"/>
 
         <addForeignKeyConstraint constraintName="enc_date_column_encounter_type_fk"
                                  baseTableName="patientgrid_enc_date_patient_grid_column"
                                  baseColumnNames="encounter_type_id"
                                  referencedTableName="encounter_type"
-                                 referencedColumnNames="encounter_type_id" />
+                                 referencedColumnNames="encounter_type_id"/>
     </changeSet>
 
     <changeSet id="${project.parent.artifactId}-202210061101" author="wluyima">
         <preConditions onFail="MARK_RAN">
             <not>
-                <columnExists columnName="is_shared" tableName="patientgrid_patient_grid" />
+                <columnExists columnName="is_shared" tableName="patientgrid_patient_grid"/>
             </not>
         </preConditions>
         <comment>Add is_shared column to patientgrid_patient_grid table</comment>
 
         <addColumn tableName="patientgrid_patient_grid">
             <column name="is_shared" type="BOOLEAN" defaultValueBoolean="false">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
         </addColumn>
     </changeSet>
@@ -296,14 +296,14 @@
     <changeSet id="${project.parent.artifactId}-202210061102" author="wluyima">
         <preConditions onFail="MARK_RAN">
             <not>
-                <columnExists columnName="is_hidden" tableName="patientgrid_patient_grid_column" />
+                <columnExists columnName="is_hidden" tableName="patientgrid_patient_grid_column"/>
             </not>
         </preConditions>
         <comment>Add is_hidden column to patientgrid_patient_grid_column table</comment>
 
         <addColumn tableName="patientgrid_patient_grid_column">
             <column name="is_hidden" type="BOOLEAN" defaultValueBoolean="false">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
         </addColumn>
     </changeSet>
@@ -314,7 +314,7 @@
             <column name="schedulable_class" value="org.openmrs.module.patientgrid.cache.CleanCacheTask"/>
             <column name="start_time" valueDate="2023-02-20T23:59:59"/>
             <column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss"/>
-<!--            every 6 hours-->
+            <!--            every 6 hours-->
             <column name="repeat_interval" valueNumeric="21600"/>
             <column name="start_on_startup" valueBoolean="true"/>
             <column name="created_by" valueNumeric="1"/>
@@ -324,11 +324,11 @@
     </changeSet>
     <changeSet id="${project.parent.artifactId}-202303091412" author="fdeniger">
         <update tableName="patientgrid_patient_grid_column">
-            <column name="datatype" value="ENC_COUNTRY" />
+            <column name="datatype" value="ENC_COUNTRY"/>
             <where>datatype='DATAFILTER_COUNTRY'</where>
         </update>
         <update tableName="patientgrid_patient_grid_column">
-            <column name="datatype" value="ENC_LOCATION" />
+            <column name="datatype" value="ENC_LOCATION"/>
             <where>datatype='DATAFILTER_LOCATION'</where>
         </update>
     </changeSet>

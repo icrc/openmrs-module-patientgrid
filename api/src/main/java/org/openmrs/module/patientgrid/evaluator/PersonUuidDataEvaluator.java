@@ -9,10 +9,10 @@ import org.openmrs.module.reporting.data.person.evaluator.PersonPropertyDataEval
  */
 @Handler(supports = PersonUuidDataDefinition.class, order = 50)
 public class PersonUuidDataEvaluator extends PersonPropertyDataEvaluator {
-	
+
 	@Override
 	public String getPropertyName() {
 		return "uuid";
 	}
-	
+
 }

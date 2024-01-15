@@ -17,17 +17,17 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ObsForLatestEncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
-	
+
 	@Autowired
 	private CohortDefinitionService cohortDefService;
-	
+
 	@Before
 	public void setup() {
 		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
 	}
-	
+
 	@Test
 	public void evaluate_shouldReturnACohortOfPatientsWithObsMatchingTheSpecifiedValuesFromTheLatestEncounter()
 	        throws Exception {
@@ -41,14 +41,14 @@ public class ObsForLatestEncounterCohortDefinitionEvaluatorTest extends BaseModu
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(2)));
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
-		
+
 		//Try with a narrowed down value list
 		def.setValues(asList(72.0, 84.0));
 		evaluatedCohort = cohortDefService.evaluate(def, new EvaluationContextPersistantCache());
 		Assert.assertEquals(2, evaluatedCohort.activeMembershipSize());
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(2)));
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
-		
+
 		//Try with a concept of a different datatype
 		def.setPropertyName("valueCoded");
 		def.setConcept(new Concept(4));
@@ -58,5 +58,5 @@ public class ObsForLatestEncounterCohortDefinitionEvaluatorTest extends BaseModu
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(2)));
 		Assert.assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
 	}
-	
+
 }

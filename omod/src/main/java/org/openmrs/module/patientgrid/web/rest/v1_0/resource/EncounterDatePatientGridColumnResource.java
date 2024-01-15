@@ -28,7 +28,7 @@ import io.swagger.models.properties.StringProperty;
 
 @SubClassHandler(supportedClass = EncounterDatePatientGridColumn.class, supportedOpenmrsVersions = { SUPPORTED_VERSIONS })
 public class EncounterDatePatientGridColumnResource extends BaseDelegatingSubclassHandler<PatientGridColumn, EncounterDatePatientGridColumn> implements DelegatingSubclassHandler<PatientGridColumn, EncounterDatePatientGridColumn> {
-	
+
 	/**
 	 * @see BaseDelegatingSubclassHandler#getTypeName()
 	 */
@@ -36,7 +36,7 @@ public class EncounterDatePatientGridColumnResource extends BaseDelegatingSubcla
 	public String getTypeName() {
 		return "encounterdatecolumn";
 	}
-	
+
 	/**
 	 * @see BaseDelegatingSubclassHandler#newDelegate()
 	 */
@@ -44,7 +44,7 @@ public class EncounterDatePatientGridColumnResource extends BaseDelegatingSubcla
 	public EncounterDatePatientGridColumn newDelegate() {
 		return new EncounterDatePatientGridColumn();
 	}
-	
+
 	/**
 	 * @see BaseDelegatingSubclassHandler#getRepresentationDescription(Representation)
 	 */
@@ -54,20 +54,20 @@ public class EncounterDatePatientGridColumnResource extends BaseDelegatingSubcla
 		if (representation instanceof DefaultRepresentation || representation instanceof FullRepresentation) {
 			description.addRequiredProperty(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, Representation.REF);
 		}
-		
+
 		return description;
 	}
-	
+
 	@PropertyGetter(PatientGridConstants.PROPERTY_DISPLAY)
 	public String getDisplayString(PatientGridColumn delegate) {
 		return getSuperclassResource().getDisplayString(delegate);
 	}
-	
+
 	@PropertySetter(PatientGridConstants.PROP_FILTERS)
 	public void setFilters(PatientGridColumn column, PatientGridColumnFilter... filters) {
 		getSuperclassResource().setFilters(column, filters);
 	}
-	
+
 	/**
 	 * @see BaseDelegatingSubclassHandler#getCreatableProperties()
 	 */
@@ -77,7 +77,7 @@ public class EncounterDatePatientGridColumnResource extends BaseDelegatingSubcla
 		description.addRequiredProperty(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE);
 		return description;
 	}
-	
+
 	/**
 	 * @see BaseDelegatingSubclassHandler#getGETModel(Representation)
 	 */
@@ -87,7 +87,7 @@ public class EncounterDatePatientGridColumnResource extends BaseDelegatingSubcla
 		model.property(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, new RefProperty("#/definitions/EncountertypeGetRef"));
 		return model;
 	}
-	
+
 	/**
 	 * @see BaseDelegatingSubclassHandler#getCREATEModel(Representation)
 	 */
@@ -97,7 +97,7 @@ public class EncounterDatePatientGridColumnResource extends BaseDelegatingSubcla
 		model.property(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, new StringProperty().required(true).example("uuid"));
 		return model;
 	}
-	
+
 	/**
 	 * @see BaseDelegatingSubclassHandler#getAllByType(RequestContext)
 	 */
@@ -105,10 +105,10 @@ public class EncounterDatePatientGridColumnResource extends BaseDelegatingSubcla
 	public PageableResult getAllByType(RequestContext requestContext) throws ResourceDoesNotSupportOperationException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	private PatientGridColumnResource getSuperclassResource() {
 		return (PatientGridColumnResource) Context.getService(RestService.class)
 		        .getResourceBySupportedClass(PatientGridColumn.class);
 	}
-	
+
 }

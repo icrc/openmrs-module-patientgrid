@@ -10,35 +10,35 @@ import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinitio
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 
 public class ObsForLatestEncounterPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
-	
+
 	@ConfigurationProperty
 	private Concept concept;
-	
+
 	@ConfigurationProperty
 	private EncounterType encounterType;
-	
+
 	@ConfigurationProperty
 	private DateRange periodRange;
-	
+
 	@ConfigurationProperty
 	private LocationCohortDefinition locationCohortDefinition;
-	
+
 	@ConfigurationProperty
 	private String questionId;
-	
+
 	public DateRange getPeriodRange() {
 		return periodRange;
 	}
-	
+
 	public void setPeriodRange(DateRange periodRange) {
 		this.periodRange = periodRange;
 	}
-	
+
 	@Override
 	public Class<?> getDataType() {
 		return Obs.class;
 	}
-	
+
 	/**
 	 * Gets the concept
 	 *
@@ -47,7 +47,7 @@ public class ObsForLatestEncounterPatientDataDefinition extends BaseDataDefiniti
 	public Concept getConcept() {
 		return concept;
 	}
-	
+
 	/**
 	 * Sets the concept
 	 *
@@ -56,7 +56,7 @@ public class ObsForLatestEncounterPatientDataDefinition extends BaseDataDefiniti
 	public void setConcept(Concept concept) {
 		this.concept = concept;
 	}
-	
+
 	/**
 	 * Gets the encounterType
 	 *
@@ -65,7 +65,7 @@ public class ObsForLatestEncounterPatientDataDefinition extends BaseDataDefiniti
 	public EncounterType getEncounterType() {
 		return encounterType;
 	}
-	
+
 	/**
 	 * Sets the encounterType
 	 *
@@ -74,19 +74,19 @@ public class ObsForLatestEncounterPatientDataDefinition extends BaseDataDefiniti
 	public void setEncounterType(EncounterType encounterType) {
 		this.encounterType = encounterType;
 	}
-	
+
 	public LocationCohortDefinition getLocationCohortDefinition() {
 		return locationCohortDefinition;
 	}
-	
+
 	public void setLocationCohortDefinition(LocationCohortDefinition locationCohortDefinition) {
 		this.locationCohortDefinition = locationCohortDefinition;
 	}
-	
+
 	public String getQuestionId() {
 		return questionId;
 	}
-	
+
 	public void setQuestionId(String questionId) {
 		this.questionId = questionId;
 	}

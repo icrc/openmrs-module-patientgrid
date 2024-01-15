@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/rest/" + PatientGridRestConstants.NAMESPACE)
 public class PatientGridResourceController extends MainResourceController {
-	
+
 	/**
 	 * @see MainResourceController#getNamespace()
 	 */
@@ -16,5 +16,5 @@ public class PatientGridResourceController extends MainResourceController {
 	public String getNamespace() {
 		return PatientGridRestConstants.NAMESPACE;
 	}
-	
+
 }

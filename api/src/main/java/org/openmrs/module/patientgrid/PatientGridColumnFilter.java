@@ -24,54 +24,54 @@ import org.openmrs.User;
 @Entity
 @Table(name = "patientgrid_patient_grid_column_filter")
 public class PatientGridColumnFilter extends BaseOpenmrsObject implements Auditable, Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "patient_grid_column_filter_id")
 	private Integer patientGridColumnFilterId;
-	
+
 	@Column(nullable = false)
 	private String name;
-	
+
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "patient_grid_column_id", nullable = false)
 	private PatientGridColumn patientGridColumn;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 50)
 	private FilterOperator operator = FilterOperator.EQUALS;;
-	
+
 	@Column(nullable = false)
 	private String operand;
-	
+
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "creator", nullable = false, updatable = false)
 	private User creator;
-	
+
 	@Column(name = "date_created", nullable = false, updatable = false)
 	private Date dateCreated;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "changed_by")
 	private User changedBy;
-	
+
 	@Column(name = "date_changed")
 	private Date dateChanged;
-	
+
 	public enum FilterOperator {
 		EQUALS
 	}
-	
+
 	public PatientGridColumnFilter() {
 	}
-	
+
 	public PatientGridColumnFilter(String name, String operand) {
 		this.name = name;
 		this.operand = operand;
 	}
-	
+
 	/**
 	 * Gets the patientGridColumnFilterId
 	 *
@@ -80,7 +80,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public Integer getPatientGridColumnFilterId() {
 		return patientGridColumnFilterId;
 	}
-	
+
 	/**
 	 * Sets the patientGridColumnFilterId
 	 *
@@ -89,7 +89,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public void setPatientGridColumnFilterId(Integer patientGridColumnFilterId) {
 		this.patientGridColumnFilterId = patientGridColumnFilterId;
 	}
-	
+
 	/**
 	 * Gets the name
 	 *
@@ -98,7 +98,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * Sets the name
 	 *
@@ -107,7 +107,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Gets the patientGridColumn
 	 *
@@ -116,7 +116,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public PatientGridColumn getPatientGridColumn() {
 		return patientGridColumn;
 	}
-	
+
 	/**
 	 * Sets the patientGridColumn
 	 *
@@ -125,7 +125,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public void setPatientGridColumn(PatientGridColumn patientGridColumn) {
 		this.patientGridColumn = patientGridColumn;
 	}
-	
+
 	/**
 	 * Gets the operator
 	 *
@@ -134,7 +134,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public FilterOperator getOperator() {
 		return operator;
 	}
-	
+
 	/**
 	 * Sets the operator
 	 *
@@ -143,7 +143,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public void setOperator(FilterOperator operator) {
 		this.operator = operator;
 	}
-	
+
 	/**
 	 * Gets the operand
 	 *
@@ -152,7 +152,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public String getOperand() {
 		return operand;
 	}
-	
+
 	/**
 	 * Sets the operand
 	 *
@@ -161,7 +161,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public void setOperand(String operand) {
 		this.operand = operand;
 	}
-	
+
 	/**
 	 * @see BaseOpenmrsObject#getId()
 	 */
@@ -169,7 +169,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public Integer getId() {
 		return getPatientGridColumnFilterId();
 	}
-	
+
 	/**
 	 * @see BaseOpenmrsObject#setId(Integer)
 	 */
@@ -177,7 +177,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public void setId(Integer id) {
 		setPatientGridColumnFilterId(id);
 	}
-	
+
 	/**
 	 * @see Auditable#getCreator()
 	 */
@@ -185,7 +185,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public User getCreator() {
 		return creator;
 	}
-	
+
 	/**
 	 * @see Auditable#setCreator(User)
 	 */
@@ -193,7 +193,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public void setCreator(User creator) {
 		this.creator = creator;
 	}
-	
+
 	/**
 	 * @see Auditable#getDateCreated()
 	 */
@@ -201,7 +201,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public Date getDateCreated() {
 		return dateCreated;
 	}
-	
+
 	/**
 	 * @see Auditable#setDateCreated(Date)
 	 */
@@ -209,7 +209,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
 	}
-	
+
 	/**
 	 * @see Auditable#getChangedBy()
 	 */
@@ -217,7 +217,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public User getChangedBy() {
 		return changedBy;
 	}
-	
+
 	/**
 	 * @see Auditable#setChangedBy(User)
 	 */
@@ -225,7 +225,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public void setChangedBy(User changedBy) {
 		this.changedBy = changedBy;
 	}
-	
+
 	/**
 	 * @see Auditable#getDateChanged()
 	 */
@@ -233,7 +233,7 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public Date getDateChanged() {
 		return dateChanged;
 	}
-	
+
 	/**
 	 * @see Auditable#setDateChanged(Date)
 	 */
@@ -241,5 +241,5 @@ public class PatientGridColumnFilter extends BaseOpenmrsObject implements Audita
 	public void setDateChanged(Date dateChanged) {
 		this.dateChanged = dateChanged;
 	}
-	
+
 }

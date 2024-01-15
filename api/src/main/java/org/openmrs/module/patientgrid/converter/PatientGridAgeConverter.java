@@ -7,7 +7,7 @@ import org.openmrs.module.reporting.data.converter.DataConverter;
  * Custom {@link Age} {@link DataConverter} that returns the age value in years
  */
 public class PatientGridAgeConverter implements DataConverter {
-	
+
 	/**
 	 * @see DataConverter#convert(Object)
 	 */
@@ -17,10 +17,10 @@ public class PatientGridAgeConverter implements DataConverter {
 			Age age = (Age) original;
 			return age.getFullYears();
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * @see DataConverter#getInputDataType()
 	 */
@@ -28,7 +28,7 @@ public class PatientGridAgeConverter implements DataConverter {
 	public Class<?> getInputDataType() {
 		return Age.class;
 	}
-	
+
 	/**
 	 * @see DataConverter#getDataType()
 	 */
@@ -36,5 +36,5 @@ public class PatientGridAgeConverter implements DataConverter {
 	public Class<?> getDataType() {
 		return Integer.class;
 	}
-	
+
 }
