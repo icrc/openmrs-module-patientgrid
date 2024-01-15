@@ -116,7 +116,7 @@
                 <plugin>
                     <groupId>net.revelc.code.formatter</groupId>
                     <artifactId>formatter-maven-plugin</artifactId>
-                    <version>2.16.0</version>
+                    <version>2.23.0</version>
                     <dependencies>
                         <dependency>
                             <groupId>org.openmrs.tools</groupId>
@@ -219,7 +219,7 @@
                     <plugins>
                         <plugin>
                             <artifactId>maven-surefire-plugin</artifactId>
-                            <version>2.22.2</version>
+                            <version>3.2.5</version>
                             <executions>
                                 <execution>
                                     <id>default-test</id>
@@ -232,25 +232,25 @@
                             <configuration>
                                 <!--                        To be compatible with java 11-->
                                 <argLine>
-                                    --illegal-access=permit
                                     --add-opens java.base/java.lang=ALL-UNNAMED
+                                    --add-opens java.base/java.lang.reflect=ALL-UNNAMED
                                     --add-opens java.base/java.lang.module=ALL-UNNAMED
                                     --add-opens java.base/java.io=ALL-UNNAMED
                                     --add-opens java.base/java.util=ALL-UNNAMED
-                                    --add-opens java.base/java.base=ALL-UNNAMED
+                                    --add-opens java.base/java.text=ALL-UNNAMED
+                                    --add-opens java.base/java.util.stream=ALL-UNNAMED
                                     --add-opens java.base/jdk.internal.ref=ALL-UNNAMED
                                     --add-opens java.base/jdk.internal.loader=ALL-UNNAMED
                                     --add-opens java.base/jdk.internal.reflect=ALL-UNNAMED
                                     --add-opens java.base/jdk.internal.module=ALL-UNNAMED
                                     --add-opens java.base/jdk.internal.platform=ALL-UNNAMED
-                                    --add-opens java.base/jdk.internal.platform.cgroupv1=ALL-UNNAMED
                                     --add-opens java.base/jdk.internal.util.jar=ALL-UNNAMED
                                     --add-opens java.base/jdk.internal.math=ALL-UNNAMED
-                                    --add-opens java.base/jdk.management.jfr=ALL-UNNAMED
                                     --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED
                                     --add-opens jdk.management.jfr/jdk.management.jfr=ALL-UNNAMED
                                     --add-opens java.xml/javax.xml.catalog=ALL-UNNAMED
                                     --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED
+                                    --add-opens java.desktop/java.awt.font=ALL-UNNAMED
                                 </argLine>
                             </configuration>
                         </plugin>

@@ -8,49 +8,49 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResou
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class PatientGridColumnFilterResourceTest extends BaseDelegatingResourceTest<PatientGridColumnFilterResource, PatientGridColumnFilter> {
-	
+
 	private static String FILTER_UUID = "1f6c993e-c2cc-11de-8d13-0010c6dffd0c";
-	
+
 	@Autowired
 	private PatientGridService service;
-	
+
 	@Before
 	public void setupBasePatientGridRestControllerTest() {
 		executeDataSet("patientGrids.xml");
 	}
-	
+
 	@Override
 	public PatientGridColumnFilter newObject() {
 		return service.getPatientGridColumnFilterByUuid(FILTER_UUID);
 	}
-	
+
 	@Override
 	public String getDisplayProperty() {
 		return "is male";
 	}
-	
+
 	@Override
 	public String getUuidProperty() {
 		return FILTER_UUID;
 	}
-	
+
 	private void validateRepresentation() {
 		PatientGridColumnFilter column = newObject();
 		assertPropEquals("name", column.getName());
 		assertPropPresent(PatientGridConstants.PROPERTY_COLUMN);
 		assertPropEquals(PatientGridConstants.PROPERTY_OPERAND, column.getOperand());
 	}
-	
+
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
 		validateRepresentation();
 	}
-	
+
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
 		validateRepresentation();
 	}
-	
+
 }

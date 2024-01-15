@@ -35,30 +35,30 @@ import static org.openmrs.module.patientgrid.PatientGridConstants.MODULE_ID;
 
 @Component(MODULE_ID + ".encounterHistorySearchHandler")
 public class EncounterHistorySearchHandler implements SearchHandler {
-	
+
 	@Autowired
 	private PatientGridService service;
-	
+
 	protected static final String PARAM_PATIENT = "patient";
-	
+
 	protected static final String PARAM_ENC_TYPE = PatientGridConstants.PROPERTY_ENCOUNTER_TYPE;
-	
+
 	protected static final String PARAM_PATIENT_GRID_UUID = "patientGridUuid";
-	
+
 	protected static final String SEARCH_CONFIG_NAME = MODULE_ID + "GetEncounterHistory";
-	
+
 	private static final SearchQuery QUERY = new SearchQuery.Builder(
 	        "Allows you to find encounters of a specified encounter type for a single patient")
-	                .withRequiredParameters(PARAM_PATIENT, PARAM_ENC_TYPE).build();
-	
+	        .withRequiredParameters(PARAM_PATIENT, PARAM_ENC_TYPE).build();
+
 	private static final SearchConfig CONFIG = new SearchConfig(SEARCH_CONFIG_NAME, RestConstants.VERSION_1 + "/encounter",
 	        Arrays.asList("1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*"), QUERY);
-	
+
 	@Override
 	public SearchConfig getSearchConfig() {
 		return CONFIG;
 	}
-	
+
 	/**
 	 * @see SearchHandler#search(RequestContext)
 	 */
@@ -71,7 +71,7 @@ public class EncounterHistorySearchHandler implements SearchHandler {
 		if (patient == null) {
 			throw new ObjectNotFoundException();
 		}
-		
+
 		final PatientGrid patientGrid = service.getPatientGridByUuid(patientGridUuid);
 		if (patientGrid == null) {
 			throw new ObjectNotFoundException();
@@ -79,18 +79,18 @@ public class EncounterHistorySearchHandler implements SearchHandler {
 		final DateRange dateRange = PatientGridFilterUtils.extractPeriodRange(patientGrid,
 		    PatientGridUtils.getCurrentUserTimeZone());
 		final LocationCohortDefinition locationCohortDefinition = PatientGridFilterUtils.extractLocations(patientGrid);
-		
+
 		EncounterType type = Context.getEncounterService().getEncounterTypeByUuid(encounterTypeUuid);
 		if (type == null) {
 			throw new ObjectNotFoundException();
 		}
-		
+
 		Cohort cohort = new Cohort();
 		Integer patientId = patient.getId();
 		cohort.addMember(patientId);
 		EvaluationContextPersistantCache context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(cohort);
-		
+
 		try {
 			List<Encounter> encs = new ArrayList();
 			Map<Integer, Object> idAndEncs = PatientGridUtils.getEncounters(type, context, locationCohortDefinition, false,
@@ -98,12 +98,12 @@ public class EncounterHistorySearchHandler implements SearchHandler {
 			if (!idAndEncs.isEmpty()) {
 				encs = (List) idAndEncs.get(patientId);
 			}
-			
+
 			return new NeedsPaging(encs, requestContext);
 		}
 		catch (Exception e) {
 			throw new GenericRestException(e);
 		}
 	}
-	
+
 }

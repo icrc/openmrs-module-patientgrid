@@ -17,26 +17,26 @@ import org.slf4j.LoggerFactory;
  * Contains utilities to generate the downloadable patient grid report data
  */
 public class DownloadUtils {
-	
+
 	/**
 	 * Utility class
 	 */
 	private DownloadUtils() {
-		
+
 	}
-	
+
 	private static final Logger log = LoggerFactory.getLogger(DownloadUtils.class);
-	
+
 	public static ExtendedDataSet evaluate(PatientGrid patientGrid) {
 		log.debug("Generating downloadable patient grid report data for patient grid: {}", patientGrid);
-		
+
 		try {
 			String clientTimezone = PatientGridUtils.getCurrentUserTimeZone();
 			PatientDataSetDefinition dataSetDef = PatientGridUtils.createPatientDataSetDefinition(patientGrid, false,
 			    clientTimezone);
 			DateRange periodRange = PatientGridFilterUtils.extractPeriodRange(patientGrid, clientTimezone);
 			LocationCohortDefinition locationCohortDefinition = PatientGridFilterUtils.extractLocations(patientGrid);
-			
+
 			final DateRange pr = periodRange;
 			PatientGridUtils.getEncounterTypes(patientGrid).forEach(type -> {
 				AllEncountersPatientDataDefinition encDef = new AllEncountersPatientDataDefinition();
@@ -53,5 +53,5 @@ public class DownloadUtils {
 			        "Failed to generate downloadable patient grid report data for patient grid: " + patientGrid, e);
 		}
 	}
-	
+
 }

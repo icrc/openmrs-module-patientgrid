@@ -24,19 +24,19 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class LocationPatientDataEvaluatorTest extends BaseModuleContextSensitiveTest {
-	
+
 	@Autowired
 	private PatientDataService patientDataService;
-	
+
 	@Autowired
 	private LocationService locationService;
-	
+
 	@Autowired
 	private PatientService patientService;
-	
+
 	@Autowired
 	private DataFilterService dataFilterService;
-	
+
 	@Test
 	public void evaluate_shouldReturnThePatientLocation() throws Exception {
 		executeDataSet("entityBasisMaps.xml");
@@ -44,14 +44,14 @@ public class LocationPatientDataEvaluatorTest extends BaseModuleContextSensitive
 		final Integer patientId6 = 6;
 		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6)));
-		
+
 		EvaluatedPatientData data = patientDataService.evaluate(new LocationDataFilterPatientDataDefinition(), context);
-		
+
 		assertEquals(2, data.getData().size());
 		assertEquals(locationService.getLocation(4000), data.getData().get(patientId2));
 		assertEquals(locationService.getLocation(4001), data.getData().get(patientId6));
 	}
-	
+
 	@Test
 	public void evaluate_shouldReturnNullForAPatientWithNoMappedLocation() throws Exception {
 		executeDataSet("entityBasisMaps.xml");
@@ -63,7 +63,7 @@ public class LocationPatientDataEvaluatorTest extends BaseModuleContextSensitive
 		context.setBaseCohort(new Cohort(asList(patientId)));
 		assertTrue(patientDataService.evaluate(new LocationDataFilterPatientDataDefinition(), context).getData().isEmpty());
 	}
-	
+
 	@Test
 	public void evaluate_shouldReturnTheLocationAssociatedToTheMostRecentMappingInCaseOfMoreThanOne() throws Exception {
 		executeDataSet("entityBasisMaps.xml");
@@ -75,13 +75,13 @@ public class LocationPatientDataEvaluatorTest extends BaseModuleContextSensitive
 		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId)));
 		LocationDataFilterPatientDataDefinition d = new LocationDataFilterPatientDataDefinition();
-		
+
 		EvaluatedPatientData data = patientDataService.evaluate(d, context);
-		
+
 		assertEquals(1, data.getData().size());
 		assertEquals(locationService.getLocation(4001), data.getData().get(patientId));
 	}
-	
+
 	@Test
 	public void evaluate_shouldReturnTheLocationAssociatedToTheLastAddedMappingInCaseOfMoreThanOneWithSameDateCreated()
 	        throws Exception {
@@ -93,11 +93,11 @@ public class LocationPatientDataEvaluatorTest extends BaseModuleContextSensitive
 		assertEquals(maps.get(0).getDateCreated(), (maps.get(1).getDateCreated()));
 		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId)));
-		
+
 		EvaluatedPatientData data = patientDataService.evaluate(new LocationDataFilterPatientDataDefinition(), context);
-		
+
 		assertEquals(1, data.getData().size());
 		assertEquals(locationService.getLocation(4002), data.getData().get(patientId));
 	}
-	
+
 }

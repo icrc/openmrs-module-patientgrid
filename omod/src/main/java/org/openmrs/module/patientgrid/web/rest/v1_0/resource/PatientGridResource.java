@@ -30,9 +30,9 @@ import io.swagger.models.properties.RefProperty;
 @Resource(name = NAMESPACE + "/patientgrid", supportedClass = PatientGrid.class, supportedOpenmrsVersions = {
         SUPPORTED_VERSIONS })
 public class PatientGridResource extends MetadataDelegatingCrudResource<PatientGrid> {
-	
+
 	private static final String PROP_OWNER = "owner";
-	
+
 	/**
 	 * @see MetadataDelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
@@ -42,7 +42,7 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 		if (description == null) {
 			return null;
 		}
-		
+
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			description.addProperty(PROP_OWNER, Representation.REF);
 			description.addProperty(PatientGridConstants.PROP_SHARED);
@@ -51,10 +51,10 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 				description.addProperty("auditInfo");
 			}
 		}
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see MetadataDelegatingCrudResource#getCreatableProperties()
 	 */
@@ -66,14 +66,14 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 		description.addProperty(PatientGridConstants.PROP_SHARED);
 		return description;
 	}
-	
+
 	@PropertySetter(PatientGridConstants.PROP_COLUMNS)
 	public void setColumns(PatientGrid instance, PatientGridColumn... columns) {
 		for (PatientGridColumn column : columns) {
 			instance.addColumn(column);
 		}
 	}
-	
+
 	/**
 	 * @see MetadataDelegatingCrudResource#newDelegate()
 	 */
@@ -81,7 +81,7 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 	public PatientGrid newDelegate() {
 		return new PatientGrid();
 	}
-	
+
 	/**
 	 * @see MetadataDelegatingCrudResource#getByUniqueId(String)
 	 */
@@ -89,7 +89,7 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 	public PatientGrid getByUniqueId(String s) {
 		return Context.getService(PatientGridService.class).getPatientGridByUuid(s);
 	}
-	
+
 	/**
 	 * @see MetadataDelegatingCrudResource#save(Object)
 	 */
@@ -97,7 +97,7 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 	public PatientGrid save(PatientGrid patientGrid) {
 		return Context.getService(PatientGridService.class).savePatientGrid(patientGrid);
 	}
-	
+
 	/**
 	 * @see MetadataDelegatingCrudResource#doGetAll(RequestContext)
 	 */
@@ -106,7 +106,7 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 		return new NeedsPaging(Context.getService(PatientGridService.class).getPatientGrids(context.getIncludeAll()),
 		        context);
 	}
-	
+
 	/**
 	 * @see MetadataDelegatingCrudResource#getGETModel(Representation)
 	 */
@@ -121,10 +121,10 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 				    new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridColumnGet")));
 			}
 		}
-		
+
 		return model;
 	}
-	
+
 	/**
 	 * @see MetadataDelegatingCrudResource#getCREATEModel(Representation)
 	 */
@@ -139,7 +139,7 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 		model.property(PatientGridConstants.PROP_SHARED, new BooleanProperty()._default(false));
 		return model;
 	}
-	
+
 	/**
 	 * @see MetadataDelegatingCrudResource#purge(Object, RequestContext)
 	 */
@@ -147,5 +147,5 @@ public class PatientGridResource extends MetadataDelegatingCrudResource<PatientG
 	public void purge(PatientGrid patientGrid, RequestContext requestContext) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 }

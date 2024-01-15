@@ -26,7 +26,7 @@ import io.swagger.models.properties.StringProperty;
 
 @Resource(name = NAMESPACE + "/agerange", supportedClass = AgeRange.class, supportedOpenmrsVersions = { SUPPORTED_VERSIONS })
 public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
-	
+
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
@@ -41,7 +41,7 @@ public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 		description.addProperty(PatientGridConstants.PROPERTY_DISPLAY);
 		return description;
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#doGetAll(RequestContext)
 	 */
@@ -49,12 +49,12 @@ public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
 		return new NeedsPaging(PatientGridUtils.getAgeRanges(), context);
 	}
-	
+
 	@PropertyGetter(PatientGridConstants.PROPERTY_DISPLAY)
 	public String getDisplayString(AgeRange delegate) {
 		return delegate.getLabel();
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#getGETModel(Representation)
 	 */
@@ -69,7 +69,7 @@ public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 		model.property(PatientGridConstants.PROPERTY_DISPLAY, new StringProperty());
 		return model;
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#getByUniqueId(String)
 	 */
@@ -77,7 +77,7 @@ public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 	public AgeRange getByUniqueId(String s) {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */
@@ -85,7 +85,7 @@ public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 	public AgeRange newDelegate() {
 		throw createReadOnlyException();
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#save(Object)
 	 */
@@ -93,11 +93,11 @@ public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 	public AgeRange save(AgeRange ageRange) {
 		throw createReadOnlyException();
 	}
-	
+
 	public static ResourceDoesNotSupportOperationException createReadOnlyException() {
 		return new ResourceDoesNotSupportOperationException("read-only resource");
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#delete(Object, String, RequestContext)
 	 */
@@ -105,7 +105,7 @@ public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 	protected void delete(AgeRange ageRange, String s, RequestContext requestContext) throws ResponseException {
 		throw createReadOnlyException();
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#purge(Object, RequestContext)
 	 */
@@ -113,5 +113,5 @@ public class AgeRangeResource extends DelegatingCrudResource<AgeRange> {
 	public void purge(AgeRange ageRange, RequestContext requestContext) throws ResponseException {
 		throw createReadOnlyException();
 	}
-	
+
 }

@@ -23,13 +23,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class PatientGridReportController extends BaseRestController {
-	
+
 	@Autowired
 	private RestService restService;
-	
+
 	@Autowired
 	private BaseUriSetup baseUriSetup;
-	
+
 	/**
 	 * @param patientGridUuid the uuid of the patient grid
 	 * @param request {@link HttpServletRequest} object
@@ -41,14 +41,14 @@ public class PatientGridReportController extends BaseRestController {
 	@ResponseBody
 	public SimpleObject evaluate(@PathVariable("patientGridUuid") String patientGridUuid, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
-		
+
 		baseUriSetup.setup(request);
-		
+
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		
+
 		SubResource resource = (SubResource) restService.getResourceBySupportedClass(PatientGridReport.class);
-		
+
 		return resource.getAll(patientGridUuid, context);
 	}
-	
+
 }

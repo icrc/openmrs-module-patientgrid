@@ -17,18 +17,18 @@ import java.util.Map;
 import java.util.TimeZone;
 
 public class DateRangeConverter {
-	
+
 	private static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder().append(ISODateTimeFormat.date())
 	        .appendLiteral(' ').append(ISODateTimeFormat.hourMinuteSecond()).toFormatter();
-	
+
 	private final DateTimeZone userTimeZone;
-	
+
 	public DateRangeConverter(String userTimeZone) {
-		
+
 		this.userTimeZone = DateTimeZone
 		        .forTimeZone(TimeZone.getTimeZone(userTimeZone == null ? TimeZone.getDefault().getID() : userTimeZone));
 	}
-	
+
 	/**
 	 * @param completeDate
 	 * @return
@@ -36,7 +36,7 @@ public class DateRangeConverter {
 	public static String extractDateOnly(String completeDate) {
 		return StringUtils.substringBefore(completeDate, " ");
 	}
-	
+
 	public static String getDisplay(String operand, Locale locale) {
 		Map map;
 		try {
@@ -57,19 +57,19 @@ public class DateRangeConverter {
 				message = Context.getMessageSourceService().getMessage("period." + type.toUpperCase(),
 				    new Object[] { fromDate, toDate }, locale);
 			}
-			
+
 			return StringUtils.defaultIfEmpty(message, operand);
 		}
 		catch (NoSuchMessageException e) {
 			return operand;
 		}
-		
+
 	}
-	
+
 	public DateTimeZone getUserTimeZone() {
 		return this.userTimeZone;
 	}
-	
+
 	private DateTime getDateForUser(Map map, String key) throws APIException {
 		String asString = (String) map.get(key);
 		if (StringUtils.isBlank(asString)) {
@@ -83,7 +83,7 @@ public class DateRangeConverter {
 			return null;
 		}
 	}
-	
+
 	private DateRangeType getRangeType(String type) {
 		if (StringUtils.isNotBlank(type)) {
 			try {
@@ -95,11 +95,11 @@ public class DateRangeConverter {
 		}
 		return DateRangeType.CUSTOMDAYSINCLUSIVE;
 	}
-	
+
 	public DateRange convert(String in) throws APIException {
 		return convert(in, DateTime.now());
 	}
-	
+
 	public DateRange convert(String in, DateTime currentDateInServerTz) throws APIException {
 		Map map;
 		try {
@@ -118,6 +118,6 @@ public class DateRangeConverter {
 			throw new APIException("Can't parse TimeRange: " + in);
 		}
 		return rangeType.getConverter().convert(parameter);
-		
+
 	}
 }

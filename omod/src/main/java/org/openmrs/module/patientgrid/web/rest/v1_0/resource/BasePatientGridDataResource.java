@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class BasePatientGridDataResource<T extends BasePatientGridData> extends DelegatingSubResource<T, PatientGrid, PatientGridResource> {
-	
+
 	/**
 	 * Evaluate the specified {@link PatientGrid} to generate the grid data
 	 *
@@ -29,7 +29,7 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 	 * @return the generated grid data
 	 */
 	public abstract ExtendedDataSet evaluate(PatientGrid parent, RequestContext context);
-	
+
 	/**
 	 * @see DelegatingSubResource#getRepresentationDescription(Representation)
 	 */
@@ -41,7 +41,7 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 		description.addProperty("reportMetadata");
 		return description;
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#getParent(Object)
 	 */
@@ -49,7 +49,7 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 	public PatientGrid getParent(T instance) {
 		return instance.getPatientGrid();
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#doGetAll(Object, RequestContext)
 	 */
@@ -60,12 +60,12 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 		List<Map<String, Object>> report = new ArrayList(simpleDataSet.getRows().size());
 		simpleDataSet.getRows().stream().forEach(row -> report.add(row.getColumnValuesByKey()));
 		T instance = create(new ReportMetadata(extendedDataSet), parent, report);
-		
+
 		return new NeedsPaging(Collections.singletonList(instance), context);
 	}
-	
+
 	protected abstract T create(ReportMetadata reportMetadata, PatientGrid patientGrid, List report);
-	
+
 	/**
 	 * @see DelegatingSubResource#newDelegate()
 	 */
@@ -73,7 +73,7 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 	public T newDelegate() {
 		throw AgeRangeResource.createReadOnlyException();
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#save(Object)
 	 */
@@ -81,7 +81,7 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 	public T save(T delegate) {
 		throw AgeRangeResource.createReadOnlyException();
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#setParent(Object, Object)
 	 */
@@ -89,7 +89,7 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 	public void setParent(T instance, PatientGrid parent) {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#getByUniqueId(String)
 	 */
@@ -97,7 +97,7 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 	public T getByUniqueId(String uniqueId) {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#delete(Object, String, RequestContext)
 	 */
@@ -105,7 +105,7 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 	protected void delete(T delegate, String reason, RequestContext context) throws ResponseException {
 		throw AgeRangeResource.createReadOnlyException();
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#purge(Object, RequestContext)
 	 */
@@ -113,5 +113,5 @@ public abstract class BasePatientGridDataResource<T extends BasePatientGridData>
 	public void purge(T delegate, RequestContext context) throws ResponseException {
 		throw AgeRangeResource.createReadOnlyException();
 	}
-	
+
 }

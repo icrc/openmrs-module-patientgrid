@@ -25,23 +25,23 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class AllEncountersPatientDataEvaluatorTest extends BaseModuleContextSensitiveTest {
-	
+
 	@Autowired
 	private PatientDataService patientDataService;
-	
+
 	@Autowired
 	private EncounterService encounterService;
-	
+
 	@Autowired
 	private PatientGridService patientGridService;
-	
+
 	@Before
 	public void setup() {
 		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
 	}
-	
+
 	@Test
 	public void evaluate_shouldReturnTheObsDataForAllEncountersOfASpecificTypeForEachPatient() throws Exception {
 		final Integer patientId2 = 2;
@@ -50,14 +50,14 @@ public class AllEncountersPatientDataEvaluatorTest extends BaseModuleContextSens
 		final Integer patientId8 = 8;
 		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6, patientId7, patientId8)));
-		
+
 		AllEncountersPatientDataDefinition def = new AllEncountersPatientDataDefinition();
 		def.setEncounterType(new EncounterType(101));
 		PatientGrid patientGrid = patientGridService.getPatientGrid(1);
 		def.setPatientGrid(patientGrid);
-		
+
 		EvaluatedPatientData data = patientDataService.evaluate(def, context);
-		
+
 		assertEquals(4, data.getData().size());
 		List<Map<String, Map>> encounters = (List) data.getData().get(patientId2);
 		assertEquals(3, encounters.size());
@@ -77,7 +77,7 @@ public class AllEncountersPatientDataEvaluatorTest extends BaseModuleContextSens
 		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("uuid"));
 		assertEquals(civilStatusConcept.getDisplayString(),
 		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get(PatientGridConstants.PROPERTY_DISPLAY));
-		
+
 		encounters = (List) data.getData().get(patientId6);
 		assertEquals(1, encounters.size());
 		columnUuidAndObsMap = encounters.get(0);
@@ -87,7 +87,7 @@ public class AllEncountersPatientDataEvaluatorTest extends BaseModuleContextSens
 		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("uuid"));
 		assertEquals(civilStatusConcept.getDisplayString(),
 		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get(PatientGridConstants.PROPERTY_DISPLAY));
-		
+
 		encounters = (List) data.getData().get(patientId7);
 		assertEquals(1, encounters.size());
 		columnUuidAndObsMap = encounters.get(0);
@@ -98,10 +98,10 @@ public class AllEncountersPatientDataEvaluatorTest extends BaseModuleContextSens
 		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get("uuid"));
 		assertEquals(civilStatusConcept.getDisplayString(),
 		    ((Map) columnUuidAndObsMap.get(civilStatusColumn).get("value")).get(PatientGridConstants.PROPERTY_DISPLAY));
-		
+
 		encounters = (List) data.getData().get(patientId8);
 		assertEquals(1, encounters.size());
 		assertTrue(encounters.get(0).isEmpty());
 	}
-	
+
 }

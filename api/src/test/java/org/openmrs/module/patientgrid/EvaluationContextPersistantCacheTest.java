@@ -12,8 +12,6 @@ import org.openmrs.api.context.Context;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -22,11 +20,11 @@ import java.util.List;
 
 import static org.mockito.Mockito.when;
 
-@RunWith(PowerMockRunner.class)
+@RunWith(SafePowerMockRunner.class)
 @PrepareForTest(Context.class)
 @PowerMockIgnore("jdk.internal.reflect.*")
 public class EvaluationContextPersistantCacheTest {
-	
+
 	private static EvaluationContextPersistantCache createContext() throws ParseException {
 		EvaluationContextPersistantCache evaluationContextPersistantCache = new EvaluationContextPersistantCache();
 		Encounter e3 = new Encounter();
@@ -38,24 +36,24 @@ public class EvaluationContextPersistantCacheTest {
 		evaluationContextPersistantCache.saveLatestEncDate(4, createEncounter("2023-01-02"));
 		evaluationContextPersistantCache.saveLatestEncDate(3, createEncounter("2023-01-01"));
 		evaluationContextPersistantCache.saveLatestEncDate(2, createEncounter("2023-01-01"));
-		
+
 		List<Integer> patientsOrIds = Arrays.asList(5, 4, 3, 2, 1);
 		evaluationContextPersistantCache.setBaseCohort(new Cohort(patientsOrIds));
 		return evaluationContextPersistantCache;
 	}
-	
+
 	private static Encounter createEncounter(String date) throws ParseException {
 		Encounter e1 = new Encounter();
 		e1.setEncounterDatetime(PatientGridConstants.DATE_FORMAT.parse(date));
 		return e1;
 	}
-	
+
 	@Before
 	public void setup() {
 		PowerMockito.mockStatic(Context.class);
 		when(Context.getAuthenticatedUser()).thenReturn(new User());
 	}
-	
+
 	@Test
 	public void initContext_shouldSaveLatestEncounterDate() throws ParseException {
 		//setup
@@ -69,15 +67,15 @@ public class EvaluationContextPersistantCacheTest {
 		Assert.assertEquals(PatientGridConstants.DATE_FORMAT.parse("2023-01-04"),
 		    evaluationContextPersistantCache.getLatestEncounterDate(5));
 	}
-	
+
 	@Test
 	public void limitAndSortCohortBasedOnEncounterDate_shouldSortPatient() throws ParseException {
 		//setup
 		EvaluationContextPersistantCache evaluationContextPersistantCache = createContext();
-		
+
 		//action
 		evaluationContextPersistantCache.limitAndSortCohortBasedOnEncounterDate(-1);
-		
+
 		//assert
 		ArrayList<CohortMembership> members = new ArrayList<>(
 		        evaluationContextPersistantCache.getBaseCohort().getMemberships());
@@ -89,17 +87,17 @@ public class EvaluationContextPersistantCacheTest {
 		Assert.assertEquals(3, members.get(3).getPatientId().intValue());
 		//1 has no date
 		Assert.assertEquals(1, members.get(4).getPatientId().intValue());
-		
+
 	}
-	
+
 	@Test
 	public void limitAndSortCohortBasedOnEncounterDate_shouldLimitAndSortPatientTo3() throws ParseException {
 		//setup
 		EvaluationContextPersistantCache evaluationContextPersistantCache = createContext();
-		
+
 		//action
 		evaluationContextPersistantCache.limitAndSortCohortBasedOnEncounterDate(3);
-		
+
 		//assert
 		ArrayList<CohortMembership> members = new ArrayList<>(
 		        evaluationContextPersistantCache.getBaseCohort().getMemberships());

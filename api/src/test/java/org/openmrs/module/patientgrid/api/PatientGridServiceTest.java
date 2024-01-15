@@ -44,42 +44,42 @@ import static org.mockito.Mockito.when;
 import static org.openmrs.module.patientgrid.PatientGridConstants.*;
 
 public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
-	
+
 	private static final String TEST_UUID = "1d6c993e-c2cc-11de-8d13-0010c6dffd0a";
-	
+
 	@Autowired
 	private PatientGridService service;
-	
+
 	@Autowired
 	private LocationService locationService;
-	
+
 	@Autowired
 	@Qualifier("patientService")
 	private PatientService ps;
-	
+
 	@Autowired
 	@Qualifier("encounterService")
 	private EncounterService es;
-	
+
 	@Autowired
 	@Qualifier(CACHE_MANAGER_NAME)
 	private CacheManager cacheManager;
-	
+
 	@Autowired
 	private DataSetDefinitionService dsds;
-	
+
 	@Autowired
 	private CohortDefinitionService cds;
-	
+
 	@Autowired
 	private ServiceContext serviceContext;
-	
+
 	@Mock
 	private AdministrationService mockAdminService;
-	
+
 	@Before
 	public void setup() {
-		
+
 		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
@@ -88,26 +88,26 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		serviceContext.setService(DataSetDefinitionService.class, dsds);
 		when(mockAdminService.getGlobalProperty(GP_AGE_RANGES)).thenReturn("0-17:<18yrs,18+");
 	}
-	
+
 	private Cache getCache() {
 		return cacheManager.getCache(CACHE_NAME_GRID_REPORTS);
 	}
-	
+
 	@Test
 	public void getPatientGrid_shouldReturnThePatientGridMatchingTheSpecifiedId() {
 		assertEquals(TEST_UUID, service.getPatientGrid(1).getUuid());
 	}
-	
+
 	@Test
 	public void getPatientGridByUuid_shouldReturnThePatientGridMatchingTheSpecifiedUuid() {
 		assertEquals(1, service.getPatientGridByUuid(TEST_UUID).getId().intValue());
 	}
-	
+
 	@Test
 	public void getPatientGridByUuid_shouldReturnNullIfNoPatientGridMatchesTheSpecifiedUuid() {
 		assertNull(service.getPatientGridByUuid("bad-uuid"));
 	}
-	
+
 	@Test
 	public void getPatientGrids_shouldReturnTheNonRetiredPatientGrids() {
 		List<PatientGrid> grids = service.getPatientGrids(false);
@@ -116,7 +116,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 			assertFalse(patientGrid.getRetired());
 		}
 	}
-	
+
 	@Test
 	public void getPatientGrids_shouldReturnTheAllPatientGridsIncludingRetiredOnes() {
 		List<PatientGrid> grids = service.getPatientGrids(true);
@@ -125,7 +125,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertFalse(grids.get(1).getRetired());
 		assertTrue(grids.get(2).getRetired());
 	}
-	
+
 	@Test
 	public void savePatientGrid_shouldSaveANewPatientGridToTheDatabase() {
 		int originalCount = service.getPatientGrids(true).size();
@@ -139,16 +139,16 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		final String cacheKeyOtherGrid = "other" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		getCache().put(cacheKey, dataSet);
 		getCache().put(cacheKeyOtherGrid, dataSet);
-		
+
 		service.savePatientGrid(grid);
-		
+
 		assertNotNull(grid.getId());
 		assertEquals(++originalCount, service.getPatientGrids(true).size());
 		//Sanity check that caches are not invalidated because practically there should be no reports yet for this grid
 		assertNotNull(getCache().get(cacheKey));
 		assertNotNull(getCache().get(cacheKeyOtherGrid));
 	}
-	
+
 	@Test
 	public void savePatientGrid_shouldUpdateAnExistingGridAndClearAllCachedGridReportsForAllUsers() {
 		int originalCount = service.getPatientGrids(true).size();
@@ -165,9 +165,9 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		getCache().put(cacheKeyUser2, cachedDataSet);
 		getCache().put(cacheKeyUser3, cachedDataSet);
 		getCache().put(cacheKeyOtherGrid, cachedDataSet);
-		
+
 		service.savePatientGrid(grid);
-		
+
 		assertEquals(originalCount, service.getPatientGrids(true).size());
 		assertNotNull(grid.getChangedBy());
 		assertNotNull(grid.getDateChanged());
@@ -176,7 +176,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(getCache().get(cacheKeyUser3));
 		assertNotNull(getCache().get(cacheKeyOtherGrid));
 	}
-	
+
 	@Test
 	public void retirePatientGrid_shouldRetireThePatientGridAndClearAllCachedGridReportsForAllUsers() {
 		final String reason = "some reason";
@@ -185,7 +185,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(grid.getRetireReason());
 		assertNull(grid.getRetiredBy());
 		assertNull(grid.getDateRetired());
-		
+
 		final ExtendedDataSet cachedDataSet = new ExtendedDataSet(new SimpleDataSet(null, null), null);
 		final String cacheKeyUser1 = grid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		final String cacheKeyUser2 = grid.getUuid() + CACHE_KEY_SEPARATOR + "another-user-uuid-2";
@@ -195,20 +195,20 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		getCache().put(cacheKeyUser2, cachedDataSet);
 		getCache().put(cacheKeyUser3, cachedDataSet);
 		getCache().put(cacheKeyOtherGrid, cachedDataSet);
-		
+
 		service.retirePatientGrid(grid, reason);
-		
+
 		assertTrue(grid.getRetired());
 		assertEquals(reason, grid.getRetireReason());
 		assertNotNull(grid.getRetiredBy());
 		assertNotNull(grid.getDateRetired());
-		
+
 		assertNull(getCache().get(cacheKeyUser1));
 		assertNull(getCache().get(cacheKeyUser2));
 		assertNull(getCache().get(cacheKeyUser3));
 		assertNotNull(getCache().get(cacheKeyOtherGrid));
 	}
-	
+
 	@Test
 	public void unretirePatientGrid_shouldUnretireThePatientGrid() {
 		PatientGrid grid = service.getPatientGrid(3);
@@ -216,7 +216,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(grid.getRetireReason());
 		assertNotNull(grid.getRetiredBy());
 		assertNotNull(grid.getDateRetired());
-		
+
 		final SimpleDataSet cachedDataSet = new SimpleDataSet(null, null);
 		DateRange dateRange = new DateRange("test", null, null);
 		final ExtendedDataSet extendedDataSet = new ExtendedDataSet(cachedDataSet, null);
@@ -228,63 +228,63 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		getCache().put(cacheKeyUser2, extendedDataSet);
 		getCache().put(cacheKeyUser3, extendedDataSet);
 		getCache().put(cacheKeyOtherGrid, extendedDataSet);
-		
+
 		service.unretirePatientGrid(grid);
-		
+
 		assertFalse(grid.getRetired());
 		assertNull(grid.getRetireReason());
 		assertNull(grid.getRetiredBy());
 		assertNull(grid.getDateRetired());
-		
+
 		assertNull(getCache().get(cacheKeyUser1));
 		assertNull(getCache().get(cacheKeyUser2));
 		assertNull(getCache().get(cacheKeyUser3));
 		assertNotNull(getCache().get(cacheKeyOtherGrid));
 	}
-	
+
 	@Test
-	public void shouldReturnThreeRecordsInOrderWhenLimitIsThree() {
-		//setup
-		when(mockAdminService.getGlobalProperty(GP_ROWS_COUNT_LIMIT)).thenReturn("3");
-		
-		//action
-		ExtendedDataSet dataSet = service.evaluate(service.getPatientGrid(1));
-		
-		//assert
-		assertEquals(3, dataSet.getSimpleDataSet().getRows().size());
-		assertEquals(3, dataSet.getRowsCountLimit());
-		assertEquals(3, dataSet.getInitialRowsCount());
-		
-		//the patient should be given in encounter date desc order
-		assertEquals(ps.getPatient(2).getUuid(), dataSet.getSimpleDataSet().getRows().get(0).getColumnValue("uuid"));
-		assertEquals(ps.getPatient(7).getUuid(), dataSet.getSimpleDataSet().getRows().get(1).getColumnValue("uuid"));
-		assertEquals(ps.getPatient(6).getUuid(), dataSet.getSimpleDataSet().getRows().get(2).getColumnValue("uuid"));
-	}
-	
+  public void shouldReturnThreeRecordsInOrderWhenLimitIsThree() {
+    //setup
+    when(mockAdminService.getGlobalProperty(GP_ROWS_COUNT_LIMIT)).thenReturn("3");
+
+    //action
+    ExtendedDataSet dataSet = service.evaluate(service.getPatientGrid(1));
+
+    //assert
+    assertEquals(3, dataSet.getSimpleDataSet().getRows().size());
+    assertEquals(3, dataSet.getRowsCountLimit());
+    assertEquals(3, dataSet.getInitialRowsCount());
+
+    //the patient should be given in encounter date desc order
+    assertEquals(ps.getPatient(2).getUuid(), dataSet.getSimpleDataSet().getRows().get(0).getColumnValue("uuid"));
+    assertEquals(ps.getPatient(7).getUuid(), dataSet.getSimpleDataSet().getRows().get(1).getColumnValue("uuid"));
+    assertEquals(ps.getPatient(6).getUuid(), dataSet.getSimpleDataSet().getRows().get(2).getColumnValue("uuid"));
+  }
+
 	@Test
-	public void shouldReturnTwoRecordInAGridWhenLimitIsTwo() {
-		//setup
-		when(mockAdminService.getGlobalProperty(GP_ROWS_COUNT_LIMIT)).thenReturn("2");
-		
-		//action
-		ExtendedDataSet dataSet = service.evaluate(service.getPatientGrid(1));
-		
-		//assert
-		assertEquals(2, dataSet.getSimpleDataSet().getRows().size());
-		assertEquals(2, dataSet.getRowsCountLimit());
-		assertEquals(3, dataSet.getInitialRowsCount());
-		assertEquals(ps.getPatient(2).getUuid(), dataSet.getSimpleDataSet().getRows().get(0).getColumnValue("uuid"));
-		assertEquals(ps.getPatient(7).getUuid(), dataSet.getSimpleDataSet().getRows().get(1).getColumnValue("uuid"));
-	}
-	
+  public void shouldReturnTwoRecordInAGridWhenLimitIsTwo() {
+    //setup
+    when(mockAdminService.getGlobalProperty(GP_ROWS_COUNT_LIMIT)).thenReturn("2");
+
+    //action
+    ExtendedDataSet dataSet = service.evaluate(service.getPatientGrid(1));
+
+    //assert
+    assertEquals(2, dataSet.getSimpleDataSet().getRows().size());
+    assertEquals(2, dataSet.getRowsCountLimit());
+    assertEquals(3, dataSet.getInitialRowsCount());
+    assertEquals(ps.getPatient(2).getUuid(), dataSet.getSimpleDataSet().getRows().get(0).getColumnValue("uuid"));
+    assertEquals(ps.getPatient(7).getUuid(), dataSet.getSimpleDataSet().getRows().get(1).getColumnValue("uuid"));
+  }
+
 	@Test
 	public void evaluate_shouldEvaluateThePatientGridAndCacheTheDataSet() {
 		List<Patient> allPatients = ps.getAllPatients();
-		
+
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		assertNull(getCache().get(cacheKey));
-		
+
 		SimpleDataSet dataSet = service.evaluate(patientGrid).getSimpleDataSet();
 		//as no filter on the age all 4 patients are returned by the filter
 		//but we have a static cohort.
@@ -309,7 +309,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
 		assertEquals(es.getEncounter(2004).getEncounterDatetime(), dataSet.getColumnValue(patient.getId(), "encDate"));
-		
+
 		patient = ps.getPatient(6);
 		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataSet.getColumnValue(patient.getId(), "name"));
@@ -327,7 +327,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(location.getName(), dataSet.getColumnValue(patient.getId(), "structure"));
 		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
 		assertEquals(es.getEncounter(2006).getEncounterDatetime(), dataSet.getColumnValue(patient.getId(), "encDate"));
-		
+
 		patient = ps.getPatient(7);
 		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
 		assertEquals(patient.getPersonName().getFullName(), dataSet.getColumnValue(patient.getId(), "name"));
@@ -346,7 +346,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(location.getCountry(), dataSet.getColumnValue(patient.getId(), "country"));
 		assertEquals(es.getEncounter(2007).getEncounterDatetime(), dataSet.getColumnValue(patient.getId(), "encDate"));
 	}
-	
+
 	@Test
 	public void evaluate_shouldReturnCachedDataSetsAndNotEvaluateThePatientGrid() {
 		final Integer patientId = 8888;
@@ -358,13 +358,13 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		getCache().put(patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid(),
 		    new ExtendedDataSet(cachedDataSet, null));
-		
+
 		SimpleDataSet newDataSet = service.evaluate(patientGrid).getSimpleDataSet();
-		
+
 		assertEquals(cachedDataSet.getRows().size(), newDataSet.getRows().size());
 		assertEquals(name, newDataSet.getColumnValue(patientId, columnName));
 	}
-	
+
 	@Test
 	public void evaluate_shouldIgnoreCachedDataSetsAndEvaluateThePatientGridAndCacheTheNewDataSet() {
 		DataSetColumn column = new DataSetColumn("name", null, String.class);
@@ -373,28 +373,28 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		getCache().put(cacheKey, cachedDataSet);
-		
+
 		SimpleDataSet newDataSet = service.evaluateIgnoreCache(patientGrid).getSimpleDataSet();
-		
+
 		assertNotEquals(cachedDataSet.getRows().size(), newDataSet.getRows().size());
 		assertEquals(newDataSet.getRows().size(),
 		    ((ExtendedDataSet) getCache().get(cacheKey).get()).getSimpleDataSet().getRows().size());
 	}
-	
+
 	@Test
 	public void evaluate_shouldIgnoreCachedDataSetOfAnotherUserAndEvaluateThePatientGrid() {
 		final SimpleDataSet cachedDataSet = new SimpleDataSet(null, null);
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		getCache().put("another-user-uuid" + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid(), cachedDataSet);
-		
+
 		SimpleDataSet newDataSet = service.evaluate(patientGrid).getSimpleDataSet();
-		
+
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		assertNotEquals(cachedDataSet.getRows().size(), newDataSet.getRows().size());
 		assertEquals(newDataSet.getRows().size(),
 		    ((ExtendedDataSet) getCache().get(cacheKey).get()).getSimpleDataSet().getRows().size());
 	}
-	
+
 	@Test
 	public void evaluate_shouldNotCacheEmptyReportData() {
 		PatientGrid patientGrid = service.getPatientGrid(2);
@@ -402,13 +402,13 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		patientGrid.getColumns().forEach(c -> c.getFilters().clear());
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		assertNull(getCache().get(cacheKey));
-		
+
 		SimpleDataSet dataSet = service.evaluate(patientGrid).getSimpleDataSet();
-		
+
 		assertTrue(dataSet.getRows().isEmpty());
 		assertNull(getCache().get(cacheKey));
 	}
-	
+
 	@Test
 	public void evaluate_shouldNotCacheDataSetIfThereIsNoAuthenticatedUserAfterTheDataSetIsEvaluated() throws Exception {
 		assertNotNull(Context.getAuthenticatedUser());
@@ -423,7 +423,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 			assertNull(Context.getAuthenticatedUser());
 			return expectedDataSet;
 		}).when(mockDsds).evaluate(any(DataSetDefinition.class), any(EvaluationContext.class));
-		
+
 		Context.addProxyPrivilege(PRIV_MANAGE_PATIENT_GRIDS);
 		serviceContext.setService(DataSetDefinitionService.class, mockDsds);
 		SimpleDataSet dataSet;
@@ -434,11 +434,11 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 			Context.removeProxyPrivilege(PRIV_MANAGE_PATIENT_GRIDS);
 			serviceContext.setService(DataSetDefinitionService.class, dsds);
 		}
-		
+
 		assertEquals(expectedDataSet, dataSet);
 		assertNull(getCache().get(cacheKey));
 	}
-	
+
 	@Test
 	@Ignore("Make non sense as an authentication is required to get PatientGrid")
 	public void evaluate_shouldNotCacheDataSetIfThereIsNoAuthenticatedUserBeforeTheDataSetIsEvaluated() throws Exception {
@@ -464,11 +464,11 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 			serviceContext.setService(DataSetDefinitionService.class, dsds);
 			serviceContext.setService(CohortDefinitionService.class, cds);
 		}
-		
+
 		assertEquals(expectedDataSet, dataSet);
 		assertNull(getCache().get(cacheKey));
 	}
-	
+
 	@Test
 	public void evaluate_shouldFiltersPatientsWhenEvaluatingAGridWithFilteredColumns() {
 		final Integer patientId2 = 2; // male
@@ -490,9 +490,9 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		cohort.setDescription("test");
 		Context.getCohortService().saveCohort(cohort);
 		patientGrid.setCohort(cohort);
-		
+
 		SimpleDataSet dataSet = service.evaluate(patientGrid).getSimpleDataSet();
-		
+
 		assertEquals(1, dataSet.getRows().size());
 		Patient patient = ps.getPatient(patientId2);
 		assertEquals(patient.getUuid(), dataSet.getColumnValue(patient.getId(), COLUMN_UUID));
@@ -502,27 +502,27 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 		Concept civilStatusAnswerConcept = Context.getConceptService().getConcept(5);
 		assertEquals(civilStatusAnswerConcept.getUuid(), ((Map) obs.get("value")).get("uuid"));
 		assertEquals(civilStatusAnswerConcept.getDisplayString(), ((Map) obs.get("value")).get(PROPERTY_DISPLAY));
-		
+
 	}
-	
+
 	@Test
 	public void getPatientGridColumnByUuid_shouldReturnThePatientGridColumnMatchingTheSpecifiedUuid() {
 		assertEquals(1, service.getPatientGridColumnByUuid("1e6c993e-c2cc-11de-8d13-0010c6dffd0b").getId().intValue());
 	}
-	
+
 	@Test
 	public void getPatientGridColumnByUuid_shouldReturnNullIfNoPatientGridColumnMatchesTheSpecifiedUuid() {
 		assertNull(service.getPatientGridColumnByUuid("bad-uuid"));
 	}
-	
+
 	@Test
 	public void getPatientGridColumnFilterByUuid_shouldReturnTheFilterMatchingTheSpecifiedUuid() {
 		assertEquals(1, service.getPatientGridColumnFilterByUuid("1f6c993e-c2cc-11de-8d13-0010c6dffd0c").getId().intValue());
 	}
-	
+
 	@Test
 	public void getPatientGridColumnFilterByUuid_shouldReturnNullIfNoFilterMatchesTheSpecifiedUuid() {
 		assertNull(service.getPatientGridColumnFilterByUuid("bad-uuid"));
 	}
-	
+
 }

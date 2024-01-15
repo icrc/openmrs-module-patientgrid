@@ -18,7 +18,7 @@ import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConsta
 @SubResource(parent = PatientGridResource.class, path = "report", supportedClass = PatientGridReport.class, supportedOpenmrsVersions = {
         SUPPORTED_VERSIONS })
 public class PatientGridReportResource extends BasePatientGridDataResource<PatientGridReport> {
-	
+
 	/**
 	 * @see BasePatientGridDataResource#evaluate(PatientGrid, RequestContext)
 	 */
@@ -30,7 +30,7 @@ public class PatientGridReportResource extends BasePatientGridDataResource<Patie
 			return Context.getService(PatientGridService.class).evaluate(parent);
 		}
 	}
-	
+
 	@Override
 	protected PatientGridReport create(ReportMetadata reportMetadata, PatientGrid patientGrid, List report) {
 		return new PatientGridReport(reportMetadata, patientGrid, report);

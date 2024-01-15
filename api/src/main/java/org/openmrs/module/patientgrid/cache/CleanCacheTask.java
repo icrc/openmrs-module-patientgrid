@@ -9,14 +9,14 @@ import org.slf4j.LoggerFactory;
 import static org.openmrs.module.patientgrid.PatientGridConstants.GP_MAX_CACHE_FILE_AGE;
 
 public class CleanCacheTask extends AbstractTask {
-	
+
 	private final Logger log = LoggerFactory.getLogger(CleanCacheTask.class);
-	
+
 	@Override
 	public void execute() {
 		if (!isExecuting) {
 			log.debug("Starting cleaning patient Grid disk cache...");
-			
+
 			startExecuting();
 			try {
 				int defaultValue = 120;
@@ -31,7 +31,7 @@ public class CleanCacheTask extends AbstractTask {
 						    GP_MAX_CACHE_FILE_AGE);
 						throw new RuntimeException(e);
 					}
-					
+
 				}
 				DiskCache.getInstance().deleteCacheFileOlderThan(maxAge);
 			}
@@ -43,7 +43,7 @@ public class CleanCacheTask extends AbstractTask {
 			}
 		}
 	}
-	
+
 	@Override
 	public void shutdown() {
 		log.debug("stop cleaning disk cache");

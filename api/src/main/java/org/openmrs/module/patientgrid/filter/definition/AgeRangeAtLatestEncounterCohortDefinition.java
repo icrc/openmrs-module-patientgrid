@@ -13,19 +13,19 @@ import java.util.List;
  * respective most recent encounters of a specific type.
  */
 public class AgeRangeAtLatestEncounterCohortDefinition extends BaseCohortDefinition {
-	
+
 	@ConfigurationProperty
 	private EncounterType encounterType;
-	
+
 	@ConfigurationProperty
 	private List<AgeRange> ageRanges;
-	
+
 	@ConfigurationProperty
 	private DateRange periodRange;
-	
+
 	@ConfigurationProperty
 	private LocationCohortDefinition locationCohortDefinition;
-	
+
 	/**
 	 * Gets the encounterType
 	 *
@@ -34,7 +34,7 @@ public class AgeRangeAtLatestEncounterCohortDefinition extends BaseCohortDefinit
 	public EncounterType getEncounterType() {
 		return encounterType;
 	}
-	
+
 	/**
 	 * Sets the encounterType
 	 *
@@ -43,14 +43,14 @@ public class AgeRangeAtLatestEncounterCohortDefinition extends BaseCohortDefinit
 	public void setEncounterType(EncounterType encounterType) {
 		this.encounterType = encounterType;
 	}
-	
+
 	/**
 	 * @return true if all ages will be accepted
 	 */
 	public boolean isAllAgesAccepted() {
 		return ageRanges == null || ageRanges.isEmpty();
 	}
-	
+
 	/**
 	 * Gets the ageRanges. If no age ranges, it means that all ages will be accepted
 	 *
@@ -59,7 +59,7 @@ public class AgeRangeAtLatestEncounterCohortDefinition extends BaseCohortDefinit
 	public List<AgeRange> getAgeRanges() {
 		return ageRanges;
 	}
-	
+
 	/**
 	 * Sets the ageRanges
 	 *
@@ -68,19 +68,19 @@ public class AgeRangeAtLatestEncounterCohortDefinition extends BaseCohortDefinit
 	public void setAgeRanges(List<AgeRange> ageRanges) {
 		this.ageRanges = ageRanges;
 	}
-	
+
 	public DateRange getPeriodRange() {
 		return periodRange;
 	}
-	
+
 	public void setPeriodRange(DateRange periodRange) {
 		this.periodRange = periodRange;
 	}
-	
+
 	public LocationCohortDefinition getLocationCohortDefinition() {
 		return locationCohortDefinition;
 	}
-	
+
 	public void setLocationCohortDefinition(LocationCohortDefinition locationCohortDefinition) {
 		this.locationCohortDefinition = locationCohortDefinition;
 	}

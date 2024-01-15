@@ -11,23 +11,23 @@
         </layout>
     </appender>
     <logger name="org.openmrs">
-        <level value="WARN" />
+        <level value="WARN"/>
     </logger>
     <logger name="org.hibernate">
-        <level value="WARN" />
+        <level value="WARN"/>
     </logger>
 
     <logger name="org.springframework">
-        <level value="WARN" />
+        <level value="WARN"/>
     </logger>
 
     <logger name="org.openmrs.module.patientgrid">
-        <level value="INFO" />
+        <level value="INFO"/>
     </logger>
 
     <root>
-        <level value="WARN" />
-        <appender-ref ref="CONSOLE" />
+        <level value="WARN"/>
+        <appender-ref ref="CONSOLE"/>
     </root>
 
 </log4j:configuration>

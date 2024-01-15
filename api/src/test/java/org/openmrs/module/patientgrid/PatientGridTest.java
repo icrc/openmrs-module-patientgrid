@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PatientGridTest {
-	
+
 	@Test
 	public void getObsColumns_shouldGetAllTheObsColumnsInTheGrid() {
 		final PatientGrid patientGrid = new PatientGrid();
@@ -21,5 +21,5 @@ public class PatientGridTest {
 		Assert.assertTrue(patientGrid.getObsColumns().contains(weightColumn));
 		Assert.assertTrue(patientGrid.getObsColumns().contains(heightColumn));
 	}
-	
+
 }

@@ -22,31 +22,31 @@ import static org.openmrs.module.patientgrid.PatientGridConstants.*;
 import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.PARAM_REFRESH;
 
 public class PatientGridReportControllerTest extends BasePatientGridRestControllerTest {
-	
+
 	private static String GRID_UUID = "1d6c993e-c2cc-11de-8d13-0010c6dffd0a";
-	
+
 	@Autowired
 	private PatientGridService service;
-	
+
 	@Autowired
 	@Qualifier(CACHE_MANAGER_NAME)
 	private CacheManager cacheManager;
-	
+
 	@Override
 	public String getURI() {
 		return "patientgrid/" + GRID_UUID + "/report";
 	}
-	
+
 	@Override
 	public String getUuid() {
 		return null;
 	}
-	
+
 	@Override
 	public long getAllCount() {
 		return 1;
 	}
-	
+
 	@Override
 	public void shouldGetAll() throws Exception {
 		SimpleObject result = deserialize(handle(newGetRequest(getURI())));
@@ -57,7 +57,7 @@ public class PatientGridReportControllerTest extends BasePatientGridRestControll
 		assertEquals(4, ((Map) Util.getByPath(report, "reportMetadata")).size());
 		assertEquals(false, Util.getByPath(report, new String[] { "reportMetadata", "truncated" }));
 	}
-	
+
 	@Test
 	public void shouldIgnoreCachedReportIfRefreshIsSetToTrue() throws Exception {
 		DataSetColumn column = new DataSetColumn("name", null, String.class);
@@ -66,28 +66,28 @@ public class PatientGridReportControllerTest extends BasePatientGridRestControll
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
 		cacheManager.getCache(CACHE_NAME_GRID_REPORTS).put(cacheKey, cachedDataSet);
-		
+
 		Object result = deserialize(handle(newGetRequest(getURI(), new Parameter(PARAM_REFRESH, "true"))));
 		Object report = ((List) Util.getByPath(result, "results")).get(0);
 		assertNotEquals(cachedDataSet.getRows().size(), ((List) Util.getByPath(report, "report")).size());
 	}
-	
+
 	@Override
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldGetDefaultByUuid() throws Exception {
 		super.shouldGetDefaultByUuid();
 	}
-	
+
 	@Override
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldGetRefByUuid() throws Exception {
 		super.shouldGetRefByUuid();
 	}
-	
+
 	@Override
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldGetFullByUuid() throws Exception {
 		super.shouldGetFullByUuid();
 	}
-	
+
 }

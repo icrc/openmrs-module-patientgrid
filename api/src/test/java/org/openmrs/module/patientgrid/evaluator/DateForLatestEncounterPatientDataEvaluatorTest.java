@@ -18,20 +18,20 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DateForLatestEncounterPatientDataEvaluatorTest extends BaseModuleContextSensitiveTest {
-	
+
 	@Autowired
 	private PatientDataService patientDataService;
-	
+
 	@Autowired
 	private EncounterService encounterService;
-	
+
 	@Before
 	public void setup() {
 		executeDataSet("entityBasisMaps.xml");
 		executeDataSet("patientGrids.xml");
 		executeDataSet("patientGridsTestData.xml");
 	}
-	
+
 	@Test
 	public void evaluate_shouldReturnTheDatesForTheMostRecentEncounters() throws Exception {
 		final Integer patientId2 = 2;
@@ -40,16 +40,16 @@ public class DateForLatestEncounterPatientDataEvaluatorTest extends BaseModuleCo
 		final Integer patientId999 = 999;//Has no encounter
 		EvaluationContext context = new EvaluationContextPersistantCache();
 		context.setBaseCohort(new Cohort(asList(patientId2, patientId6, patientId7, patientId999)));
-		
+
 		DateForLatestEncounterPatientDataDefinition def = new DateForLatestEncounterPatientDataDefinition();
 		def.setEncounterType(new EncounterType(101));
 		EvaluatedPatientData data = patientDataService.evaluate(def, context);
-		
+
 		assertEquals(3, data.getData().size());
 		assertEquals(encounterService.getEncounter(2004).getEncounterDatetime(), data.getData().get(patientId2));
 		assertEquals(encounterService.getEncounter(2006).getEncounterDatetime(), data.getData().get(patientId6));
 		assertEquals(encounterService.getEncounter(2007).getEncounterDatetime(), data.getData().get(patientId7));
 		assertNull(data.getData().get(patientId999));
 	}
-	
+
 }

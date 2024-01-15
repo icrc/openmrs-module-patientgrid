@@ -29,7 +29,7 @@ import io.swagger.models.properties.StringProperty;
 
 @SubClassHandler(supportedClass = AgeAtEncounterPatientGridColumn.class, supportedOpenmrsVersions = { SUPPORTED_VERSIONS })
 public class AgeAtEncounterPatientGridColumnResource extends BaseDelegatingSubclassHandler<PatientGridColumn, AgeAtEncounterPatientGridColumn> implements DelegatingSubclassHandler<PatientGridColumn, AgeAtEncounterPatientGridColumn> {
-	
+
 	/**
 	 * @see BaseDelegatingSubclassHandler#getTypeName()
 	 */
@@ -37,7 +37,7 @@ public class AgeAtEncounterPatientGridColumnResource extends BaseDelegatingSubcl
 	public String getTypeName() {
 		return "agecolumn";
 	}
-	
+
 	/**
 	 * @see BaseDelegatingSubclassHandler#newDelegate()
 	 */
@@ -45,7 +45,7 @@ public class AgeAtEncounterPatientGridColumnResource extends BaseDelegatingSubcl
 	public AgeAtEncounterPatientGridColumn newDelegate() {
 		return new AgeAtEncounterPatientGridColumn();
 	}
-	
+
 	/**
 	 * @see BaseDelegatingSubclassHandler#getRepresentationDescription(Representation)
 	 */
@@ -56,20 +56,20 @@ public class AgeAtEncounterPatientGridColumnResource extends BaseDelegatingSubcl
 			description.addRequiredProperty(PatientGridConstants.PROPERTY_ENCOUNTER_TYPE, Representation.REF);
 			description.addProperty(PatientGridConstants.CONVERT_TO_AGE_RANGE);
 		}
-		
+
 		return description;
 	}
-	
+
 	@PropertyGetter(PatientGridConstants.PROPERTY_DISPLAY)
 	public String getDisplayString(PatientGridColumn delegate) {
 		return getSuperclassResource().getDisplayString(delegate);
 	}
-	
+
 	@PropertySetter(PatientGridConstants.PROP_FILTERS)
 	public void setFilters(PatientGridColumn column, PatientGridColumnFilter... filters) {
 		getSuperclassResource().setFilters(column, filters);
 	}
-	
+
 	/**
 	 * @see BaseDelegatingSubclassHandler#getCreatableProperties()
 	 */
@@ -80,7 +80,7 @@ public class AgeAtEncounterPatientGridColumnResource extends BaseDelegatingSubcl
 		description.addProperty(PatientGridConstants.CONVERT_TO_AGE_RANGE);
 		return description;
 	}
-	
+
 	/**
 	 * @see BaseDelegatingSubclassHandler#getGETModel(Representation)
 	 */
@@ -91,7 +91,7 @@ public class AgeAtEncounterPatientGridColumnResource extends BaseDelegatingSubcl
 		model.property(PatientGridConstants.CONVERT_TO_AGE_RANGE, new BooleanProperty());
 		return model;
 	}
-	
+
 	/**
 	 * @see BaseDelegatingSubclassHandler#getCREATEModel(Representation)
 	 */
@@ -102,7 +102,7 @@ public class AgeAtEncounterPatientGridColumnResource extends BaseDelegatingSubcl
 		model.property(PatientGridConstants.CONVERT_TO_AGE_RANGE, new BooleanProperty()._default(false));
 		return model;
 	}
-	
+
 	/**
 	 * @see BaseDelegatingSubclassHandler#getAllByType(RequestContext)
 	 */
@@ -110,10 +110,10 @@ public class AgeAtEncounterPatientGridColumnResource extends BaseDelegatingSubcl
 	public PageableResult getAllByType(RequestContext requestContext) throws ResourceDoesNotSupportOperationException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	private PatientGridColumnResource getSuperclassResource() {
 		return (PatientGridColumnResource) Context.getService(RestService.class)
 		        .getResourceBySupportedClass(PatientGridColumn.class);
 	}
-	
+
 }

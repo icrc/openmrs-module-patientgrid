@@ -23,13 +23,13 @@ import java.util.Map;
  */
 @Handler(supports = LocationEncounterDataDefinition.class, order = 50)
 public class LocationEncounterOnCacheDataEvaluator implements PatientDataEvaluator {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocationEncounterOnCacheDataEvaluator.class);
-	
+
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
 	        throws EvaluationException {
-		
+
 		Cohort baseCohort = context.getBaseCohort();
 		Map<Integer, Object> patientIdAndLocationMap = new HashMap(baseCohort.size());
 		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
@@ -49,7 +49,7 @@ public class LocationEncounterOnCacheDataEvaluator implements PatientDataEvaluat
 		data.setData(patientIdAndLocationMap);
 		return data;
 	}
-	
+
 	private Location findLocation(List<Map> allCacheData, Integer patientId) {
 		Encounter encounter = null;
 		for (Map map : allCacheData) {
@@ -71,5 +71,5 @@ public class LocationEncounterOnCacheDataEvaluator implements PatientDataEvaluat
 		}
 		return encounter == null ? null : encounter.getLocation();
 	}
-	
+
 }

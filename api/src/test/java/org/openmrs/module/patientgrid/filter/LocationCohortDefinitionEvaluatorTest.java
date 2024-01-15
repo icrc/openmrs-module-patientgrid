@@ -20,102 +20,102 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 public class LocationCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
-	
+
 	@Autowired
 	private CohortDefinitionService cohortDefService;
-	
+
 	@Autowired
 	@Qualifier("locationService")
 	private LocationService ls;
-	
+
 	@Autowired
 	private DataFilterService dfs;
-	
+
 	@Before
 	public void setup() {
 		executeDataSet("entityBasisMaps.xml");
 	}
-	
+
 	private Location createLocation(String name) {
 		Location l = new Location();
 		l.setName(name);
 		return ls.saveLocation(l);
 	}
-	
+
 	@Test
 	public void evaluate_shouldReturnACohortOfPatientAssignedToTheSpecifiedLocations() throws Exception {
 		LocationCohortDefinition def = new LocationCohortDefinition();
 		def.setLocations(asList(ls.getLocation(4001)));
-		
+
 		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, null);
-		
+
 		assertEquals(2, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
-		
+
 		def.setLocations(asList(ls.getLocation(4002)));
 		evaluatedCohort = cohortDefService.evaluate(def, null);
-		
+
 		assertEquals(2, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(432)));
-		
+
 		def.setLocations(asList(ls.getLocation(4001), ls.getLocation(4002)));
 		evaluatedCohort = cohortDefService.evaluate(def, null);
-		
+
 		assertEquals(3, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(432)));
 	}
-	
+
 	@Test
 	public void evaluate_shouldReturnACohortOfPatientAssignedToTheSpecifiedCountryLocations() throws Exception {
 		LocationCohortDefinition def = new LocationCohortDefinition();
 		def.setCountry(true);
 		def.setLocations(asList(createLocation("Republic Of Uganda")));
-		
+
 		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, null);
 		assertTrue(evaluatedCohort.isEmpty());
-		
+
 		Location usa = createLocation("United States");
 		def.setLocations(asList(usa));
 		evaluatedCohort = cohortDefService.evaluate(def, null);
-		
+
 		assertEquals(2, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
-		
+
 		Location kenya = createLocation("Kenya");//should be case insensitive
 		def.setLocations(asList(kenya));
 		evaluatedCohort = cohortDefService.evaluate(def, null);
-		
+
 		assertEquals(2, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(432)));
-		
+
 		def.setLocations(asList(usa, kenya));
 		evaluatedCohort = cohortDefService.evaluate(def, null);
-		
+
 		assertEquals(3, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(6)));
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(432)));
 	}
-	
+
 	@Test
 	public void evaluate_shouldBeCaseInsensitiveWhenMatchingOnCountry() throws Exception {
 		LocationCohortDefinition def = new LocationCohortDefinition();
 		def.setCountry(true);
 		def.setLocations(asList(createLocation("KENYA")));
-		
+
 		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, null);
-		
+
 		assertEquals(2, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(432)));
 	}
-	
+
 	@Test
 	public void evaluate_shouldIgnoreALocationWithNoCountry() throws Exception {
 		Location basisLocation = createLocation("Jinja");
@@ -123,14 +123,14 @@ public class LocationCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 		LocationCohortDefinition def = new LocationCohortDefinition();
 		def.setCountry(true);
 		def.setLocations(asList(createLocation("Kenya")));
-		
+
 		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, null);
-		
+
 		assertEquals(2, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(432)));
 	}
-	
+
 	@Test
 	public void evaluate_shouldIgnoreAnEntityBasisMapWhereTheLocationIdHasNoMatchingLocation() throws Exception {
 		final Integer basisLocationId = 9999;
@@ -139,12 +139,12 @@ public class LocationCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 		LocationCohortDefinition def = new LocationCohortDefinition();
 		def.setCountry(true);
 		def.setLocations(asList(createLocation("Kenya")));
-		
+
 		EvaluatedCohort evaluatedCohort = cohortDefService.evaluate(def, null);
-		
+
 		assertEquals(2, evaluatedCohort.activeMembershipSize());
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(7)));
 		assertNotNull(evaluatedCohort.getActiveMembership(new Patient(432)));
 	}
-	
+
 }

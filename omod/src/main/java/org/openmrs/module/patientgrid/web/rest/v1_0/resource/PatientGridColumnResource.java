@@ -38,7 +38,7 @@ import org.springframework.context.NoSuchMessageException;
 @SubResource(parent = PatientGridResource.class, path = PatientGridConstants.PROPERTY_COLUMN, supportedClass = PatientGridColumn.class, supportedOpenmrsVersions = {
         SUPPORTED_VERSIONS })
 public class PatientGridColumnResource extends DelegatingSubResource<PatientGridColumn, PatientGrid, PatientGridResource> {
-	
+
 	/**
 	 * @see DelegatingSubResource#hasTypesDefined()
 	 */
@@ -46,7 +46,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	public boolean hasTypesDefined() {
 		return true;
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#getResourceName() ()
 	 */
@@ -54,7 +54,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	protected String getResourceName() {
 		return NAMESPACE + "/patientgrid/column";
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#getRepresentationDescription(Representation)
 	 */
@@ -75,20 +75,20 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 			} else {
 				description.addProperty("auditInfo");
 			}
-			
+
 			return description;
 		}
-		
+
 		// TODO remove this code when we add support to add columns to existing grids
 		// Ref Rep, we don't delete to superclass because the call to getResource() fails
 		DelegatingResourceDescription rep = new DelegatingResourceDescription();
 		rep.addProperty("uuid");
 		rep.addProperty(PatientGridConstants.PROPERTY_DISPLAY);
 		rep.addSelfLink();
-		
+
 		return rep;
 	}
-	
+
 	@PropertySetter(PatientGridConstants.PROP_FILTERS)
 	public void setFilters(PatientGridColumn column, PatientGridColumnFilter... filters) {
 		column.getFilters().clear();
@@ -96,7 +96,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 			column.addFilter(filter);
 		}
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#newDelegate()
 	 */
@@ -104,7 +104,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	public PatientGridColumn newDelegate() {
 		return new PatientGridColumn();
 	}
-	
+
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -115,7 +115,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		description.addProperty(PatientGridConstants.PROP_HIDDEN);
 		return description;
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#getUpdatableProperties()
 	 */
@@ -125,7 +125,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		description.removeProperty(PatientGridConstants.PROP_DATATYPE);
 		return description;
 	}
-	
+
 	@PropertyGetter(PatientGridConstants.PROPERTY_DISPLAY)
 	public String getDisplayString(PatientGridColumn delegate) {
 		if (delegate.getDatatype().equals(ColumnDatatype.OBS)) {
@@ -146,7 +146,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 			return delegate.getName();
 		}
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#getParent(Object)
 	 */
@@ -154,7 +154,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	public PatientGrid getParent(PatientGridColumn instance) {
 		return instance.getPatientGrid();
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#setParent(Object, Object)
 	 */
@@ -162,7 +162,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	public void setParent(PatientGridColumn instance, PatientGrid parent) {
 		instance.setPatientGrid(parent);
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#doGetAll(Object, RequestContext)
 	 */
@@ -174,10 +174,10 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 				columns.add(column);
 			}
 		}
-		
+
 		return new NeedsPaging(columns, context);
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#getByUniqueId(String)
 	 */
@@ -185,7 +185,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	public PatientGridColumn getByUniqueId(String uniqueId) {
 		return Context.getService(PatientGridService.class).getPatientGridColumnByUuid(uniqueId);
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#delete(Object, String, RequestContext)
 	 */
@@ -193,7 +193,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 	protected void delete(PatientGridColumn delegate, String reason, RequestContext context) throws ResponseException {
 		purge(delegate, context);
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#save(Object)
 	 */
@@ -203,7 +203,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		Context.getService(PatientGridService.class).savePatientGrid(delegate.getPatientGrid());
 		return delegate;
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#purge(Object, RequestContext)
 	 */
@@ -212,7 +212,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		delegate.getPatientGrid().removeColumn(delegate);
 		Context.getService(PatientGridService.class).savePatientGrid(delegate.getPatientGrid());
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#getGETModel(Representation)
 	 */
@@ -228,7 +228,7 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		    new ArrayProperty(new RefProperty("#/definitions/PatientgridPatientgridFilterGet")));
 		return model;
 	}
-	
+
 	/**
 	 * @see DelegatingSubResource#getCREATEModel(Representation)
 	 */
@@ -244,5 +244,5 @@ public class PatientGridColumnResource extends DelegatingSubResource<PatientGrid
 		model.required(PatientGridConstants.PROP_FILTERS);
 		return model;
 	}
-	
+
 }

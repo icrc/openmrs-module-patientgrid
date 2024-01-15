@@ -6,23 +6,23 @@ import java.util.Map;
 import org.openmrs.module.patientgrid.PatientGrid;
 
 public abstract class BasePatientGridData {
-	
+
 	private PatientGrid patientGrid;
-	
+
 	private List<Map<String, Object>> report;
-	
+
 	private ReportMetadata reportMetadata;
-	
+
 	protected BasePatientGridData(ReportMetadata reportInfo, PatientGrid patientGrid, List<Map<String, Object>> report) {
 		this.patientGrid = patientGrid;
 		this.report = report;
 		this.reportMetadata = reportInfo;
 	}
-	
+
 	public ReportMetadata getReportMetadata() {
 		return reportMetadata;
 	}
-	
+
 	/**
 	 * Gets the patientGrid
 	 *
@@ -31,7 +31,7 @@ public abstract class BasePatientGridData {
 	public PatientGrid getPatientGrid() {
 		return patientGrid;
 	}
-	
+
 	/**
 	 * Gets the report
 	 *
@@ -40,5 +40,5 @@ public abstract class BasePatientGridData {
 	public List<Map<String, Object>> getReport() {
 		return report;
 	}
-	
+
 }

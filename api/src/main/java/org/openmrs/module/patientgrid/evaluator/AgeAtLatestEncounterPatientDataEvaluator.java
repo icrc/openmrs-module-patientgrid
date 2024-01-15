@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Handler(supports = AgeAtLatestEncounterPatientDataDefinition.class, order = 50)
 public class AgeAtLatestEncounterPatientDataEvaluator implements PatientDataEvaluator {
-	
+
 	@Override
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
 	        throws EvaluationException {
@@ -30,7 +30,7 @@ public class AgeAtLatestEncounterPatientDataEvaluator implements PatientDataEval
 		}
 		AgeAtLatestEncounterPatientDataDefinition def = (AgeAtLatestEncounterPatientDataDefinition) definition;
 		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
-		
+
 		MostRecentEncounterPerPatientByTypeFunction encounterFct = new MostRecentEncounterPerPatientByTypeFunction(
 		        contextPersistantCache, def.getPeriodRange(), def.getLocationCohortDefinition());
 		//will retrieve the map patientid-> Ecounter if not in cache
@@ -42,13 +42,13 @@ public class AgeAtLatestEncounterPatientDataEvaluator implements PatientDataEval
 			patientIdAndEnc = patientIdAndEnc.entrySet().stream().filter(entry -> patientIds.contains(entry.getKey()))
 			        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		}
-		
+
 		PatientAgePerEncounterIdByTypeFunction agePerEncounterIdFct = new PatientAgePerEncounterIdByTypeFunction(
 		        patientIdAndEnc);
 		//will retrieve the map encounter id -> age if not in cache
 		Map<Integer, Object> encIdAndAge = contextPersistantCache.computeMapIfAbsent(def.getEncounterType(),
 		    agePerEncounterIdFct);
-		
+
 		//transform these 2 maps in patient id -> age
 		Map<Integer, Object> patientIdAndAge = new HashMap<>();
 		patientIdAndEnc.entrySet().forEach(e -> {
@@ -58,8 +58,8 @@ public class AgeAtLatestEncounterPatientDataEvaluator implements PatientDataEval
 		});
 		EvaluatedPatientData result = new EvaluatedPatientData(definition, context);
 		result.setData(patientIdAndAge);
-		
+
 		return result;
 	}
-	
+
 }

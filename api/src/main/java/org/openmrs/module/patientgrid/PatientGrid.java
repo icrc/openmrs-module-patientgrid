@@ -25,30 +25,30 @@ import org.openmrs.*;
 @Entity
 @Table(name = "patientgrid_patient_grid")
 public class PatientGrid extends BaseChangeableOpenmrsMetadata {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "patient_grid_id")
 	private Integer patientGridId;
-	
+
 	@Access(AccessType.FIELD)
 	@OneToMany(mappedBy = "patientGrid", orphanRemoval = true, cascade = CascadeType.ALL)
 	private Set<PatientGridColumn> columns;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User owner;
-	
+
 	@NotNull
 	@Column(name = "is_shared", nullable = false)
 	private Boolean shared = false;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "cohort_id")
 	private Cohort cohort;
-	
+
 	/**
 	 * @see BaseOpenmrsObject#getId()
 	 */
@@ -56,7 +56,7 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	public Integer getId() {
 		return getPatientGridId();
 	}
-	
+
 	/**
 	 * @see BaseOpenmrsObject#setId(Integer)
 	 */
@@ -64,7 +64,7 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	public void setId(Integer id) {
 		setPatientGridId(id);
 	}
-	
+
 	/**
 	 * Gets the patientGridId
 	 *
@@ -73,7 +73,7 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	public Integer getPatientGridId() {
 		return patientGridId;
 	}
-	
+
 	/**
 	 * Sets the patientGridId
 	 *
@@ -82,7 +82,7 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	public void setPatientGridId(Integer patientGridId) {
 		this.patientGridId = patientGridId;
 	}
-	
+
 	/**
 	 * Gets the columns
 	 *
@@ -92,10 +92,10 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 		if (columns == null) {
 			columns = new LinkedHashSet();
 		}
-		
+
 		return columns;
 	}
-	
+
 	/**
 	 * Adds a column to the list of columns for this grid
 	 *
@@ -105,7 +105,7 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 		column.setPatientGrid(this);
 		getColumns().add(column);
 	}
-	
+
 	/**
 	 * Removes a column from the list of columns for this grid
 	 *
@@ -116,10 +116,10 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 		if (column != null) {
 			return getColumns().remove(column);
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Gets the owner
 	 *
@@ -128,7 +128,7 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	public User getOwner() {
 		return owner;
 	}
-	
+
 	/**
 	 * Sets the owner
 	 *
@@ -137,7 +137,7 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	public void setOwner(User owner) {
 		this.owner = owner;
 	}
-	
+
 	/**
 	 * Gets the shared
 	 *
@@ -146,7 +146,7 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	public Boolean getShared() {
 		return shared;
 	}
-	
+
 	/**
 	 * Sets the shared
 	 *
@@ -155,7 +155,7 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	public void setShared(Boolean shared) {
 		this.shared = shared;
 	}
-	
+
 	/**
 	 * Gets the cohort
 	 *
@@ -164,7 +164,7 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	public Cohort getCohort() {
 		return cohort;
 	}
-	
+
 	/**
 	 * Sets the cohort
 	 *
@@ -173,7 +173,7 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 	public void setCohort(Cohort cohort) {
 		this.cohort = cohort;
 	}
-	
+
 	/**
 	 * Gets all obs columns in this grid
 	 *
@@ -183,12 +183,12 @@ public class PatientGrid extends BaseChangeableOpenmrsMetadata {
 		return getColumns().stream().filter(c -> c.getDatatype() == OBS).map(c -> (ObsPatientGridColumn) c)
 		        .collect(Collectors.toSet());
 	}
-	
+
 	public EncounterDatePatientGridColumn getDateColumn(EncounterType type) {
 		return getColumns().stream()
 		        .filter(c -> c.getDatatype() == PatientGridColumn.ColumnDatatype.ENC_DATE
 		                && type.equals(((EncounterDatePatientGridColumn) c).getEncounterType()))
 		        .map(c -> (EncounterDatePatientGridColumn) c).findFirst().orElse(null);
 	}
-	
+
 }

@@ -11,32 +11,32 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import java.util.List;
 
 public class AllEncountersPatientDataDefinition extends BaseDataDefinition implements PatientDataDefinition {
-	
+
 	@ConfigurationProperty
 	private PatientGrid patientGrid;
-	
+
 	@ConfigurationProperty
 	private EncounterType encounterType;
-	
+
 	@ConfigurationProperty
 	private DateRange periodRange;
-	
+
 	@ConfigurationProperty
 	private LocationCohortDefinition locationCohortDefinition;
-	
+
 	public DateRange getPeriodRange() {
 		return periodRange;
 	}
-	
+
 	public void setPeriodRange(DateRange periodRange) {
 		this.periodRange = periodRange;
 	}
-	
+
 	@Override
 	public Class<?> getDataType() {
 		return List.class;
 	}
-	
+
 	/**
 	 * Gets the patientGrid
 	 *
@@ -45,7 +45,7 @@ public class AllEncountersPatientDataDefinition extends BaseDataDefinition imple
 	public PatientGrid getPatientGrid() {
 		return patientGrid;
 	}
-	
+
 	/**
 	 * Sets the patientGrid
 	 *
@@ -54,7 +54,7 @@ public class AllEncountersPatientDataDefinition extends BaseDataDefinition imple
 	public void setPatientGrid(PatientGrid patientGrid) {
 		this.patientGrid = patientGrid;
 	}
-	
+
 	/**
 	 * Gets the encounterType
 	 *
@@ -63,7 +63,7 @@ public class AllEncountersPatientDataDefinition extends BaseDataDefinition imple
 	public EncounterType getEncounterType() {
 		return encounterType;
 	}
-	
+
 	/**
 	 * Sets the encounterType
 	 *
@@ -72,11 +72,11 @@ public class AllEncountersPatientDataDefinition extends BaseDataDefinition imple
 	public void setEncounterType(EncounterType encounterType) {
 		this.encounterType = encounterType;
 	}
-	
+
 	public LocationCohortDefinition getLocationCohortDefinition() {
 		return locationCohortDefinition;
 	}
-	
+
 	public void setLocationCohortDefinition(LocationCohortDefinition locationCohortDefinition) {
 		this.locationCohortDefinition = locationCohortDefinition;
 	}
