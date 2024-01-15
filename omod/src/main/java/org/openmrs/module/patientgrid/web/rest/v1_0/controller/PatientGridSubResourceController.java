@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/rest/" + PatientGridRestConstants.NAMESPACE)
 public class PatientGridSubResourceController extends MainSubResourceController {
 
-  /**
-   * @see MainSubResourceController#getNamespace()
-   */
-  @Override
-  public String getNamespace() {
-    return PatientGridRestConstants.NAMESPACE;
-  }
+	/**
+	 * @see MainSubResourceController#getNamespace()
+	 */
+	@Override
+	public String getNamespace() {
+		return PatientGridRestConstants.NAMESPACE;
+	}
 
 }

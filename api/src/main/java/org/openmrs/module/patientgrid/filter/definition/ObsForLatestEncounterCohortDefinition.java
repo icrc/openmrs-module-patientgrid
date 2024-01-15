@@ -14,108 +14,108 @@ import java.util.List;
  */
 public class ObsForLatestEncounterCohortDefinition extends BaseCohortDefinition {
 
-  @ConfigurationProperty
-  private String propertyName;
+	@ConfigurationProperty
+	private String propertyName;
 
-  @ConfigurationProperty
-  private Concept concept;
+	@ConfigurationProperty
+	private Concept concept;
 
-  @ConfigurationProperty
-  private EncounterType encounterType;
+	@ConfigurationProperty
+	private EncounterType encounterType;
 
-  @ConfigurationProperty
-  private LocationCohortDefinition locationCohortDefinition;
+	@ConfigurationProperty
+	private LocationCohortDefinition locationCohortDefinition;
 
-  @ConfigurationProperty
-  private List<Object> values;
+	@ConfigurationProperty
+	private List<Object> values;
 
-  private DateRange periodRange;
+	private DateRange periodRange;
 
-  /**
-   * Gets the propertyName
-   *
-   * @return the propertyName
-   */
-  public String getPropertyName() {
-    return propertyName;
-  }
+	/**
+	 * Gets the propertyName
+	 *
+	 * @return the propertyName
+	 */
+	public String getPropertyName() {
+		return propertyName;
+	}
 
-  /**
-   * Sets the propertyName
-   *
-   * @param propertyName the propertyName to set
-   */
-  public void setPropertyName(String propertyName) {
-    this.propertyName = propertyName;
-  }
+	/**
+	 * Sets the propertyName
+	 *
+	 * @param propertyName the propertyName to set
+	 */
+	public void setPropertyName(String propertyName) {
+		this.propertyName = propertyName;
+	}
 
-  /**
-   * Gets the concept
-   *
-   * @return the concept
-   */
-  public Concept getConcept() {
-    return concept;
-  }
+	/**
+	 * Gets the concept
+	 *
+	 * @return the concept
+	 */
+	public Concept getConcept() {
+		return concept;
+	}
 
-  /**
-   * Sets the concept
-   *
-   * @param concept the concept to set
-   */
-  public void setConcept(Concept concept) {
-    this.concept = concept;
-  }
+	/**
+	 * Sets the concept
+	 *
+	 * @param concept the concept to set
+	 */
+	public void setConcept(Concept concept) {
+		this.concept = concept;
+	}
 
-  /**
-   * Gets the encounterType
-   *
-   * @return the encounterType
-   */
-  public EncounterType getEncounterType() {
-    return encounterType;
-  }
+	/**
+	 * Gets the encounterType
+	 *
+	 * @return the encounterType
+	 */
+	public EncounterType getEncounterType() {
+		return encounterType;
+	}
 
-  /**
-   * Sets the encounterType
-   *
-   * @param encounterType the encounterType to set
-   */
-  public void setEncounterType(EncounterType encounterType) {
-    this.encounterType = encounterType;
-  }
+	/**
+	 * Sets the encounterType
+	 *
+	 * @param encounterType the encounterType to set
+	 */
+	public void setEncounterType(EncounterType encounterType) {
+		this.encounterType = encounterType;
+	}
 
-  /**
-   * Gets the values
-   *
-   * @return the values
-   */
-  public List<Object> getValues() {
-    return values;
-  }
+	/**
+	 * Gets the values
+	 *
+	 * @return the values
+	 */
+	public List<Object> getValues() {
+		return values;
+	}
 
-  /**
-   * Sets the values
-   *
-   * @param values the values to set
-   */
-  public void setValues(List<Object> values) {
-    this.values = values;
-  }
+	/**
+	 * Sets the values
+	 *
+	 * @param values the values to set
+	 */
+	public void setValues(List<Object> values) {
+		this.values = values;
+	}
 
-  public void setPeriodRange(DateRange periodRange) {
-    this.periodRange = periodRange;
-  }
+	public void setPeriodRange(DateRange periodRange) {
+		this.periodRange = periodRange;
+	}
 
-  public DateRange getPeriodRange() {
-    return periodRange;
-  }
+	public DateRange getPeriodRange() {
+		return periodRange;
+	}
 
-  public LocationCohortDefinition getLocationCohortDefinition() {
-    return locationCohortDefinition;
-  }
+	public LocationCohortDefinition getLocationCohortDefinition() {
+		return locationCohortDefinition;
+	}
 
-  public void setLocationCohortDefinition(LocationCohortDefinition locationCohortDefinition) {
-    this.locationCohortDefinition = locationCohortDefinition;
-  }
+	public void setLocationCohortDefinition(LocationCohortDefinition locationCohortDefinition) {
+		this.locationCohortDefinition = locationCohortDefinition;
+	}
 }

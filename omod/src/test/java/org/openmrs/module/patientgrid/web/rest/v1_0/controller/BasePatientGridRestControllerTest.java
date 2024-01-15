@@ -6,19 +6,19 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 
 public abstract class BasePatientGridRestControllerTest extends MainResourceControllerTest {
 
-  @Before
-  public void setupBasePatientGridRestControllerTest() {
-    executeDataSet("entityBasisMaps.xml");
-    executeDataSet("patientGrids.xml");
-    executeDataSet("patientGridsTestData.xml");
-  }
+	@Before
+	public void setupBasePatientGridRestControllerTest() {
+		executeDataSet("entityBasisMaps.xml");
+		executeDataSet("patientGrids.xml");
+		executeDataSet("patientGridsTestData.xml");
+	}
 
-  /**
-   * @see MainResourceControllerTest#getNamespace()
-   */
-  @Override
-  public String getNamespace() {
-    return PatientGridRestConstants.NAMESPACE;
-  }
+	/**
+	 * @see MainResourceControllerTest#getNamespace()
+	 */
+	@Override
+	public String getNamespace() {
+		return PatientGridRestConstants.NAMESPACE;
+	}
 
 }

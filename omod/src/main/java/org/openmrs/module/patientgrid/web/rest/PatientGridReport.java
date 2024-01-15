@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class PatientGridReport extends BasePatientGridData {
 
-  public PatientGridReport(ReportMetadata reportMetadata, PatientGrid patientGrid, List<Map<String, Object>> report) {
-    super(reportMetadata, patientGrid, report);
-  }
+	public PatientGridReport(ReportMetadata reportMetadata, PatientGrid patientGrid, List<Map<String, Object>> report) {
+		super(reportMetadata, patientGrid, report);
+	}
 
 }

@@ -24,52 +24,52 @@ import java.util.Map;
 @Handler(supports = LocationEncounterDataDefinition.class, order = 50)
 public class LocationEncounterOnCacheDataEvaluator implements PatientDataEvaluator {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(LocationEncounterOnCacheDataEvaluator.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LocationEncounterOnCacheDataEvaluator.class);
 
-  @Override
-  public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
-      throws EvaluationException {
+	@Override
+	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
+	        throws EvaluationException {
 
-    Cohort baseCohort = context.getBaseCohort();
-    Map<Integer, Object> patientIdAndLocationMap = new HashMap(baseCohort.size());
-    EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
-    List<Map> allCacheData = contextPersistantCache.getAllCacheData(MostRecentEncounterPerPatientByTypeFunction.class);
-    for (CohortMembership member : baseCohort.getMemberships()) {
-      Integer patientId = member.getPatientId();
-      if (!patientIdAndLocationMap.containsKey(patientId)) {
-        Location location = findLocation(allCacheData, patientId);
-        if (location == null) {
-          LOGGER.warn("No location found for patient {} in the cache", patientId);
-        } else {
-          patientIdAndLocationMap.put(patientId, location);
-        }
-      }
-    }
-    EvaluatedPatientData data = new EvaluatedPatientData(definition, context);
-    data.setData(patientIdAndLocationMap);
-    return data;
-  }
+		Cohort baseCohort = context.getBaseCohort();
+		Map<Integer, Object> patientIdAndLocationMap = new HashMap(baseCohort.size());
+		EvaluationContextPersistantCache contextPersistantCache = (EvaluationContextPersistantCache) context;
+		List<Map> allCacheData = contextPersistantCache.getAllCacheData(MostRecentEncounterPerPatientByTypeFunction.class);
+		for (CohortMembership member : baseCohort.getMemberships()) {
+			Integer patientId = member.getPatientId();
+			if (!patientIdAndLocationMap.containsKey(patientId)) {
+				Location location = findLocation(allCacheData, patientId);
+				if (location == null) {
+					LOGGER.warn("No location found for patient {} in the cache", patientId);
+				} else {
+					patientIdAndLocationMap.put(patientId, location);
+				}
+			}
+		}
+		EvaluatedPatientData data = new EvaluatedPatientData(definition, context);
+		data.setData(patientIdAndLocationMap);
+		return data;
+	}
 
-  private Location findLocation(List<Map> allCacheData, Integer patientId) {
-    Encounter encounter = null;
-    for (Map map : allCacheData) {
-      Object o = map.get(patientId);
-      Encounter currentEncounter = null;
-      if (o instanceof Encounter) {
-        currentEncounter = (Encounter) o;
-      } else {
-        List encounterList = (List) o;
-        if (CollectionUtils.isNotEmpty(encounterList)) {
-          currentEncounter = (Encounter) encounterList.get(0);
-        }
-      }
-      if (currentEncounter != null) {
-        if (encounter == null || currentEncounter.getEncounterDatetime().after(encounter.getEncounterDatetime())) {
-          encounter = currentEncounter;
-        }
-      }
-    }
-    return encounter == null ? null : encounter.getLocation();
-  }
+	private Location findLocation(List<Map> allCacheData, Integer patientId) {
+		Encounter encounter = null;
+		for (Map map : allCacheData) {
+			Object o = map.get(patientId);
+			Encounter currentEncounter = null;
+			if (o instanceof Encounter) {
+				currentEncounter = (Encounter) o;
+			} else {
+				List encounterList = (List) o;
+				if (CollectionUtils.isNotEmpty(encounterList)) {
+					currentEncounter = (Encounter) encounterList.get(0);
+				}
+			}
+			if (currentEncounter != null) {
+				if (encounter == null || currentEncounter.getEncounterDatetime().after(encounter.getEncounterDatetime())) {
+					encounter = currentEncounter;
+				}
+			}
+		}
+		return encounter == null ? null : encounter.getLocation();
+	}
 
 }

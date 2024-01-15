@@ -5,15 +5,15 @@ import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 
 public class PersonUuidDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 
-  public PersonUuidDataDefinition() {
-    super();
-  }
+	public PersonUuidDataDefinition() {
+		super();
+	}
 
-  public PersonUuidDataDefinition(String name) {
-    super(name);
-  }
+	public PersonUuidDataDefinition(String name) {
+		super(name);
+	}
 
-  public Class<?> getDataType() {
-    return String.class;
-  }
+	public Class<?> getDataType() {
+		return String.class;
+	}
 }

@@ -14,20 +14,20 @@ import java.util.List;
 import static org.openmrs.module.patientgrid.web.rest.v1_0.PatientGridRestConstants.SUPPORTED_VERSIONS;
 
 @SubResource(parent = PatientGridResource.class, path = "download", supportedClass = PatientGridDownload.class, supportedOpenmrsVersions = {
-    SUPPORTED_VERSIONS})
+        SUPPORTED_VERSIONS })
 public class PatientGridDownloadResource extends BasePatientGridDataResource<PatientGridDownload> {
 
-  /**
-   * @see BasePatientGridDataResource#evaluate(PatientGrid, RequestContext)
-   */
-  @Override
-  public ExtendedDataSet evaluate(PatientGrid parent, RequestContext context) throws ResponseException {
-    return DownloadUtils.evaluate(parent);
-  }
+	/**
+	 * @see BasePatientGridDataResource#evaluate(PatientGrid, RequestContext)
+	 */
+	@Override
+	public ExtendedDataSet evaluate(PatientGrid parent, RequestContext context) throws ResponseException {
+		return DownloadUtils.evaluate(parent);
+	}
 
-  @Override
-  protected PatientGridDownload create(ReportMetadata reportMetadata, PatientGrid patientGrid, List report) {
-    return new PatientGridDownload(reportMetadata, patientGrid, report);
-  }
+	@Override
+	protected PatientGridDownload create(ReportMetadata reportMetadata, PatientGrid patientGrid, List report) {
+		return new PatientGridDownload(reportMetadata, patientGrid, report);
+	}
 
 }

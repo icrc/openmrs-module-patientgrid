@@ -31,54 +31,54 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Handler(supports = LocationCohortDefinition.class, order = 50)
 public class LocationDataFilterCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
 
-  private static final Logger log = LoggerFactory.getLogger(LocationDataFilterCohortDefinitionEvaluator.class);
+	private static final Logger log = LoggerFactory.getLogger(LocationDataFilterCohortDefinitionEvaluator.class);
 
-  private SessionFactory sf;
+	private SessionFactory sf;
 
-  @Autowired
-  public LocationDataFilterCohortDefinitionEvaluator(SessionFactory sf) {
-    this.sf = sf;
-  }
+	@Autowired
+	public LocationDataFilterCohortDefinitionEvaluator(SessionFactory sf) {
+		this.sf = sf;
+	}
 
-  @Override
-  public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext evaluationContext)
-      throws EvaluationException {
+	@Override
+	public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext evaluationContext)
+	        throws EvaluationException {
 
-    LocationCohortDefinition locationDef = (LocationCohortDefinition) cohortDefinition;
-    Criteria criteria = sf.getCurrentSession().createCriteria(EntityBasisMap.class);
-    criteria.add(Restrictions.eq("entityType", Patient.class.getName()));
-    criteria.add(Restrictions.eq("basisType", Location.class.getName()));
+		LocationCohortDefinition locationDef = (LocationCohortDefinition) cohortDefinition;
+		Criteria criteria = sf.getCurrentSession().createCriteria(EntityBasisMap.class);
+		criteria.add(Restrictions.eq("entityType", Patient.class.getName()));
+		criteria.add(Restrictions.eq("basisType", Location.class.getName()));
 
-    Set<Integer> patientIds;
-    if (!locationDef.getCountry()) {
-      criteria.setProjection(Projections.property("entityIdentifier"));
-      List<String> ids = locationDef.getLocations().stream().map(l -> l.getId().toString()).collect(toList());
-      criteria.add(Restrictions.in("basisIdentifier", ids));
-      List<String> idsAsStrings = criteria.list();
-      patientIds = idsAsStrings.stream().map(Integer::valueOf).collect(toSet());
-    } else {
-      List<EntityBasisMap> entityBasisMaps = criteria.list();
-      Set<String> locationNames = locationDef.getLocations().stream().map(l -> l.getName().toLowerCase())
-          .collect(toSet());
-      patientIds = new HashSet(entityBasisMaps.size());
-      LocationService locationService = Context.getLocationService();
-      for (EntityBasisMap map : entityBasisMaps) {
-        final Integer locationId = Integer.valueOf(map.getBasisIdentifier());
-        Location location = locationService.getLocation(locationId);
-        if (location == null) {
-          log.warn("No location found with id: {}", locationId);
-          continue;
-        }
+		Set<Integer> patientIds;
+		if (!locationDef.getCountry()) {
+			criteria.setProjection(Projections.property("entityIdentifier"));
+			List<String> ids = locationDef.getLocations().stream().map(l -> l.getId().toString()).collect(toList());
+			criteria.add(Restrictions.in("basisIdentifier", ids));
+			List<String> idsAsStrings = criteria.list();
+			patientIds = idsAsStrings.stream().map(Integer::valueOf).collect(toSet());
+		} else {
+			List<EntityBasisMap> entityBasisMaps = criteria.list();
+			Set<String> locationNames = locationDef.getLocations().stream().map(l -> l.getName().toLowerCase())
+			        .collect(toSet());
+			patientIds = new HashSet(entityBasisMaps.size());
+			LocationService locationService = Context.getLocationService();
+			for (EntityBasisMap map : entityBasisMaps) {
+				final Integer locationId = Integer.valueOf(map.getBasisIdentifier());
+				Location location = locationService.getLocation(locationId);
+				if (location == null) {
+					log.warn("No location found with id: {}", locationId);
+					continue;
+				}
 
-        if (location.getCountry() == null || !locationNames.contains(location.getCountry().toLowerCase())) {
-          continue;
-        }
+				if (location.getCountry() == null || !locationNames.contains(location.getCountry().toLowerCase())) {
+					continue;
+				}
 
-        patientIds.add(Integer.valueOf(map.getEntityIdentifier()));
-      }
-    }
+				patientIds.add(Integer.valueOf(map.getEntityIdentifier()));
+			}
+		}
 
-    return new EvaluatedCohort(new Cohort(patientIds), cohortDefinition, evaluationContext);
-  }
+		return new EvaluatedCohort(new Cohort(patientIds), cohortDefinition, evaluationContext);
+	}
 
 }
