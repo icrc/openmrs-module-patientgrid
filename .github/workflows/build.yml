@@ -1,12 +1,8 @@
-name: Verify on branches and PRs
+name: Verify on PRs
 
 on:
-  push:
-    branches:
-      - '*'
   pull_request:
-    branches:
-      - 'main'
+    branches: [main]
 
 jobs:
   build:

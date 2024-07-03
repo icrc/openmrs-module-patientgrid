@@ -6,7 +6,14 @@ Provides an API for managing and evaluating a grid of patient data
 packages can be found on [GitHub Packages](https://github.com/orgs/icrc/packages?repo_name=openmrs-module-patientgrid).
 
 # SNAPSHOT and Release Deployments
-Deployments are done for ICRC intern CI/CD Tasks.
+Deployments are done from Git Actions: https://github.com/icrc/openmrs-module-patientgrid/actions
+
+- [Verify on PRs](https://github.com/icrc/openmrs-module-patientgrid/actions/workflows/build.yml)
+  - compile and run Unit tests on PRs  
+- [Deploy SNAPSHOT Version on Main branch](https://github.com/icrc/openmrs-module-patientgrid/actions/workflows/deploy.yml)
+  - compile, unit tests and deploy snapshot versions for pushes on main branch  
+- [Do Release](https://github.com/icrc/openmrs-module-patientgrid/actions/workflows/release.yml)
+  - manual task creating a release no SNAPHOST and moving to the next version 
 
 # How to integration the module in your project.
 
