@@ -219,7 +219,7 @@
                     <plugins>
                         <plugin>
                             <artifactId>maven-surefire-plugin</artifactId>
-                            <version>3.2.5</version>
+                            <version>3.3.0</version>
                             <executions>
                                 <execution>
                                     <id>default-test</id>
