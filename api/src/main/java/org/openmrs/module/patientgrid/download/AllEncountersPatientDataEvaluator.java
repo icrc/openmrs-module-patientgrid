@@ -43,7 +43,8 @@ public class AllEncountersPatientDataEvaluator implements PatientDataEvaluator {
 			        patientEncs.stream().forEach(encounter -> {
 				        Map<String, Object> columnUuidAndObsMap = new HashMap(obsColumns.size());
 				        obsColumns.stream().forEach(column -> {
-					        Obs obs = PatientGridUtils.getObsByConcept(encounter, column.getConcept());
+					        Obs obs = PatientGridUtils.getObsByConcept(encounter, column.getConcept(),
+					            extractQuestionIdFromColumn(column));
 					        if (obs != null) {
 						        columnUuidAndObsMap.put(column.getUuid(), DataUtil.convertData(obs, OBS_CONVERTER));
 					        }
@@ -67,4 +68,7 @@ public class AllEncountersPatientDataEvaluator implements PatientDataEvaluator {
 		return result;
 	}
 
+	private static String extractQuestionIdFromColumn(ObsPatientGridColumn column) {
+		return column.getName().substring(column.getName().lastIndexOf("--") + 2);
+	}
 }
