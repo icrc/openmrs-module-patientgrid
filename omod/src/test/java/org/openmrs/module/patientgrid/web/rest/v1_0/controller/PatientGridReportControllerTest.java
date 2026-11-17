@@ -10,7 +10,6 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 
 import java.util.List;
@@ -28,9 +27,10 @@ public class PatientGridReportControllerTest extends BasePatientGridRestControll
 	@Autowired
 	private PatientGridService service;
 
-	@Autowired
-	@Qualifier(CACHE_MANAGER_NAME)
-	private CacheManager cacheManager;
+	// looked up by name: the bean is autowire-candidate="false" so it can't be @Autowired
+	private CacheManager getCacheManager() {
+		return Context.getRegisteredComponent(CACHE_MANAGER_NAME, CacheManager.class);
+	}
 
 	@Override
 	public String getURI() {
@@ -65,7 +65,7 @@ public class PatientGridReportControllerTest extends BasePatientGridRestControll
 		cachedDataSet.addColumnValue(8888, column, "Test Patient");
 		PatientGrid patientGrid = service.getPatientGrid(1);
 		final String cacheKey = patientGrid.getUuid() + CACHE_KEY_SEPARATOR + Context.getAuthenticatedUser().getUuid();
-		cacheManager.getCache(CACHE_NAME_GRID_REPORTS).put(cacheKey, cachedDataSet);
+		getCacheManager().getCache(CACHE_NAME_GRID_REPORTS).put(cacheKey, cachedDataSet);
 
 		Object result = deserialize(handle(newGetRequest(getURI(), new Parameter(PARAM_REFRESH, "true"))));
 		Object report = ((List) Util.getByPath(result, "results")).get(0);

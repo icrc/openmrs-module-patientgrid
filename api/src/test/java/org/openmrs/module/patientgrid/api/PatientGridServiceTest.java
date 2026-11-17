@@ -61,9 +61,10 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	@Qualifier("encounterService")
 	private EncounterService es;
 
-	@Autowired
-	@Qualifier(CACHE_MANAGER_NAME)
-	private CacheManager cacheManager;
+	// looked up by name: the bean is autowire-candidate="false" so it can't be @Autowired
+	private CacheManager getCacheManager() {
+		return Context.getRegisteredComponent(CACHE_MANAGER_NAME, CacheManager.class);
+	}
 
 	@Autowired
 	private DataSetDefinitionService dsds;
@@ -90,7 +91,7 @@ public class PatientGridServiceTest extends BaseModuleContextSensitiveTest {
 	}
 
 	private Cache getCache() {
-		return cacheManager.getCache(CACHE_NAME_GRID_REPORTS);
+		return getCacheManager().getCache(CACHE_NAME_GRID_REPORTS);
 	}
 
 	@Test
