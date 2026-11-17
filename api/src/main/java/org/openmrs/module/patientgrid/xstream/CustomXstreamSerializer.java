@@ -29,7 +29,7 @@ public class CustomXstreamSerializer extends SimpleXStreamSerializer {
 		try (BufferedWriter writer = new BufferedWriter(
 		        new OutputStreamWriter(Files.newOutputStream(target.toPath()), StandardCharsets.UTF_8),
 		        DEFAULT_BUFFER_SIZE)) {
-			xstream.toXML(value, writer);
+			getXstream().toXML(value, writer);
 		}
 	}
 
@@ -37,11 +37,12 @@ public class CustomXstreamSerializer extends SimpleXStreamSerializer {
 		try (final InputStreamReader buffered = new InputStreamReader(
 		        new BufferedInputStream(Files.newInputStream(targetFile.toPath()), DEFAULT_BUFFER_SIZE),
 		        StandardCharsets.UTF_8)) {
-			return xstream.fromXML(buffered);
+			return getXstream().fromXML(buffered);
 		}
 	}
 
 	private void init() {
+		XStream xstream = getXstream();
 		//serialize only the field idToRowMap
 		xstream.omitField(SimpleDataSet.class, "definition");
 		xstream.omitField(SimpleDataSet.class, "sortCriteria");
