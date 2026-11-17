@@ -29,6 +29,13 @@
         </property>
     </bean>
 
+    <!-- Looked up by name via @CacheConfig(cacheManager = "patientGridReportsCacheManager").
+         autowire-candidate="false" keeps it out of by-type injection, so modules asking for
+         "the" CacheManager (e.g. fhir2 on core 2.8) get core's apiCacheManager. -->
+    <bean id="patientGridReportsCacheManager"
+          class="${project.parent.groupId}.${project.parent.artifactId}.cache.PatientGridCacheManager"
+          autowire-candidate="false"/>
+
     <bean parent="serviceContext">
         <property name="moduleService">
             <list>

@@ -106,18 +106,19 @@ public class PatientGridFilterUtils {
 	public static LocationCohortDefinition extractLocations(PatientGrid patientGrid) {
 		PatientGridColumn columnToUse = null;
 		for (PatientGridColumn column : patientGrid.getColumns()) {
-			if(column.getFilters().isEmpty()){
+			if (column.getFilters().isEmpty()) {
 				continue;
 			}
-			if(ENC_LOCATION.equals(column.getDatatype())){
+			if (ENC_LOCATION.equals(column.getDatatype())) {
 				columnToUse = column;
 				break;
 			}
-			if(ENC_COUNTRY.equals(column.getDatatype())){
+			if (ENC_COUNTRY.equals(column.getDatatype())) {
 				columnToUse = column;
 			}
 		}
-		return columnToUse != null ? createLocationCohortDefinition(columnToUse, columnToUse.getDatatype() == ENC_COUNTRY) : null;
+		return columnToUse != null ? createLocationCohortDefinition(columnToUse, columnToUse.getDatatype() == ENC_COUNTRY)
+		        : null;
 	}
 
 	public static boolean canSeeLocations(PatientGrid patientGrid) {
